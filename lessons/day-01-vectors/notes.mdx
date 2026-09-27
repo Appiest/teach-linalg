@@ -1,0 +1,73 @@
+<Pair>
+<Figure src="arrow-and-list" alt="An arrow from the origin to the point (3, 2). A dashed green segment runs 3 units right and a dashed red segment runs 2 units up to the tip, and the column vector with entries 3 and 2 sits beside it." />
+
+$$
+\yellow{\vec v} = \begin{bmatrix} \green{3} \\ \red{2} \end{bmatrix} \in \mathbb{R}^2
+$$
+
+A vector in $\mathbb{R}^n$ is a column of $n$ real numbers called its **entries**. Drawn as an arrow from the origin, entry $i$ says how far to travel along axis $i$.
+</Pair>
+
+## Vector addition
+
+<Pair>
+<Figure src="addition" alt="The vectors v = (3, 2) and w = (−1, 2) drawn from the origin. A copy of w starts at the tip of v, and the teal sum v + w runs from the origin to (2, 4)." />
+
+$$
+\begin{aligned}
+\yellow{\begin{bmatrix} 3 \\ 2 \end{bmatrix}} + \blue{\begin{bmatrix} -1 \\ 2 \end{bmatrix}}
+&= \begin{bmatrix} 3 + (-1) \\ 2 + 2 \end{bmatrix} \\[4pt]
+&= \teal{\begin{bmatrix} 2 \\ 4 \end{bmatrix}}
+\end{aligned}
+$$
+
+Add entry by entry. In the picture, start $\blue{\vec w}$ at the tip of $\yellow{\vec v}$; the sum points to where the second arrow ends.
+</Pair>
+
+## Scalar multiplication
+
+<Pair>
+<Figure src="scaling" alt="The vector v = (3, 2) drawn with 2v twice as long in the same direction and −v the same length pointing the opposite way." />
+
+$$
+c \begin{bmatrix} u_1 \\ u_2 \end{bmatrix} = \begin{bmatrix} c\,u_1 \\ c\,u_2 \end{bmatrix}
+$$
+
+A **scalar** is a single real number. Multiplying by $c$ multiplies every entry by $c$, which stretches the arrow by $|c|$. A negative $c$ also reverses its direction.
+</Pair>
+
+## Linear combinations
+
+<Definition term="Linear combination">
+Given vectors $\vec v_1, \dots, \vec v_p$ in $\mathbb{R}^n$ and scalars $c_1, \dots, c_p$, the vector
+
+$$
+\vec y = c_1 \vec v_1 + c_2 \vec v_2 + \cdots + c_p \vec v_p
+$$
+
+is a **linear combination** of $\vec v_1, \dots, \vec v_p$ with **weights** $c_1, \dots, c_p$.
+</Definition>
+
+<Figure src="span" alt="The vectors v and w with a lattice of orange dots spread across the whole screen. Each dot is a·v + b·w for a different pair of weights." wide />
+
+Every orange dot above is $a\,\yellow{\vec v} + b\,\blue{\vec w}$ for one choice of $a$ and $b$. Because $\yellow{\vec v}$ and $\blue{\vec w}$ point in different directions, some choice of weights reaches every point of the plane. Tomorrow's lesson names that set: the **span**.
+
+## Practice
+
+<Check>
+Compute $\;2\begin{bmatrix} 1 \\ -3 \end{bmatrix} + \begin{bmatrix} 4 \\ 5 \end{bmatrix}$.
+<Answer>
+$$
+\begin{bmatrix} 2 \\ -6 \end{bmatrix} + \begin{bmatrix} 4 \\ 5 \end{bmatrix} = \begin{bmatrix} 6 \\ -1 \end{bmatrix}
+$$
+</Answer>
+</Check>
+
+<Check>
+Find weights $a$ and $b$ so that $a\begin{bmatrix} 3 \\ 2 \end{bmatrix} + b\begin{bmatrix} -1 \\ 2 \end{bmatrix} = \begin{bmatrix} 5 \\ 6 \end{bmatrix}$.
+<Answer>
+Matching entries gives $3a - b = 5$ and $2a + 2b = 6$. The second says $b = 3 - a$, so $3a - (3 - a) = 5$ and $a = 2$, $b = 1$.
+
+Check: $2\begin{bmatrix} 3 \\ 2 \end{bmatrix} + \begin{bmatrix} -1 \\ 2 \end{bmatrix} = \begin{bmatrix} 5 \\ 6 \end{bmatrix}$.
+</Answer>
+</Check>

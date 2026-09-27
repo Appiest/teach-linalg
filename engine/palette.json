@@ -1,0 +1,16 @@
+{
+  "background": "#0D1117",
+  "text": "#E8ECF1",
+  "text_muted": "#8B96A5",
+  "grid": "#2A6F97",
+  "grid_faint": "#1B3A4F",
+  "axis": "#C9D1D9",
+  "i_hat": "#7BC96F",
+  "j_hat": "#F2665E",
+  "blue": "#5BC0EB",
+  "yellow": "#FFD447",
+  "teal": "#3DD6B5",
+  "pink": "#F28AB2",
+  "purple_gray": "#A7A3C2",
+  "glow": "#FF8A3D"
+}

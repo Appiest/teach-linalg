@@ -1,0 +1,12 @@
+# Source PDFs stay local: copyrighted textbook and school documents
+*.pdf
+.venv/
+.media/
+__pycache__/
+.DS_Store
+site/node_modules/
+site/.next/
+site/out/
+site/public/lessons/
+site/src/app/palette.generated.css
+site/next-env.d.ts

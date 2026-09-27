@@ -1,0 +1,250 @@
+{
+  "course": "Linear algebra, one idea a morning",
+  "sources": {
+    "lay": "David C. Lay, Linear Algebra and Its Applications, 5th ed.",
+    "bronson": "Bronson & Costa, Linear Algebra: An Introduction",
+    "syllabus": "Stanford OHS UM51A course schedule, lessons 10-38"
+  },
+  "days": [
+    {
+      "day": 1, "slug": "vectors", "title": "Vectors", "unit": "Foundations", "lay": "1.3", "syllabus_lesson": null,
+      "big_idea": "A vector is an arrow from the origin and a list of numbers at the same time; adding and scaling mean the same thing in both pictures.",
+      "must_cover": ["vector as arrow and as column", "vector addition tip-to-tail and entrywise", "scalar multiplication stretches, shrinks and flips", "linear combination a·v + b·w"],
+      "centerpiece": "Two sliders for a and b sweep a·v + b·w and its tip paints the whole plane."
+    },
+    {
+      "day": 2, "slug": "linear-combinations-and-span", "title": "Linear combinations and span", "unit": "Foundations", "lay": "1.3", "syllabus_lesson": null,
+      "big_idea": "The span of some vectors is every place you can reach by scaling and adding them.",
+      "must_cover": ["definition of span", "two non-parallel vectors in R^2 span the plane", "parallel vectors only span a line", "span of two vectors in R^3 is a plane through the origin", "is b in Span{v1, v2}? as a question about solving an equation"],
+      "centerpiece": "A 3D camera orbits while two vectors sweep out a plane, then a third vector either pokes off it or lies flat in it."
+    },
+    {
+      "day": 3, "slug": "systems-and-row-reduction", "title": "Systems of equations and row reduction", "unit": "Foundations", "lay": "1.1, 1.2", "syllabus_lesson": null,
+      "big_idea": "Row operations change the equations without changing the solution set, so we simplify until the answer is readable.",
+      "must_cover": ["a linear system and its augmented matrix", "the three row operations", "row echelon and reduced row echelon form", "pivots, free variables", "no solution / one solution / infinitely many, shown as intersecting lines"],
+      "centerpiece": "Each row operation happens in the matrix while two lines on the plane pivot but keep crossing at the same point."
+    },
+    {
+      "day": 4, "slug": "matrix-times-vector", "title": "Matrix times vector", "unit": "Foundations", "lay": "1.4", "syllabus_lesson": null,
+      "big_idea": "Ax is a linear combination of the columns of A, using the entries of x as the weights.",
+      "must_cover": ["Ax as column combination", "row-times-column rule as a shortcut", "Ax = b is the same question as 'is b in the span of the columns'", "vector equation, matrix equation and augmented matrix are one problem"],
+      "centerpiece": "The columns of A fly out as arrows, get scaled by x1 and x2, and snap tip-to-tail into Ax."
+    },
+    {
+      "day": 5, "slug": "matrices-as-transformations", "title": "Matrices are transformations", "unit": "Foundations", "lay": "1.8, 1.9", "syllabus_lesson": null,
+      "big_idea": "A matrix moves every point of the plane, and its columns record where the two basis arrows land.",
+      "must_cover": ["linear transformation: grid lines stay straight, parallel and evenly spaced, origin fixed", "T(u+v) = T(u)+T(v), T(cu) = cT(u)", "columns = images of e1 and e2", "rotation, shear, scaling, projection examples"],
+      "centerpiece": "The whole grid morphs under a shear, then a rotation, with i-hat and j-hat highlighted and their landing spots written into the matrix."
+    },
+    {
+      "day": 6, "slug": "matrix-multiplication", "title": "Matrix multiplication is composition", "unit": "Foundations", "lay": "2.1", "syllabus_lesson": null,
+      "big_idea": "AB means do B first, then A; the product's columns are A applied to B's columns.",
+      "must_cover": ["AB as composition read right to left", "column-by-column rule: AB = [Ab1 Ab2]", "row-column rule for entries", "AB ≠ BA shown with a rotation and a shear", "transpose"],
+      "centerpiece": "Shear-then-rotate and rotate-then-shear play side by side and end in different places."
+    },
+    {
+      "day": 7, "slug": "inverse-of-a-matrix", "title": "The inverse of a matrix", "unit": "Matrix algebra", "lay": "2.2", "syllabus_lesson": 10,
+      "big_idea": "A⁻¹ is the transformation that undoes A, and it exists exactly when A doesn't squash space flat.",
+      "must_cover": ["definition A A⁻¹ = A⁻¹ A = I", "2x2 inverse formula and ad − bc", "solving Ax = b as x = A⁻¹b", "(AB)⁻¹ = B⁻¹A⁻¹ (socks and shoes)", "singular matrix collapses the plane to a line"],
+      "centerpiece": "The grid transforms under A, then plays the transformation backwards under A⁻¹; a singular matrix flattens it and there is no way back."
+    },
+    {
+      "day": 8, "slug": "elementary-matrices", "title": "Elementary matrices and computing inverses", "unit": "Matrix algebra", "lay": "2.2", "syllabus_lesson": 11,
+      "big_idea": "Every row operation is multiplication by an elementary matrix, so row-reducing A to I builds A⁻¹ along the way.",
+      "must_cover": ["three kinds of elementary matrix", "E is I with one row operation applied", "each E is invertible", "row reduce [A | I] to [I | A⁻¹]", "A is invertible iff it is a product of elementary matrices"],
+      "centerpiece": "[A | I] row-reduces step by step; each step is also shown as a small grid move, and the right half fills in to become A⁻¹."
+    },
+    {
+      "day": 9, "slug": "lu-decomposition", "title": "LU decomposition", "unit": "Matrix algebra", "lay": "2.5", "syllabus_lesson": 12,
+      "big_idea": "A = LU records elimination once, so solving Ax = b for many right-hand sides becomes two quick triangular solves.",
+      "must_cover": ["lower and upper triangular matrices", "L stores the multipliers used in elimination", "solve Ly = b then Ux = y", "forward and back substitution", "why this saves work"],
+      "centerpiece": "Elimination multipliers drop out of A one by one and land in the lower triangle of L while U forms above."
+    },
+    {
+      "day": 10, "slug": "vector-spaces", "title": "What is a vector space?", "unit": "Vector spaces", "lay": "4.1", "syllabus_lesson": 13,
+      "big_idea": "Anything you can add and scale by the usual rules is a vector space, including polynomials, functions and matrices.",
+      "must_cover": ["the axioms as closure + ordinary algebra rules", "examples: R^n, polynomials P_n, 2x2 matrices, functions", "a non-example that breaks an axiom", "zero vector and additive inverse"],
+      "centerpiece": "Polynomial curves add and scale on a graph exactly the way arrows do, shown side by side."
+    },
+    {
+      "day": 11, "slug": "subspaces", "title": "Subspaces", "unit": "Vector spaces", "lay": "4.1, 2.8", "syllabus_lesson": 15,
+      "big_idea": "A subspace is a flat piece through the origin that you can never leave by adding or scaling.",
+      "must_cover": ["three-part subspace test: contains 0, closed under +, closed under scaling", "lines and planes through the origin", "a shifted line fails", "span of anything is a subspace"],
+      "centerpiece": "Vectors on a line through the origin add and scale and stay on it; on a shifted line, their sum jumps off."
+    },
+    {
+      "day": 12, "slug": "span-revisited", "title": "Span as the smallest subspace", "unit": "Vector spaces", "lay": "1.3, 4.1", "syllabus_lesson": 17,
+      "big_idea": "Span{v1,…,vp} is the smallest subspace containing those vectors, and a spanning set is a recipe for the whole space.",
+      "must_cover": ["spanning sets", "checking whether a set spans R^n with row reduction (pivot in every row)", "spanning sets of P_2", "adding redundant vectors doesn't grow the span"],
+      "centerpiece": "Adding a third vector to a plane in R^3: if it's in the plane nothing grows; if not, the span inflates to all of space."
+    },
+    {
+      "day": 13, "slug": "linear-independence", "title": "Linear independence", "unit": "Vector spaces", "lay": "1.7, 4.3", "syllabus_lesson": 18,
+      "big_idea": "Vectors are independent when none of them is redundant, meaning the only way to combine them to 0 is with all weights 0.",
+      "must_cover": ["definition via c1v1 + … + cpvp = 0", "dependent means one vector is a combination of the others", "test: pivot in every column", "more vectors than dimensions forces dependence"],
+      "centerpiece": "Three arrows in R^3; when one drops into the plane of the other two, the parallelepiped they span flattens."
+    },
+    {
+      "day": 14, "slug": "basis", "title": "Basis", "unit": "Vector spaces", "lay": "4.3", "syllabus_lesson": 19,
+      "big_idea": "A basis spans the space with no redundancy, so every vector has exactly one address in it.",
+      "must_cover": ["basis = independent + spanning", "standard basis", "spanning set theorem: trim a spanning set down to a basis", "bases for P_n"],
+      "centerpiece": "The same point gets its coordinates read off two different skewed grids."
+    },
+    {
+      "day": 15, "slug": "coordinates-and-dimension", "title": "Coordinates and dimension", "unit": "Vector spaces", "lay": "4.4, 4.5", "syllabus_lesson": 20,
+      "big_idea": "Every basis of a space has the same size, and that number is the dimension.",
+      "must_cover": ["coordinate vector [x]_B", "coordinate mapping is an isomorphism to R^n", "all bases have the same number of vectors", "dimension of R^n, P_n, subspaces"],
+      "centerpiece": "A polynomial turns into a column of coefficients and back, showing P_2 behaves exactly like R^3."
+    },
+    {
+      "day": 16, "slug": "row-space-and-column-space", "title": "Column space and row space", "unit": "Vector spaces", "lay": "2.8, 4.2, 4.6", "syllabus_lesson": 21,
+      "big_idea": "The column space is everything A can output; its pivot columns form a basis.",
+      "must_cover": ["Col A = span of columns = range of x ↦ Ax", "basis for Col A: pivot columns of the original A", "row space and why row ops preserve it", "basis for Row A: nonzero rows of echelon form"],
+      "centerpiece": "A 3x2 matrix sends the whole plane into R^3, and the image is a tilted plane: the column space."
+    },
+    {
+      "day": 17, "slug": "null-space", "title": "Null space", "unit": "Vector spaces", "lay": "2.8, 4.2", "syllabus_lesson": 22,
+      "big_idea": "The null space is every input that A crushes to zero, and it is always a subspace.",
+      "must_cover": ["Nul A = {x : Ax = 0}", "finding a basis from free variables in parametric form", "Nul A is a subspace", "solutions to Ax = b are a shifted copy of Nul A"],
+      "centerpiece": "A projection squashes the plane onto a line; a whole line of vectors collapses onto the origin and glows."
+    },
+    {
+      "day": 18, "slug": "rank-nullity", "title": "Rank and nullity", "unit": "Vector spaces", "lay": "2.9, 4.6", "syllabus_lesson": 23,
+      "big_idea": "Every input dimension either survives into the output or gets crushed: rank + nullity = number of columns.",
+      "must_cover": ["rank = dim Col A = number of pivots", "nullity = dim Nul A = number of free variables", "rank theorem", "dim Row A = dim Col A"],
+      "centerpiece": "Column-by-column tally: each column lights up as pivot or free, and two bars fill to the total n."
+    },
+    {
+      "day": 19, "slug": "invertible-matrix-theorem", "title": "The invertible matrix theorem", "unit": "Vector spaces", "lay": "2.3, 2.9, 4.6", "syllabus_lesson": 24,
+      "big_idea": "For a square matrix, a dozen different-sounding conditions are all the same fact: A doesn't squash any direction.",
+      "must_cover": ["equivalent statements: invertible, n pivots, Nul A = {0}, columns independent, columns span R^n, rank n, x ↦ Ax one-to-one and onto, det ≠ 0 (preview)", "how each links to the next", "using it to decide invertibility fast"],
+      "centerpiece": "A web of equivalent statements lights up all at once when a matrix is invertible and goes dark together when it is singular."
+    },
+    {
+      "day": 20, "slug": "linear-transformations", "title": "Linear transformations between vector spaces", "unit": "Linear transformations", "lay": "1.8, 4.2", "syllabus_lesson": 25,
+      "big_idea": "A linear transformation is any map that respects adding and scaling, and that includes differentiation.",
+      "must_cover": ["definition for general vector spaces", "T(0) = 0", "examples: matrix maps, differentiation on P_n, transpose", "non-examples like translation", "one-to-one and onto"],
+      "centerpiece": "The derivative acts on a family of polynomials and visibly respects adding and scaling them."
+    },
+    {
+      "day": 21, "slug": "matrix-representations", "title": "The matrix of a linear transformation", "unit": "Linear transformations", "lay": "1.9, 5.4", "syllabus_lesson": 26,
+      "big_idea": "Pick a basis for each side and any linear map becomes a matrix; column j is where basis vector j lands, in coordinates.",
+      "must_cover": ["[T]_{C←B} built column by column", "[T(x)]_C = [T]_{C←B}[x]_B", "the matrix of d/dx on P_2", "standard matrix"],
+      "centerpiece": "Each basis polynomial goes through d/dx, gets converted to coordinates, and drops into its column of the matrix."
+    },
+    {
+      "day": 22, "slug": "change-of-basis", "title": "Change of basis", "unit": "Linear transformations", "lay": "4.7, 5.4", "syllabus_lesson": 27,
+      "big_idea": "A change-of-basis matrix translates coordinates from one grid's language to another's without moving the vector.",
+      "must_cover": ["P_{C←B} columns are [b_i]_C", "P_{C←B} inverse is P_{B←C}", "computing it by row reducing [c1 c2 | b1 b2]", "similar matrices: [T]_B = P⁻¹AP"],
+      "centerpiece": "One fixed arrow with two overlaid grids; its coordinates in each grid count up simultaneously."
+    },
+    {
+      "day": 23, "slug": "kernel", "title": "Kernel", "unit": "Linear transformations", "lay": "4.2", "syllabus_lesson": 28,
+      "big_idea": "The kernel is everything T sends to zero, and T is one-to-one exactly when the kernel is only zero.",
+      "must_cover": ["ker T definition", "ker T is a subspace", "one-to-one ⇔ ker T = {0}", "kernel of d/dx on P_n is the constants"],
+      "centerpiece": "Two different inputs land on the same output, and their difference is shown to live in the kernel."
+    },
+    {
+      "day": 24, "slug": "image", "title": "Image (range)", "unit": "Linear transformations", "lay": "4.2", "syllabus_lesson": 29,
+      "big_idea": "The image is every output T can make; the rank-nullity theorem splits the input dimension between kernel and image.",
+      "must_cover": ["range T definition", "range is a subspace", "onto ⇔ range is everything", "dim ker T + dim range T = dim V"],
+      "centerpiece": "Input space splits into a kernel direction that collapses and a complementary direction that maps onto the image."
+    },
+    {
+      "day": 25, "slug": "determinants-as-area", "title": "The determinant measures area", "unit": "Determinants", "lay": "3.1, 3.3", "syllabus_lesson": 30,
+      "big_idea": "det A is the factor by which A scales areas (volumes in 3D), with a sign that says whether orientation flips.",
+      "must_cover": ["unit square maps to parallelogram of area |det A|", "2x2 formula ad − bc derived from the picture", "negative determinant flips orientation", "det = 0 means squashed flat"],
+      "centerpiece": "The unit square stretches into a parallelogram while a live counter tracks its area, passing through zero as it flips."
+    },
+    {
+      "day": 26, "slug": "cofactor-expansion", "title": "Computing determinants", "unit": "Determinants", "lay": "3.1, 3.2", "syllabus_lesson": 31,
+      "big_idea": "Cofactor expansion computes any determinant, and row operations change it in three predictable ways.",
+      "must_cover": ["minors and cofactors", "expansion along any row or column", "triangular matrix: product of the diagonal", "effect of each row operation on det", "det(AB) = det A det B, det Aᵀ = det A"],
+      "centerpiece": "A 3x3 expands along a row with the checkerboard of signs, and each 2x2 minor highlights as it's computed."
+    },
+    {
+      "day": 27, "slug": "determinant-properties", "title": "Determinant properties and Cramer's rule", "unit": "Determinants", "lay": "3.2, 3.3", "syllabus_lesson": 32,
+      "big_idea": "Because det is linear in each row and flips sign on swaps, it follows the rules that make det(AB) = det(A)det(B) and Cramer's rule work.",
+      "must_cover": ["multilinearity and alternating property", "proof sketch of det(AB) = det A det B via area scaling", "Cramer's rule", "adjugate formula for A⁻¹", "volume of a parallelepiped"],
+      "centerpiece": "Applying B then A multiplies the area twice, drawn as two successive scalings of the same square."
+    },
+    {
+      "day": 28, "slug": "eigenvectors", "title": "Eigenvectors and eigenvalues", "unit": "Eigenvalues", "lay": "5.1", "syllabus_lesson": 33,
+      "big_idea": "An eigenvector is a direction A only stretches, never turns: Av = λv.",
+      "must_cover": ["definition Av = λv, v ≠ 0", "eigenvalue λ as the stretch factor", "eigenspace = Nul(A − λI)", "eigenvalue 0 means singular", "triangular matrix eigenvalues on diagonal"],
+      "centerpiece": "The grid transforms and most arrows knock off their lines, but the eigenvectors stay on their spans and glow."
+    },
+    {
+      "day": 29, "slug": "characteristic-equation", "title": "Finding eigenvalues", "unit": "Eigenvalues", "lay": "5.2", "syllabus_lesson": 34,
+      "big_idea": "λ is an eigenvalue exactly when A − λI squashes space, so we solve det(A − λI) = 0.",
+      "must_cover": ["characteristic polynomial", "why det(A − λI) = 0", "worked 2x2 and 3x3 example", "algebraic multiplicity", "finding eigenvectors by solving (A − λI)x = 0"],
+      "centerpiece": "Slide λ along a number line; the transformed grid of A − λI collapses flat exactly at the eigenvalues while a plot of det(A − λI) crosses zero."
+    },
+    {
+      "day": 30, "slug": "eigenvalue-properties", "title": "Properties of eigenvalues", "unit": "Eigenvalues", "lay": "5.2", "syllabus_lesson": 35,
+      "big_idea": "Eigenvalues tell you trace, determinant and what powers of A do.",
+      "must_cover": ["trace = sum of eigenvalues, det = product", "eigenvalues of A^k, A⁻¹, A + cI", "eigenvectors for distinct eigenvalues are independent", "similar matrices share eigenvalues"],
+      "centerpiece": "Repeatedly applying A to a vector; it swings toward the dominant eigenvector's line."
+    },
+    {
+      "day": 31, "slug": "generalized-eigenvectors", "title": "Generalized eigenvectors", "unit": "Eigenvalues", "lay": "5.3 (supplement)", "syllabus_lesson": null, "syllabus_note": "Syllabus week 14: Generalized Eigenvectors",
+      "big_idea": "When there aren't enough eigenvectors, a chain of generalized eigenvectors fills the gap: (A − λI) pushes each one down the chain.",
+      "must_cover": ["defective matrix (shear example)", "geometric vs algebraic multiplicity", "(A − λI)^k v = 0", "chains v2 → v1 → 0", "preview of Jordan form"],
+      "centerpiece": "A shear has only one eigen-direction; a second vector gets pushed by (A − λI) onto that line, then to zero."
+    },
+    {
+      "day": 32, "slug": "diagonalization", "title": "Diagonalization", "unit": "Eigenvalues", "lay": "5.3", "syllabus_lesson": 36,
+      "big_idea": "If you have enough eigenvectors to make a basis, A = PDP⁻¹, and in that basis A just scales each axis.",
+      "must_cover": ["A = PDP⁻¹ construction", "diagonalizable ⇔ n independent eigenvectors", "distinct eigenvalues suffice", "computing A^k = PD^kP⁻¹"],
+      "centerpiece": "P⁻¹ rotates the eigen-grid onto the axes, D stretches along them, P rotates back, which reproduces A."
+    },
+    {
+      "day": 33, "slug": "diagonalizing-transformations", "title": "Diagonalizing a linear transformation", "unit": "Eigenvalues", "lay": "5.4", "syllabus_lesson": 37,
+      "big_idea": "Choosing an eigenvector basis makes the matrix of a linear transformation diagonal.",
+      "must_cover": ["[T]_B for eigenvector basis B is diagonal", "similarity as the same map in different coordinates", "example on P_n or R^2", "application: A^k and dynamical systems"],
+      "centerpiece": "The same transformation is shown in the standard grid (messy) and the eigen-grid (pure stretching)."
+    },
+    {
+      "day": 34, "slug": "symmetric-matrices", "title": "Symmetric matrices and the spectral theorem", "unit": "Eigenvalues", "lay": "7.1", "syllabus_lesson": 38,
+      "big_idea": "Symmetric matrices always have real eigenvalues and perpendicular eigenvectors, so they are rotations of pure stretches.",
+      "must_cover": ["A = Aᵀ", "eigenvectors for distinct eigenvalues are orthogonal", "orthogonal diagonalization A = PDPᵀ", "spectral decomposition as a sum of projections"],
+      "centerpiece": "A unit circle becomes an ellipse whose axes are exactly the perpendicular eigenvectors."
+    },
+    {
+      "day": 35, "slug": "inner-products-and-orthogonality", "title": "Dot products and orthogonality", "unit": "Special topics", "lay": "6.1, 6.2", "syllabus_lesson": null, "syllabus_note": "Special topic presentations",
+      "big_idea": "The dot product measures how much two vectors point the same way; zero means perpendicular.",
+      "must_cover": ["u·v, length, distance", "u·v = |u||v|cos θ", "orthogonal complements; (Row A)⊥ = Nul A", "orthogonal and orthonormal sets"],
+      "centerpiece": "As one vector rotates, the shadow it casts on the other grows, shrinks, hits zero at 90 degrees and goes negative."
+    },
+    {
+      "day": 36, "slug": "orthogonal-projection", "title": "Orthogonal projection", "unit": "Special topics", "lay": "6.3", "syllabus_lesson": null, "syllabus_note": "Special topic presentations",
+      "big_idea": "Projecting onto a subspace finds its closest point, and the leftover piece is perpendicular to the subspace.",
+      "must_cover": ["projection onto a line", "projection onto a subspace with an orthogonal basis", "orthogonal decomposition theorem", "best approximation"],
+      "centerpiece": "A vector drops a perpendicular onto a plane in 3D; the error vector glows at a right angle."
+    },
+    {
+      "day": 37, "slug": "gram-schmidt", "title": "Gram–Schmidt", "unit": "Special topics", "lay": "6.4", "syllabus_lesson": null, "syllabus_note": "Special topic presentations",
+      "big_idea": "Gram–Schmidt straightens any basis into a perpendicular one by subtracting off shadows one vector at a time.",
+      "must_cover": ["the algorithm", "normalizing", "QR factorization"],
+      "centerpiece": "Each new vector loses its projection onto the previous ones and swings to perpendicular."
+    },
+    {
+      "day": 38, "slug": "least-squares", "title": "Least squares", "unit": "Special topics", "lay": "6.5, 6.6", "syllabus_lesson": null, "syllabus_note": "Special topic presentations",
+      "big_idea": "When Ax = b has no solution, project b onto Col A and solve that instead: AᵀAx = Aᵀb.",
+      "must_cover": ["normal equations", "geometric meaning: projection onto column space", "line of best fit", "residuals"],
+      "centerpiece": "Data points with a fitted line; residual segments shrink as the line springs into its best position, and a side view shows b projecting onto Col A."
+    },
+    {
+      "day": 39, "slug": "quadratic-forms", "title": "Quadratic forms", "unit": "Special topics", "lay": "7.2, 7.3", "syllabus_lesson": null, "syllabus_note": "Special topic presentations",
+      "big_idea": "xᵀAx describes bowls, saddles and ridges, and the eigenvalues of A tell you which one you have.",
+      "must_cover": ["quadratic form from a symmetric matrix", "principal axes via orthogonal diagonalization", "positive definite, indefinite", "constrained max/min on the unit circle"],
+      "centerpiece": "A 3D surface morphs from bowl to saddle as one eigenvalue changes sign."
+    },
+    {
+      "day": 40, "slug": "singular-value-decomposition", "title": "The singular value decomposition", "unit": "Special topics", "lay": "7.4, 7.5", "syllabus_lesson": null, "syllabus_note": "Special topic presentations",
+      "big_idea": "Every matrix is a rotation, then a stretch along the axes, then another rotation: A = UΣVᵀ.",
+      "must_cover": ["singular values from AᵀA", "A = UΣVᵀ geometry", "rank-k approximation", "image compression example"],
+      "centerpiece": "The unit circle rotates, stretches into an ellipse and rotates again, followed by an image rebuilt from more and more singular values."
+    }
+  ]
+}
