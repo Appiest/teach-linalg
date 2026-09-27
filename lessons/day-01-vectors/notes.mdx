@@ -1,40 +1,32 @@
-<Pair>
-<Figure src="arrow-and-list" alt="An arrow from the origin to the point (3, 2). A dashed green segment runs 3 units right and a dashed red segment runs 2 units up to the tip, and the column vector with entries 3 and 2 sits beside it." />
+A vector in $\mathbb{R}^n$ is a column of $n$ real numbers called its **entries**. Drawn as an arrow from the origin, entry $i$ says how far to travel along axis $i$.
 
 $$
 \yellow{\vec v} = \begin{bmatrix} \green{3} \\ \red{2} \end{bmatrix} \in \mathbb{R}^2
 $$
 
-A vector in $\mathbb{R}^n$ is a column of $n$ real numbers called its **entries**. Drawn as an arrow from the origin, entry $i$ says how far to travel along axis $i$.
-</Pair>
+<VectorExplorer start={[3, 2]} goal={[-2, 3]} />
 
 ## Vector addition
 
-<Pair>
-<Figure src="addition" alt="The vectors v = (3, 2) and w = (−1, 2) drawn from the origin. A copy of w starts at the tip of v, and the teal sum v + w runs from the origin to (2, 4)." />
+To add two vectors, add their entries one position at a time. In the picture, slide $\blue{\vec w}$ so it starts at the tip of $\yellow{\vec v}$. The sum points to where the second arrow ends.
 
 $$
-\begin{aligned}
 \yellow{\begin{bmatrix} 3 \\ 2 \end{bmatrix}} + \blue{\begin{bmatrix} -1 \\ 2 \end{bmatrix}}
-&= \begin{bmatrix} 3 + (-1) \\ 2 + 2 \end{bmatrix} \\[4pt]
-&= \teal{\begin{bmatrix} 2 \\ 4 \end{bmatrix}}
-\end{aligned}
+= \begin{bmatrix} 3 + (-1) \\ 2 + 2 \end{bmatrix}
+= \teal{\begin{bmatrix} 2 \\ 4 \end{bmatrix}}
 $$
 
-Add entry by entry. In the picture, start $\blue{\vec w}$ at the tip of $\yellow{\vec v}$; the sum points to where the second arrow ends.
-</Pair>
+<AdditionExplorer v={[3, 2]} w={[-1, 2]} goal={[4, 1]} />
 
 ## Scalar multiplication
 
-<Pair>
-<Figure src="scaling" alt="The vector v = (3, 2) drawn with 2v twice as long in the same direction and −v the same length pointing the opposite way." />
+A **scalar** is a single real number. Multiplying by $c$ multiplies every entry by $c$ and stretches the arrow by a factor of $|c|$. A negative $c$ also reverses its direction.
 
 $$
 c \begin{bmatrix} u_1 \\ u_2 \end{bmatrix} = \begin{bmatrix} c\,u_1 \\ c\,u_2 \end{bmatrix}
 $$
 
-A **scalar** is a single real number. Multiplying by $c$ multiplies every entry by $c$, which stretches the arrow by $|c|$. A negative $c$ also reverses its direction.
-</Pair>
+<ScaleExplorer vector={[3, 2]} target={-1.5} />
 
 ## Linear combinations
 
@@ -48,6 +40,8 @@ $$
 is a **linear combination** of $\vec v_1, \dots, \vec v_p$ with **weights** $c_1, \dots, c_p$.
 </Definition>
 
+<CombinationTarget v={[3, 2]} w={[-1, 2]} target={[5, 6]} />
+
 <Figure src="span" alt="The vectors v and w with a lattice of orange dots spread across the whole screen. Each dot is a·v + b·w for a different pair of weights." wide />
 
 Every orange dot above is $a\,\yellow{\vec v} + b\,\blue{\vec w}$ for one choice of $a$ and $b$. Because $\yellow{\vec v}$ and $\blue{\vec w}$ point in different directions, some choice of weights reaches every point of the plane. Tomorrow's lesson names that set: the **span**.
@@ -56,6 +50,9 @@ Every orange dot above is $a\,\yellow{\vec v} + b\,\blue{\vec w}$ for one choice
 
 <Check>
 Compute $\;2\begin{bmatrix} 1 \\ -3 \end{bmatrix} + \begin{bmatrix} 4 \\ 5 \end{bmatrix}$.
+
+<VectorAnswer answer={[6, -1]} />
+
 <Answer>
 $$
 \begin{bmatrix} 2 \\ -6 \end{bmatrix} + \begin{bmatrix} 4 \\ 5 \end{bmatrix} = \begin{bmatrix} 6 \\ -1 \end{bmatrix}
@@ -64,10 +61,13 @@ $$
 </Check>
 
 <Check>
-Find weights $a$ and $b$ so that $a\begin{bmatrix} 3 \\ 2 \end{bmatrix} + b\begin{bmatrix} -1 \\ 2 \end{bmatrix} = \begin{bmatrix} 5 \\ 6 \end{bmatrix}$.
-<Answer>
-Matching entries gives $3a - b = 5$ and $2a + 2b = 6$. The second says $b = 3 - a$, so $3a - (3 - a) = 5$ and $a = 2$, $b = 1$.
+Find weights $a$ and $b$ so that $a\begin{bmatrix} 1 \\ 1 \end{bmatrix} + b\begin{bmatrix} 2 \\ -1 \end{bmatrix} = \begin{bmatrix} 7 \\ 1 \end{bmatrix}$.
 
-Check: $2\begin{bmatrix} 3 \\ 2 \end{bmatrix} + \begin{bmatrix} -1 \\ 2 \end{bmatrix} = \begin{bmatrix} 5 \\ 6 \end{bmatrix}$.
+<VectorAnswer answer={[3, 2]} labels={["a", "b"]} />
+
+<Answer>
+Matching entries gives $a + 2b = 7$ and $a - b = 1$. Subtracting the second equation from the first gives $3b = 6$, so $b = 2$ and $a = 3$.
+
+Check: $3\begin{bmatrix} 1 \\ 1 \end{bmatrix} + 2\begin{bmatrix} 2 \\ -1 \end{bmatrix} = \begin{bmatrix} 7 \\ 1 \end{bmatrix}$.
 </Answer>
 </Check>

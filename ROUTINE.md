@@ -26,9 +26,16 @@ Make exactly one lesson per run.
 
 Read these before you write anything:
 
+- **The teaching guide for today:** `guides/day-NN-<slug>.md` in the private `teach-linalg-sources` checkout.
+  Find it with `ls /home/user` or `find / -maxdepth 3 -type d -name teach-linalg-sources 2>/dev/null`.
+  - It is distilled from the textbook (David C. Lay, *Linear Algebra and Its Applications*, 5th ed.) and the
+    UM51A syllabus. It says exactly what to teach and what to leave for another day.
+  - It also has Lay's definitions, theorems, worked examples, and practice problems with verified answers.
+  - Follow its "Teach exactly this" list.
+  - Take the video's examples from its "Worked examples from the text" and "Pictures worth animating".
+  - If the sources checkout is missing, say so in your report and work from the curriculum entry and your own
+    knowledge of the Lay sections.
 - The curriculum entry: `big_idea`, `must_cover`, `centerpiece`, and the Lay sections in `lay`.
-  The textbook is David C. Lay, *Linear Algebra and Its Applications*, 5th edition. It isn't in the repo, so
-  work from your own knowledge of those sections.
 - `engine/theme.py`, the shared palette, springs, grid, captions, sliders, and the opening and closing cards.
 - `lessons/day-01-vectors/`, the reference lesson. Match its quality, pacing and structure.
 - The previous lesson's `notes.mdx` and `scene.py`, so today's lesson picks up where yesterday's ended, reuses
@@ -60,6 +67,17 @@ Create `<folder>/scene.py`, copying the import block from Day 1. It must contain
 
 Put anything reusable across days (a grid transform helper, a determinant-area helper, a 3D setup) in
 `engine/theme.py`, not in the lesson.
+
+### Sound
+
+`LessonScene` adds sound effects automatically. Each `self.play(...)` gets a sound chosen by its animation type,
+using `ANIMATION_SOUNDS` in `engine/theme.py`, and `scripts/render_lesson.py` lays a quiet ambient bed underneath.
+
+- Keep one visual event per `play` call so each sound lands on its motion.
+- For a moment the automatic mapping misses, call `self.sfx("pop" | "tick" | "whoosh" | "slide" | "swish" |
+  "sweep" | "chime" | "shimmer")` just before the `play`.
+- Keep it sparse. Don't add sounds to caption changes.
+- To add a new sound, add a function to `engine/sound_design.py` and re-run it. Never download audio.
 
 ### Visual rules
 
@@ -125,6 +143,36 @@ sections, then practice. Let rendered LaTeX and the figures carry it, not paragr
 - Available components: `<Pair>` (first child is the visual, the rest stack beside it), `<Figure src="slug"
   alt="…" />` (add `wide` for a full-width figure), `<Definition term="…">`, and `<Check>` with an `<Answer>`
   inside. Day 1 shows all of them.
+- **Interactivity, in the style of Brilliant.** Every lesson needs two to four interactive widgets. Each one
+  gives the learner a goal, lets them manipulate the math directly, and gives immediate visible feedback.
+  - Place each widget right after the idea it exercises: first a short explanation, then the widget with a
+    goal, then the precise math.
+  - Existing widgets live in `site/src/components/interactive/` and are registered in
+    `site/src/components/Notes.tsx`:
+    - `<VectorExplorer start goal />`
+    - `<AdditionExplorer v w goal />`
+    - `<ScaleExplorer vector target />`
+    - `<CombinationTarget v w target />`
+    - `<TransformExplorer matrix showArea goal={{ matrix | determinant, prompt, success }} />`, where the goal
+      strings may contain `$…$` math
+    - `<VectorAnswer answer labels? prefix? />`, which goes inside every `<Check>`, before its `<Answer>`, so
+      the learner types an answer and gets checked before seeing the solution
+  - When today's idea needs a new widget, build it from the primitives in `plane.tsx` and `controls.tsx`:
+    - `Plane`, `Arrow`, `Handle`, `Marker`, `Segment`, `Label`, `boundsAround`
+    - `Panel`, `Workbench`, `Goal`, `Slider`, `Readout`, `Tex`, `RichText`, `columnTex`
+
+    For example, a line whose span a handle sweeps, an eigenvector hunt, or a least-squares line you drag.
+    Register it in `Notes.tsx`.
+  - Requirements for every widget:
+    - handles work by mouse, touch and arrow keys
+    - it has an accessible label
+    - goals are reachable on the snap grid and inside the plane
+    - it uses palette colors whose meaning matches the video
+    - success shows a visible state change, not just text
+    - no function exceeds complexity 10
+- **Textbook problems.** Never copy Lay's exercises or examples verbatim into the public notes; this repo is
+  public. Use the guide's "Suggested fresh problems", or write new ones in the same style, and cite the
+  original ("modeled on Lay §1.3 #11").
 - Math is `$…$` inline and `$$…$$` display. Use `\begin{bmatrix}` for matrices. The color macros `\yellow{}`,
   `\blue{}`, `\teal{}`, `\green{}`, `\red{}`, `\pink{}` and `\glow{}` match the video, so use them to tie a
   symbol to its arrow.
@@ -147,6 +195,15 @@ cd site && npm run build && npx eslint src && cd ..
 ```
 
 A KaTeX mistake shows up as `katex-error` in `site/out/day/<N>/index.html`, so grep for it and fix any hits.
+
+Then test the widgets for real:
+
+- If `npx playwright install chromium` works in this environment, serve `site/out` with
+  `python3 -m http.server`.
+- Solve each widget's goal with keyboard presses or slider `fill()`.
+- Type a wrong answer, then the right one, into each `VectorAnswer`.
+- Screenshot each widget before and after, and read the screenshots.
+- If Chromium can't be installed, say so in your report.
 
 ## 8. Publish
 

@@ -3,6 +3,9 @@ import { CaretRight } from "@phosphor-icons/react/dist/ssr";
 import { MDXRemote } from "next-mdx-remote-client/rsc";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
+import { VectorAnswer } from "@/components/interactive/answers";
+import { TransformExplorer } from "@/components/interactive/transform";
+import { AdditionExplorer, CombinationTarget, ScaleExplorer, VectorExplorer } from "@/components/interactive/vectors";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
 import { katexMacros } from "@/lib/katex-macros";
 
@@ -53,8 +56,8 @@ function Answer({ children }: { children: React.ReactNode }) {
     <details className="group">
       <summary className="inline-flex cursor-pointer list-none items-center gap-1.5 rounded-md py-1 text-meta font-semibold text-accent [&::-webkit-details-marker]:hidden">
         <CaretRight weight="bold" className="size-3.5 transition-transform duration-200 group-open:rotate-90" />
-        <span className="group-open:hidden">Show answer</span>
-        <span className="hidden group-open:inline">Hide answer</span>
+        <span className="group-open:hidden">Show the solution</span>
+        <span className="hidden group-open:inline">Hide the solution</span>
       </summary>
       <div className="mt-3 [&>*+*]:mt-3">{children}</div>
     </details>
@@ -62,7 +65,19 @@ function Answer({ children }: { children: React.ReactNode }) {
 }
 
 export function Notes({ lesson }: { lesson: Lesson }) {
-  const components = { Figure: makeFigure(lesson), Pair, Definition, Check, Answer };
+  const components = {
+    Figure: makeFigure(lesson),
+    Pair,
+    Definition,
+    Check,
+    Answer,
+    VectorExplorer,
+    AdditionExplorer,
+    ScaleExplorer,
+    CombinationTarget,
+    TransformExplorer,
+    VectorAnswer,
+  };
   return (
     <div className="notes">
       <MDXRemote

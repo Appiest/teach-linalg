@@ -35,16 +35,37 @@ def manim(lesson: Path, *args: str) -> None:
 
 def render_video(lesson: Path, draft: bool) -> Path:
     quality = "-ql" if draft else "-qh"
-    manim(lesson, quality, "--frame_rate", "30", "scene.py", "Lesson")
+    manim(lesson, quality, "--frame_rate", "30", "--disable_caching", "scene.py", "Lesson")
     folder = "480p30" if draft else "1080p30"
     rendered = lesson / ".media" / "videos" / "scene" / folder / "Lesson.mp4"
     target = lesson / "lesson.mp4"
+    encode_with_bed(rendered, target)
+    return target
+
+
+def has_audio(video: Path) -> bool:
+    probe = subprocess.run(
+        ["ffprobe", "-v", "error", "-select_streams", "a", "-show_entries", "stream=index", "-of", "csv=p=0", str(video)],
+        check=True, capture_output=True, text=True,
+    )
+    return bool(probe.stdout.strip())
+
+
+def encode_with_bed(rendered: Path, target: Path) -> None:
+    """Lay the ambient bed under the scene's effects, fade it at both ends, and level the mix."""
+    duration = video_duration(rendered)
+    bed = ROOT / "engine" / "sounds" / "ambient.mp3"
+    pad = f"[1:a]atrim=0:{duration},afade=t=in:d=2.5,afade=t=out:st={max(0, duration - 3.5)}:d=3.5,volume=0.07[bed]"
+    if has_audio(rendered):
+        mix = f"{pad};[0:a]apad=whole_dur={duration},volume=1.8[fx];[fx][bed]amix=inputs=2:duration=first:normalize=0,alimiter=limit=0.89[mix]"
+    else:
+        mix = f"{pad};[bed]anull[mix]"
     subprocess.run(
-        ["ffmpeg", "-loglevel", "error", "-y", "-i", str(rendered), "-c:v", "libx264", "-crf", "23",
-         "-preset", "slow", "-pix_fmt", "yuv420p", "-movflags", "+faststart", str(target)],
+        ["ffmpeg", "-loglevel", "error", "-y", "-i", str(rendered), "-i", str(bed), "-filter_complex", mix,
+         "-map", "0:v", "-map", "[mix]", "-c:v", "libx264", "-crf", "23", "-preset", "slow", "-pix_fmt", "yuv420p",
+         "-c:a", "aac", "-b:a", "128k", "-ar", "48000", "-movflags", "+faststart", str(target)],
         check=True,
     )
-    return target
 
 
 def render_figures(lesson: Path) -> list[str]:

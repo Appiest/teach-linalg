@@ -143,16 +143,59 @@ def origin_pulse(plane: NumberPlane | None = None) -> VGroup:
     return VGroup(halo, core)
 
 
+SOUNDS = Path(__file__).with_name("sounds")
+
+# First matching animation in a play() call picks its sound: (sound, gain in dB).
+# Render with --disable_caching: cached animations skip play() and drop their sounds.
+ANIMATION_SOUNDS = {
+    "LaggedStart": ("shimmer", -4),
+    "GrowArrow": ("whoosh", -2),
+    "GrowFromCenter": ("pop", -9),
+    "GrowFromPoint": ("pop", -9),
+    "Create": ("sweep", -3),
+    "DrawBorderThenFill": ("sweep", -6),
+    "Write": ("swish", -8),
+    "TransformFromCopy": ("swish", -3),
+    "Transform": ("swish", -4),
+    "ReplacementTransform": ("swish", -4),
+    "Indicate": ("tick", -2),
+    "Flash": ("tick", -2),
+    "Circumscribe": ("tick", -4),
+    "_MethodAnimation": ("slide", -2),
+    "_AnimationBuilder": ("slide", -2),
+    "ApplyMatrix": ("slide", -2),
+}
+
+
+def sound_for(animations) -> tuple[str, float] | None:
+    names = [type(animation).__name__ for animation in animations]
+    for name, cue in ANIMATION_SOUNDS.items():
+        if name in names:
+            return cue
+    return None
+
+
 class LessonScene(Scene):
-    """Base scene with the shared opening, captions and closing card."""
+    """Base scene with the shared opening, captions, closing card and automatic sound effects."""
 
     day: int = 0
     title: str = ""
+    quiet: bool = False
+
+    def sfx(self, name: str, gain: float = 0) -> None:
+        self.add_sound(str(SOUNDS / f"{name}.wav"), gain=gain)
+
+    def play(self, *animations, **kwargs):
+        cue = None if self.quiet else sound_for(animations)
+        if cue:
+            self.sfx(*cue)
+        return super().play(*animations, **kwargs)
 
     def open_episode(self, plane: NumberPlane | None = None) -> VGroup:
         title = Tex(self.title, color=Palette.text, font_size=84)
         day = Tex(f"Day {self.day}", color=Palette.text_muted, font_size=40)
         card = VGroup(title, day).arrange(DOWN, buff=0.35)
+        self.sfx("chime", gain=-2)
         self.play(FadeIn(card, shift=UP * 0.2), run_time=1.0, rate_func=spring_soft)
         self.wait(Timing.read_long)
         self.play(FadeOut(card, shift=UP * 0.2), run_time=0.7)
@@ -177,6 +220,7 @@ class LessonScene(Scene):
         idea = Tex(takeaway_tex, color=Palette.text, font_size=48)
         idea.width = min(idea.width, config.frame_width - 2)
         pulse = origin_pulse().next_to(idea, DOWN, buff=0.7)
+        self.sfx("chime", gain=-4)
         self.play(FadeIn(idea, shift=UP * 0.2), run_time=1.0, rate_func=spring_soft)
         self.play(GrowFromCenter(pulse), run_time=0.8, rate_func=spring)
         self.wait(Timing.read_long + 1.5)

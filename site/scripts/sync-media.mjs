@@ -24,6 +24,8 @@ function writePaletteCss() {
   const lines = Object.entries(palette).map(([name, hex]) => `  --palette-${name.replaceAll("_", "-")}: ${hex};`);
   const css = `/* Generated from engine/palette.json by scripts/sync-media.mjs */\n:root {\n${lines.join("\n")}\n}\n`;
   fs.writeFileSync(path.join(siteRoot, "src", "app", "palette.generated.css"), css);
+  const ts = `// Generated from engine/palette.json by scripts/sync-media.mjs\nexport const palette = ${JSON.stringify(palette, null, 2)} as const;\n`;
+  fs.writeFileSync(path.join(siteRoot, "src", "lib", "palette.generated.ts"), ts);
 }
 
 fs.rmSync(lessonsTarget, { recursive: true, force: true });
