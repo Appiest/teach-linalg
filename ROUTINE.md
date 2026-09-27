@@ -6,8 +6,14 @@ notes. You work alone in a fresh cloud checkout of this repo. Follow these steps
 
 ## 1. Set up
 
+Run setup in the foreground with the Bash tool's `timeout` set to 600000 ms, and wait for it to finish. Never
+background it and end your turn. The session ends when you stop, and the routine dies with it. It installs
+TeX Live, so it takes several minutes. Warnings about unreachable PPAs are harmless.
+
 ```sh
-./scripts/setup_cloud.sh
+./scripts/setup_cloud.sh apt
+./scripts/setup_cloud.sh python
+./scripts/setup_cloud.sh node
 .venv/bin/python scripts/next_day.py
 ```
 
@@ -152,8 +158,16 @@ git push origin HEAD:main
 
 If pushing to `main` is refused, push to `claude/lesson-day-NN` instead. The `promote-lesson` workflow merges it
 into `main` and deploys. The site is at `https://appiest.github.io/teach-linalg/`, and the lesson page is
-`https://appiest.github.io/teach-linalg/day/N/`. Poll that URL with curl every 30 seconds, for up to 10 minutes,
-until it returns 200.
+`https://appiest.github.io/teach-linalg/day/N/`.
+
+The cloud proxy blocks `github.io`, so confirm the deploy through the GitHub API instead:
+
+```sh
+.venv/bin/python scripts/wait_for_deploy.py
+```
+
+It waits for the newest "Deploy course site" run and prints its conclusion. If the API is unreachable too, it
+says so. In that case, continue and state in your report that the deploy is unverified.
 
 ## 9. Draft the email
 
@@ -184,4 +198,5 @@ End with a short summary covering:
 - the problems you found and fixed in step 5
 - whether the draft was created
 
-If any step failed, say exactly which step and why. Never claim a lesson is published unless the URL returned 200.
+If any step failed, say exactly which step and why. Never claim a lesson is published unless the deploy run
+succeeded.
