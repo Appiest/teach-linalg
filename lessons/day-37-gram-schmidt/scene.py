@@ -223,14 +223,17 @@ class Lesson(LessonScene):
         self.axes = stage.axes()
         self.arrows = [stage.arrow(index) for index in range(3)]
         self.labels = [stage.label(index, rf"\mathbf x_{index + 1}") for index in range(3)]
-        line = self.say(r"These three arrows form a basis for $\mathbb R^3$.", hold=0.2)
         self.play(Create(self.axes), run_time=1.0)
+        line = self.say(r"Yesterday's projection formula needed an orthogonal basis.", hold=Timing.read_short)
+        line = self.say(r"These three arrows form a basis for $\mathbb R^3$.", line, hold=0.2)
         for arrow, label in zip(self.arrows, self.labels):
             self.play(GrowArrow(arrow), FadeIn(label), run_time=0.8, rate_func=spring_soft)
         self.add(*self.labels)
         line = self.say(r"But no two of them meet at a right angle.", line, hold=0.2)
         self.play(self.view.turn_to(AZIMUTH), run_time=2.0, rate_func=smooth)
         self.wait(Timing.beat)
+        line = self.say(r"How do we make any basis orthogonal?", line, hold=Timing.read_short)
+        line = self.say(r"The goal is the same span, with every pair perpendicular.", line, hold=Timing.read_short)
         line = self.say(r"Gram--Schmidt straightens them, one vector at a time.", line, hold=Timing.read_long)
         return line
 
@@ -358,6 +361,7 @@ class Lesson(LessonScene):
         stage = self.stage
         general, rows = self.unit_formulas()
         cube = always_redraw(lambda: parallelepiped(stage.project, *[stage.current(index) for index in range(3)], color=Palette.teal, opacity=0.08, stroke_width=1.5))
+        line = self.say(r"Unit vectors turn every projection weight into one dot product.", line, hold=Timing.read_short)
         line = self.say(r"Divide each one by its length to make it a unit vector.", line, hold=0.2)
         self.play(Write(general), run_time=1.0)
         self.sfx("slide", gain=-2)
@@ -389,6 +393,7 @@ class Lesson(LessonScene):
     def factor(self, line):
         headers = self.factor_headers()
         equations = weight_equations()
+        line = self.say(r"$A = QR$ stores this whole process in two matrices.", line, hold=Timing.read_short)
         line = self.say(r"Stack the $\mathbf x$'s into $A$ and the $\mathbf u$'s into $Q$.", line, hold=0.2)
         self.clear_stage(line)
         self.play(FadeIn(headers, shift=UP * 0.1), run_time=0.9)
@@ -406,7 +411,8 @@ class Lesson(LessonScene):
         line = self.say(r"Since $Q^TQ = I$, you can compute $R = Q^TA$.", line, hold=0.2)
         self.play(FadeOut(equations), FadeTransform(r_group[0], numeric_label), FadeTransform(symbolic, numeric), run_time=1.2)
         self.play(VGroup(numeric_label, numeric).animate.move_to([0, -0.6, 0]), run_time=0.9, rate_func=spring_soft)
-        self.wait(Timing.read_long)
+        self.wait(Timing.read_short)
+        line = self.say(r"Software uses $A = QR$ for tomorrow's least-squares problems.", line, hold=Timing.read_short)
         return line
 
     def play_weights_into(self, equations, symbolic, r_group):
