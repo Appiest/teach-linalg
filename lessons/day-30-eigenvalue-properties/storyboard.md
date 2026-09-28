@@ -1,0 +1,22 @@
+# Day 30: Properties of eigenvalues
+
+The whole video uses one symmetric matrix, $A = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$, with its columns green
+and red as on Day 5 and Day 28. Its eigenvalues are $3$ on the line through $\mathbf v_1 = (1, 1)$, drawn yellow, and
+$1$ on the line through $\mathbf v_2 = (1, -1)$, drawn blue, matching Day 28's yellow-for-the-bigger-stretch
+convention. The plane has 1 scene unit per grid step and its origin sits left of centre at $(-4.0, -1.5)$, so the
+first quadrant has room for $\mathbf x_2 = (5, 4)$ and a panel fits on the right. Moving grids use `LiveTransform`
+from `engine/theme.py`, so every point slides on a straight path and eigenvectors stay on their lines while the grid
+moves. Teal is a result (an image arrow or a rescaled iterate), and orange marks only small highlights: the diagonal
+entries, the stretch factors and the tip glow.
+
+| t (s) | State | Trigger |
+|---|---|---|
+| 0–9 | Title card "Properties of eigenvalues", "Day 30"; glowing origin; grid draws | start |
+| 9–15 | $A$ panel top right with green and red columns. Yellow line through $(1, 1)$ with $\lambda = 3$, blue line through $(1, -1)$ with $\lambda = 1$, and the arrows $\mathbf v_1$, $\mathbf v_2$ | caption "This $A$ stretches the yellow line by 3 and the blue by 1." |
+| 15–29 | The parallelogram on $\mathbf v_1$ and $\mathbf v_2$ fills yellow. The grid moves to $A$; the yellow side triples and the blue side stays, and the area readout goes from 2 to 6. Grid springs back | captions "Build a box on the two eigenvectors and apply $A$." / "One side triples and one stays, so the area triples." / "That makes $\det A = 3 \cdot 1$, the product of the eigenvalues." |
+| 29–50 | Scrim. $A$ large with its diagonal glowing. $\operatorname{tr}A = 2 + 2 = 4 = 3 + 1$ and $\det A = 4 - 1 = 3 = 3 \cdot 1$ write in beneath, then the characteristic polynomial $\lambda^2 - 4\lambda + 3 = (\lambda - 3)(\lambda - 1)$ with $4$ and $3$ labelled trace and determinant. The general rule replaces it | captions "The \emph{trace} of $A$ adds up its diagonal entries." / "The trace equals the sum of the eigenvalues." / "The determinant equals their product." / "The characteristic polynomial from Day 29 shows why." / "It works for every $n \times n$ matrix, counting repeats." |
+| 50–68 | Still on the scrim: $B = P^{-1}AP$ and $\det(B - \lambda I) = \det(P^{-1})\det(A - \lambda I)\det P = \det(A - \lambda I)$ | captions "On Day 22, $B = P^{-1}AP$ was the same map in a new basis." / "Subtracting $\lambda I$ keeps the $P^{-1}$ and $P$ outside." / "Since $\det P^{-1} \det P = 1$, the polynomials match." / "So \emph{similar} matrices share eigenvalues, trace and determinant." |
+| 68–98 | Scrim lifts. Board: $A\mathbf v = \lambda\mathbf v \Rightarrow A^2\mathbf v = \lambda^2\mathbf v$. A table fills in, one row per matrix, with the yellow and blue stretch factors. The grid moves to $A$ (yellow arrow triples), back, to $A^{-1}$ (yellow arrow shrinks to a third), back, and to $A - 2I$ (the blue arrow flips). The eigenlines never move | captions "Apply $A$ twice and $\mathbf v$ gets stretched twice." / "Undoing $A$ divides each stretch instead." / "Subtracting $2I$ subtracts 2 from each stretch." / "The eigenlines never change, only the stretch factors." |
+| 98–111 | Board: distinct $\lambda$ give independent eigenvectors, so $\mathbf v_1, \mathbf v_2$ are a basis. $\mathbf x_0 = (1, 0)$ appears and splits into $\tfrac12\mathbf v_1 + \tfrac12\mathbf v_2$ as a dashed parallelogram | captions "Different eigenvalues give eigenvectors on different lines." / "So any $\mathbf x_0$ splits into a yellow piece and a blue piece." |
+| 111–133 | **Centerpiece.** Grid moves to $A$: $\mathbf x_1 = (2, 1)$, yellow piece triples, blue piece stays. Once more: $\mathbf x_2 = (5, 4)$. Then every iterate is rescaled to one length and the arrow steps $k = 3, 4, 5, 6$, leaving faded copies; the blue piece shrinks by a factor of 3 each step and the arrow swings onto the yellow line, where an orange mark lands. Board: $\mathbf x_k = \tfrac12 3^k\mathbf v_1 + \tfrac12\mathbf v_2$ | captions "Apply $A$ again and again to $\mathbf x_0 = (1, 0)$." / "Each step triples the yellow piece and keeps the blue one." / "Rescale each arrow to one length to keep watching." / "$\mathbf x_k$ swings onto the line with the biggest $|\lambda|$." |
+| 133–141 | Takeaway card with origin pulse | end |

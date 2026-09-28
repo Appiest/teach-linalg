@@ -1,0 +1,2 @@
+Day 30 is about what eigenvalues tell you for free, like the trace and determinant of a matrix and what happens when you apply it over and over. At the end of the video the arrow swings onto the yellow line, so ask yourself which start would never swing.
+https://appiest.github.io/teach-linalg/day/30/
