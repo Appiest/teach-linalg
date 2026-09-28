@@ -257,6 +257,7 @@ class Lesson(LessonScene):
         line = self.say(r"Yesterday we collected every output of a matrix.", hold=Timing.read_short)
         line = self.say(r"Today we ask which inputs land on $\mathbf 0$.", line, hold=0.2)
         self.panel_add(p_definition(), run_time=1.2)
+        line = self.say(r"The answer decides how many solutions $A\mathbf x = \mathbf b$ has.", line, hold=0.2)
         self.play(LaggedStart(*[GrowFromCenter(dot) for _, dot in ordered], lag_ratio=0.012), run_time=2.0)
         self.wait(Timing.beat)
         return line
@@ -345,6 +346,7 @@ class Lesson(LessonScene):
             self.play(Create(mark), run_time=0.4)
             marks.add(mark)
             self.wait(Timing.read_short)
+        line = self.say(r"Day 28 reuses this proof to study eigenvectors.", line, hold=Timing.read_short)
         self.play(FadeOut(VGroup(veil, proof, marks)), run_time=0.7)
         return line
 
@@ -393,6 +395,9 @@ class Lesson(LessonScene):
         line = self.say(r"The shifted line misses $\mathbf 0$, so it is not a subspace.", line, hold=0.2)
         self.play(Create(miss), run_time=0.6)
         self.wait(Timing.read_short)
+        line = self.say(r"A null space of just $\mathbf 0$ would make the solution unique.", line, hold=0.2)
+        self.play(Indicate(VGroup(*self.null_tag.submobjects[1:]), color=Palette.pink, scale_factor=1.2), run_time=1.0)
+        self.wait(Timing.beat)
         return line
 
     def reduce_a(self, line):
@@ -403,7 +408,7 @@ class Lesson(LessonScene):
         self.a_matrix = free_matrix(A_ROWS)
         self.a_group = VGroup(MathTex("A", "=", color=Palette.text), self.a_matrix).arrange(RIGHT, buff=0.2).scale(1.2).move_to(np.array([-3.4, 2.3, 0]))
         self.play(Write(self.a_group), run_time=1.2)
-        self.wait(Timing.beat)
+        line = self.say(r"The goal is a few vectors that build every solution.", line, hold=Timing.read_short)
 
         operation = MathTex(r"R_2 \leftarrow R_2 - 2R_1", color=Palette.text_muted, font_size=34).next_to(self.a_group, DOWN, buff=0.3)
         line = self.say(r"Row reduce $A$. The zero column of $[A\ \mathbf 0]$ never changes.", line, hold=0.2)
@@ -476,6 +481,9 @@ class Lesson(LessonScene):
         line = self.say(r"Each output has 2 entries, so $\operatorname{Col}A$ lives in $\mathbb R^2$.", line, hold=0.2)
         self.play(FadeIn(sizes[1], shift=UP * 0.1), run_time=0.7)
         self.wait(Timing.read_short)
+        line = self.say(r"Tomorrow we count both bases and compare the totals.", line, hold=0.2)
+        self.play(Indicate(sizes, color=Palette.glow, scale_factor=1.05), run_time=1.0)
+        self.wait(Timing.beat)
         return line
 
 

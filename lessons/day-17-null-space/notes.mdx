@@ -1,4 +1,4 @@
-Yesterday's column space collected every output $A\mathbf x$. Today asks the opposite question: which inputs does $A$ send to $\mathbf 0$? Those inputs form a second subspace that comes with every matrix, and it controls what every solution of $A\mathbf x = \mathbf b$ looks like.
+Yesterday's column space collected every output $A\mathbf x$, so it tells you whether $A\mathbf x = \mathbf b$ has a solution at all. The other half of solving a system is knowing how many solutions there are, and that depends on the opposite question: which inputs does $A$ send to $\mathbf 0$? Those inputs form a second subspace that comes with every matrix. By the end of today you will see that every solution of $A\mathbf x = \mathbf b$ is one fixed solution plus a vector from this subspace.
 
 ## The null space
 
@@ -44,11 +44,11 @@ $$
 \end{aligned}
 $$
 
-Each line uses only the fact that matrix multiplication distributes over sums and pulls out scalars. So any set cut out by **homogeneous** linear equations, meaning equations whose right side is $0$, is a null space and therefore a subspace. For example, $\{(a, b, c) : a + 2b = c,\ 3a = b\}$ equals $\operatorname{Nul}\begin{bmatrix} 1 & 2 & -1 \\ 3 & -1 & 0 \end{bmatrix}$. The set $\{(a, b, c) : a + b + c = 1\}$ is not a subspace, because $(0, 0, 0)$ gives $0 = 1$.
+Each line uses only the fact that matrix multiplication distributes over sums and pulls out scalars. So any set cut out by **homogeneous** linear equations, meaning equations whose right side is $0$, is a null space and therefore a subspace. For example, $\{(a, b, c) : a + 2b = c,\ 3a = b\}$ equals $\operatorname{Nul}\begin{bmatrix} 1 & 2 & -1 \\ 3 & -1 & 0 \end{bmatrix}$. The set $\{(a, b, c) : a + b + c = 1\}$ is not a subspace, because $(0, 0, 0)$ gives $0 = 1$. Day 28 leans on this theorem: the eigenvectors of $A$ for one eigenvalue $\lambda$ fill $\operatorname{Nul}(A - \lambda I)$, so they form a subspace without any extra proof.
 
 ## Basis from free variables
 
-To describe $\operatorname{Nul}A$ explicitly, solve $A\mathbf x = \mathbf 0$. Row reduce $A$ to **reduced** echelon form, since the zero column of $[\,A \ \ \mathbf 0\,]$ never changes, then write each basic variable in terms of the free ones.
+Testing members one at a time never shows the whole null space, so the goal here is a basis. We want a few vectors whose combinations give every solution of $A\mathbf x = \mathbf 0$, since a basis describes the whole subspace with a short list. To find them, solve $A\mathbf x = \mathbf 0$. Row reduce $A$ to **reduced** echelon form, since the zero column of $[\,A \ \ \mathbf 0\,]$ never changes, then write each basic variable in terms of the free ones.
 
 $$
 \begin{aligned}
@@ -94,6 +94,8 @@ This line is parallel to $\operatorname{Nul}P$ but misses $\mathbf 0$, so it is 
 </Pair>
 
 <LandingHunt matrix={[[1, 2], [2, 4]]} target={[1, 2]} start={[2, 2]} prompt="On Day 7 this matrix sent three different points to $\mathbf b = (1, 2)$. Find two inputs with $A\mathbf x = \mathbf b$." success="Both solve it, and their difference is in $\operatorname{Nul}A$. The yellow line of all solutions is the dashed pink null space shifted off the origin." />
+
+The theorem also answers the question from the opening. A consistent system has exactly one solution when $\operatorname{Nul}A = \{\mathbf 0\}$, and infinitely many otherwise. Day 19 adds $\operatorname{Nul}A = \{\mathbf 0\}$ to its list of tests for an invertible matrix. Tomorrow, on Day 18, we count the vectors in today's basis and in yesterday's basis for $\operatorname{Col}A$, and the two counts always add up to the number of columns.
 
 ## Practice
 
