@@ -1,4 +1,4 @@
-On Day 15 a basis $\mathcal B$ gave every vector a coordinate vector $[\mathbf x]_{\mathcal B}$, and on Day 21 a pair of bases turned a linear map into a matrix. Today puts two bases on the same space at once. The vector stays exactly where it is, and a single matrix translates its address from one grid's language into the other's.
+On Day 15 a basis $\mathcal B$ gave every vector a coordinate vector $[\mathbf x]_{\mathcal B}$, and on Day 21 a pair of bases turned a linear map into a matrix. Both results depend on which basis you pick, so today asks how to switch: given a vector's coordinates in one basis, how do you find them in another, and how does a map's matrix change along with them? The question matters because a well-chosen basis can make a map's matrix much simpler, and finding that basis is the main job of Days 28 to 33. Today puts two bases on the same space at once. The vector stays exactly where it is, and a single matrix translates its address from one grid's language into the other's.
 
 <Figure src="two-grids" alt="The purple-gray grid of b1 = (2, 1) in green and b2 = (−1, 2) in red overlaid with the pink grid of c1 = (1, 0) in pink and c2 = (−1, 1) in blue. The yellow vector x = (3, 4) is reached by two green steps and one red step, and also by seven pink steps and four blue steps, with a dot at every step. Beside it, [x]_B = (2, 1) and [x]_C = (7, 4)." wide />
 
@@ -8,7 +8,7 @@ The same arrow $\yellow{\mathbf x}$ is $2\green{\mathbf b_1} + \red{\mathbf b_2}
 
 ## The change-of-coordinates matrix
 
-To translate without redrawing the picture, write each old basis vector in the new basis. In the video, $\green{\mathbf b_1} = 3\pink{\mathbf c_1} + \blue{\mathbf c_2}$ and $\red{\mathbf b_2} = \pink{\mathbf c_1} + 2\blue{\mathbf c_2}$.
+The goal of this section is a single matrix that turns $[\mathbf x]_{\mathcal B}$ into $[\mathbf x]_{\mathcal C}$ for every $\mathbf x$, with no picture needed. To get it, write each old basis vector in the new basis. In the video, $\green{\mathbf b_1} = 3\pink{\mathbf c_1} + \blue{\mathbf c_2}$ and $\red{\mathbf b_2} = \pink{\mathbf c_1} + 2\blue{\mathbf c_2}$.
 
 <Definition term="Change-of-coordinates matrix">
 Let $\mathcal B = \{\mathbf b_1, \dots, \mathbf b_n\}$ and $\mathcal C = \{\mathbf c_1, \dots, \mathbf c_n\}$ be bases of a vector space $V$. There is exactly one $n \times n$ matrix $P_{\mathcal C \leftarrow \mathcal B}$ with
@@ -59,7 +59,7 @@ Back substitution gives $y_3 = 5$, then $y_2 = -2 - 5 = -7$, then $y_1 = 3 + 7 -
 
 ## Row reduction
 
-When both bases are given as actual vectors in $\mathbb R^n$, column $j$ of $P_{\mathcal C \leftarrow \mathcal B}$ solves $[\,\mathbf c_1\ \cdots\ \mathbf c_n\,]\,\mathbf y = \mathbf b_j$. One row reduction solves all $n$ of those systems at once:
+Walking along a grid works in the plane but gets slow in $\mathbb R^3$ and beyond, so this section aims to produce every column of the matrix with one computation. When both bases are given as actual vectors in $\mathbb R^n$, column $j$ of $P_{\mathcal C \leftarrow \mathcal B}$ solves $[\,\mathbf c_1\ \cdots\ \mathbf c_n\,]\,\mathbf y = \mathbf b_j$. One row reduction solves all $n$ of those systems at once:
 
 $$
 [\,\mathbf c_1\ \cdots\ \mathbf c_n \mid \mathbf b_1\ \cdots\ \mathbf b_n\,] \sim [\,I \mid P_{\mathcal C \leftarrow \mathcal B}\,].
@@ -81,7 +81,7 @@ So $P_{\mathcal C \leftarrow \mathcal B} = \begin{bmatrix} \green{0} & \red{5} \
 
 ## Similar matrices
 
-A change of basis also rewrites the matrix of a map. Let $T(\mathbf x) = A\mathbf x$ on $\mathbb R^n$, take a basis $\mathcal B$, and set $P = P_{\mathcal B} = [\,\mathbf b_1\ \cdots\ \mathbf b_n\,]$. To apply $T$ to a vector known only by $[\mathbf x]_{\mathcal B}$, first convert to standard coordinates with $P$, then apply $A$, then convert back with $P^{-1}$.
+A change of basis also rewrites the matrix of a map, and the reason to do it is that the right basis can make that matrix far simpler. Let $T(\mathbf x) = A\mathbf x$ on $\mathbb R^n$, take a basis $\mathcal B$, and set $P = P_{\mathcal B} = [\,\mathbf b_1\ \cdots\ \mathbf b_n\,]$. To apply $T$ to a vector known only by $[\mathbf x]_{\mathcal B}$, first convert to standard coordinates with $P$, then apply $A$, then convert back with $P^{-1}$.
 
 <Figure src="similarity" alt="A square diagram. From [x]_B an arrow labelled P goes up to x, an arrow labelled A goes right to Ax, and an arrow labelled P inverse goes down to [Ax]_B. The bottom arrow from [x]_B to [Ax]_B is labelled [T]_B. Below it, [T]_B = P⁻¹AP, checked with numbers: one fifth of (2, 1; −1, 2) times (1, 2; 1, 0) times (2, −1; 1, 2) equals (2, 1; 0, −1)." wide />
 
@@ -95,9 +95,13 @@ $$
 The matrices similar to $A$ are exactly the matrices of $\mathbf x \mapsto A\mathbf x$ in the different bases of $\mathbb R^n$.
 </Definition>
 
+Day 30 shows that similar matrices share their eigenvalues, trace and determinant, since those numbers belong to the map rather than to the basis.
+
 The order matters because the first $P$ acts on $[\mathbf x]_{\mathcal B}$. Checking column 1 confirms it, since $P^{-1}AP\,\mathbf e_1 = P^{-1}A\mathbf b_1 = [A\mathbf b_1]_{\mathcal B}$. In the video, $A = \begin{bmatrix} 1 & 2 \\ 1 & 0 \end{bmatrix}$ doubles $\green{\mathbf b_1}$ and sends $\red{\mathbf b_2}$ to $\green{\mathbf b_1} - \red{\mathbf b_2}$, so its $\mathcal B$-matrix is $\teal{\begin{bmatrix} 2 & 1 \\ 0 & -1 \end{bmatrix}}$. That matrix is triangular, and the zero in its corner says that $T$ keeps the line through $\mathbf b_1$ on itself.
 
 <SimilarityHunt matrix={[[1, 2], [1, 0]]} b1={[2, 1]} b2={[-1, 2]} target={[1, 1]} start={[1, 1]} />
+
+Since $A\mathbf b_1 = 2\mathbf b_1$, the vector $\mathbf b_1$ is what Day 28 calls an eigenvector, and Day 32 uses a whole basis of eigenvectors to make the matrix of a map diagonal.
 
 ## Practice
 

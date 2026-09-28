@@ -1,4 +1,4 @@
-On Day 5 the columns of a matrix turned out to be the landing spots of $\mathbf e_1$ and $\mathbf e_2$, and on Day 15 a basis turned every vector, polynomials included, into a column of coordinates. Today puts the two together. Once you pick a basis for the input space and one for the output space, any linear map can be written as a matrix, even a map like differentiation that never mentions arrows.
+Day 20 showed that many maps are linear, including differentiation, but a rule like $\mathbf p \mapsto \mathbf p'$ gives you nothing to row reduce, invert or multiply. Today asks whether every linear map can be written as a matrix, so that the matrix tools from Days 3 to 19 apply to it. Two earlier facts supply the answer. On Day 5 the columns of a matrix turned out to be the landing spots of $\mathbf e_1$ and $\mathbf e_2$, and on Day 15 a basis turned every vector, polynomials included, into a column of coordinates. Once you pick a basis for the input space and one for the output space, any linear map can be written as a matrix, even a map like differentiation that never mentions arrows.
 
 ## The standard matrix
 
@@ -24,7 +24,7 @@ $$
 It is called the **standard matrix** of $T$.
 </Definition>
 
-A matrix built this way needs only a picture. For a map described in words, follow $\mathbf e_1$ and $\mathbf e_2$ through each step and write down where they end up. For a map given by a formula, such as $T(x_1, x_2) = (3x_1 - x_2,\ x_2,\ x_1 + 4x_2)$, row $i$ of $A$ holds the coefficients of output entry $i$, so $A = \begin{bmatrix} 3 & -1 \\ 0 & 1 \\ 1 & 4 \end{bmatrix}$. The matrix has one column per input entry and one row per output entry.
+The standard matrix is Day 5's recipe, restated here because the next section extends it to any pair of bases. A matrix built this way needs only a picture. For a map described in words, follow $\mathbf e_1$ and $\mathbf e_2$ through each step and write down where they end up. For a map given by a formula, such as $T(x_1, x_2) = (3x_1 - x_2,\ x_2,\ x_1 + 4x_2)$, row $i$ of $A$ holds the coefficients of output entry $i$, so $A = \begin{bmatrix} 3 & -1 \\ 0 & 1 \\ 1 & 4 \end{bmatrix}$. The matrix has one column per input entry and one row per output entry.
 
 In the widget, $T$ first shears the plane so that $\mathbf e_2$ moves to $\mathbf e_2 + \mathbf e_1$ and $\mathbf e_1$ stays put, and then reflects everything across the horizontal axis.
 
@@ -32,7 +32,7 @@ In the widget, $T$ first shears the plane so that $\mathbf e_2$ moves to $\mathb
 
 ## Matrices for any bases
 
-A polynomial is not a column, so $d/dt$ on $\mathbb P_2$ has no standard matrix of its own. Coordinates fix that. Write the input in coordinates, apply the map, and write the output in coordinates, and every step in between is a matrix.
+A polynomial is not a column, so $d/dt$ on $\mathbb P_2$ has no standard matrix of its own. The goal of this section is a matrix that differentiates a polynomial when you multiply it by the polynomial's coordinate column. Coordinates make that possible. Write the input in coordinates, apply the map, and write the output in coordinates, and every step in between is a matrix.
 
 <Definition term="Matrix of T relative to two bases">
 Let $T: V \to W$ be linear, let $\mathcal B = \{\mathbf b_1, \dots, \mathbf b_n\}$ be a basis for $V$, and let $\mathcal C$ be a basis for $W$ with $m$ vectors. The **matrix of $T$ relative to $\mathcal B$ and $\mathcal C$** is the $m \times n$ matrix
@@ -44,11 +44,13 @@ $$
 and it satisfies $[T(\mathbf x)]_{\mathcal C} = [T]_{\mathcal C \leftarrow \mathcal B}\,[\mathbf x]_{\mathcal B}$ for every $\mathbf x$ in $V$. When $W = V$ and $\mathcal C = \mathcal B$, it is written $[T]_{\mathcal B}$.
 </Definition>
 
+The notation $[T]_{\mathcal B}$ comes back on Day 22, where the same map gets matrices in two different bases, and on Day 33, where the goal is a basis that makes $[T]_{\mathcal B}$ diagonal.
+
 The input basis sits on the right of the arrow and the output basis on the left, in the same order as the product $[T]_{\mathcal C \leftarrow \mathcal B}[\mathbf x]_{\mathcal B}$. The formula works for the same reason the standard matrix does. If $[\mathbf x]_{\mathcal B} = (r_1, \dots, r_n)$, then $T(\mathbf x) = r_1 T(\mathbf b_1) + \cdots + r_n T(\mathbf b_n)$, and taking $\mathcal C$-coordinates keeps that combination, because the coordinate map is linear.
 
 <Figure src="derivative-matrix" alt="The basis polynomial t squared, drawn as a blue parabola, passes through a d/dt arrow and becomes the blue line 2t. A second arrow labelled with the B-coordinate brackets turns 2t into the blue column (0, 2, 0). On the right, the matrix of T relative to B has green first column (0, 0, 0), red second column (1, 0, 0) and blue third column (0, 2, 0), with column labels 1, t, t squared and the same row labels. Below, a log reads T(1) = 0, T(t) = 1 and T(t squared) = 2t." wide />
 
-Here is the matrix of $T = d/dt$ on $\mathbb P_2$ with $\mathcal B = \{\green{1}, \red{t}, \blue{t^2}\}$, built one column at a time:
+To build a matrix, the aim is one column per basis vector: send $\mathbf b_j$ through $T$ and record the result in output coordinates. Here is the matrix of $T = d/dt$ on $\mathbb P_2$ with $\mathcal B = \{\green{1}, \red{t}, \blue{t^2}\}$, built one column at a time:
 
 $$
 \begin{aligned}
@@ -90,7 +92,7 @@ $$
 [T]_{\mathcal C \leftarrow \mathcal B} = \begin{bmatrix} 0 & 1 & 0 \\ 0 & 0 & 2 \end{bmatrix}.
 $$
 
-The size always reads (dimension of the output) by (dimension of the input). When $V = \mathbb R^n$ and $W = \mathbb R^m$ with their standard bases, coordinates are just the entries, and $[T]_{\mathcal C \leftarrow \mathcal B}$ is the standard matrix from the first section. Tomorrow you take $T$ to be the identity map, so that the matrix only translates coordinates from one basis to another.
+The size always reads (dimension of the output) by (dimension of the input). When $V = \mathbb R^n$ and $W = \mathbb R^m$ with their standard bases, coordinates are just the entries, and $[T]_{\mathcal C \leftarrow \mathcal B}$ is the standard matrix from the first section. Because the matrix does everything $T$ does, questions about $T$ now become questions about a matrix. On Day 23, for example, a polynomial is in the kernel of $d/dt$ exactly when its coordinate column is in the null space of the derivative's matrix. Tomorrow you take $T$ to be the identity map, so that the matrix only translates coordinates from one basis to another.
 
 ## Practice
 
