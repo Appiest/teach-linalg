@@ -283,7 +283,8 @@ class Lesson(LessonScene):
         ).move_to(self.relation, aligned_edge=LEFT)
         readout = self.weight_readout(weights).next_to(general, DOWN, buff=0.3, aligned_edge=LEFT)
         line = self.say(r"Zero weights always work, and that is the trivial solution.", line, hold=0.2)
-        self.play(FadeTransform(self.relation, general), FadeIn(readout), run_time=1.0)
+        b_name = self.names[-1]
+        self.play(FadeTransform(self.relation, general), FadeIn(readout), FadeOut(b_name), run_time=1.0)
         self.play(*[tracker.animate.set_value(0) for tracker in weights], run_time=1.8, rate_func=spring)
         self.play(Flash(plane.c2p(0, 0), color=Palette.glow, line_length=0.2, flash_radius=0.3), run_time=0.6)
         self.wait(Timing.beat)
@@ -291,6 +292,7 @@ class Lesson(LessonScene):
         line = self.say(r"Vectors are independent when that is the only solution.", line, hold=Timing.read_short)
         line = self.say(r"These three are dependent, because other weights also work.", line, hold=0.2)
         self.play(*[tracker.animate.set_value(value) for tracker, value in zip(weights, LOOP_WEIGHTS)], run_time=1.8, rate_func=spring)
+        self.play(FadeIn(b_name), run_time=0.4)
         self.walk(lambda: [plane.c2p(*point) for point in chain_points(LOOP_WEIGHTS, (V, W, B))], run_time=2.0)
         self.wait(Timing.beat)
         self.play(FadeOut(VGroup(plane, chain, self.v_arrow, self.w_arrow, self.names, general, readout)), run_time=0.8)
