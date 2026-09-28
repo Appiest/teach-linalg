@@ -117,7 +117,7 @@ export function CombinationTarget({ v = [3, 2], w = [-1, 2], target }: { v?: Vec
       <Goal
         solved={solved}
         prompt={<>Choose weights <Tex>a</Tex> and <Tex>b</Tex> so that <Tex>{"a\\,\\vec v + b\\,\\vec w"}</Tex> lands on the ringed point <Tex>{columnTex(target)}</Tex>.</>}
-        success={<>You found it: <Tex>{`${texNumber(a)}\\,\\vec v + ${texNumber(b)}\\,\\vec w = ${columnTex(target)}`}</Tex>. Those weights are the only pair that works.</>}
+        success={<>You found it: <Tex>{`${texNumber(a)}\\,\\vec v ${b < 0 ? "-" : "+"} ${texNumber(Math.abs(b))}\\,\\vec w = ${columnTex(target)}`}</Tex>. Those weights are the only pair that works.</>}
       />
       <Workbench
         plane={
