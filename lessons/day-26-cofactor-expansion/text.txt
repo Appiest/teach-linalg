@@ -1,2 +1,2 @@
-Day 26 is up! Today you learn to compute any determinant by breaking it into 2 by 2 pieces, plus a faster way that uses row operations. Watch the little plus and minus signs on the matrix, and notice how a −2 sitting in a minus spot ends up adding 2.
+Day 26 is up! Today you learn to compute any determinant by breaking it into 2 by 2 pieces, plus a faster way that uses row operations, and you'll need both to find eigenvalues on Day 29. Watch the little plus and minus signs on the matrix, and notice how a −2 sitting in a minus spot ends up adding 2.
 https://appiest.github.io/teach-linalg/day/26/

@@ -1,8 +1,8 @@
-On Day 25 the determinant of a $2 \times 2$ matrix was the factor by which it scales area, and the picture gave the formula $ad - bc$. Today builds every larger determinant out of $2 \times 2$ pieces, then finds a faster route through row reduction.
+On Day 25 the determinant of a $2 \times 2$ matrix was the factor by which it scales area, and the picture gave the formula $ad - bc$. That formula stops at $2 \times 2$, but the uses ahead need larger matrices. Day 29 finds the eigenvalues of $3 \times 3$ matrices by solving $\det(A - \lambda I) = 0$, and the test "$\det A \neq 0$ means invertible" only helps if you can compute $\det A$. Today builds every larger determinant out of $2 \times 2$ pieces, then finds a faster route through row reduction.
 
 ## Minors and cofactors
 
-For an $n \times n$ matrix $A$, write $A_{ij}$ for the $(n-1) \times (n-1)$ **submatrix** left after deleting row $i$ and column $j$. Its determinant $\det A_{ij}$ is called a **minor**. The cofactor attaches a sign to that minor.
+For an $n \times n$ matrix $A$, write $A_{ij}$ for the $(n-1) \times (n-1)$ **submatrix** left after deleting row $i$ and column $j$. Its determinant $\det A_{ij}$ is called a **minor**. The cofactor attaches a sign to that minor. Cofactors return on Day 27, where they assemble into a formula for $A^{-1}$.
 
 <Definition term="Cofactor">
 The $(i, j)$-**cofactor** of an $n \times n$ matrix $A$ is the number
@@ -21,6 +21,8 @@ $$
 <Figure src="checkerboard" alt="The matrix A with rows (2, 2, 1), (1, 0, 1) and (0, −2, −1). Row 2 and column 3 are dimmed, and a small plus or minus sign sits at the upper left of every entry in a checkerboard pattern, with the minus sign at position (2, 3) in orange. Beside it, A23 is the 2 by 2 matrix with rows (2, 2) and (0, −2), det A23 = 2·(−2) − 2·0 = −4, and C23 = (−1) to the power 2 + 3 times det A23 = 4." wide />
 
 ## Cofactor expansion
+
+The goal of cofactor expansion is to write one $n \times n$ determinant as a sum of $(n-1) \times (n-1)$ determinants, and to repeat that step until only $2 \times 2$ determinants remain.
 
 <Definition term="Cofactor expansion (Lay, Theorem 1)">
 The determinant of an $n \times n$ matrix $A$ can be computed along any row $i$ or down any column $j$:
@@ -66,7 +68,7 @@ $$
 
 ## Row operations
 
-A full cofactor expansion of an $n \times n$ matrix takes roughly $n!$ multiplications, which is already millions for $n = 10$. Row reduction is much cheaper, and each row operation changes the determinant in a way you can predict.
+A full cofactor expansion of an $n \times n$ matrix takes roughly $n!$ multiplications, which is already millions for $n = 10$. Row reduction is much cheaper, and each row operation changes the determinant in a way you can predict. The goal is to reach a triangular matrix, whose determinant is the product of its diagonal, while keeping track of how each step changed the determinant.
 
 <Definition term="Row operations and the determinant (Lay, Theorem 3)">
 Let $A$ be a square matrix, and let $B$ come from $A$ by one row operation.
@@ -94,7 +96,7 @@ $$
 \end{aligned}
 $$
 
-A triangular matrix is invertible exactly when none of its diagonal entries is zero, and row operations never turn a nonzero determinant into zero. So a square matrix $A$ is invertible if and only if $\det A \neq 0$.
+A triangular matrix is invertible exactly when none of its diagonal entries is zero, and row operations never turn a nonzero determinant into zero. So a square matrix $A$ is invertible if and only if $\det A \neq 0$. Day 29 applies this test to $A - \lambda I$ to find eigenvalues.
 
 ## Transposes and products
 
@@ -107,6 +109,8 @@ $$
 $$
 
 <MultipleAreaScale matrix={[[1, -1], [1, 1]]} factor={4} />
+
+Tomorrow, on Day 27, we find the reason behind these rules in two properties of the determinant, and those properties also give a formula for solving $A\mathbf x = \mathbf b$ and a formula for $A^{-1}$.
 
 ## Practice
 

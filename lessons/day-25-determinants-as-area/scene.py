@@ -197,9 +197,13 @@ class Lesson(LessonScene):
     def unit_square(self):
         self.live = LiveMatrix()
         self.live_pictures()
+        line = self.say(r"On Day 7, $ad - bc$ decided whether a matrix is invertible.", hold=0.2)
         self.play(self.plane.animate.set_opacity(0.3), FadeIn(self.grid), run_time=0.8)
-        line = self.say(r"The unit square has area 1.", hold=0.2)
+        self.wait(Timing.beat)
+        line = self.say(r"Today we find out what that number measures.", line, hold=0.2)
         self.play(FadeIn(self.shape), run_time=0.8)
+        self.wait(Timing.beat)
+        line = self.say(r"The unit square has area 1.", line, hold=0.2)
         self.play(GrowArrow(self.arrows[0]), GrowArrow(self.arrows[1]), run_time=1.0, rate_func=spring_soft)
         self.one = number_label("1", self.plane, (0.5, 0.5), font_size=44)
         self.play(FadeIn(self.one, scale=0.8), run_time=0.6, rate_func=spring)
@@ -249,6 +253,7 @@ class Lesson(LessonScene):
     def box_argument(self, line):
         plane = self.plane
         self.play(FadeOut(self.grid), run_time=0.6)
+        line = self.say(r"Now find its area using only $a$, $b$, $c$ and $d$.", line, hold=0.2)
         self.show_letters()
         box, sides = bounding_box(plane), side_labels(plane)
         line = self.say(r"Put a box around it, $a+b$ wide and $c+d$ tall.", line, hold=0.2)
@@ -387,6 +392,7 @@ class Lesson(LessonScene):
         self.play(Indicate(self.grid, color=Palette.glow, scale_factor=1.0), run_time=1.2)
         self.wait(Timing.beat)
         line = self.say(r"Flat means no inverse, as on Day 7.", line, hold=Timing.read_short)
+        line = self.say(r"Day 29 finds eigenvalues by hunting for this flatness.", line, hold=Timing.read_short)
         return line
 
     def swing_past(self, line):
