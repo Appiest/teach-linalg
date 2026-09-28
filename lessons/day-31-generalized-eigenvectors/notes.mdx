@@ -1,0 +1,136 @@
+Day 28 found eigenvectors one line at a time, and Day 29 found every eigenvalue as a root of $\det(A - \lambda I)$. A repeated root raises a question those lessons left open: does a root counted twice always come with two independent eigenvectors? The shear $S = \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$ from Day 5 says no, and today builds what takes the missing eigenvector's place.
+
+<Figure src="one-eigenline" alt="A square patch of grid sheared into a parallelogram by S = [1 1; 0 1]. Twelve gray arrows from the origin have tipped over toward the right and faded. Only the two horizontal arrows stay on their own line, which is drawn in yellow and labelled λ = 1, with an orange dot on each tip." wide />
+
+## Two multiplicities
+
+The shear's characteristic polynomial is $\det(S - \lambda I) = (1 - \lambda)^2$, so $\lambda = 1$ is a double root. Yet $S - I = \begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix}$ has rank 1, so its null space is only the line through $\green{\mathbf e_1}$. Every other direction gets tipped over, because the shear slides each point sideways by its height.
+
+<Definition term="Algebraic and geometric multiplicity">
+Let $\lambda$ be an eigenvalue of an $n \times n$ matrix $A$. Its **algebraic multiplicity** is its multiplicity as a root of the characteristic polynomial. Its **geometric multiplicity** is $\dim \operatorname{Nul}(A - \lambda I)$, the dimension of its eigenspace. The geometric multiplicity is always at least 1 and at most the algebraic multiplicity (Lay §5.3, Theorem 7a). A matrix is **defective** when some eigenvalue has geometric multiplicity smaller than its algebraic multiplicity.
+</Definition>
+
+The geometric multiplicity is $n - \operatorname{rank}(A - \lambda I)$, so you find it by row reducing, never by reading exponents off the polynomial. Since eigenvectors for different eigenvalues are independent (Day 30), a defective matrix has too few independent eigenvectors to form a basis of $\mathbb R^n$. Being defective has nothing to do with being invertible: $S$ has determinant 1 and is defective, while $\begin{bmatrix} 0 & 0 \\ 0 & 1 \end{bmatrix}$ is singular and not defective.
+
+<MultiplicityGapSlider lambda={2} start={1} />
+
+The matrices $\begin{bmatrix} 2 & 1 \\ 0 & 2 \end{bmatrix}$ and $2I$ share the characteristic polynomial $(\lambda - 2)^2$, but they are not similar. Every $P^{-1}(2I)P$ equals $2I$ again, so nothing else is similar to $2I$. The characteristic polynomial records the algebraic multiplicities only, and the eigenspace dimensions carry information it misses.
+
+## Jordan chains
+
+When eigenvectors run short, apply $A - \lambda I$ to a vector that is not an eigenvector. For the shear, take $\blue{\mathbf v_2} = (1, 2)$. The push from $\blue{\mathbf v_2}$ to $S\blue{\mathbf v_2} = (3, 2)$ is $(S - I)\blue{\mathbf v_2} = (2, 0)$, which lies on the eigenline, and one more push sends it to $\mathbf 0$.
+
+<Pair>
+<Figure src="chain" alt="The sheared patch with the yellow eigenline along the x-axis. The blue arrow v2 = (1, 2) and the teal arrow S v2 = (3, 2) are joined at their tips by a pink arrow labelled (S − I)v2. A yellow arrow v1 = (2, 0) of the same length lies on the eigenline with an orange dot on its tip. A panel reads v2 → v1 → 0, each arrow labelled S − I." />
+
+<Definition term="Generalized eigenvector and Jordan chain">
+A nonzero $\mathbf v$ is a **generalized eigenvector** of $A$ for $\lambda$ if $(A - \lambda I)^k\mathbf v = \mathbf 0$ for some $k \ge 1$. A **Jordan chain** is a list $\mathbf v_k, \dots, \mathbf v_1$ with $\mathbf v_{j-1} = (A - \lambda I)\mathbf v_j$ and $\mathbf v_1 \ne \mathbf 0$, $(A - \lambda I)\mathbf v_1 = \mathbf 0$:
+
+$$
+\blue{\mathbf v_2} \xrightarrow{\;A - \lambda I\;} \yellow{\mathbf v_1} \xrightarrow{\;A - \lambda I\;} \mathbf 0.
+$$
+</Definition>
+</Pair>
+
+The bottom of every chain is an ordinary eigenvector. The vectors of a chain are linearly independent: applying $(A - \lambda I)^{k-1}$ to a dependence relation kills every term except the one with $\mathbf v_k$, so its weight is 0, and the same step repeats down the chain.
+
+For a $2 \times 2$ matrix with a double eigenvalue $\lambda$, the matrix $N = A - \lambda I$ has trace 0 and determinant 0, and every $2 \times 2$ matrix satisfies $N^2 - (\operatorname{tr}N)N + (\det N)I = 0$. So $N^2 = 0$, and any $\blue{\mathbf v_2}$ off the eigenline starts a chain of length 2. Here is the recipe with $A = \begin{bmatrix} 5 & 1 \\ -1 & 3 \end{bmatrix}$:
+
+$$
+\begin{aligned}
+\det(A - \lambda I) &= (5 - \lambda)(3 - \lambda) + 1 = (\lambda - 4)^2 \\
+A - 4I &= \begin{bmatrix} 1 & 1 \\ -1 & -1 \end{bmatrix}, \qquad \operatorname{rank} = 1 \\
+\blue{\mathbf v_2} = \begin{bmatrix} 1 \\ 0 \end{bmatrix} \quad &\Rightarrow \quad \yellow{\mathbf v_1} = (A - 4I)\blue{\mathbf v_2} = \begin{bmatrix} 1 \\ -1 \end{bmatrix} \\
+(A - 4I)\yellow{\mathbf v_1} &= \begin{bmatrix} 1 - 1 \\ -1 + 1 \end{bmatrix} = \mathbf 0
+\end{aligned}
+$$
+
+Both multiplicities show up: $\lambda = 4$ is a double root, and its eigenspace is the single line through $(1, -1)$. The direction of the chain matters. You start at the top with $\blue{\mathbf v_2}$ and push down, because pushing an eigenvector gives $\mathbf 0$.
+
+<JordanChainBuilder matrix={[[2, 1], [-1, 0]]} lambda={1} target={[2, -2]} start={[1, 0]} />
+
+## Longer chains
+
+In larger matrices a chain can need more pushes, and $\dim \operatorname{Nul}(A - \lambda I)^k$ counts how many independent vectors $k$ pushes can finish. These dimensions grow with $k$ and stop exactly at the algebraic multiplicity. The null space where they stop is the **generalized eigenspace** of $\lambda$. For $A = \begin{bmatrix} 1 & 1 & 0 \\ -1 & 3 & 0 \\ -3 & 3 & -1 \end{bmatrix}$, whose characteristic polynomial is $-(\lambda - 2)^2(\lambda + 1)$, watch the dimension for $\lambda = 2$ climb.
+
+<NullPowerClimb matrix={[[1, 1, 0], [-1, 3, 0], [-3, 3, -1]]} lambda={2} multiplicity={2} />
+
+To build the chain, pick $\blue{\mathbf v_2}$ in $\operatorname{Nul}(A - 2I)^2$ but outside $\operatorname{Nul}(A - 2I)$. Here $\blue{\mathbf v_2} = (0, 1, 1)$ gives $(A - 2I)\blue{\mathbf v_2} = (1, 1, 0) = \yellow{\mathbf v_1}$, and $(0, 0, 1)$ is the eigenvector for $\lambda = -1$. Differentiation on polynomials of degree at most 2 is a chain of length 3, since $t^2 \to 2t \to 2 \to 0$, and there $\dim\operatorname{Nul}$ climbs $1, 2, 3$.
+
+<Figure src="squash" alt="Three small planes joined by arrows labelled S − I. In the first, a square patch of grid holds the blue arrow v2 = (1, 2) and the yellow arrow v1 = (2, 0). In the second, the patch has collapsed onto a thick blue segment on the yellow eigenline, and the blue arrow now lies where v1 was. In the third, everything has shrunk to an orange ring at the origin." wide />
+
+## Jordan form
+
+Unpacking the chain gives two equations about $A$:
+
+$$
+A\yellow{\mathbf v_1} = \lambda\yellow{\mathbf v_1}, \qquad A\blue{\mathbf v_2} = 1\,\yellow{\mathbf v_1} + \lambda\blue{\mathbf v_2}.
+$$
+
+With $P = \begin{bmatrix} \yellow{\mathbf v_1} & \blue{\mathbf v_2} \end{bmatrix}$, Day 22 says column $j$ of $P^{-1}AP$ holds the coordinates of $A\mathbf v_j$ in the basis $\yellow{\mathbf v_1}, \blue{\mathbf v_2}$. Reading those coordinates off the two equations gives
+
+$$
+P^{-1}AP = \begin{bmatrix} \yellow{\lambda} & \blue{1} \\ \yellow{0} & \blue{\lambda} \end{bmatrix}.
+$$
+
+The 1 above the diagonal is the push: $A$ scales $\blue{\mathbf v_2}$ by $\lambda$ and adds one copy of $\yellow{\mathbf v_1}$. For the worked example above, $P = \begin{bmatrix} 1 & 1 \\ -1 & 0 \end{bmatrix}$ gives $P^{-1}AP = \begin{bmatrix} 4 & 1 \\ 0 & 4 \end{bmatrix}$.
+
+<Definition term="Jordan form (stated without proof)">
+A **Jordan block** $J_k(\lambda)$ is the $k \times k$ matrix with $\lambda$ on the diagonal, 1 directly above it, and 0 everywhere else. If the characteristic polynomial of $A$ factors into linear factors, then $A$ is similar to a block diagonal matrix $J$ of Jordan blocks, its **Jordan form**. For each eigenvalue, the number of blocks equals the geometric multiplicity and the block sizes add up to the algebraic multiplicity. The columns of $P$ are Jordan chains, each listed from $\mathbf v_1$ up.
+</Definition>
+
+For the $3 \times 3$ matrix above, $P = \begin{bmatrix} 0 & 1 & 0 \\ 0 & 1 & 1 \\ 1 & 0 & 1 \end{bmatrix}$ lists $(0, 0, 1)$, then $\yellow{\mathbf v_1}$, then $\blue{\mathbf v_2}$, and $P^{-1}AP = \begin{bmatrix} -1 & 0 & 0 \\ 0 & 2 & 1 \\ 0 & 0 & 2 \end{bmatrix}$ has a block of size 1 and a block of size 2. Tomorrow covers the case with no chains at all, where every block has size 1 and $J$ is diagonal.
+
+## Practice
+
+<Check>
+Let $A = \begin{bmatrix} 1 & -1 \\ 1 & 3 \end{bmatrix}$. It has a single eigenvalue $\lambda = 2$. Starting from $\blue{\mathbf v_2} = \mathbf e_1$, find $\yellow{\mathbf v_1} = (A - 2I)\blue{\mathbf v_2}$. (Modeled on Lay §5.3, Exercise 9.)
+
+<VectorAnswer answer={[-1, 1]} />
+
+<Answer>
+$$
+\begin{aligned}
+\det(A - \lambda I) &= (1 - \lambda)(3 - \lambda) + 1 = (\lambda - 2)^2 \\
+A - 2I &= \begin{bmatrix} -1 & -1 \\ 1 & 1 \end{bmatrix} \\
+\yellow{\mathbf v_1} &= (A - 2I)\begin{bmatrix} 1 \\ 0 \end{bmatrix} = \begin{bmatrix} -1 \\ 1 \end{bmatrix}
+\end{aligned}
+$$
+
+Check: $A(-1, 1) = (-2, 2) = 2(-1, 1)$, so $\yellow{\mathbf v_1}$ is an eigenvector. The rank of $A - 2I$ is 1, so the geometric multiplicity is 1 while the algebraic multiplicity is 2, and $A$ is defective.
+</Answer>
+</Check>
+
+<Check>
+Let $A = \begin{bmatrix} 2 & 0 & 1 \\ 0 & 2 & 0 \\ 0 & 0 & 2 \end{bmatrix}$. Give the algebraic and geometric multiplicities of $\lambda = 2$.
+
+<VectorAnswer answer={[3, 2]} labels={["Algebraic", "Geometric"]} />
+
+<Answer>
+$A$ is triangular with 2 three times on the diagonal, so the algebraic multiplicity is 3. Then
+
+$$
+A - 2I = \begin{bmatrix} 0 & 0 & 1 \\ 0 & 0 & 0 \\ 0 & 0 & 0 \end{bmatrix}
+$$
+
+has rank 1, so the eigenspace $\operatorname{Span}\{\mathbf e_1, \mathbf e_2\}$ has dimension $3 - 1 = 2$. One chain $\mathbf e_3 \to \mathbf e_1 \to \mathbf 0$ and the lone eigenvector $\mathbf e_2$ give a Jordan form with blocks of sizes 2 and 1.
+</Answer>
+</Check>
+
+<Check>
+Let $A = \begin{bmatrix} 2 & 1 & 1 \\ 0 & 2 & 1 \\ 0 & 0 & 2 \end{bmatrix}$. Starting from $\mathbf v_3 = \mathbf e_3$, find $\mathbf v_2 = (A - 2I)\mathbf v_3$.
+
+<VectorAnswer answer={[1, 1, 0]} />
+
+<Answer>
+$$
+\begin{aligned}
+A - 2I &= \begin{bmatrix} 0 & 1 & 1 \\ 0 & 0 & 1 \\ 0 & 0 & 0 \end{bmatrix} \\
+\mathbf v_2 &= (A - 2I)\mathbf e_3 = \begin{bmatrix} 1 \\ 1 \\ 0 \end{bmatrix}, \qquad
+\mathbf v_1 = (A - 2I)\mathbf v_2 = \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix}
+\end{aligned}
+$$
+
+One more push sends $\mathbf v_1$ to $\mathbf 0$, so $\mathbf e_3$ is a generalized eigenvector of rank 3 and the chain has length 3. The dimensions of $\operatorname{Nul}(A - 2I)^k$ are 1, 2, 3.
+</Answer>
+</Check>
