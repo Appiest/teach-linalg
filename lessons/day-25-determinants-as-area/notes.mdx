@@ -1,10 +1,10 @@
-On Day 7 the number $ad - bc$ decided whether a $2\times 2$ matrix has an inverse. Today that number gets a picture. The matrix $A = \begin{bmatrix} \green{3} & \red{1} \\ \green{1} & \red{2} \end{bmatrix}$ sends the unit square to the parallelogram whose sides are its columns $\green{(3, 1)}$ and $\red{(1, 2)}$, and the determinant is the area of that parallelogram.
+The last unit described a linear map through whole subspaces, its kernel and its range. This unit condenses a square matrix into a single number, the determinant. You met it on Day 7, where $ad - bc$ decided whether a $2\times 2$ matrix has an inverse, and today that number gets a picture. The matrix $A = \begin{bmatrix} \green{3} & \red{1} \\ \green{1} & \red{2} \end{bmatrix}$ sends the unit square to the parallelogram whose sides are its columns $\green{(3, 1)}$ and $\red{(1, 2)}$, and the determinant is the area of that parallelogram. The determinant gets a unit of its own because two later lessons depend on it. Day 26 turns $\det A \neq 0$ into an invertibility test for square matrices of every size, and after Day 28 introduces eigenvalues, Day 29 finds them by solving $\det(A - \lambda I) = 0$.
 
 <TransformExplorer matrix={[[3, 1], [1, 2]]} showArea goal={{ determinant: 2, prompt: "Drag the green and red tips until the shaded parallelogram has area $2$ and is still yellow.", success: "Area $2$ means $\\det A = 2$. Every square of the grid now has twice its old area." }} />
 
 ## Where ad − bc comes from
 
-Put the parallelogram on $\green{(a, c)}$ and $\red{(b, d)}$ inside a box that is $a + b$ wide and $c + d$ tall. The box minus the parallelogram is six pieces: two triangles of area $\tfrac12 ac$, two triangles of area $\tfrac12 bd$, and two rectangles of area $bc$.
+The goal of this section is to find the parallelogram's area from the four entries alone, which shows why the formula is $ad - bc$ and not some other combination. Put the parallelogram on $\green{(a, c)}$ and $\red{(b, d)}$ inside a box that is $a + b$ wide and $c + d$ tall. The box minus the parallelogram is six pieces: two triangles of area $\tfrac12 ac$, two triangles of area $\tfrac12 bd$, and two rectangles of area $bc$.
 
 <Figure src="box" alt="The parallelogram on the green column (3, 1) and the red column (1, 2), inside a dashed box 4 wide and 3 tall. The four triangles and two small rectangles between the box and the parallelogram are shaded gray, and the box edges are marked a, b along the bottom and top and c, d along the sides." wide />
 
@@ -83,7 +83,9 @@ The half-turn $\begin{bmatrix} -1 & 0 \\ 0 & -1 \end{bmatrix}$ has determinant $
 
 ## A determinant of zero
 
-When $\det A = 0$ the parallelogram has no area, so the two columns lie on one line. Then $A$ squashes the whole plane onto that line (or onto the origin), which is exactly the singular case from Day 7. Many points land on the same output, so no matrix can undo $A$. In three dimensions the box on the columns goes flat in the same way, as the box did on Day 13. This is the geometric reason that "$\det A \neq 0$" belongs on the invertible matrix theorem list from Day 19.
+When $\det A = 0$ the parallelogram has no area, so the two columns lie on one line. Then $A$ squashes the whole plane onto that line (or onto the origin), which is exactly the singular case from Day 7. Many points land on the same output, so no matrix can undo $A$. In three dimensions the box on the columns goes flat in the same way, as the box did on Day 13. This is the geometric reason that "$\det A \neq 0$" belongs on the invertible matrix theorem list from Day 19. Day 29 looks for exactly this flattening in $A - \lambda I$, and the values of $\lambda$ that cause it are the eigenvalues.
+
+The picture only gives a formula for $2\times 2$ matrices, so tomorrow, on Day 26, we learn to compute the determinant of any square matrix and carry today's area test to every size.
 
 ## Practice
 

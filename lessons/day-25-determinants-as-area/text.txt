@@ -1,2 +1,2 @@
-Day 25 is up! The number ad − bc from Day 7 turns out to be an area: it's how much a matrix stretches the unit square. Watch the counter in the video as the red arrow swings past the green one, and see what happens to the sign.
+Day 25 is up, and it starts a new unit on determinants! The number ad − bc from Day 7 turns out to be an area, and soon it will tell you when any square matrix is invertible and help find eigenvalues. Watch the counter in the video as the red arrow swings past the green one, and see what happens to the sign.
 https://appiest.github.io/teach-linalg/day/25/
