@@ -23,6 +23,7 @@ from manim import (
     FadeIn,
     FadeOut,
     GrowFromCenter,
+    Line,
     MathTex,
     Matrix,
     NumberLine,
@@ -193,6 +194,7 @@ class LessonScene(Scene):
 
     def open_episode(self, plane: NumberPlane | None = None) -> VGroup:
         title = Tex(self.title, color=Palette.text, font_size=84)
+        title.width = min(title.width, config.frame_width - 1.5)
         day = Tex(f"Day {self.day}", color=Palette.text_muted, font_size=40)
         card = VGroup(title, day).arrange(DOWN, buff=0.35)
         self.sfx("chime", gain=-2)
@@ -225,3 +227,46 @@ class LessonScene(Scene):
         self.play(GrowFromCenter(pulse), run_time=0.8, rate_func=spring)
         self.wait(Timing.read_long + 1.5)
         self.play(FadeOut(idea), FadeOut(pulse), run_time=0.8)
+
+
+def augmented(rows, color: str = Palette.text, **kwargs) -> Matrix:
+    """An augmented matrix: a vertical bar separates the last column (the constants) from the coefficients."""
+    mat = matrix([[str(entry) for entry in row] for row in rows], **kwargs)
+    mat.set_color(color)
+    entries = mat.get_columns()
+    bar_x = (entries[-2].get_right()[0] + entries[-1].get_left()[0]) / 2
+    brackets = mat.get_brackets()
+    top, bottom = brackets.get_top()[1] - 0.12, brackets.get_bottom()[1] + 0.12
+    bar = Line([bar_x, top, 0], [bar_x, bottom, 0], color=color, stroke_width=2.5)
+    mat.add(bar)
+    mat.bar = bar
+    return mat
+
+
+def clip_line_to_box(coeffs, x_range, y_range):
+    """Endpoints of a*x + b*y = c inside the box, or None when the line misses it or is degenerate."""
+    a, b, c = coeffs
+    norm = a * a + b * b
+    if norm < 1e-12:
+        return None
+    base = np.array([a * c / norm, b * c / norm])
+    direction = np.array([-b, a]) / math.sqrt(norm)
+    low, high = -1e9, 1e9
+    for axis, (lo, hi) in enumerate((x_range, y_range)):
+        if abs(direction[axis]) < 1e-12:
+            if not lo <= base[axis] <= hi:
+                return None
+            continue
+        ends = sorted(((lo - base[axis]) / direction[axis], (hi - base[axis]) / direction[axis]))
+        low, high = max(low, ends[0]), min(high, ends[1])
+    if low >= high:
+        return None
+    return base + low * direction, base + high * direction
+
+
+def equation_line(plane: NumberPlane, coeffs, color: str = Palette.yellow, stroke_width: float = 5):
+    """The line a*x1 + b*x2 = c across the visible plane. Invisible when it misses the plane."""
+    ends = clip_line_to_box(coeffs, plane.x_range[:2], plane.y_range[:2])
+    if ends is None:
+        return Line(plane.c2p(0, 0), plane.c2p(0, 0), stroke_opacity=0)
+    return Line(plane.c2p(*ends[0]), plane.c2p(*ends[1]), color=color, stroke_width=stroke_width)

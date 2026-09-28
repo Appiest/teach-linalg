@@ -1,0 +1,164 @@
+Yesterday, asking whether $\mathbf b$ is in a span turned into a set of equations to solve. Today's lesson is the method that solves them.
+
+A **linear equation** in $x_1, \dots, x_n$ has the form $a_1x_1 + \cdots + a_nx_n = b$. A **linear system** is a few of these sharing the same unknowns, and a **solution** is a list of numbers that makes every equation true at once. With two unknowns, each equation is a line, so a solution is a point on both lines.
+
+$$
+\begin{aligned}
+\yellow{x_1 - 2x_2} &\yellow{\;= -1} \\
+\blue{-x_1 + 3x_2} &\blue{\;= 3}
+\end{aligned}
+$$
+
+<Figure src="three-outcomes" alt="Three small planes, each with a yellow and a blue line. On the left the lines are parallel and never meet. In the middle they cross at one teal point, (3, 2). On the right the blue line lies on top of the yellow one, drawn as a single thick teal line." wide />
+
+Two lines can miss each other, cross once, or coincide. That is why every linear system has **no solution, exactly one, or infinitely many**. A system with at least one solution is **consistent**, and a system with none is **inconsistent**.
+
+## The augmented matrix
+
+Only the numbers matter, so we write them in a grid. The **coefficient matrix** holds the coefficients of each variable in its own column. The **augmented matrix** adds the right-hand sides as a last column, set off by a bar.
+
+$$
+\left[\begin{array}{rr|r} \yellow{1} & \yellow{-2} & \yellow{-1} \\ \blue{-1} & \blue{3} & \blue{3} \end{array}\right]
+$$
+
+A matrix with $m$ rows and $n$ columns is **$m \times n$**, rows first, so this one is $2 \times 3$. A variable missing from an equation contributes a $0$.
+
+## Row operations
+
+Three **elementary row operations** turn one augmented matrix into another.
+
+$$
+\begin{array}{lll}
+ & \textsf{Operation} & \textsf{Undo it with} \\[4pt]
+\textsf{Replacement} & R_2 \leftarrow R_2 + c\,R_1 & R_2 \leftarrow R_2 - c\,R_1 \\
+\textsf{Interchange} & R_1 \leftrightarrow R_2 & R_1 \leftrightarrow R_2 \\
+\textsf{Scaling} & R_2 \leftarrow c\,R_2,\ c \neq 0 & R_2 \leftarrow \tfrac1c\,R_2
+\end{array}
+$$
+
+Any point that satisfies the old rows also satisfies a new row built from them. Every operation can be undone, so the argument runs backward too, and no solution is ever gained or lost. Scaling by $0$ is not allowed because it cannot be undone. Two matrices are **row equivalent**, written $\sim$, when a sequence of row operations turns one into the other, and row-equivalent systems have the same solution set.
+
+In the picture, a replacement turns one line about the solution point. Try it below.
+
+<RowReduceExplorer rows={[[1, -2, -1], [-1, 3, 3]]} solution={[3, 2]} />
+
+<Pair>
+<Figure src="pivot" alt="A plane with dashed yellow and blue lines for the original system, crossing at a teal point (3, 2). Solid lines show the final system, a vertical yellow line x1 = 3 and a horizontal blue line x2 = 2, crossing at the same point." />
+
+First $R_2 \leftarrow R_2 + R_1$ turns the blue line flat, then $R_1 \leftarrow R_1 + 2R_2$ stands the yellow line upright.
+
+$$
+\begin{aligned}
+\left[\begin{array}{rr|r} \yellow{1} & \yellow{-2} & \yellow{-1} \\ \blue{-1} & \blue{3} & \blue{3} \end{array}\right]
+&\sim \left[\begin{array}{rr|r} \yellow{1} & \yellow{-2} & \yellow{-1} \\ \blue{0} & \blue{1} & \blue{2} \end{array}\right] \\
+&\sim \left[\begin{array}{rr|r} \yellow{1} & \yellow{0} & \yellow{3} \\ \blue{0} & \blue{1} & \blue{2} \end{array}\right]
+\end{aligned}
+$$
+
+The last matrix says $x_1 = 3$ and $x_2 = 2$.
+</Pair>
+
+## Echelon form
+
+<Definition term="Echelon and reduced echelon form">
+The **leading entry** of a row is its leftmost nonzero entry. A matrix is in **echelon form** when it has these three properties.
+
+(1) All nonzero rows are above any rows of zeros.
+
+(2) Each leading entry is in a column to the right of the leading entry in the row above it.
+
+(3) Every entry below a leading entry is zero.
+
+It is in **reduced echelon form** when it also has these two.
+
+(4) Every leading entry is $1$.
+
+(5) Each leading $1$ is the only nonzero entry in its column.
+
+Every matrix is row equivalent to exactly one reduced echelon matrix.
+</Definition>
+
+The leading $1$s of the reduced form sit in **pivot positions**, and their columns are **pivot columns**. A variable whose column has a pivot is a **basic variable**. The rest are **free variables**, and they can take any value.
+
+Here is a worked example, a fresh problem modeled on Lay §1.2, Example 4. The steps are $R_2 \leftarrow R_2 - 2R_1$ and $R_3 \leftarrow R_3 + R_1$ to clear column 1, then $R_3 \leftarrow R_3 - R_2$ to reach echelon form, then $R_1 \leftarrow R_1 - 3R_2$ to clear above the second pivot.
+
+$$
+\begin{aligned}
+\left[\begin{array}{rrrr|r} 1 & -2 & 3 & 1 & 4 \\ 2 & -4 & 7 & 0 & 9 \\ -1 & 2 & -2 & -3 & -3 \end{array}\right]
+&\sim \left[\begin{array}{rrrr|r} 1 & -2 & 3 & 1 & 4 \\ 0 & 0 & 1 & -2 & 1 \\ 0 & 0 & 1 & -2 & 1 \end{array}\right] \\
+&\sim \left[\begin{array}{rrrr|r} 1 & -2 & 3 & 1 & 4 \\ 0 & 0 & 1 & -2 & 1 \\ 0 & 0 & 0 & 0 & 0 \end{array}\right] \\
+&\sim \left[\begin{array}{rrrr|r} \glow{1} & -2 & 0 & 7 & 1 \\ 0 & 0 & \glow{1} & -2 & 1 \\ 0 & 0 & 0 & 0 & 0 \end{array}\right]
+\end{aligned}
+$$
+
+<Pair>
+<Figure src="echelon" alt="The reduced matrix with orange boxes around the pivots in columns 1 and 3, an orange staircase under them, and the labels x2 and x4 in orange because their columns have no pivot." />
+
+The pivots are in columns 1 and 3, so $x_1$ and $x_3$ are basic and $x_2, x_4$ are free. Solve each row for its basic variable:
+
+$$
+\begin{cases}
+x_1 = 1 + 2x_2 - 7x_4 \\
+x_2 \text{ is free} \\
+x_3 = 1 + 2x_4 \\
+x_4 \text{ is free}
+\end{cases}
+$$
+</Pair>
+
+This list is the **general solution**. Each choice of $x_2$ and $x_4$ gives one solution, so there are infinitely many.
+
+## Existence and uniqueness
+
+<Definition term="Existence and uniqueness theorem">
+A linear system is consistent exactly when an echelon form of its augmented matrix has no row
+$\left[\begin{array}{ccc|c} 0 & \cdots & 0 & b \end{array}\right]$ with $b \neq 0$.
+A consistent system has a unique solution when it has no free variables, and infinitely many when it has at least one.
+</Definition>
+
+A row $[\,0 \ \cdots \ 0 \mid b\,]$ says $0 = b$, which nothing satisfies. You can read the answer to both questions off an echelon form, before finishing the reduction. In the widget, one elimination step, $R_2 \leftarrow R_2 - 3R_1$, has already been done for you.
+
+<SolutionCountExplorer first={[1, -2, 3]} goal="many" />
+
+## Practice
+
+<Check>
+Solve by row reduction (modeled on Lay §1.1, #1).
+
+$$
+\begin{aligned} x_1 + 3x_2 &= 5 \\ 2x_1 + 7x_2 &= 12 \end{aligned}
+$$
+
+<VectorAnswer answer={[-1, 2]} labels={["x₁", "x₂"]} />
+
+<Answer>
+Use $R_2 \leftarrow R_2 - 2R_1$, then $R_1 \leftarrow R_1 - 3R_2$.
+
+$$
+\begin{aligned}
+\left[\begin{array}{rr|r} 1 & 3 & 5 \\ 2 & 7 & 12 \end{array}\right]
+&\sim \left[\begin{array}{rr|r} 1 & 3 & 5 \\ 0 & 1 & 2 \end{array}\right] \\
+&\sim \left[\begin{array}{rr|r} 1 & 0 & -1 \\ 0 & 1 & 2 \end{array}\right]
+\end{aligned}
+$$
+
+So $x_1 = -1$ and $x_2 = 2$. Check: $-1 + 3(2) = 5$ and $2(-1) + 7(2) = 12$.
+</Answer>
+</Check>
+
+<Check>
+For the system $x_1 + 3x_2 = 2$, $\ 4x_1 + hx_2 = k$, find the values of $h$ and $k$ that give infinitely many solutions (modeled on Lay §1.2, #19).
+
+<VectorAnswer answer={[12, 8]} labels={["h", "k"]} />
+
+<Answer>
+One replacement, $R_2 \leftarrow R_2 - 4R_1$, reaches echelon form.
+
+$$
+\left[\begin{array}{rr|r} 1 & 3 & 2 \\ 4 & h & k \end{array}\right]
+\sim \left[\begin{array}{rr|r} 1 & 3 & 2 \\ 0 & h - 12 & k - 8 \end{array}\right]
+$$
+
+If $h \neq 12$, row 2 has a pivot and the solution is unique. If $h = 12$ and $k \neq 8$, row 2 says $0 = k - 8 \neq 0$, so there is no solution. If $h = 12$ and $k = 8$, row 2 is all zeros, $x_2$ is free, and there are infinitely many solutions.
+</Answer>
+</Check>
