@@ -1,2 +1,2 @@
-Day 13 is up! Today is about linear independence, which is a precise way to say that none of your vectors is redundant. Watch the box in the middle of the video go flat the moment one arrow drops into the plane of the other two.
+Day 13 is up! Yesterday a vector already in the span added nothing, so today asks how to spot a spare vector like that in any set, and the answer is linear independence. Watch the box in the middle of the video go flat the moment one arrow drops into the plane of the other two.
 https://appiest.github.io/teach-linalg/day/13/

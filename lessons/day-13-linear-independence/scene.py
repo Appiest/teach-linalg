@@ -242,6 +242,8 @@ class Lesson(LessonScene):
         self.moved_w = arrow_between(plane, (2 * V[0], 2 * V[1]), B, Palette.blue, stroke_width=5)
         self.play(TransformFromCopy(self.w_arrow, self.moved_w), self.w_arrow.animate.set_opacity(0.35), run_time=1.4, rate_func=spring)
         self.wait(Timing.read_short)
+        line = self.say(r"Yesterday we called a vector like $\mathbf b$ redundant.", line, hold=Timing.read_short)
+        line = self.say(r"Today's question is how to spot a spare vector.", line, hold=Timing.read_short)
         return line
 
     def closed_loop(self, plane, line):
@@ -358,6 +360,7 @@ class Lesson(LessonScene):
         view.azimuth.add_updater(lambda m, dt: m.increment_value(DRIFT_PER_SECOND * dt))
         self.add(view.azimuth)
         self.wait(Timing.read_short)
+        line = self.say(r"On Day 25 the determinant will measure this volume.", line, hold=Timing.read_short)
         return line
 
     def grow_live(self, still, redraw):
@@ -400,6 +403,7 @@ class Lesson(LessonScene):
         header.move_to(np.array([PANEL_LEFT, 3.3, 0]), aligned_edge=LEFT)
         self.mat = column_matrix([[1, 1, 2, 0], [-1, 2, 1, 0], [0, 0, 2, 0]])
         self.mat.next_to(header, DOWN, buff=0.45).align_to(header, LEFT)
+        line = self.say(r"One row reduction can test all three vectors at once.", line, hold=Timing.read_short)
         line = self.say(r"Row reduce the matrix whose columns are $\mathbf u$, $\mathbf v$ and $\mathbf w$.", line, hold=0.2)
         self.play(Write(header), run_time=1.0)
         self.play(FadeIn(self.mat, shift=RIGHT * 0.2), run_time=1.0, rate_func=spring_soft)
@@ -488,6 +492,7 @@ class Lesson(LessonScene):
         self.play(Indicate(mat.get_columns()[2], color=Palette.glow, scale_factor=1.15), FadeIn(backed(free_label, padding=0.1)), run_time=1.0)
         self.wait(Timing.beat)
         line = self.say(r"More vectors than entries always makes a set dependent.", line, hold=Timing.read_long)
+        line = self.say(r"Tomorrow a basis spans a space with no spare vectors.", line, hold=Timing.read_short)
         return line
 
 
