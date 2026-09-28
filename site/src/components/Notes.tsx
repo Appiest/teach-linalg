@@ -40,6 +40,7 @@ import { DiagonalFactorSteps, EigenCoordinateTarget } from "@/components/interac
 import { CharacteristicSweep, EigenpairHunt } from "@/components/interactive/characteristic-equation";
 import { SpectralEllipseBuilder, SymmetricPerpendicularHunt } from "@/components/interactive/symmetric-matrices";
 import { DotShadowHunt, RowPerpendicularHunt, UnitCircleScale } from "@/components/interactive/inner-products";
+import { LongestStretchHunt, RankCopyBudget, SvdEllipseMatch } from "@/components/interactive/singular-value-decomposition";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
 import { katexMacros } from "@/lib/katex-macros";
 
@@ -195,6 +196,9 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     DotShadowHunt,
     UnitCircleScale,
     RowPerpendicularHunt,
+    LongestStretchHunt,
+    SvdEllipseMatch,
+    RankCopyBudget,
   };
   return (
     <div className="notes">
