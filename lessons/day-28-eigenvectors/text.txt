@@ -1,2 +1,2 @@
-Day 28 starts eigenvalues! Most arrows get knocked off their own line when a matrix acts, but a few special ones only stretch, and those are the eigenvectors. In the video, watch sixteen arrows swing around at once and see which two lines survive.
+Day 28 starts eigenvalues! Most arrows get knocked off their own line when a matrix acts, but a few special ones only stretch, and along those lines the whole matrix acts like multiplying by a single number. In the video, watch sixteen arrows swing around at once and see which two lines survive.
 https://appiest.github.io/teach-linalg/day/28/

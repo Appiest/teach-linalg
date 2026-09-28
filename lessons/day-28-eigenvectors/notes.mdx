@@ -1,4 +1,4 @@
-On Day 5 a matrix moved every point of the plane, and on Day 22 the map $\mathbf x \mapsto \begin{bmatrix} 1 & 2 \\ 1 & 0 \end{bmatrix}\mathbf x$ turned out to keep the line through $\mathbf b_1$ on itself. Today asks which lines a matrix keeps. Almost every arrow gets turned when $A$ acts, and the few directions that only stretch tell you more about $A$ than any single entry does.
+On Day 5 a matrix moved every point of the plane. On Day 22 the map $\mathbf x \mapsto \begin{bmatrix} 1 & 2 \\ 1 & 0 \end{bmatrix}\mathbf x$ turned out to double $\mathbf b_1$, and choosing $\mathbf b_1$ as a basis vector made the matrix of that map triangular. Yesterday's determinant told you how much $A$ scales area overall, but not where it pushes things. Today starts a new unit by asking which lines a matrix keeps. Almost every arrow gets turned when $A$ acts, but along a line that $A$ only stretches, $A$ acts like multiplication by a single number, so one number predicts what $A$ does there, even after many applications. Day 30 uses that fact to predict where $A^k\mathbf x$ points for large $k$. If a matrix has enough of these directions to make a basis, Day 32 uses them as axes, and in those coordinates $A$ becomes a diagonal matrix. Day 34 shows that symmetric matrices always have perpendicular ones, and Day 40 builds the singular value decomposition of any matrix from the eigenvectors of $A^TA$.
 
 <Figure src="knocked-off" alt="Sixteen gray arrows after the matrix A = [3 −2; 1 0] acts on them. Most are faded and point well away from their dashed starting lines, crowding toward the horizontal. Four arrows stay on their lines: two yellow arrows on the line through (2, 1), labelled λ = 2, and two blue arrows on the line through (1, 1), labelled λ = 1, each with an orange dot on its tip." wide />
 
@@ -36,7 +36,7 @@ Checking a proposed eigenvector takes one multiplication. For the same $A$, $A(-
 
 ## The eigenspace
 
-Moving $\lambda\mathbf v$ to the left side turns the eigenvector equation into a homogeneous system, because $\lambda\mathbf v = \lambda I\mathbf v$:
+Checking one vector at a time cannot find every eigenvector. The goal of this section is to find all the eigenvectors for a given $\lambda$ at once, and the trick is to turn the equation into a null space problem that Day 17 already solved. Moving $\lambda\mathbf v$ to the left side turns the eigenvector equation into a homogeneous system, because $\lambda\mathbf v = \lambda I\mathbf v$:
 
 $$
 A\mathbf v = \lambda\mathbf v \iff (A - \lambda I)\mathbf v = \mathbf 0.
@@ -70,9 +70,11 @@ $$
 0 \text{ is an eigenvalue of } A \iff \operatorname{Nul}A \ne \{\mathbf 0\} \iff A \text{ is not invertible}.
 $$
 
-For $\lambda = 0$ the eigenspace is $\operatorname{Nul}A$ itself. A matrix with two equal columns, such as $\begin{bmatrix} 1 & 1 \\ 3 & 3 \end{bmatrix}$, has eigenvalue $0$ with eigenvector $(1, -1)$, and you can see it without any row reduction.
+For $\lambda = 0$ the eigenspace is $\operatorname{Nul}A$ itself. A matrix with two equal columns, such as $\begin{bmatrix} 1 & 1 \\ 3 & 3 \end{bmatrix}$, has eigenvalue $0$ with eigenvector $(1, -1)$, and you can see it without any row reduction. Day 30 sharpens this fact by showing that $\det A$ is the product of the eigenvalues.
 
 ## Triangular matrices
+
+The eigenspace method needs a candidate $\lambda$ before it can start. For one family of matrices you can skip the search, because the eigenvalues sit in plain view.
 
 <Definition term="Theorem">
 The eigenvalues of a triangular matrix are the entries on its main diagonal.
@@ -82,7 +84,7 @@ Subtracting $\lambda I$ changes only the diagonal, so $T - \lambda I$ is still t
 
 <DiagonalZeroHunt matrix={[[4, 1, -2], [0, -2, 3], [0, 0, 1]]} start={0} min={-4} max={6} />
 
-The theorem needs a triangular matrix to begin with. Row reducing a general $A$ to echelon form changes its eigenvalues. For example, $\begin{bmatrix} 1 & 6 \\ 5 & 2 \end{bmatrix} \sim \begin{bmatrix} 1 & 6 \\ 0 & -28 \end{bmatrix}$, but the eigenvalues of the original matrix are $7$ and $-4$. Tomorrow's lesson shows how to find eigenvalues when the matrix is not triangular.
+The theorem needs a triangular matrix to begin with. Row reducing a general $A$ to echelon form changes its eigenvalues. For example, $\begin{bmatrix} 1 & 6 \\ 5 & 2 \end{bmatrix} \sim \begin{bmatrix} 1 & 6 \\ 0 & -28 \end{bmatrix}$, but the eigenvalues of the original matrix are $7$ and $-4$. For any other matrix, tomorrow's lesson (Day 29) turns the search for $\lambda$ into the single equation $\det(A - \lambda I) = 0$, whose roots are exactly the eigenvalues.
 
 ## Practice
 
