@@ -96,6 +96,14 @@ def staircase(mat, pivots, color=Palette.glow):
     return VMobject(color=color, stroke_width=4).set_points_as_corners(points)
 
 
+def readable_lines(plane):
+    """Dashed previews of x1 = 3 and x2 = 2, the system row reduction is aiming for."""
+    return VGroup(*[
+        DashedLine(*equation_line(plane, coeffs).get_start_and_end(), color=color, stroke_width=4, stroke_opacity=0.9)
+        for coeffs, color in (((1, 0, 3), Palette.yellow), ((0, 1, 2), Palette.blue))
+    ])
+
+
 def pivot_boxes(mat, pivots):
     return VGroup(*[
         SurroundingRectangle(mat.get_rows()[row][col], color=Palette.glow, buff=0.08, stroke_width=3, corner_radius=0)
@@ -109,6 +117,7 @@ class Lesson(LessonScene):
 
     def construct(self):
         plane = make_plane()
+        self.plane = plane
         pulse = self.open_episode(plane)
         self.play(FadeOut(pulse), run_time=0.5)
         yellow, blue, line = self.two_lines(plane)
@@ -130,9 +139,13 @@ class Lesson(LessonScene):
         equations.arrange(DOWN, buff=0.35, aligned_edge=RIGHT)
         self.equation_rows = list(equations)
         self.equations = backed(equations, padding=0.25).to_corner(UL, buff=0.5)
-        line = self.say(r"A linear system is equations that share the same unknowns.", hold=0.2)
+        line = self.say(r"Yesterday, asking if $\mathbf b$ is in a span meant solving equations.", hold=0.2)
         self.play(Write(self.equations), run_time=1.6)
-        self.wait(Timing.read_short)
+        self.wait(Timing.beat)
+        line = self.say(r"Today we learn a method that solves any linear system.", line, hold=Timing.read_short)
+        line = self.say(r"A linear system is equations that share the same unknowns.", line, hold=0.2)
+        self.play(Indicate(self.equations, color=Palette.glow, scale_factor=1.04), run_time=1.0)
+        self.wait(Timing.beat)
 
         yellow = TrackedLine(plane, ROW_ONE, Palette.yellow)
         blue = TrackedLine(plane, ROW_TWO, Palette.blue)
@@ -195,6 +208,14 @@ class Lesson(LessonScene):
             cells += [Tex(name, color=Palette.text, font_size=38), MathTex(op, color=Palette.text, font_size=40), MathTex(undo, color=Palette.text_muted, font_size=40)]
         table = VGroup(*cells).arrange_in_grid(rows=4, cols=3, buff=(0.6, 0.35), col_alignments="lll")
         card = backed(table, padding=0.4, opacity=0.96).move_to(RIGHT * 1.9 + UP * 0.2)
+        line = self.say(r"Row reduction simplifies the system until you can read the answer.", line, hold=0.2)
+        goal_lines = readable_lines(self.plane)
+        self.play(Create(goal_lines), run_time=1.2)
+        self.wait(Timing.beat)
+        line = self.say(r"Its moves must never change which point solves the system.", line, hold=0.2)
+        self.play(Flash(self.dot, color=Palette.glow, line_length=0.25, flash_radius=0.3), run_time=0.8)
+        self.wait(Timing.beat)
+        self.play(FadeOut(goal_lines), run_time=0.5)
         line = self.say(r"Three \emph{row operations} change a matrix.", line, hold=0.2)
         self.play(FadeIn(card.background_rectangle), *[FadeIn(cell) for cell in cells[:3]], run_time=0.8)
         self.play(LaggedStart(*[FadeIn(cell, shift=RIGHT * 0.15) for cell in cells[3:]], lag_ratio=0.12), run_time=1.6)
@@ -310,11 +331,12 @@ class Lesson(LessonScene):
         label = MathTex(r"\phantom{R}", font_size=42).next_to(mat, DOWN, buff=0.5)
         line = self.say(r"Bigger systems use the same moves, one column at a time.", line, hold=0.2)
         self.play(FadeIn(mat), FadeIn(names), FadeIn(label), run_time=1.0)
+        line = self.say(r"The first target is a staircase shape called \emph{echelon form}.", line, hold=Timing.read_short)
         label = self.big_step(mat, BIG_CLEARED, r"R_2 \leftarrow R_2 - 2R_1, \quad R_3 \leftarrow R_3 + R_1", label)
         label = self.big_step(mat, BIG_ECHELON, r"R_3 \leftarrow R_3 - R_2", label)
 
         steps = staircase(mat, BIG_PIVOTS)
-        line = self.say(r"In \emph{echelon form}, each leading entry sits right of the one above.", line, hold=0.2)
+        line = self.say(r"In echelon form, each leading entry sits right of the one above.", line, hold=0.2)
         self.play(Create(steps), run_time=1.4)
         self.wait(Timing.read_short)
 

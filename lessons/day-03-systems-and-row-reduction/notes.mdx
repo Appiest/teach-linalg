@@ -1,4 +1,4 @@
-Yesterday, asking whether $\mathbf b$ is in a span turned into a set of equations to solve. Today's lesson is the method that solves them.
+Yesterday, asking whether $\mathbf b$ is in a span turned into a set of equations to solve, and so far we have no reliable way to solve them. Today's lesson is that method, called **row reduction**. Its goal is to turn the system into one so simple that you can read the solution straight off it, without ever changing which points are solutions. First we look at what a solution can look like, so we know what kind of answer to expect.
 
 A **linear equation** in $x_1, \dots, x_n$ has the form $a_1x_1 + \cdots + a_nx_n = b$. A **linear system** is a few of these sharing the same unknowns, and a **solution** is a list of numbers that makes every equation true at once. With two unknowns, each equation is a line, so a solution is a point on both lines.
 
@@ -15,7 +15,7 @@ Two lines can miss each other, cross once, or coincide. That is why every linear
 
 ## The augmented matrix
 
-Only the numbers matter, so we write them in a grid. The **coefficient matrix** holds the coefficients of each variable in its own column. The **augmented matrix** adds the right-hand sides as a last column, set off by a bar.
+Only the numbers matter, so we write them in a grid. Row reduction works on this grid instead of the equations, which saves rewriting every $x_1$ and $x_2$ at each step. The **coefficient matrix** holds the coefficients of each variable in its own column. The **augmented matrix** adds the right-hand sides as a last column, set off by a bar.
 
 $$
 \left[\begin{array}{rr|r} \yellow{1} & \yellow{-2} & \yellow{-1} \\ \blue{-1} & \blue{3} & \blue{3} \end{array}\right]
@@ -25,7 +25,7 @@ A matrix with $m$ rows and $n$ columns is **$m \times n$**, rows first, so this 
 
 ## Row operations
 
-Three **elementary row operations** turn one augmented matrix into another.
+The goal is a system like $x_1 = 3$, $x_2 = 2$, where each equation hands you one unknown. To get there we need moves that change the equations but never the solutions. Three **elementary row operations** turn one augmented matrix into another, and on Day 8 each of them becomes a matrix of its own.
 
 $$
 \begin{array}{lll}
@@ -60,6 +60,8 @@ The last matrix says $x_1 = 3$ and $x_2 = 2$.
 
 ## Echelon form
 
+A bigger system needs a precise target to aim for. Echelon form is the halfway target, where you can already tell how many solutions there are, and reduced echelon form is the finish line, where you read the solutions off.
+
 <Definition term="Echelon and reduced echelon form">
 The **leading entry** of a row is its leftmost nonzero entry. A matrix is in **echelon form** when it has these three properties.
 
@@ -78,7 +80,7 @@ It is in **reduced echelon form** when it also has these two.
 Every matrix is row equivalent to exactly one reduced echelon matrix.
 </Definition>
 
-The leading $1$s of the reduced form sit in **pivot positions**, and their columns are **pivot columns**. A variable whose column has a pivot is a **basic variable**. The rest are **free variables**, and they can take any value.
+The leading $1$s of the reduced form sit in **pivot positions**, and their columns are **pivot columns**. A variable whose column has a pivot is a **basic variable**. The rest are **free variables**, and they can take any value. Pivots come back often. On Days 12 and 13, counting them tells you whether the columns of a matrix span $\mathbb R^m$ and whether they are independent.
 
 Here is a worked example, a fresh problem modeled on Lay §1.2, Example 4. The steps are $R_2 \leftarrow R_2 - 2R_1$ and $R_3 \leftarrow R_3 + R_1$ to clear column 1, then $R_3 \leftarrow R_3 - R_2$ to reach echelon form, then $R_1 \leftarrow R_1 - 3R_2$ to clear above the second pivot.
 
@@ -119,6 +121,8 @@ A consistent system has a unique solution when it has no free variables, and inf
 A row $[\,0 \ \cdots \ 0 \mid b\,]$ says $0 = b$, which nothing satisfies. You can read the answer to both questions off an echelon form, before finishing the reduction. In the widget, one elimination step, $R_2 \leftarrow R_2 - 3R_1$, has already been done for you.
 
 <SolutionCountExplorer first={[1, -2, 3]} goal="many" />
+
+Tomorrow, Day 4 packs a whole system into one equation, $A\mathbf x = \mathbf b$, and row reduction stays the way to solve it.
 
 ## Practice
 
