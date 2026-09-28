@@ -3,6 +3,7 @@
 import { CheckCircle, Crosshair } from "@phosphor-icons/react";
 import katex from "katex";
 import { useMemo } from "react";
+import { GestureProvider, useGesture } from "./gesture";
 import { formatNumber, texNumber, type Vec } from "./math";
 
 export function Tex({ children, display = false }: { children: string; display?: boolean }) {
@@ -24,8 +25,9 @@ export function columnTex(entries: number[], color?: string): string {
   return color ? `\\textcolor{${color}}{${body}}` : body;
 }
 
-export function Panel({ children }: { children: React.ReactNode }) {
-  return <div className="not-prose my-8 rounded-card bg-surface-raised p-4 shadow-lift sm:p-6 lg:-mx-12">{children}</div>;
+export function Panel({ children, gesture }: { children: React.ReactNode; gesture?: { begin: () => void } }) {
+  const panel = <div className="not-prose my-8 rounded-card bg-surface-raised p-4 shadow-lift sm:p-6 lg:-mx-12">{children}</div>;
+  return gesture ? <GestureProvider value={gesture}>{panel}</GestureProvider> : panel;
 }
 
 export function Workbench({ plane, readout }: { plane: React.ReactNode; readout: React.ReactNode }) {
@@ -58,6 +60,7 @@ export function Goal({ solved, prompt, success }: { solved: boolean; prompt: Rea
 export function Slider({ label, value, onChange, min, max, step, color }: {
   label: string; value: number; onChange: (value: number) => void; min: number; max: number; step: number; color: string;
 }) {
+  const gesture = useGesture();
   return (
     <label className="flex items-center gap-3">
       <span className="w-24 shrink-0 tabular-nums" style={{ color }}>
@@ -71,6 +74,7 @@ export function Slider({ label, value, onChange, min, max, step, color }: {
         value={value}
         aria-label={label}
         aria-valuetext={formatNumber(value)}
+        onPointerDown={gesture.begin}
         onChange={(event) => onChange(Number(event.target.value))}
         className="h-2 w-full cursor-pointer appearance-none rounded-full bg-line"
         style={{ accentColor: color }}

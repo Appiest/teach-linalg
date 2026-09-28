@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { palette } from "@/lib/palette.generated";
+import { useSettled } from "./gesture";
 import { columnTex, describeVector, Goal, Panel, Readout, Slider, Tex, Workbench } from "./controls";
 import { add, nearlyEqual, scale, texNumber, type Vec } from "./math";
 import { Arrow, boundsAround, DEFAULT_BOUNDS, Handle, Label, Marker, Plane, Segment } from "./plane";
@@ -9,10 +10,10 @@ import { Arrow, boundsAround, DEFAULT_BOUNDS, Handle, Label, Marker, Plane, Segm
 
 export function VectorExplorer({ start = [3, 2], goal }: { start?: Vec; goal?: Vec }) {
   const [tip, setTip] = useState<Vec>(start);
-  const solved = goal ? nearlyEqual(tip, goal) : false;
+  const { settled: solved, gesture } = useSettled(goal ? nearlyEqual(tip, goal) : false);
   const readout = `\\vec v = \\begin{bmatrix} \\textcolor{${palette.i_hat}}{${texNumber(tip[0])}} \\\\ \\textcolor{${palette.j_hat}}{${texNumber(tip[1])}} \\end{bmatrix}`;
   return (
-    <Panel>
+    <Panel gesture={gesture}>
       {goal ? (
         <Goal
           solved={solved}
@@ -40,10 +41,10 @@ export function AdditionExplorer({ v: startV = [3, 2], w: startW = [-1, 2], goal
   const [v, setV] = useState<Vec>(startV);
   const [w, setW] = useState<Vec>(startW);
   const sum = add(v, w);
-  const solved = goal ? nearlyEqual(sum, goal) : false;
+  const { settled: solved, gesture } = useSettled(goal ? nearlyEqual(sum, goal) : false);
   const readout = `${columnTex(v, palette.yellow)} + ${columnTex(w, palette.blue)} = ${columnTex(sum, palette.teal)}`;
   return (
-    <Panel>
+    <Panel gesture={gesture}>
       {goal ? (
         <Goal
           solved={solved}
@@ -75,10 +76,10 @@ export function AdditionExplorer({ v: startV = [3, 2], w: startW = [-1, 2], goal
 export function ScaleExplorer({ vector = [3, 2], target }: { vector?: Vec; target?: number }) {
   const [c, setC] = useState(1);
   const scaled = scale(c, vector);
-  const solved = target !== undefined && Math.abs(c - target) < 1e-6;
+  const { settled: solved, gesture } = useSettled(target !== undefined && Math.abs(c - target) < 1e-6);
   const goalPoint = target !== undefined ? scale(target, vector) : undefined;
   return (
-    <Panel>
+    <Panel gesture={gesture}>
       {goalPoint ? (
         <Goal
           solved={solved}
@@ -110,9 +111,9 @@ export function CombinationTarget({ v = [3, 2], w = [-1, 2], target }: { v?: Vec
   const [b, setB] = useState(0);
   const av = scale(a, v);
   const result = add(av, scale(b, w));
-  const solved = nearlyEqual(result, target);
+  const { settled: solved, gesture } = useSettled(nearlyEqual(result, target));
   return (
-    <Panel>
+    <Panel gesture={gesture}>
       <Goal
         solved={solved}
         prompt={<>Choose weights <Tex>a</Tex> and <Tex>b</Tex> so that <Tex>{"a\\,\\vec v + b\\,\\vec w"}</Tex> lands on the ringed point <Tex>{columnTex(target)}</Tex>.</>}

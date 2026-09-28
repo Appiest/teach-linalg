@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useId, useMemo, useRef, useState } from "react";
 import { hue, type Hue } from "./colors";
+import { useGesture } from "./gesture";
 import type { Vec } from "./math";
 
 export type Bounds = { xMin: number; xMax: number; yMin: number; yMax: number };
@@ -185,6 +186,7 @@ const KEY_STEPS: Record<string, Vec> = { ArrowRight: [1, 0], ArrowLeft: [-1, 0],
 export function Handle({ at, onMove, color, label, step = 1 }: { at: Vec; onMove: (point: Vec) => void; color: Hue; label: string; step?: number }) {
   const { toSvg, toMath, bounds } = usePlane();
   const [dragging, setDragging] = useState(false);
+  const gesture = useGesture();
   const [x, y] = toSvg(at);
 
   const moveTo = (clientX: number, clientY: number) => onMove(clampToBounds(toMath(clientX, clientY), bounds, step));
@@ -206,6 +208,7 @@ export function Handle({ at, onMove, color, label, step = 1 }: { at: Vec; onMove
       onPointerDown={(event) => {
         event.currentTarget.setPointerCapture(event.pointerId);
         setDragging(true);
+        gesture.begin();
         moveTo(event.clientX, event.clientY);
       }}
       onPointerMove={(event) => dragging && moveTo(event.clientX, event.clientY)}

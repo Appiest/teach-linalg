@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { palette } from "@/lib/palette.generated";
 import { describeVector, Goal, Panel, Readout, RichText, Workbench } from "./controls";
+import { useSettled } from "./gesture";
 import { apply, det, texNumber, type Matrix2, type Vec } from "./math";
 import { Arrow, DEFAULT_BOUNDS, Handle, Plane, usePlane } from "./plane";
 
@@ -52,13 +53,13 @@ export function TransformExplorer({ matrix: start = [[1, 1], [0, 1]], showArea =
   const [matrix, setMatrix] = useState<Matrix2>(start);
   const iHat: Vec = [matrix[0][0], matrix[1][0]];
   const jHat: Vec = [matrix[0][1], matrix[1][1]];
-  const solved = isSolved(matrix, goal);
+  const { settled: solved, gesture } = useSettled(isSolved(matrix, goal));
   const setColumn = (column: 0 | 1) => (point: Vec) =>
     setMatrix((current) => current.map((row, i) => row.map((value, j) => (j === column ? point[i] : value))) as Matrix2);
   const readout = showArea ? `${matrixTex(matrix)} \\qquad \\det = ${texNumber(det(matrix))}` : matrixTex(matrix);
 
   return (
-    <Panel>
+    <Panel gesture={gesture}>
       {goal ? <Goal solved={solved} prompt={<RichText>{goal.prompt}</RichText>} success={<RichText>{goal.success}</RichText>} /> : null}
       <Workbench
         plane={
