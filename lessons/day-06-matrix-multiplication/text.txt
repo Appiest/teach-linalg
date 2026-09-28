@@ -1,0 +1,2 @@
+Day 6 is up! Today is matrix multiplication, which turns out to be just doing one transformation after another. Watch the shear and the quarter turn run side by side in both orders and land in different places.
+https://appiest.github.io/teach-linalg/day/6/
