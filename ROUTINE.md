@@ -169,6 +169,15 @@ sections, then practice. Let rendered LaTeX and the figures carry it, not paragr
     - goals are reachable on the snap grid and inside the plane
     - it uses palette colors whose meaning matches the video
     - success shows a visible state change, not just text
+    - correctness feedback waits until the learner lets go. Compute `solved` through
+      `const { settled: solved, gesture } = useSettled(...)` from `gesture.tsx`, and pass `gesture` to
+      `<Panel gesture={gesture}>`. Move things only with `Handle` and `Slider`, because they tell the panel when
+      a drag starts. Never write raw pointer handlers that skip this. Arrow keys and clicks still update
+      immediately.
+    - feedback never shifts the layout. Show it through `Goal`, which stacks the prompt and the success message
+      in one grid cell so the box keeps the same height and crossfades between them. Any other text that swaps
+      on success must reserve its space the same way, using the `swap-shown` and `swap-hidden` utilities in
+      `globals.css`.
     - no function exceeds complexity 10
 - **Textbook problems.** Never copy Lay's exercises or examples verbatim into the public notes; this repo is
   public. Use the guide's "Suggested fresh problems", or write new ones in the same style, and cite the
@@ -201,6 +210,9 @@ Then test the widgets for real:
 - If `npx playwright install chromium` works in this environment, serve `site/out` with
   `python3 -m http.server`.
 - Solve each widget's goal with keyboard presses or slider `fill()`.
+- For each draggable widget, drag a handle onto the goal with `page.mouse` and keep the button held. Confirm
+  that the goal box has not changed yet. Release, then confirm that it shows success and that its height is
+  the same as before.
 - Type a wrong answer, then the right one, into each `VectorAnswer`.
 - Screenshot each widget before and after, and read the screenshots.
 - If Chromium can't be installed, say so in your report.

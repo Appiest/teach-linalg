@@ -39,6 +39,15 @@ export function Workbench({ plane, readout }: { plane: React.ReactNode; readout:
   );
 }
 
+/** Stacks both states in one grid cell so the box is always sized for the taller one, then crossfades between them. */
+function Swap({ shown, className = "", children }: { shown: boolean; className?: string; children: React.ReactNode }) {
+  return (
+    <div aria-hidden={!shown} className={`[grid-area:1/1] ${shown ? "swap-shown" : "swap-hidden"} ${className}`}>
+      {children}
+    </div>
+  );
+}
+
 export function Goal({ solved, prompt, success }: { solved: boolean; prompt: React.ReactNode; success: React.ReactNode }) {
   return (
     <div
@@ -47,12 +56,18 @@ export function Goal({ solved, prompt, success }: { solved: boolean; prompt: Rea
         solved ? "bg-[color-mix(in_oklab,var(--palette-teal)_16%,transparent)]" : "bg-surface-sunken"
       }`}
     >
-      {solved ? (
-        <CheckCircle weight="fill" className="mt-1 size-5 shrink-0 text-[var(--palette-teal)]" aria-hidden />
-      ) : (
-        <Crosshair className="mt-1 size-5 shrink-0 text-text-muted" aria-hidden />
-      )}
-      <div>{solved ? success : prompt}</div>
+      <div className="mt-1 grid shrink-0">
+        <Swap shown={!solved} className={solved ? "scale-25" : "scale-100"}>
+          <Crosshair className="size-5 text-text-muted" aria-hidden />
+        </Swap>
+        <Swap shown={solved} className={solved ? "scale-100" : "scale-25"}>
+          <CheckCircle weight="fill" className="size-5 text-[var(--palette-teal)]" aria-hidden />
+        </Swap>
+      </div>
+      <div className="grid">
+        <Swap shown={!solved}>{prompt}</Swap>
+        <Swap shown={solved}>{success}</Swap>
+      </div>
     </div>
   );
 }

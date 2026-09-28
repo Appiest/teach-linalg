@@ -17,6 +17,33 @@
   --radius-media: 0.625rem;
   --shadow-lift: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 12px 32px -12px rgb(0 0 0 / 0.6);
   --ease-spring: cubic-bezier(0.22, 1.12, 0.36, 1);
+  --ease-soft: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@utility swap-shown {
+  opacity: 1;
+  filter: blur(0);
+  visibility: visible;
+  transition-property: opacity, filter, scale, visibility;
+  transition-timing-function: var(--ease-soft);
+  transition-duration: 250ms;
+  transition-delay: 90ms;
+  @media (prefers-reduced-motion: reduce) {
+    transition-duration: 0ms;
+    transition-delay: 0ms;
+  }
+}
+
+@utility swap-hidden {
+  opacity: 0;
+  filter: blur(4px);
+  visibility: hidden;
+  transition-property: opacity, filter, scale, visibility;
+  transition-timing-function: var(--ease-soft);
+  transition-duration: 150ms;
+  @media (prefers-reduced-motion: reduce) {
+    transition-duration: 0ms;
+  }
 }
 
 @utility text-display {
