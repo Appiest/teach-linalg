@@ -14,6 +14,7 @@ from engine.theme import (  # noqa: E402
     equation_line,
     fit_to_frame,
     make_plane,
+    morph_matrix,
     spring,
     spring_soft,
 )
@@ -225,20 +226,20 @@ class Lesson(LessonScene):
         scaled = panel_matrix([ROW_ONE, combine(ROW_TWO, ROW_TWO, 1)]).move_to(mat, aligned_edge=LEFT)
         line = self.say(r"Scaling a row changes its numbers but not its line.", line, hold=0.2)
         self.play(Transform(label, doubled), run_time=0.5)
-        self.play(Transform(mat, scaled), run_time=1.2)
+        morph_matrix(self, mat, scaled, run_time=1.2)
         self.play(ShowPassingFlash(equation_line(plane, ROW_TWO, Palette.blue, stroke_width=12), time_width=0.6), run_time=1.2)
         self.wait(Timing.read_short)
         halved = self.op_label(mat, r"R_2 \leftarrow \tfrac12 R_2")
         restored = panel_matrix([ROW_ONE, ROW_TWO]).move_to(mat, aligned_edge=LEFT)
         self.play(Transform(label, halved), run_time=0.5)
-        self.play(Transform(mat, restored), run_time=1.2)
+        morph_matrix(self, mat, restored, run_time=1.2)
         self.wait(Timing.beat)
         self.play(FadeOut(label), run_time=0.4)
         return mat, line
 
     def replace_row(self, mat, line_obj, new_rows, coeffs, run_time=2.6):
         target = panel_matrix(new_rows).move_to(mat, aligned_edge=LEFT)
-        self.play(Transform(mat, target), *line_obj.move_to(coeffs), run_time=run_time, rate_func=spring_soft)
+        morph_matrix(self, mat, target, *line_obj.move_to(coeffs), run_time=run_time, rate_func=spring_soft)
 
     def pivot_to_answer(self, plane, yellow, blue, mat, line):
         self.add_foreground_mobjects(self.dot)
@@ -274,8 +275,8 @@ class Lesson(LessonScene):
     def inconsistent(self, plane, yellow, blue, mat, line):
         start = panel_matrix([ROW_ONE, PARALLEL]).move_to(mat, aligned_edge=LEFT)
         line = self.say(r"Try the same move on the parallel lines.", line, hold=0.2)
-        self.play(
-            Transform(mat, start), *yellow.move_to(ROW_ONE), *blue.move_to(PARALLEL),
+        morph_matrix(
+            self, mat, start, *yellow.move_to(ROW_ONE), *blue.move_to(PARALLEL),
             FadeOut(self.dot), FadeOut(self.dot_label), run_time=1.8, rate_func=spring_soft,
         )
         label = self.op_label(mat, r"R_2 \leftarrow R_2 + R_1")
@@ -283,7 +284,7 @@ class Lesson(LessonScene):
         self.wait(Timing.beat)
         escape = combine(PARALLEL, ROW_ONE, 0.96)
         target = panel_matrix([ROW_ONE, (0, 0, 2)]).move_to(mat, aligned_edge=LEFT)
-        self.play(Transform(mat, target), *blue.move_to(escape), run_time=2.6, rate_func=rush_into)
+        morph_matrix(self, mat, target, *blue.move_to(escape), run_time=2.6, rate_func=rush_into)
         ring = SurroundingRectangle(mat.get_rows()[1], color=Palette.glow, buff=0.1, stroke_width=3)
         line = self.say(r"The row $[\,0\ \ 0 \mid 2\,]$ says $0 = 2$, so nothing solves it.", line, hold=0.2)
         self.play(Create(ring), run_time=0.8)
@@ -296,7 +297,7 @@ class Lesson(LessonScene):
         target = augmented(rows).scale(BIG_SCALE).move_to(mat, aligned_edge=LEFT)
         new_label = MathTex(tex, color=Palette.text, font_size=44).next_to(target, DOWN, buff=0.5)
         self.play(FadeOut(label), FadeIn(new_label, shift=UP * 0.1), run_time=0.5)
-        self.play(Transform(mat, target), run_time=1.4, rate_func=spring_soft)
+        morph_matrix(self, mat, target, run_time=1.4, rate_func=spring_soft)
         self.wait(Timing.beat)
         return new_label
 

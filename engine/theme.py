@@ -30,6 +30,7 @@ from manim import (
     NumberPlane,
     Scene,
     Tex,
+    Transform,
     ValueTracker,
     VGroup,
     config,
@@ -241,6 +242,22 @@ def augmented(rows, color: str = Palette.text, **kwargs) -> Matrix:
     mat.add(bar)
     mat.bar = bar
     return mat
+
+
+def morph_matrix(scene: Scene, mat: Matrix, target: Matrix, *extra, **play_kwargs) -> None:
+    """Morph mat into target. Entries whose value changes crossfade instead of melting between glyph shapes."""
+    old_entries, new_entries = mat.get_entries(), target.get_entries()
+    changed = [i for i, (old, new) in enumerate(zip(old_entries, new_entries)) if old.get_tex_string() != new.get_tex_string()]
+    leaving = VGroup(*[old_entries[i].copy() for i in changed])
+    arriving = VGroup(*[new_entries[i].copy() for i in changed])
+    for i in changed:
+        old_entries[i].set_opacity(0)
+        new_entries[i].set_opacity(0)
+    scene.add(leaving)
+    scene.play(Transform(mat, target), FadeOut(leaving), FadeIn(arriving), *extra, **play_kwargs)
+    for i in changed:
+        old_entries[i].set_opacity(1)
+    scene.remove(arriving)
 
 
 def clip_line_to_box(coeffs, x_range, y_range):
