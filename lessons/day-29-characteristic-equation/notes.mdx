@@ -1,0 +1,153 @@
+Yesterday you checked a proposed eigenvalue by row reducing $A - \lambda I$ and looking for a free variable. That works once you have a candidate, but it gives no way to find one. Today the determinant turns the search into a single equation in $\lambda$, and its roots are exactly the eigenvalues.
+
+<Figure src="snapshots" alt="Three planes for A = [1 2; 2 1], each transformed by A − λI. At λ = −1 the grid collapses onto the yellow line, the blue line through (1, −1) glows with an orange ring at the origin, and det(A − λI) = 0. At λ = 1 the unit square becomes a pink square of signed area −4 and both eigen-arrows stay nonzero. At λ = 3 the grid collapses onto the blue line, the yellow line through (1, 1) glows, and det(A − λI) = 0." wide />
+
+## The characteristic equation
+
+On Day 28, $\lambda$ was an eigenvalue exactly when $(A - \lambda I)\mathbf x = \mathbf 0$ had a nonzero solution. The Invertible Matrix Theorem and Day 27's determinant test finish the chain:
+
+$$
+\lambda \text{ is an eigenvalue}
+\iff (A - \lambda I)\mathbf x = \mathbf 0 \text{ has a nonzero solution}
+\iff A - \lambda I \text{ is not invertible}
+\iff \det(A - \lambda I) = 0.
+$$
+
+The first equation has two unknowns, $\lambda$ and $\mathbf x$. The last one has only $\lambda$, so you can solve it first and look for $\mathbf x$ afterwards.
+
+<Definition term="Characteristic equation">
+For an $n \times n$ matrix $A$, the **characteristic polynomial** is $\det(A - \lambda I)$, a polynomial of degree $n$ in $\lambda$. A scalar $\lambda$ is an eigenvalue of $A$ if and only if it satisfies the **characteristic equation**
+
+$$
+\det(A - \lambda I) = 0.
+$$
+</Definition>
+
+In pictures, $\det(A - \lambda I)$ is the signed area of the unit square after $A - \lambda I$ acts. As $\lambda$ slides, that area changes smoothly, and it hits zero only where $A - \lambda I$ squashes the plane onto a line.
+
+<CharacteristicSweep matrix={[[2, 2], [1, 3]]} start={2.5} min={-1} max={6} step={0.5} />
+
+## A 2 by 2 example
+
+Take $A = \begin{bmatrix} 4 & 1 \\ 2 & 3 \end{bmatrix}$. Subtract $\lambda$ from the diagonal only, then use $ad - bc$:
+
+$$
+\begin{aligned}
+\det(A - \lambda I) &= \det\begin{bmatrix} 4 - \lambda & 1 \\ 2 & 3 - \lambda \end{bmatrix} \\
+&= (4 - \lambda)(3 - \lambda) - 2 \cdot 1 \\
+&= \lambda^2 - 7\lambda + 10 \\
+&= (\lambda - 2)(\lambda - 5)
+\end{aligned}
+$$
+
+The eigenvalues are $2$ and $5$. Once $\lambda$ is a number, row reduce $A - \lambda I$ exactly as on Day 28:
+
+$$
+\begin{aligned}
+A - 2I = \begin{bmatrix} 2 & 1 \\ 2 & 1 \end{bmatrix} &\sim \begin{bmatrix} 2 & 1 \\ 0 & 0 \end{bmatrix}, &\quad \mathbf x &= x_2\yellow{\begin{bmatrix} -1/2 \\ 1 \end{bmatrix}}, \text{ basis } \yellow{\begin{bmatrix} -1 \\ 2 \end{bmatrix}} \\
+A - 5I = \begin{bmatrix} -1 & 1 \\ 2 & -2 \end{bmatrix} &\sim \begin{bmatrix} 1 & -1 \\ 0 & 0 \end{bmatrix}, &\quad \mathbf x &= x_2\blue{\begin{bmatrix} 1 \\ 1 \end{bmatrix}}
+\end{aligned}
+$$
+
+Check one: $A(1, 1) = (5, 5)$. A real $2 \times 2$ matrix can also have no real eigenvalues. For example, $\begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}$ gives $\lambda^2 + 1$, which never reaches zero, because a quarter turn moves every line off itself.
+
+<EigenpairHunt matrix={[[5, -2], [1, 2]]} start={[1, 0]} lambdaStart={2} min={-2} max={6} />
+
+## A 3 by 3 example
+
+For larger matrices, expand $\det(A - \lambda I)$ by cofactors along a row or column with many zeros. Don't row reduce $A - \lambda I$ to get the polynomial, because dividing by an entry like $2 - \lambda$ quietly assumes that it is not zero.
+
+<Pair>
+<Figure src="cofactor" alt="The matrix M − λI with rows (4 − λ, 0, 0), (−3, 1 − λ, 2) and (2, 0, 3 − λ). Row 1 is boxed in orange and its two zeros are grayed. Below, det(M − λI) = (4 − λ) det[1 − λ, 2; 0, 3 − λ] = (4 − λ)(1 − λ)(3 − λ), and λ = 4, 1, 3 in orange." />
+
+For $M = \begin{bmatrix} 4 & 0 & 0 \\ -3 & 1 & 2 \\ 2 & 0 & 3 \end{bmatrix}$, row 1 of $M - \lambda I$ has two zeros, so only one cofactor survives. Its minor is triangular, so that determinant is the product of its diagonal:
+
+$$
+\det(M - \lambda I) = (4 - \lambda)(1 - \lambda)(3 - \lambda).
+$$
+
+Leave the polynomial factored, since the roots $4$, $1$ and $3$ are already visible. Multiplying it out to $-\lambda^3 + 8\lambda^2 - 19\lambda + 12$ only hides them.
+</Pair>
+
+## Multiplicity
+
+The **algebraic multiplicity** of an eigenvalue is the number of times its factor appears in the characteristic polynomial. An $n \times n$ matrix has $n$ eigenvalues when you count them with multiplicity and allow complex numbers, so it has at most $n$ different ones.
+
+<Pair>
+<Figure src="multiplicity" alt="The graph of det(B − λI) = (2 − λ)²(4 − λ) for λ from 0.5 to 5. The curve comes down, touches the λ-axis at 2 without crossing, rises to a small hump, then crosses the axis at 4 and falls. Orange rings mark 2, labelled multiplicity 2, and 4, labelled multiplicity 1." />
+
+Take $B = \begin{bmatrix} 2 & 0 & 0 \\ 1 & 3 & 1 \\ 1 & 1 & 3 \end{bmatrix}$ and expand along row 1:
+
+$$
+\begin{aligned}
+\det(B - \lambda I) &= (2 - \lambda)\left[(3 - \lambda)^2 - 1\right] \\
+&= (2 - \lambda)(2 - \lambda)(4 - \lambda)
+\end{aligned}
+$$
+
+So $B$ has eigenvalue $2$ with multiplicity $2$ and eigenvalue $4$ with multiplicity $1$. Listed with multiplicity they are $2, 2, 4$. A repeated root shows up in the graph as a point where the curve touches the axis without crossing it.
+</Pair>
+
+For a triangular matrix, $A - \lambda I$ is still triangular, so the characteristic polynomial is the product of $(a_{ii} - \lambda)$ down the diagonal. Every diagonal entry is an eigenvalue, repeated as often as it appears.
+
+Setting $\lambda = 0$ in the characteristic equation gives $\det A = 0$. That adds two more statements to the Invertible Matrix Theorem: $A$ is invertible exactly when $0$ is not an eigenvalue of $A$, and exactly when $\det A \ne 0$.
+
+## Practice
+
+<Check>
+Find the characteristic polynomial and the eigenvalues of $A = \begin{bmatrix} 1 & 4 \\ 2 & 3 \end{bmatrix}$. (Modeled on Lay §5.2, Exercises 1–8.)
+
+<VectorAnswer answer={[5, -1]} labels={["the larger eigenvalue", "the smaller eigenvalue"]} />
+
+<Answer>
+$$
+\begin{aligned}
+\det(A - \lambda I) &= (1 - \lambda)(3 - \lambda) - 4 \cdot 2 \\
+&= \lambda^2 - 4\lambda - 5 \\
+&= (\lambda - 5)(\lambda + 1)
+\end{aligned}
+$$
+
+The eigenvalues are $5$ and $-1$. The factor $\lambda + 1$ gives the root $-1$, not $1$. Check: $A(1, 1) = (5, 5)$, so $(1, 1)$ is an eigenvector for $5$.
+</Answer>
+</Check>
+
+<Check>
+A $5 \times 5$ matrix has characteristic polynomial $-\lambda^5 + 6\lambda^4 - 9\lambda^3$. Find the multiplicity of each eigenvalue. Is the matrix invertible? (Modeled on Lay §5.2, Example 4.)
+
+<VectorAnswer answer={[3, 2]} labels={["the multiplicity of 0", "the multiplicity of 3"]} />
+
+<Answer>
+$$
+-\lambda^5 + 6\lambda^4 - 9\lambda^3 = -\lambda^3(\lambda^2 - 6\lambda + 9) = -\lambda^3(\lambda - 3)^2
+$$
+
+The eigenvalue $0$ has multiplicity $3$ and the eigenvalue $3$ has multiplicity $2$, which accounts for all five. Since $0$ is an eigenvalue, the matrix is not invertible.
+</Answer>
+</Check>
+
+<Check>
+Let $C = \begin{bmatrix} 2 & 0 & 1 \\ 0 & 3 & 0 \\ 1 & 0 & 2 \end{bmatrix}$. Find its eigenvalues, then find the eigenvector for $\lambda = 1$ whose third entry is $1$. (Modeled on Lay §5.2, Exercises 9–14.)
+
+<VectorAnswer answer={[-1, 0, 1]} />
+
+<Answer>
+Column 2 has two zeros, so expand down it:
+
+$$
+\begin{aligned}
+\det(C - \lambda I) &= (3 - \lambda)\det\begin{bmatrix} 2 - \lambda & 1 \\ 1 & 2 - \lambda \end{bmatrix} \\
+&= (3 - \lambda)\left[(2 - \lambda)^2 - 1\right] \\
+&= (3 - \lambda)(1 - \lambda)(3 - \lambda)
+\end{aligned}
+$$
+
+The eigenvalues are $3$ with multiplicity $2$ and $1$ with multiplicity $1$. For $\lambda = 1$:
+
+$$
+C - I = \begin{bmatrix} 1 & 0 & 1 \\ 0 & 2 & 0 \\ 1 & 0 & 1 \end{bmatrix} \sim \begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & 0 \\ 0 & 0 & 0 \end{bmatrix}, \qquad \mathbf x = x_3\begin{bmatrix} -1 \\ 0 \\ 1 \end{bmatrix}.
+$$
+
+Check: $C(-1, 0, 1) = (-1, 0, 1)$.
+</Answer>
+</Check>

@@ -1,0 +1,2 @@
+Day 29 is how you actually find eigenvalues: you solve det(A − λI) = 0 instead of guessing. In the video, watch the plane go completely flat at exactly the two values where the curve hits zero.
+https://appiest.github.io/teach-linalg/day/29/

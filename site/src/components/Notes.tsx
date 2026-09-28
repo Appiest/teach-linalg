@@ -37,6 +37,7 @@ import { IterateSwing, ShiftToSingular, TraceCurveMatch } from "@/components/int
 import { JordanChainBuilder, MultiplicityGapSlider, NullPowerClimb } from "@/components/interactive/generalized-eigenvectors";
 import { DiagonalBasisHunt, EigenOrbitSettle, EigenPolynomialHunt } from "@/components/interactive/diagonalizing-transformations";
 import { DiagonalFactorSteps, EigenCoordinateTarget } from "@/components/interactive/diagonalization";
+import { CharacteristicSweep, EigenpairHunt } from "@/components/interactive/characteristic-equation";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
 import { katexMacros } from "@/lib/katex-macros";
 
@@ -185,6 +186,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     EigenPolynomialHunt,
     EigenCoordinateTarget,
     DiagonalFactorSteps,
+    CharacteristicSweep,
+    EigenpairHunt,
   };
   return (
     <div className="notes">
