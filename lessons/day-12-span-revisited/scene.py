@@ -177,6 +177,8 @@ class Lesson(LessonScene3D):
         self.add(sheet)
         self.wait(Timing.beat)
         line = self.say(r"Day 11 showed that every span is a subspace.", line)
+        line = self.say(r"So spans are how we will build subspaces from now on.", line)
+        line = self.say(r"How small is a span, and which vectors does it need?", line)
         return line, sheet
 
     def smallest_subspace(self, axes, line, sheet):
@@ -223,6 +225,7 @@ class Lesson(LessonScene3D):
     def redundant_vector(self, axes, line, sheet):
         w_arrow = vector_arrow_3d(axes, W_IN, Palette.pink)
         w_tag = self.tag_3d(axes, r"\mathbf w", Palette.pink, W_IN, push=1.1)
+        line = self.say(r"Does adding a vector always make the span bigger?", line, hold=Timing.beat)
         line = self.say(r"Add Day 2's $(4, 3, 3)$ as a third vector $\mathbf w$.", line, hold=0.2)
         self.sfx("whoosh", gain=-2)
         self.play(GrowFromPoint(w_arrow, axes.c2p(0, 0, 0)), FadeIn(w_tag), run_time=1.2, rate_func=spring_soft)
@@ -254,6 +257,7 @@ class Lesson(LessonScene3D):
         line = self.say(r"So this $\mathbf w$ is redundant, and the span stays put.", line, hold=0.2)
         self.play(sheet.animate(rate_func=there_and_back).set_fill(opacity=0.6), run_time=1.2)
         self.wait(Timing.read_short)
+        line = self.say(r"Day 13 turns this redundancy into a precise test.", line)
         self.play(FadeOut(fold_panel), run_time=0.5)
         return line, (w_arrow, w_tag)
 
@@ -312,7 +316,7 @@ class Lesson(LessonScene3D):
         for tag, col in zip(header, top[0].get_columns()):
             tag.next_to(top[0], UP, buff=0.2).set_x(col.get_center()[0])
 
-        line = self.say(r"Row reduction tells the two cases apart.", line, hold=0.2)
+        line = self.say(r"Without pictures, row reduce and count the rows with pivots.", line, hold=Timing.beat)
         self.play(FadeIn(top[0]), FadeIn(header), run_time=1.0)
         self.wait(Timing.beat)
         line = self.say(r"With $\mathbf w = (4, 3, 3)$, the third row becomes all zeros.", line, hold=0.2)
