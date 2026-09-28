@@ -1,0 +1,147 @@
+Yesterday you multiplied a matrix by one vector at a time. Today you read the product as a rule: feed in any $\yellow{\mathbf x}$ and the matrix hands back $A\yellow{\mathbf x}$. Doing that to every point at once moves the whole plane.
+
+<Definition term="Transformation">
+A **transformation** $T$ from $\mathbb{R}^n$ to $\mathbb{R}^m$ is a rule that assigns to each vector $\mathbf x$ in $\mathbb{R}^n$ a vector $T(\mathbf x)$ in $\mathbb{R}^m$. We write $T : \mathbb{R}^n \to \mathbb{R}^m$. The set $\mathbb{R}^n$ is the **domain**, $\mathbb{R}^m$ is the **codomain**, and $T(\mathbf x)$ is the **image** of $\mathbf x$. The set of all images is the **range** of $T$.
+
+When $A$ is an $m \times n$ matrix, $T(\mathbf x) = A\mathbf x$ is a **matrix transformation**. Its domain is $\mathbb{R}^n$ because $\mathbf x$ needs one entry per column of $A$, and its codomain is $\mathbb{R}^m$ because each column has $m$ entries.
+</Definition>
+
+<Pair>
+<Figure src="shear" alt="A shear. The blue grid lines lean to the right while the horizontal lines stay put. The green arrow e1 stays at (1, 0), the red arrow e2 lands on (1, 1), and the yellow arrow Ax ends at (3, 2). The matrix A has green first column (1, 0) and red second column (1, 1)." />
+
+$$
+\begin{bmatrix} \green{1} & \red{1} \\ \green{0} & \red{1} \end{bmatrix}\yellow{\begin{bmatrix} 1 \\ 2 \end{bmatrix}} = \teal{\begin{bmatrix} 3 \\ 2 \end{bmatrix}}
+$$
+
+This matrix is a **shear**. It slides each point sideways by its height, so the base line stays still and the grid leans over. The grid lines stay straight, parallel and evenly spaced, and the origin stays put.
+</Pair>
+
+## The standard matrix
+
+Every $\mathbf x$ in $\mathbb{R}^2$ is $x_1\green{\mathbf e_1} + x_2\red{\mathbf e_2}$, where $\green{\mathbf e_1} = (1, 0)$ and $\red{\mathbf e_2} = (0, 1)$. So once you know where $\green{\mathbf e_1}$ and $\red{\mathbf e_2}$ land, you know where everything lands. Those two landing spots are the columns of the matrix.
+
+<Definition term="Theorem 10">
+Let $T : \mathbb{R}^n \to \mathbb{R}^m$ be a linear transformation. Then there is exactly one matrix $A$ with $T(\mathbf x) = A\mathbf x$ for every $\mathbf x$ in $\mathbb{R}^n$, namely
+
+$$
+A = \begin{bmatrix} T(\mathbf e_1) & \cdots & T(\mathbf e_n) \end{bmatrix},
+$$
+
+where $\mathbf e_j$ is column $j$ of the $n \times n$ identity matrix. This $A$ is the **standard matrix** of $T$.
+</Definition>
+
+<Pair>
+<Figure src="quarter-turn" alt="A quarter turn counterclockwise. The green arrow e1 now points up to (0, 1) and the red arrow e2 points left to (−1, 0). Their coordinates form the columns of A = [[0, −1], [1, 0]]." />
+
+A counterclockwise quarter turn sends $\green{\mathbf e_1}$ up to $(0, 1)$ and $\red{\mathbf e_2}$ left to $(-1, 0)$. Writing those as columns gives the matrix with no formula to memorize:
+
+$$
+A = \begin{bmatrix} \green{0} & \red{-1} \\ \green{1} & \red{0} \end{bmatrix}
+$$
+</Pair>
+
+<TransformExplorer matrix={[[1, 0], [0, 1]]} goal={{ matrix: [[0, 1], [-1, 0]], prompt: "Drag the green and red tips to build a quarter turn clockwise. Picture where $\\mathbf e_1$ and $\\mathbf e_2$ should end up first.", success: "That's it. Turning clockwise sends $\\mathbf e_1$ down to $(0, -1)$ and $\\mathbf e_2$ right to $(1, 0)$, so those are the two columns." }} />
+
+## Linearity
+
+<Definition term="Linear transformation">
+A transformation $T$ is **linear** when, for all vectors $\mathbf u, \mathbf v$ in its domain and every scalar $c$,
+
+(i) $T(\mathbf u + \mathbf v) = T(\mathbf u) + T(\mathbf v)$, and
+
+(ii) $T(c\,\mathbf u) = c\,T(\mathbf u)$.
+
+Every matrix transformation is linear, because $A(\mathbf u + \mathbf v) = A\mathbf u + A\mathbf v$ and $A(c\mathbf u) = cA\mathbf u$ from Day 4.
+</Definition>
+
+Two facts follow right away. Taking $c = 0$ in (ii) gives $T(\mathbf 0) = \mathbf 0$, so a linear map never moves the origin. Using (i) and then (ii) gives $T(c\,\mathbf u + d\,\mathbf v) = c\,T(\mathbf u) + d\,T(\mathbf v)$. A slide such as $T(\mathbf x) = \mathbf x + (1, 1)$ keeps grid lines straight, but it moves the origin, so it is not linear and no matrix can do it.
+
+<Pair>
+<Figure src="walk" alt="The grid moved by the matrix [[2, −1], [1, 1]]. Two green steps T(e1) = (2, 1) and one red step T(e2) = (−1, 1) are placed tip to tail, and the yellow arrow T(x) runs from the origin to their end at (3, 3)." />
+
+The vector $\yellow{\mathbf x} = (2, 1)$ is a walk of two $\green{\mathbf e_1}$ steps and one $\red{\mathbf e_2}$ step. The map moves each step, and the walk follows:
+
+$$
+T(\yellow{\mathbf x}) = 2\,\green{T(\mathbf e_1)} + 1\,\red{T(\mathbf e_2)}
+$$
+</Pair>
+
+Suppose $T$ is linear with $\green{T(\mathbf e_1)} = (1, 2)$ and $\red{T(\mathbf e_2)} = (-3, 1)$. You can find $T(4, -1)$ from those two images alone:
+
+$$
+\begin{aligned}
+T\begin{bmatrix} 4 \\ -1 \end{bmatrix} &= 4\,\green{T(\mathbf e_1)} - 1\,\red{T(\mathbf e_2)} \\
+&= 4\begin{bmatrix} 1 \\ 2 \end{bmatrix} - \begin{bmatrix} -3 \\ 1 \end{bmatrix} = \begin{bmatrix} 7 \\ 7 \end{bmatrix},
+\end{aligned}
+$$
+
+and the standard matrix is $\begin{bmatrix} \green{1} & \red{-3} \\ \green{2} & \red{1} \end{bmatrix}$.
+
+Going backwards asks which $\mathbf x$ has a given image $\mathbf b$. Because the moved grid is made of copies of $\green{T(\mathbf e_1)}$ and $\red{T(\mathbf e_2)}$, you can count how many of each step reach $\mathbf b$.
+
+<PreimageHunt matrix={[[2, -1], [1, 1]]} target={[1, 5]} success="Found it. With $\mathbf x = (2, 3)$ you take two green steps and three red steps, and $2(2, 1) + 3(-1, 1) = (1, 5)$." />
+
+Row reduction gives the same answer without a picture. The point $\mathbf b$ is in the range exactly when $\begin{bmatrix} A & \mathbf b \end{bmatrix}$ is consistent:
+
+$$
+\begin{bmatrix} 2 & -1 & 1 \\ 1 & 1 & 5 \end{bmatrix} \sim \begin{bmatrix} 1 & 1 & 5 \\ 0 & -3 & -9 \end{bmatrix} \sim \begin{bmatrix} 1 & 0 & 2 \\ 0 & 1 & 3 \end{bmatrix}
+$$
+
+## A gallery of moves
+
+<Figure src="gallery" alt="Four small grids, each with the unit square outlined in gray and its image filled. A stretch doubles the square's width. A reflection flips it to the left and fills it pink. A vertical shear tilts it upward. A projection flattens the whole grid onto the horizontal axis. Each matrix is printed below its grid." wide />
+
+Each matrix above is $\begin{bmatrix} T(\mathbf e_1) & T(\mathbf e_2) \end{bmatrix}$, so you can rebuild it from the picture. From left to right they are $\begin{bmatrix} 2 & 0 \\ 0 & 1 \end{bmatrix}$, $\begin{bmatrix} -1 & 0 \\ 0 & 1 \end{bmatrix}$, $\begin{bmatrix} 1 & 0 \\ 1 & 1 \end{bmatrix}$ and $\begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix}$. A pink square means the map flipped the plane over. Turning $\green{\mathbf e_1}$ and $\red{\mathbf e_2}$ through an angle $\varphi$ gives the rotation matrix the same way:
+
+$$
+\begin{bmatrix} \green{\cos\varphi} & \red{-\sin\varphi} \\ \green{\sin\varphi} & \red{\cos\varphi} \end{bmatrix}
+$$
+
+<ShapeMatch target={[[0, 1], [1, 0]]} prompt="Drag the green and red tips so the F lands exactly on the dashed outline." success="Matched. This map swaps $\mathbf e_1$ and $\mathbf e_2$, which reflects the plane across the line $x_2 = x_1$. The F turned pink because it was flipped over." />
+
+## Practice
+
+<Check>
+A $3 \times 5$ matrix $A$ defines $T(\mathbf x) = A\mathbf x$ as a map $T : \mathbb{R}^n \to \mathbb{R}^m$. Find $n$ and $m$. (Modeled on Lay §1.8 #21.)
+
+<VectorAnswer answer={[5, 3]} labels={["n", "m"]} />
+
+<Answer>
+The product $A\mathbf x$ needs one entry of $\mathbf x$ for each of the $5$ columns, so $n = 5$. Each column has $3$ entries, so $A\mathbf x$ lives in $\mathbb{R}^3$ and $m = 3$.
+</Answer>
+</Check>
+
+<Check>
+$T$ first performs a vertical shear that sends $\mathbf e_1$ to $\mathbf e_1 + 2\mathbf e_2$ and keeps $\mathbf e_2$ fixed, then reflects through the line $x_2 = x_1$. Find $T(1, 1)$. (Modeled on Lay §1.9 #9.)
+
+<VectorAnswer answer={[3, 1]} />
+
+<Answer>
+Track each basis vector through both steps. The reflection swaps the two coordinates.
+
+$$
+\begin{aligned}
+\green{\mathbf e_1} &\to (1, 2) \to (2, 1), \\
+\red{\mathbf e_2} &\to (0, 1) \to (1, 0),
+\end{aligned}
+$$
+
+so $A = \begin{bmatrix} \green{2} & \red{1} \\ \green{1} & \red{0} \end{bmatrix}$ and $T(1, 1) = (2, 1) + (1, 0) = (3, 1)$.
+</Answer>
+</Check>
+
+<Check>
+A linear map $T$ sends $\mathbf u = (1, 1)$ to $(4, 2)$ and $\mathbf v = (1, -1)$ to $(2, -4)$. Find $T(\mathbf e_1)$. (Modeled on Lay §1.8 #17.)
+
+<VectorAnswer answer={[3, -1]} />
+
+<Answer>
+Since $\mathbf e_1 = \tfrac12(\mathbf u + \mathbf v)$, linearity gives
+
+$$
+T(\mathbf e_1) = \tfrac12\bigl(T(\mathbf u) + T(\mathbf v)\bigr) = \tfrac12\begin{bmatrix} 6 \\ -2 \end{bmatrix} = \begin{bmatrix} 3 \\ -1 \end{bmatrix}.
+$$
+
+In the same way $\mathbf e_2 = \tfrac12(\mathbf u - \mathbf v)$ gives $T(\mathbf e_2) = (1, 3)$, so the standard matrix is $\begin{bmatrix} 3 & 1 \\ -1 & 3 \end{bmatrix}$.
+</Answer>
+</Check>

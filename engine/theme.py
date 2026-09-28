@@ -415,3 +415,78 @@ def scrim(opacity: float = 0.96):
         fill_opacity=opacity,
         stroke_width=0,
     )
+
+
+class MatrixTracker:
+    """A 2x2 matrix held in four value trackers, so grids and arrows can follow it as it springs to a new matrix."""
+
+    def __init__(self, rows=((1, 0), (0, 1)), offset=(0, 0)):
+        self.entries = [ValueTracker(value) for row in rows for value in row]
+        self.shift = [ValueTracker(value) for value in offset]
+
+    def rows(self):
+        a, b, c, d = (tracker.get_value() for tracker in self.entries)
+        return (a, b), (c, d)
+
+    def offset(self):
+        return tuple(tracker.get_value() for tracker in self.shift)
+
+    def apply(self, point):
+        (a, b), (c, d) = self.rows()
+        dx, dy = self.offset()
+        return (a * point[0] + b * point[1] + dx, c * point[0] + d * point[1] + dy)
+
+    def columns(self):
+        (a, b), (c, d) = self.rows()
+        return (a, c), (b, d)
+
+    def to(self, rows):
+        values = [value for row in rows for value in row]
+        return [tracker.animate.set_value(value) for tracker, value in zip(self.entries, values)]
+
+    def slide_to(self, offset):
+        return [tracker.animate.set_value(value) for tracker, value in zip(self.shift, offset)]
+
+    def turn_to(self, angle: float, start: float = 0.0):
+        """Rotate from angle `start` to `angle` through true rotations, so the grid turns instead of shrinking."""
+        from manim import UpdateFromAlphaFunc
+
+        def set_angle(_, alpha):
+            phi = start + (angle - start) * alpha
+            for tracker, value in zip(self.entries, (math.cos(phi), -math.sin(phi), math.sin(phi), math.cos(phi))):
+                tracker.set_value(value)
+
+        return UpdateFromAlphaFunc(self.entries[0], set_angle)
+
+
+def moved_grid(plane: NumberPlane, tracker: MatrixTracker, reach: int = 14, color: str = Palette.blue, opacity: float = 0.6) -> VGroup:
+    """The image of the integer grid under tracker's current map, clipped to the plane, with the image axes brighter."""
+    i_image, j_image = (np.array(column, dtype=float) for column in tracker.columns())
+    shift = np.array(tracker.offset(), dtype=float)
+    x_limits, y_limits = tuple(plane.x_range[:2]), tuple(plane.y_range[:2])
+    lines = VGroup()
+    for k in range(-reach, reach + 1):
+        for base, direction in ((k * i_image, j_image), (k * j_image, i_image)):
+            if np.linalg.norm(direction) < 1e-6:
+                continue
+            segment = clip_to_box(shift + base - reach * direction, shift + base + reach * direction, x_limits, y_limits)
+            if segment is None:
+                continue
+            axis = k == 0
+            lines.add(
+                Line(
+                    plane.c2p(*segment[0]),
+                    plane.c2p(*segment[1]),
+                    color=Palette.axis if axis else color,
+                    stroke_width=2.4 if axis else 1.8,
+                    stroke_opacity=0.95 if axis else opacity,
+                )
+            )
+    return lines
+
+
+def moved_polygon(plane: NumberPlane, tracker: MatrixTracker, corners, color: str = Palette.yellow, opacity: float = 0.3):
+    """The image of a polygon (plane coords) under tracker's current map, filled and without an outline."""
+    from manim import Polygon
+
+    return Polygon(*[plane.c2p(*tracker.apply(corner)) for corner in corners], color=color, fill_opacity=opacity, stroke_width=0)
