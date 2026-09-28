@@ -1,0 +1,117 @@
+Yesterday you met vector spaces, which are sets where adding and scaling follow ten rules. Many interesting vector spaces live inside bigger ones: a line through the origin sits inside $\mathbb{R}^2$, and the polynomials of degree at most 2 sit inside all polynomials. Today's question is when a piece of a vector space is a vector space in its own right. The answer takes only three checks.
+
+## The subspace test
+
+<Definition term="Subspace">
+A **subspace** of a vector space $V$ is a subset $H$ of $V$ with three properties.
+
+- (a) The zero vector of $V$ is in $H$.
+- (b) $H$ is **closed under addition**: for each $\mathbf u$ and $\mathbf v$ in $H$, the sum $\mathbf u + \mathbf v$ is in $H$.
+- (c) $H$ is **closed under scaling**: for each $\mathbf u$ in $H$ and each scalar $c$, the vector $c\,\mathbf u$ is in $H$.
+</Definition>
+
+Three checks are enough because $H$ borrows its addition and scaling from $V$. Rules like $\mathbf u + \mathbf v = \mathbf v + \mathbf u$ already hold for every vector of $V$, so they hold for the vectors of $H$ too. Checks (a), (b) and (c) are rules 4, 1 and 6 from yesterday. The last rule, that negatives exist, follows from (c), because $-\mathbf u = (-1)\,\mathbf u$.
+
+Always test (a) first. Scaling any vector by $0$ gives $\mathbf 0$, so a set that is closed under scaling must contain $\mathbf 0$. If $\mathbf 0$ is missing, you can stop there.
+
+## Lines through the origin
+
+<Pair>
+<Figure src="shifted-line" alt="Two panels. Left: the purple line y = x/2 through the origin, with yellow u = (2, 1) and blue v = (4, 2) placed tip to tail along it, so the teal dot u + v = (6, 3) lands on the line. Right: the purple line y = x/2 + 1, with yellow u = (2, 2) and blue v = (−4, −1) on it; the teal sum (−2, 1) is ringed in orange a dashed unit above the line, and a dashed orange gap shows the line passing one unit above the origin." />
+
+On the line $y = \tfrac12 x$, every point is $(2t, t)$ for some $t$. Adding $(2s, s)$ and $(2t, t)$ gives $(2(s + t),\ s + t)$, and scaling $(2t, t)$ by $c$ gives $(2ct,\ ct)$. Both results have the same form, and $t = 0$ gives the origin, so the line passes all three checks.
+
+On $y = \tfrac12 x + 1$, the points $\yellow{\mathbf u} = (2, 2)$ and $\blue{\mathbf v} = (-4, -1)$ both lie on the line, but $\teal{\mathbf u + \mathbf v} = (-2, 1)$ does not, since the line has height $0$ at $x = -2$.
+</Pair>
+
+Every sum of two points on the shifted line lands on $y = \tfrac12 x + 2$, because each point carries its own $+1$ and the sum carries both. In the widget, that landing line is drawn dashed in teal.
+
+<ShiftedLineTest shift={1} u={2} v={-4} c={1.5} />
+
+The same reasoning holds in $\mathbb{R}^3$. A plane through the origin is a subspace, and a plane shifted off the origin is not.
+
+## Counterexamples
+
+To prove a set is **not** a subspace, give one specific failure: a vector and a scalar, or two vectors, whose result leaves the set. To prove a set **is** a subspace, the argument has to work for arbitrary vectors, so a single example is not enough.
+
+The closed first quadrant $Q = \{(x, y) : x \geq 0,\ y \geq 0\}$ contains $\mathbf 0$, and adding two vectors with nonnegative entries gives nonnegative entries again. Checks (a) and (b) both pass, which is why students often call $Q$ a subspace. Try a negative scalar before you believe that.
+
+<QuadrantEscape u={[2, 1]} c={2} />
+
+Here is one answer: $\mathbf u = (2, 1)$ is in $Q$, but $(-1)\,\mathbf u = (-2, -1)$ is not. The same habit catches sets of polynomials. The polynomials of degree exactly 2 miss the zero polynomial, and $(t^2 + t) + (-t^2) = t$ drops out of the set.
+
+## Spans
+
+<Definition term="Theorem">
+If $\mathbf v_1, \dots, \mathbf v_p$ are in a vector space $V$, then $\operatorname{Span}\{\mathbf v_1, \dots, \mathbf v_p\}$ is a subspace of $V$.
+</Definition>
+
+For two vectors the proof is three lines, one for each check. Take any two vectors of the span, $\mathbf u = s_1\yellow{\mathbf v_1} + s_2\blue{\mathbf v_2}$ and $\mathbf w = t_1\yellow{\mathbf v_1} + t_2\blue{\mathbf v_2}$. Adding them adds their weights, and scaling $\mathbf u$ scales its weights, so each result is another combination of $\yellow{\mathbf v_1}$ and $\blue{\mathbf v_2}$.
+
+$$
+\begin{aligned}
+&\text{(a)} & \mathbf 0 &= 0\,\yellow{\mathbf v_1} + 0\,\blue{\mathbf v_2} \\
+&\text{(b)} & \mathbf u + \mathbf w &= (s_1 + t_1)\,\yellow{\mathbf v_1} + (s_2 + t_2)\,\blue{\mathbf v_2} \\
+&\text{(c)} & c\,\mathbf u &= (c s_1)\,\yellow{\mathbf v_1} + (c s_2)\,\blue{\mathbf v_2}
+\end{aligned}
+$$
+
+<Figure src="plane-through-origin" alt="Three-dimensional axes x1, x2, x3 with a purple plane through the origin. The yellow arrow v1, the blue arrow v2 and their teal sum v1 + v2 all lie in the plane." />
+
+This theorem is the fastest way to prove that a set is a subspace: write it as a span. Take the plane $H = \{(x_1, x_2, x_3) : x_1 + 2x_2 - x_3 = 0\}$. Solving for $x_1$ lets $x_2$ and $x_3$ be anything.
+
+$$
+\begin{aligned}
+x_1 &= -2x_2 + x_3 \\
+\begin{bmatrix} x_1 \\ x_2 \\ x_3 \end{bmatrix} &= \begin{bmatrix} -2x_2 + x_3 \\ x_2 \\ x_3 \end{bmatrix} = x_2 \yellow{\begin{bmatrix} -2 \\ 1 \\ 0 \end{bmatrix}} + x_3 \blue{\begin{bmatrix} 1 \\ 0 \\ 1 \end{bmatrix}}
+\end{aligned}
+$$
+
+So $H = \operatorname{Span}\{(-2, 1, 0),\ (1, 0, 1)\}$, and $H$ is a subspace of $\mathbb{R}^3$ by the theorem. The same idea explains why $\{(s, t, 0)\}$ is a subspace of $\mathbb{R}^3$ while $\mathbb{R}^2$ is not. The vectors of $\mathbb{R}^2$ have two entries, so $\mathbb{R}^2$ is not even a subset of $\mathbb{R}^3$.
+
+## Practice
+
+<Check>
+Let $W$ be the points $(s,\ 3s - 2)$ for real $s$. The vector $\mathbf u = (1, 1)$ is in $W$. Compute $3\,\mathbf u$. (Modeled on Lay §4.1, Practice Problem 1.)
+
+<VectorAnswer answer={[3, 3]} />
+
+<Answer>
+$3\,\mathbf u = (3, 3)$. The point of $W$ with first entry $3$ has $s = 3$, so it is $(3, 3 \cdot 3 - 2) = (3, 7)$. Since $(3, 3) \neq (3, 7)$, the multiple $3\,\mathbf u$ is not in $W$, and $W$ fails check (c). It also fails check (a), because $(0, 0)$ would need $s = 0$ and $3s - 2 = 0$ at once.
+</Answer>
+</Check>
+
+<Check>
+Let $H$ be the set of all vectors $(a - 2b,\ b,\ a + b)$ with $a$ and $b$ real. Find $\mathbf v_1$ and $\mathbf v_2$ with $H = \operatorname{Span}\{\mathbf v_1, \mathbf v_2\}$, where $\mathbf v_1$ holds the coefficients of $a$ and $\mathbf v_2$ the coefficients of $b$. (Modeled on Lay §4.1 #11.)
+
+<VectorAnswer answer={[1, 0, 1, -2, 1, 1]} labels={["first entry of v1", "second entry of v1", "third entry of v1", "first entry of v2", "second entry of v2", "third entry of v2"]} />
+
+<Answer>
+$$
+\begin{bmatrix} a - 2b \\ b \\ a + b \end{bmatrix} = a\yellow{\begin{bmatrix} 1 \\ 0 \\ 1 \end{bmatrix}} + b\blue{\begin{bmatrix} -2 \\ 1 \\ 1 \end{bmatrix}}
+$$
+
+So $H = \operatorname{Span}\{(1, 0, 1),\ (-2, 1, 1)\}$, which is a subspace of $\mathbb{R}^3$ by the theorem.
+</Answer>
+</Check>
+
+<Check>
+In $\mathbb{P}_2$, the set $H$ of polynomials with $\mathbf p(1) = 0$ equals $\operatorname{Span}\{t - 1,\ t^2 - 1\}$. Write $\mathbf p(t) = 3 - t - 2t^2$ as $a_1(t - 1) + a_2(t^2 - 1)$ and enter $a_1$ and $a_2$. (Modeled on Lay §4.1 #8.)
+
+<VectorAnswer answer={[-1, -2]} labels={["a1", "a2"]} />
+
+<Answer>
+First check that $\mathbf p$ is in $H$: $\mathbf p(1) = 3 - 1 - 2 = 0$. Then match coefficients.
+
+$$
+\begin{aligned}
+a_1(t - 1) + a_2(t^2 - 1) &= (-a_1 - a_2) + a_1 t + a_2 t^2 \\
+t^2:\quad a_2 &= -2 \\
+t:\quad a_1 &= -1 \\
+1:\quad -a_1 - a_2 &= 1 + 2 = 3 \;\checkmark
+\end{aligned}
+$$
+
+So $\mathbf p = -(t - 1) - 2(t^2 - 1)$.
+</Answer>
+</Check>
