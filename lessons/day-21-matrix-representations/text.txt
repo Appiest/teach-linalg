@@ -1,0 +1,2 @@
+Day 21 is up! Today any linear map becomes a matrix once you pick a basis on each side, even the derivative. Watch each of 1, t and t² go through d/dt and drop into its own column, and ask yourself why the first column comes out all zeros.
+https://appiest.github.io/teach-linalg/day/21/

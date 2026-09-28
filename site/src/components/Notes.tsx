@@ -21,6 +21,7 @@ import { AddressHunt, StaircaseBasis, TrimToBasis } from "@/components/interacti
 import { LiftToPlane, LoopAnywhere, RelationFinder } from "@/components/interactive/independence";
 import { OutputReach, PivotPicker, RowSlide } from "@/components/interactive/column-space";
 import { PivotBudget, RankTally } from "@/components/interactive/rank-nullity";
+import { ColumnBuilder, DerivativeRoutes } from "@/components/interactive/matrix-representations";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
 import { katexMacros } from "@/lib/katex-macros";
 
@@ -128,6 +129,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     RowSlide,
     RankTally,
     PivotBudget,
+    ColumnBuilder,
+    DerivativeRoutes,
   };
   return (
     <div className="notes">
