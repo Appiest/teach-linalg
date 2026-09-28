@@ -229,7 +229,8 @@ class Lesson(LessonScene):
             name_label(r"\mathbf v_2", Palette.blue, plane.c2p(*V2), UL),
         )
         self.play(GrowArrow(self.arrows[0]), GrowArrow(self.arrows[1]), FadeIn(self.labels), run_time=1.1, rate_func=spring_soft)
-        self.wait(Timing.beat)
+        line = self.say(r"Yesterday's shear had one such line, but $A$ has two.", line, hold=Timing.beat)
+        line = self.say(r"Can two eigenvectors make $A$ as simple as a diagonal matrix?", line, hold=Timing.read_short)
 
         line = self.say(r"Use its eigenvectors $\mathbf v_1$ and $\mathbf v_2$ as new axes.", line, hold=0.2)
         self.grid = always_redraw(lambda: self.live.grid(plane, color=Palette.purple_gray, opacity=0.6))
@@ -253,6 +254,7 @@ class Lesson(LessonScene):
         plane = self.plane
         self.panel = factor_panel()
         self.play(FadeOut(self.a_panel), FadeIn(self.panel, shift=DOWN * 0.1), run_time=0.9, rate_func=spring_soft)
+        line = self.say(r"This factorization will make powers of $A$ easy to compute.", line, hold=Timing.read_short)
         line = self.meet_u(line)
         line = self.say(r"Now do $A$ in three moves, starting from the right.", line, hold=Timing.beat)
         box = focus_box(self.panel.blocks[2])
@@ -396,7 +398,10 @@ class Lesson(LessonScene):
         product = self.tenth_power_row()
         board = VGroup(VGroup(steps, side), product).arrange(DOWN, buff=0.7)
         board.scale(min(1.2, 12.5 / board.width)).move_to(UP * 0.45).set_z_index(21)
-        self.play(FadeIn(steps[0]), run_time=0.8)
+        brute = tex("A^{10}", "=", r"A\,A\,A\,A\,A\,A\,A\,A\,A\,A", font_size=60).move_to(UP * 0.45).set_z_index(21)
+        self.play(FadeIn(brute, shift=UP * 0.1), run_time=0.8, rate_func=spring_soft)
+        line = self.say(r"Computing $A^{10}$ directly takes nine matrix products.", line, hold=Timing.read_short)
+        self.play(FadeOut(brute), FadeIn(steps[0]), run_time=0.8)
         line = self.say(r"Squaring $A$ puts $P^{-1}P = I$ in the middle.", line, hold=0.2)
         self.play(FadeIn(steps[1], shift=DOWN * 0.1), run_time=0.8)
         self.play(steps[1][2].animate.set_color(Palette.glow), run_time=0.6)
@@ -411,7 +416,8 @@ class Lesson(LessonScene):
         line = self.say(r"$A^{10}$ now takes two products instead of nine.", line, hold=0.2)
         self.play(FadeIn(product[:4], shift=UP * 0.1), run_time=0.9, rate_func=spring_soft)
         self.play(FadeIn(product[4:], shift=LEFT * 0.1), run_time=0.8, rate_func=spring_soft)
-        self.wait(Timing.read_long)
+        self.wait(Timing.read_short)
+        line = self.say(r"Day 33 uses these powers to predict where $A^k\mathbf x$ heads.", line, hold=Timing.read_short)
         self.play(FadeOut(line), run_time=0.35)
         return board
 

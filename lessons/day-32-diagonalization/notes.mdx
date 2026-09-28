@@ -1,4 +1,4 @@
-On Day 28 the matrix $A = \begin{bmatrix} 3 & -2 \\ 1 & 0 \end{bmatrix}$ kept two lines, doubling the yellow one through $\yellow{\mathbf v_1} = (2, 1)$ and leaving the blue one through $\blue{\mathbf v_2} = (1, 1)$ alone. Today those two eigenvectors become the axes of a new grid. On that grid $A$ does nothing except stretch each axis, and that picture turns into a factorization $A = PDP^{-1}$ that makes $A$ easy to understand and easy to raise to powers.
+On Day 28 the matrix $A = \begin{bmatrix} 3 & -2 \\ 1 & 0 \end{bmatrix}$ kept two lines, doubling the yellow one through $\yellow{\mathbf v_1} = (2, 1)$ and leaving the blue one through $\blue{\mathbf v_2} = (1, 1)$ alone. Yesterday's shear could not supply two independent eigenvectors, and today asks what a matrix gains when it can. Those two eigenvectors become the axes of a new grid. On that grid $A$ does nothing except stretch each axis, and that picture turns into a factorization $A = PDP^{-1}$ that makes $A$ easy to understand and easy to raise to powers.
 
 <Figure src="three-moves" alt="Four small grids. Start: the slanted purple-gray eigen-grid with the yellow v1 = (2, 1), the blue v2 = (1, 1), the gray vector u = (0, 1) and an orange ring at Au = (−2, 0). After P inverse: the grid is the ordinary square grid, yellow and blue lie on the axes, and u sits at (−1, 2). After D: the grid is stretched to twice its width, and u sits at (−2, 2). After P: the grid is slanted again with the yellow arrow at (4, 2), and u lands inside the ring at (−2, 0)." wide />
 
@@ -22,7 +22,7 @@ A basis of $\mathbb R^n$ made of eigenvectors of $A$ is called an **eigenvector 
 
 ## The diagonalization theorem
 
-Put the eigenvectors into the columns of $P = [\,\yellow{\mathbf v_1}\ \blue{\mathbf v_2}\,]$ and the eigenvalues, in the same order, on the diagonal of $D$. Multiplying $A$ into $P$ one column at a time gives
+The goal here is to rewrite the picture above as matrix algebra, so that the stretch in eigen-coordinates becomes a single diagonal factor. Put the eigenvectors into the columns of $P = [\,\yellow{\mathbf v_1}\ \blue{\mathbf v_2}\,]$ and the eigenvalues, in the same order, on the diagonal of $D$. Multiplying $A$ into $P$ one column at a time gives
 
 $$
 AP = [\,A\yellow{\mathbf v_1}\ \ A\blue{\mathbf v_2}\,] = [\,\glow{2}\yellow{\mathbf v_1}\ \ \glow{1}\blue{\mathbf v_2}\,] = [\,\yellow{\mathbf v_1}\ \ \blue{\mathbf v_2}\,]\begin{bmatrix} \glow{2} & 0 \\ 0 & \glow{1} \end{bmatrix} = PD.
@@ -48,7 +48,7 @@ Distinct eigenvalues always avoid this problem. Eigenvectors for different eigen
 
 ## Diagonalizing step by step
 
-For a repeated eigenvalue, count: $A$ is diagonalizable exactly when the eigenspace dimensions add up to $n$. Here is the full recipe with $A = \begin{bmatrix} 4 & 1 \\ 2 & 3 \end{bmatrix}$. Find the eigenvalues, find a basis for each eigenspace, and build $P$ and $D$ in matching order:
+For a repeated eigenvalue, count: $A$ is diagonalizable exactly when the eigenspace dimensions add up to $n$. The recipe aims for $n$ independent eigenvectors to fill the columns of $P$, and it can stop early when the count comes up short. Here is the full recipe with $A = \begin{bmatrix} 4 & 1 \\ 2 & 3 \end{bmatrix}$. Find the eigenvalues, find a basis for each eigenspace, and build $P$ and $D$ in matching order:
 
 $$
 \begin{aligned}
@@ -64,7 +64,7 @@ Checking $AP = PD$ avoids computing $P^{-1}$. It proves nothing unless $P$ is in
 
 ## Powers of A
 
-Squaring $A = PDP^{-1}$ puts $P^{-1}P = I$ in the middle, and the same cancellation happens for every power:
+Multiplying $A$ by itself ten times is slow, and the entries of $A^k$ are hard to predict by looking at $A$. The factorization fixes both problems. Squaring $A = PDP^{-1}$ puts $P^{-1}P = I$ in the middle, and the same cancellation happens for every power:
 
 $$
 A^2 = PD(P^{-1}P)DP^{-1} = PD^2P^{-1}, \qquad A^k = PD^kP^{-1}.
@@ -80,7 +80,7 @@ $$
 A^k = \begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}\begin{bmatrix} 2^k & 0 \\ 0 & 1 \end{bmatrix}\begin{bmatrix} 1 & -1 \\ -1 & 2 \end{bmatrix} = \begin{bmatrix} 2^{k+1} - 1 & 2 - 2^{k+1} \\ 2^k - 1 & 2 - 2^k \end{bmatrix}.
 $$
 
-At $k = 1$ this gives back $A$, and at $k = 10$ it gives $\begin{bmatrix} 2047 & -2046 \\ 1023 & -1022 \end{bmatrix}$ without nine separate multiplications.
+At $k = 1$ this gives back $A$, and at $k = 10$ it gives $\begin{bmatrix} 2047 & -2046 \\ 1023 & -1022 \end{bmatrix}$ without nine separate multiplications. Tomorrow reads $D$ as the matrix of the same map in the eigenvector basis, and uses $A^k = PD^kP^{-1}$ to track where $A^k\mathbf x$ heads.
 
 ## Practice
 
