@@ -1,0 +1,152 @@
+On Day 15 a basis $\mathcal B$ gave every vector a coordinate vector $[\mathbf x]_{\mathcal B}$, and on Day 21 a pair of bases turned a linear map into a matrix. Today puts two bases on the same space at once. The vector stays exactly where it is, and a single matrix translates its address from one grid's language into the other's.
+
+<Figure src="two-grids" alt="The purple-gray grid of b1 = (2, 1) in green and b2 = (−1, 2) in red overlaid with the pink grid of c1 = (1, 0) in pink and c2 = (−1, 1) in blue. The yellow vector x = (3, 4) is reached by two green steps and one red step, and also by seven pink steps and four blue steps, with a dot at every step. Beside it, [x]_B = (2, 1) and [x]_C = (7, 4)." wide />
+
+The same arrow $\yellow{\mathbf x}$ is $2\green{\mathbf b_1} + \red{\mathbf b_2}$ and also $7\pink{\mathbf c_1} + 4\blue{\mathbf c_2}$. Neither address is more correct than the other. Each one only makes sense once you know which grid it was read from.
+
+<TwoAddresses b1={[2, 1]} b2={[-1, 2]} c1={[1, 0]} c2={[-1, 1]} target={[1, 1]} start={[3, 4]} />
+
+## The change-of-coordinates matrix
+
+To translate without redrawing the picture, write each old basis vector in the new basis. In the video, $\green{\mathbf b_1} = 3\pink{\mathbf c_1} + \blue{\mathbf c_2}$ and $\red{\mathbf b_2} = \pink{\mathbf c_1} + 2\blue{\mathbf c_2}$.
+
+<Definition term="Change-of-coordinates matrix">
+Let $\mathcal B = \{\mathbf b_1, \dots, \mathbf b_n\}$ and $\mathcal C = \{\mathbf c_1, \dots, \mathbf c_n\}$ be bases of a vector space $V$. There is exactly one $n \times n$ matrix $P_{\mathcal C \leftarrow \mathcal B}$ with
+
+$$
+[\mathbf x]_{\mathcal C} = P_{\mathcal C \leftarrow \mathcal B}\,[\mathbf x]_{\mathcal B} \quad \text{for every } \mathbf x \text{ in } V,
+$$
+
+and its columns are the $\mathcal C$-coordinate vectors of the vectors in $\mathcal B$:
+
+$$
+P_{\mathcal C \leftarrow \mathcal B} = \big[\,[\mathbf b_1]_{\mathcal C}\ \ [\mathbf b_2]_{\mathcal C}\ \ \cdots\ \ [\mathbf b_n]_{\mathcal C}\,\big].
+$$
+</Definition>
+
+Read the subscript from right to left. The matrix takes $\mathcal B$-coordinates in on the right and hands $\mathcal C$-coordinates out on the left. The columns come out this way because the coordinate map $[\,\cdot\,]_{\mathcal C}$ is linear, so it passes through the weights of $\mathbf x = x_1\mathbf b_1 + x_2\mathbf b_2$:
+
+$$
+\begin{aligned}
+[\yellow{\mathbf x}]_{\mathcal C} &= [\,2\green{\mathbf b_1} + 1\red{\mathbf b_2}\,]_{\mathcal C} = 2\,[\green{\mathbf b_1}]_{\mathcal C} + 1\,[\red{\mathbf b_2}]_{\mathcal C} \\
+&= 2\green{\begin{bmatrix} 3 \\ 1 \end{bmatrix}} + 1\red{\begin{bmatrix} 1 \\ 2 \end{bmatrix}}
+= \begin{bmatrix} \green{3} & \red{1} \\ \green{1} & \red{2} \end{bmatrix}\begin{bmatrix} 2 \\ 1 \end{bmatrix}
+= \begin{bmatrix} \pink{7} \\ \blue{4} \end{bmatrix}.
+\end{aligned}
+$$
+
+<Pair>
+<Figure src="columns" alt="The pink grid of c1 and c2. Three pink steps and one blue step walk to the tip of the green vector b1, and one pink step and two blue steps walk to the tip of the red vector b2. Beside them, b1 = 3c1 + 1c2, b2 = 1c1 + 2c2 and P from B to C with a green column (3, 1) and a red column (1, 2)." />
+
+The matrix is always invertible. Its columns are coordinate vectors of the independent set $\mathcal B$, so they are independent too, and a square matrix with independent columns has an inverse. Multiplying $[\mathbf x]_{\mathcal C} = P_{\mathcal C \leftarrow \mathcal B}[\mathbf x]_{\mathcal B}$ by that inverse gives the translation in the other direction:
+
+$$
+P_{\mathcal B \leftarrow \mathcal C} = \big(P_{\mathcal C \leftarrow \mathcal B}\big)^{-1}.
+$$
+</Pair>
+
+<ColumnBuilder b1={[2, 1]} b2={[-1, 2]} c1={[1, 0]} c2={[-1, 1]} />
+
+The same idea works in $\mathbb P_2$. Take $\mathcal B = \{1,\ 1 + t,\ 1 + t + t^2\}$ and the standard basis $\mathcal E = \{1, t, t^2\}$. The coefficient list of each $\mathcal B$ polynomial, constant term on top, becomes one column of $P_{\mathcal E \leftarrow \mathcal B}$. To find $[3 - 2t + 5t^2]_{\mathcal B}$, solve $P_{\mathcal E \leftarrow \mathcal B}\,\mathbf y = (3, -2, 5)$:
+
+$$
+\begin{bmatrix} 1 & 1 & 1 \\ 0 & 1 & 1 \\ 0 & 0 & 1 \end{bmatrix}\mathbf y = \begin{bmatrix} 3 \\ -2 \\ 5 \end{bmatrix}
+\quad\Longrightarrow\quad
+\mathbf y = \begin{bmatrix} 5 \\ -7 \\ 5 \end{bmatrix}.
+$$
+
+Back substitution gives $y_3 = 5$, then $y_2 = -2 - 5 = -7$, then $y_1 = 3 + 7 - 5 = 5$. Indeed $5 - 7(1 + t) + 5(1 + t + t^2) = 3 - 2t + 5t^2$.
+
+## Row reduction
+
+When both bases are given as actual vectors in $\mathbb R^n$, column $j$ of $P_{\mathcal C \leftarrow \mathcal B}$ solves $[\,\mathbf c_1\ \cdots\ \mathbf c_n\,]\,\mathbf y = \mathbf b_j$. One row reduction solves all $n$ of those systems at once:
+
+$$
+[\,\mathbf c_1\ \cdots\ \mathbf c_n \mid \mathbf b_1\ \cdots\ \mathbf b_n\,] \sim [\,I \mid P_{\mathcal C \leftarrow \mathcal B}\,].
+$$
+
+The basis you translate into goes on the left. Putting $\mathcal B$ on the left instead produces $P_{\mathcal B \leftarrow \mathcal C}$. In $\mathbb R^n$ the standard basis gives a shortcut as well: $P_{\mathcal B} = [\,\mathbf b_1\ \cdots\ \mathbf b_n\,]$ from Day 15 is $P_{\mathcal E \leftarrow \mathcal B}$, so $P_{\mathcal C \leftarrow \mathcal B} = P_{\mathcal C}^{-1}P_{\mathcal B}$.
+
+Here is a worked example with $\green{\mathbf b_1} = (1, 2)$, $\red{\mathbf b_2} = (3, 1)$, $\pink{\mathbf c_1} = (1, 1)$ and $\blue{\mathbf c_2} = (1, 2)$:
+
+$$
+\begin{aligned}
+\left[\begin{array}{cc|cc} 1 & 1 & 1 & 3 \\ 1 & 2 & 2 & 1 \end{array}\right]
+&\sim \left[\begin{array}{cc|cc} 1 & 1 & 1 & 3 \\ 0 & 1 & 1 & -2 \end{array}\right] && R_2 - R_1 \\
+&\sim \left[\begin{array}{cc|cc} 1 & 0 & 0 & 5 \\ 0 & 1 & 1 & -2 \end{array}\right] && R_1 - R_2
+\end{aligned}
+$$
+
+So $P_{\mathcal C \leftarrow \mathcal B} = \begin{bmatrix} \green{0} & \red{5} \\ \green{1} & \red{-2} \end{bmatrix}$. To check column 2, compute $5\,\pink{\mathbf c_1} - 2\,\blue{\mathbf c_2} = (5 - 2,\ 5 - 4) = (3, 1) = \red{\mathbf b_2}$. The determinant is $-5$, so $P_{\mathcal B \leftarrow \mathcal C} = -\tfrac15\begin{bmatrix} -2 & -5 \\ -1 & 0 \end{bmatrix} = \begin{bmatrix} 2/5 & 1 \\ 1/5 & 0 \end{bmatrix}$.
+
+## Similar matrices
+
+A change of basis also rewrites the matrix of a map. Let $T(\mathbf x) = A\mathbf x$ on $\mathbb R^n$, take a basis $\mathcal B$, and set $P = P_{\mathcal B} = [\,\mathbf b_1\ \cdots\ \mathbf b_n\,]$. To apply $T$ to a vector known only by $[\mathbf x]_{\mathcal B}$, first convert to standard coordinates with $P$, then apply $A$, then convert back with $P^{-1}$.
+
+<Figure src="similarity" alt="A square diagram. From [x]_B an arrow labelled P goes up to x, an arrow labelled A goes right to Ax, and an arrow labelled P inverse goes down to [Ax]_B. The bottom arrow from [x]_B to [Ax]_B is labelled [T]_B. Below it, [T]_B = P⁻¹AP, checked with numbers: one fifth of (2, 1; −1, 2) times (1, 2; 1, 0) times (2, −1; 1, 2) equals (2, 1; 0, −1)." wide />
+
+<Definition term="Similar matrices">
+Square matrices $A$ and $C$ are **similar** if $C = P^{-1}AP$ for some invertible $P$. If $T(\mathbf x) = A\mathbf x$ and $\mathcal B$ is a basis of $\mathbb R^n$ with $P = [\,\mathbf b_1\ \cdots\ \mathbf b_n\,]$, then
+
+$$
+[T]_{\mathcal B} = P^{-1}AP.
+$$
+
+The matrices similar to $A$ are exactly the matrices of $\mathbf x \mapsto A\mathbf x$ in the different bases of $\mathbb R^n$.
+</Definition>
+
+The order matters because the first $P$ acts on $[\mathbf x]_{\mathcal B}$. Checking column 1 confirms it, since $P^{-1}AP\,\mathbf e_1 = P^{-1}A\mathbf b_1 = [A\mathbf b_1]_{\mathcal B}$. In the video, $A = \begin{bmatrix} 1 & 2 \\ 1 & 0 \end{bmatrix}$ doubles $\green{\mathbf b_1}$ and sends $\red{\mathbf b_2}$ to $\green{\mathbf b_1} - \red{\mathbf b_2}$, so its $\mathcal B$-matrix is $\teal{\begin{bmatrix} 2 & 1 \\ 0 & -1 \end{bmatrix}}$. That matrix is triangular, and the zero in its corner says that $T$ keeps the line through $\mathbf b_1$ on itself.
+
+<SimilarityHunt matrix={[[1, 2], [1, 0]]} b1={[2, 1]} b2={[-1, 2]} target={[1, 1]} start={[1, 1]} />
+
+## Practice
+
+<Check>
+Bases $\mathcal B$ and $\mathcal C$ of $V$ satisfy $\mathbf b_1 = 2\mathbf c_1 + \mathbf c_2$ and $\mathbf b_2 = -\mathbf c_1 + 3\mathbf c_2$. Find $[\mathbf x]_{\mathcal C}$ for $\mathbf x = \mathbf b_1 - 2\mathbf b_2$. (Modeled on Lay §4.7, Exercises 1–2.)
+
+<VectorAnswer answer={[4, -5]} />
+
+<Answer>
+The columns of $P_{\mathcal C \leftarrow \mathcal B}$ are $[\mathbf b_1]_{\mathcal C} = (2, 1)$ and $[\mathbf b_2]_{\mathcal C} = (-1, 3)$, and $[\mathbf x]_{\mathcal B} = (1, -2)$:
+
+$$
+[\mathbf x]_{\mathcal C} = \begin{bmatrix} 2 & -1 \\ 1 & 3 \end{bmatrix}\begin{bmatrix} 1 \\ -2 \end{bmatrix} = \begin{bmatrix} 2 + 2 \\ 1 - 6 \end{bmatrix} = \begin{bmatrix} 4 \\ -5 \end{bmatrix}.
+$$
+</Answer>
+</Check>
+
+<Check>
+Let $\mathbf b_1 = (3, 1)$, $\mathbf b_2 = (1, 1)$, $\mathbf c_1 = (1, 0)$ and $\mathbf c_2 = (1, 1)$. Find $P_{\mathcal C \leftarrow \mathcal B}$ and enter its entries in reading order. (Modeled on Lay §4.7, Exercises 7–10.)
+
+<VectorAnswer answer={[2, 0, 1, 1]} labels={["top left", "top right", "bottom left", "bottom right"]} />
+
+<Answer>
+Put the target basis $\mathcal C$ on the left and row reduce:
+
+$$
+\left[\begin{array}{cc|cc} 1 & 1 & 3 & 1 \\ 0 & 1 & 1 & 1 \end{array}\right]
+\sim \left[\begin{array}{cc|cc} 1 & 0 & 2 & 0 \\ 0 & 1 & 1 & 1 \end{array}\right] \qquad R_1 - R_2
+$$
+
+So $P_{\mathcal C \leftarrow \mathcal B} = \begin{bmatrix} 2 & 0 \\ 1 & 1 \end{bmatrix}$. Check column 1: $2\mathbf c_1 + \mathbf c_2 = (3, 1) = \mathbf b_1$. The other direction is $P_{\mathcal B \leftarrow \mathcal C} = \tfrac12\begin{bmatrix} 1 & 0 \\ -1 & 2 \end{bmatrix}$.
+</Answer>
+</Check>
+
+<Check>
+Let $A = \begin{bmatrix} 4 & -1 \\ 3 & 0 \end{bmatrix}$, $\mathbf b_1 = (1, 1)$ and $\mathbf b_2 = (1, 2)$. Find the $\mathcal B$-matrix of $\mathbf x \mapsto A\mathbf x$ and enter its entries in reading order. (Modeled on Lay §5.4, Exercise 17.)
+
+<VectorAnswer answer={[3, 1, 0, 1]} labels={["top left", "top right", "bottom left", "bottom right"]} />
+
+<Answer>
+With $P = \begin{bmatrix} 1 & 1 \\ 1 & 2 \end{bmatrix}$ and $P^{-1} = \begin{bmatrix} 2 & -1 \\ -1 & 1 \end{bmatrix}$:
+
+$$
+\begin{aligned}
+AP &= \begin{bmatrix} 4 & -1 \\ 3 & 0 \end{bmatrix}\begin{bmatrix} 1 & 1 \\ 1 & 2 \end{bmatrix} = \begin{bmatrix} 3 & 2 \\ 3 & 3 \end{bmatrix} \\
+P^{-1}AP &= \begin{bmatrix} 2 & -1 \\ -1 & 1 \end{bmatrix}\begin{bmatrix} 3 & 2 \\ 3 & 3 \end{bmatrix} = \begin{bmatrix} 3 & 1 \\ 0 & 1 \end{bmatrix}
+\end{aligned}
+$$
+
+Reading the columns, $A\mathbf b_1 = 3\mathbf b_1$ and $A\mathbf b_2 = \mathbf b_1 + \mathbf b_2$. Both are easy to confirm directly, since $A(1, 1) = (3, 3)$ and $A(1, 2) = (2, 3)$.
+</Answer>
+</Check>

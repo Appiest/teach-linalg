@@ -20,6 +20,7 @@ import { QuadrantEscape, ShiftedLineTest } from "@/components/interactive/subspa
 import { AddressHunt, StaircaseBasis, TrimToBasis } from "@/components/interactive/basis";
 import { LiftToPlane, LoopAnywhere, RelationFinder } from "@/components/interactive/independence";
 import { OutputReach, PivotPicker, RowSlide } from "@/components/interactive/column-space";
+import { ColumnBuilder, SimilarityHunt, TwoAddresses } from "@/components/interactive/change-of-basis";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
 import { katexMacros } from "@/lib/katex-macros";
 
@@ -125,6 +126,9 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     OutputReach,
     PivotPicker,
     RowSlide,
+    TwoAddresses,
+    ColumnBuilder,
+    SimilarityHunt,
   };
   return (
     <div className="notes">
