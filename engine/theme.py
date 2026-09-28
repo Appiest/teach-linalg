@@ -358,3 +358,60 @@ def equation_line(plane: NumberPlane, coeffs, color: str = Palette.yellow, strok
     if ends is None:
         return Line(plane.c2p(0, 0), plane.c2p(0, 0), stroke_opacity=0)
     return Line(plane.c2p(*ends[0]), plane.c2p(*ends[1]), color=color, stroke_width=stroke_width)
+
+
+def plane_at(origin, unit: float = 1.0) -> NumberPlane:
+    """A grid that fills the frame, with its origin placed at `origin` and `unit` scene units per grid step."""
+    half_width, half_height = config.frame_width / 2, config.frame_height / 2
+    x_min = math.floor((-half_width - origin[0]) / unit) - 1
+    x_max = math.ceil((half_width - origin[0]) / unit) + 1
+    y_min = math.floor((-half_height - origin[1]) / unit) - 1
+    y_max = math.ceil((half_height - origin[1]) / unit) + 1
+    plane = make_plane(
+        x_range=(x_min, x_max, 1),
+        y_range=(y_min, y_max, 1),
+        x_length=(x_max - x_min) * unit,
+        y_length=(y_max - y_min) * unit,
+    )
+    plane.shift(np.array([origin[0], origin[1], 0.0]) - plane.c2p(0, 0))
+    return plane
+
+
+def arrow_between(plane: NumberPlane, start, end, color: str, stroke_width: float = 6) -> Arrow:
+    """A vector drawn from `start` to `end` in plane coordinates, for tip-to-tail pictures."""
+    return Arrow(
+        plane.c2p(*start[:2]),
+        plane.c2p(*end[:2]),
+        buff=0,
+        color=color,
+        stroke_width=stroke_width,
+        max_tip_length_to_length_ratio=0.18,
+        max_stroke_width_to_length_ratio=12,
+    )
+
+
+def plate_for(mobject, padding: float = 0.25, opacity: float = 0.92):
+    """A borderless dark plate sized to `mobject`, for panels that grow as content is added."""
+    from manim import Rectangle
+
+    plate = Rectangle(
+        width=mobject.width + 2 * padding,
+        height=mobject.height + 2 * padding,
+        fill_color=Palette.background,
+        fill_opacity=opacity,
+        stroke_width=0,
+    )
+    return plate.move_to(mobject)
+
+
+def scrim(opacity: float = 0.96):
+    """A full-frame veil that pushes the plane into the background while math takes the stage."""
+    from manim import Rectangle
+
+    return Rectangle(
+        width=config.frame_width + 1,
+        height=config.frame_height + 1,
+        fill_color=Palette.background,
+        fill_opacity=opacity,
+        stroke_width=0,
+    )
