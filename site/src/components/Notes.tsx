@@ -10,6 +10,7 @@ import { RowReduceExplorer, SolutionCountExplorer } from "@/components/interacti
 import { ColumnSpanCheck, MatrixVectorExplorer } from "@/components/interactive/matrix";
 import { PreimageHunt, ShapeMatch } from "@/components/interactive/transformations";
 import { AdditionExplorer, CombinationTarget, ScaleExplorer, VectorExplorer } from "@/components/interactive/vectors";
+import { CommuteHunt, CompositionExplorer, ProductColumns } from "@/components/interactive/product";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
 import { katexMacros } from "@/lib/katex-macros";
 
@@ -89,6 +90,9 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     ColumnSpanCheck,
     PreimageHunt,
     ShapeMatch,
+    CompositionExplorer,
+    ProductColumns,
+    CommuteHunt,
   };
   return (
     <div className="notes">

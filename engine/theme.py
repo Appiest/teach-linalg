@@ -490,3 +490,17 @@ def moved_polygon(plane: NumberPlane, tracker: MatrixTracker, corners, color: st
     from manim import Polygon
 
     return Polygon(*[plane.c2p(*tracker.apply(corner)) for corner in corners], color=color, fill_opacity=opacity, stroke_width=0)
+def shear_matrix(amount: float = 1.0) -> np.ndarray:
+    """The horizontal shear [[1, amount], [0, 1]]."""
+    return np.array([[1.0, amount], [0.0, 1.0]])
+
+
+def turn_matrix(angle: float) -> np.ndarray:
+    """Counterclockwise rotation by `angle` radians."""
+    return np.array([[math.cos(angle), -math.sin(angle)], [math.sin(angle), math.cos(angle)]])
+
+
+def matrix_grid(plane: NumberPlane, transform, box=None, color: str = Palette.blue, opacity: float = 0.6, reach: int = 12) -> VGroup:
+    """The plane's integer grid carried by a 2x2 matrix, clipped to box (plane coords, default the plane)."""
+    transform = np.asarray(transform, dtype=float)
+    return skewed_grid(plane, transform[:, 0], transform[:, 1], reach=reach, color=color, opacity=opacity, box=box)

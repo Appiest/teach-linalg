@@ -1,0 +1,139 @@
+Yesterday each matrix moved the whole plane once. Today you do two moves in a row: first the shear $S = \begin{bmatrix} \green{1} & \red{1} \\ \green{0} & \red{1} \end{bmatrix}$, then the quarter turn $R = \begin{bmatrix} \green{0} & \red{-1} \\ \green{1} & \red{0} \end{bmatrix}$. A vector $\yellow{\mathbf x}$ goes to $S\yellow{\mathbf x}$, and then to $R(S\yellow{\mathbf x})$.
+
+<CompositionExplorer first={[[1, 1], [0, 1]]} second={[[0, -1], [1, 0]]} start={[1, 1]} target={[-1, 3]} />
+
+## Composition
+
+<Pair>
+<Figure src="composition" alt="The vector x = (1, 1) hops through the shear S to (2, 1) and then through the quarter turn R to (−1, 2). A single teal arc labelled RS jumps straight from (1, 1) to (−1, 2). Beside the grid, RS is the matrix with columns (0, 1) and (−1, 1)." />
+
+Both hops together are one linear transformation, so they have one matrix. Its columns record where $\green{\hat\imath}$ and $\red{\hat\jmath}$ end up after both steps, and that matrix is called the product $RS$.
+</Pair>
+
+The reason is the column picture from Day 4. If $B$ has columns $\mathbf b_1, \dots, \mathbf b_p$, then
+
+$$
+\begin{aligned}
+A(B\mathbf x) &= A(x_1\mathbf b_1 + \cdots + x_p\mathbf b_p) \\
+&= x_1\,A\mathbf b_1 + \cdots + x_p\,A\mathbf b_p \\
+&= \begin{bmatrix} A\mathbf b_1 & \cdots & A\mathbf b_p \end{bmatrix}\mathbf x.
+\end{aligned}
+$$
+
+The second line uses the linearity of $A$. So $A(B\mathbf x) = (AB)\mathbf x$ for every $\mathbf x$. Read a product from right to left, because the matrix next to $\mathbf x$ touches it first. In $RS$ the shear happens first.
+
+## The column rule
+
+<Definition term="Matrix product">
+If $A$ is $m \times n$ and $B$ is $n \times p$ with columns $\mathbf b_1, \dots, \mathbf b_p$, then the **product** $AB$ is the $m \times p$ matrix
+
+$$
+AB = A\begin{bmatrix} \mathbf b_1 & \cdots & \mathbf b_p \end{bmatrix} = \begin{bmatrix} A\mathbf b_1 & \cdots & A\mathbf b_p \end{bmatrix}.
+$$
+
+Each column of $AB$ is a combination of the columns of $A$, and the weights come from the matching column of $B$. The product is defined only when $A$ has as many columns as $B$ has rows.
+</Definition>
+
+<ProductColumns a={[[2, -1], [1, 1]]} b={[[1, 1], [1, -1]]} />
+
+For the shear and the quarter turn, $\mathbf s_1 = (1, 0)$ and $\mathbf s_2 = (1, 1)$:
+
+$$
+\begin{aligned}
+R\,\green{\mathbf s_1} &= \begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}\green{\begin{bmatrix} 1 \\ 0 \end{bmatrix}} = \green{\begin{bmatrix} 0 \\ 1 \end{bmatrix}}, \qquad
+R\,\red{\mathbf s_2} = \begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}\red{\begin{bmatrix} 1 \\ 1 \end{bmatrix}} = \red{\begin{bmatrix} -1 \\ 1 \end{bmatrix}} \\
+RS &= \begin{bmatrix} R\,\green{\mathbf s_1} & R\,\red{\mathbf s_2} \end{bmatrix} = \begin{bmatrix} \green{0} & \red{-1} \\ \green{1} & \red{1} \end{bmatrix}
+\end{aligned}
+$$
+
+## The row–column rule
+
+<Figure src="row-column" alt="A 2 by 2 matrix with rows (1, 2) and (−3, 4) times a 2 by 3 matrix with rows (2, 0, −1) and (5, 1, 3) equals the matrix with rows (12, 2, 5) and (14, 4, 15). Row 2 of the first factor, column 3 of the second and the entry 15 are boxed in orange, with the sizes 2 × 2, 2 × 3 and 2 × 3 written underneath and the sum (−3)(−1) + 4 · 3 = 15 below." wide />
+
+Entry $i$ of $A\mathbf b_j$ uses only row $i$ of $A$, by Day 4's row rule. That gives each entry of the product on its own:
+
+$$
+(AB)_{ij} = a_{i1}b_{1j} + a_{i2}b_{2j} + \cdots + a_{in}b_{nj}.
+$$
+
+Write the sizes under the factors to check a product. The inner numbers must match, and the outer numbers give the size of the answer. In the figure, $2 \times \underline{2}$ times $\underline{2} \times 3$ is $2 \times 3$. The other order, $BA$, is $2 \times \underline{3}$ times $\underline{2} \times 2$, which is not defined. A whole row works the same way, so $\text{row}_i(AB) = \text{row}_i(A)\,B$.
+
+## Order matters
+
+<Figure src="order-matters" alt="Two grids side by side. On the left, shear then rotate: the yellow tip of x ends at (−1, 2), and RS has columns (0, 1) and (−1, 1). On the right, rotate then shear: the tip ends at (0, 1), and SR has columns (1, 1) and (−1, 0)." wide />
+
+Rotating first and shearing second gives $SR = \begin{bmatrix} \green{1} & \red{-1} \\ \green{1} & \red{0} \end{bmatrix}$, which is not $RS$. The same point $(1, 1)$ lands on $(-1, 2)$ in one order and on $(0, 1)$ in the other. Most pairs of matrices behave like this, so $AB \neq BA$ in general. When $AB = BA$ does hold, the matrices **commute**.
+
+<CommuteHunt a={[[2, 1], [0, 1]]} b={[[1, "k"], [0, 3]]} />
+
+Two more habits from ordinary numbers fail for matrices. $AB = AC$ does not force $B = C$, and $AB = 0$ does not force $A = 0$ or $B = 0$. For example, $\begin{bmatrix} 1 & 2 \\ 2 & 4 \end{bmatrix}\begin{bmatrix} 2 & 4 \\ -1 & -2 \end{bmatrix} = \begin{bmatrix} 0 & 0 \\ 0 & 0 \end{bmatrix}$. Each column of the second factor weights the columns $(1, 2)$ and $(2, 4)$ so that they cancel.
+
+## The transpose
+
+The **transpose** $A^T$ of an $m \times n$ matrix $A$ is the $n \times m$ matrix whose columns are the rows of $A$.
+
+$$
+B = \begin{bmatrix} 2 & 0 & -1 \\ 5 & 1 & 3 \end{bmatrix}, \qquad B^T = \begin{bmatrix} 2 & 5 \\ 0 & 1 \\ -1 & 3 \end{bmatrix}
+$$
+
+<Definition term="Transpose of a product">
+Whenever $AB$ is defined, $(AB)^T = B^TA^T$.
+</Definition>
+
+Entry $(i, j)$ of $(AB)^T$ is entry $(j, i)$ of $AB$, which is row $j$ of $A$ times column $i$ of $B$. That is the same as row $i$ of $B^T$ times column $j$ of $A^T$. The sizes confirm the order: if $A$ is $2 \times 2$ and $B$ is $2 \times 3$, then $B^TA^T$ is $3 \times 2$ times $2 \times 2$, which is defined, while $A^TB^T$ is not.
+
+## Practice
+
+<Check>
+Let $A = \begin{bmatrix} 2 & -1 \\ 1 & 3 \end{bmatrix}$ and $B = \begin{bmatrix} 1 & 0 & 2 \\ 4 & -1 & 1 \end{bmatrix}$. Find the third column of $AB$. (Modeled on Lay §2.1 #5.)
+
+<VectorAnswer answer={[3, 5]} />
+
+<Answer>
+The third column of $AB$ is $A\mathbf b_3$, a combination of the columns of $A$ with weights $2$ and $1$:
+
+$$
+A\mathbf b_3 = 2\begin{bmatrix} 2 \\ 1 \end{bmatrix} + 1\begin{bmatrix} -1 \\ 3 \end{bmatrix} = \begin{bmatrix} 3 \\ 5 \end{bmatrix}
+$$
+
+The whole product is $AB = \begin{bmatrix} -2 & 1 & 3 \\ 13 & -3 & 5 \end{bmatrix}$. The product $BA$ is not defined, because $B$ has 3 columns and $A$ has 2 rows.
+</Answer>
+</Check>
+
+<Check>
+Let $R = \begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}$ be the quarter turn and $S = \begin{bmatrix} 1 & 0 \\ 2 & 1 \end{bmatrix}$ a vertical shear. Rotate first, then shear. Where does $\hat\jmath$ land? (Modeled on Lay §2.1 Example 7.)
+
+<VectorAnswer answer={[-1, -2]} />
+
+<Answer>
+Rotating first and shearing second is the product $SR$, because the matrix next to $\mathbf x$ acts first. Follow $\hat\jmath$ through both steps:
+
+$$
+\begin{aligned}
+R\hat\jmath &= \begin{bmatrix} -1 \\ 0 \end{bmatrix}, \\
+S(R\hat\jmath) &= \begin{bmatrix} 1 & 0 \\ 2 & 1 \end{bmatrix}\begin{bmatrix} -1 \\ 0 \end{bmatrix} = \begin{bmatrix} -1 \\ -2 \end{bmatrix}.
+\end{aligned}
+$$
+
+So $SR = \begin{bmatrix} 0 & -1 \\ 1 & -2 \end{bmatrix}$. The other order gives $RS = \begin{bmatrix} -2 & -1 \\ 1 & 0 \end{bmatrix}$, which sends $\hat\jmath$ to $(-1, 0)$ instead.
+</Answer>
+</Check>
+
+<Check>
+Let $A = \begin{bmatrix} 3 & -1 & 2 \\ 0 & 4 & 1 \end{bmatrix}$ and $B = \begin{bmatrix} 1 & 2 \\ -2 & 0 \\ 5 & -3 \end{bmatrix}$. Find the first row of $B^TA^T$ without multiplying $B^T$ by $A^T$. (Modeled on Lay §2.1 #33.)
+
+<VectorAnswer answer={[15, -3]} />
+
+<Answer>
+$B^TA^T = (AB)^T$, so its first row is the first column of $AB$. By the row–column rule,
+
+$$
+\begin{aligned}
+(AB)_{11} &= 3(1) + (-1)(-2) + 2(5) = 15, \\
+(AB)_{21} &= 0(1) + 4(-2) + 1(5) = -3.
+\end{aligned}
+$$
+
+The first row of $B^TA^T$ is $\begin{bmatrix} 15 & -3 \end{bmatrix}$.
+</Answer>
+</Check>
