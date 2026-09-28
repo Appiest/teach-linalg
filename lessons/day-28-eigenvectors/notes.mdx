@@ -1,0 +1,138 @@
+On Day 5 a matrix moved every point of the plane, and on Day 22 the map $\mathbf x \mapsto \begin{bmatrix} 1 & 2 \\ 1 & 0 \end{bmatrix}\mathbf x$ turned out to keep the line through $\mathbf b_1$ on itself. Today asks which lines a matrix keeps. Almost every arrow gets turned when $A$ acts, and the few directions that only stretch tell you more about $A$ than any single entry does.
+
+<Figure src="knocked-off" alt="Sixteen gray arrows after the matrix A = [3 −2; 1 0] acts on them. Most are faded and point well away from their dashed starting lines, crowding toward the horizontal. Four arrows stay on their lines: two yellow arrows on the line through (2, 1), labelled λ = 2, and two blue arrows on the line through (1, 1), labelled λ = 1, each with an orange dot on its tip." wide />
+
+<EigenDirectionHunt matrix={[[0, 1], [2, 1]]} start={[1, 0]} />
+
+## Eigenvectors
+
+<Definition term="Eigenvector and eigenvalue">
+Let $A$ be an $n \times n$ matrix. An **eigenvector** of $A$ is a nonzero vector $\mathbf v$ with
+
+$$
+A\mathbf v = \lambda\mathbf v
+$$
+
+for some scalar $\lambda$. That scalar is called an **eigenvalue** of $A$, and $\mathbf v$ is an eigenvector corresponding to $\lambda$.
+</Definition>
+
+The vector has to be nonzero because $A\mathbf 0 = \lambda\mathbf 0$ holds for every $\lambda$, so allowing $\mathbf 0$ would make every number an eigenvalue. The eigenvalue itself may be $0$ or negative.
+
+<Pair>
+<Figure src="stretch-factors" alt="The yellow line through (2, 1) and the blue line through (1, 1). On the yellow line, orange arrows carry faded dots out to twice their distance from the origin. On the blue line, each blue dot sits inside an orange ring because it does not move." />
+
+In the video, $A = \begin{bmatrix} 3 & -2 \\ 1 & 0 \end{bmatrix}$ gives
+
+$$
+A\yellow{\begin{bmatrix} 2 \\ 1 \end{bmatrix}} = \begin{bmatrix} 4 \\ 2 \end{bmatrix} = 2\yellow{\begin{bmatrix} 2 \\ 1 \end{bmatrix}},
+\qquad
+A\blue{\begin{bmatrix} 1 \\ 1 \end{bmatrix}} = \blue{\begin{bmatrix} 1 \\ 1 \end{bmatrix}}.
+$$
+
+Every point of the yellow line moves twice as far from the origin, and every point of the blue line stays put. A negative $\lambda$ would flip the points through the origin but keep them on their line, and $\lambda = 0$ would send the whole line to $\mathbf 0$.
+</Pair>
+
+Checking a proposed eigenvector takes one multiplication. For the same $A$, $A(-1, 1) = (-5, -1)$, and no single number multiplies $-1$ to $-5$ and $1$ to $-1$, so $(-1, 1)$ is not an eigenvector. Compare every nonzero entry, since matching just one proves nothing.
+
+## The eigenspace
+
+Moving $\lambda\mathbf v$ to the left side turns the eigenvector equation into a homogeneous system, because $\lambda\mathbf v = \lambda I\mathbf v$:
+
+$$
+A\mathbf v = \lambda\mathbf v \iff (A - \lambda I)\mathbf v = \mathbf 0.
+$$
+
+So $\lambda$ is an eigenvalue exactly when $A - \lambda I$ has a nontrivial null space. The set of all solutions, which is $\mathbf 0$ together with every eigenvector for $\lambda$, is the **eigenspace** of $A$ for $\lambda$. It is $\operatorname{Nul}(A - \lambda I)$, so Day 17 already proved that it is a subspace and showed how to find a basis for it.
+
+<Pair>
+<Figure src="squash" alt="Two planes side by side. On the left, the grid with the yellow line through v1 = (2, 1) and the blue line through (1, 1). An arrow labelled A − 2I points to the right plane, where the grid has collapsed onto the blue line and the yellow line has shrunk to an orange ring at the origin." />
+
+Here is a worked example with $A = \begin{bmatrix} 4 & -2 \\ 1 & 1 \end{bmatrix}$ and $\lambda = 2$. Subtract $2$ from the diagonal only, then row reduce:
+
+$$
+\begin{aligned}
+A - 2I &= \begin{bmatrix} 2 & -2 \\ 1 & -1 \end{bmatrix} \\
+\begin{bmatrix} 2 & -2 & 0 \\ 1 & -1 & 0 \end{bmatrix} &\sim \begin{bmatrix} 1 & -1 & 0 \\ 0 & 0 & 0 \end{bmatrix} \\
+x_1 = x_2, \quad \mathbf x &= x_2\yellow{\begin{bmatrix} 1 \\ 1 \end{bmatrix}}
+\end{aligned}
+$$
+
+The free variable $x_2$ proves that $2$ is an eigenvalue, and the eigenspace is the line through $(1, 1)$. Check: $A(1, 1) = (2, 2)$.
+</Pair>
+
+<EigenGapHunt matrix={[[3, -2], [1, 0]]} lambda={1} start={[1, 0]} />
+
+## Eigenvalue zero
+
+Setting $\lambda = 0$ in the definition gives $A\mathbf v = \mathbf 0$ with $\mathbf v \ne \mathbf 0$. That equation has a nonzero solution exactly when $A$ is not invertible, by Day 19's Invertible Matrix Theorem:
+
+$$
+0 \text{ is an eigenvalue of } A \iff \operatorname{Nul}A \ne \{\mathbf 0\} \iff A \text{ is not invertible}.
+$$
+
+For $\lambda = 0$ the eigenspace is $\operatorname{Nul}A$ itself. A matrix with two equal columns, such as $\begin{bmatrix} 1 & 1 \\ 3 & 3 \end{bmatrix}$, has eigenvalue $0$ with eigenvector $(1, -1)$, and you can see it without any row reduction.
+
+## Triangular matrices
+
+<Definition term="Theorem">
+The eigenvalues of a triangular matrix are the entries on its main diagonal.
+</Definition>
+
+Subtracting $\lambda I$ changes only the diagonal, so $T - \lambda I$ is still triangular, with diagonal entries $t_{11} - \lambda, \dots, t_{nn} - \lambda$. If all of them are nonzero, every column has a pivot and $(T - \lambda I)\mathbf x = \mathbf 0$ has only the trivial solution. If one of them is $0$, a column loses its pivot and a free variable appears. So $\lambda$ is an eigenvalue exactly when it equals some $t_{ii}$.
+
+<DiagonalZeroHunt matrix={[[4, 1, -2], [0, -2, 3], [0, 0, 1]]} start={0} min={-4} max={6} />
+
+The theorem needs a triangular matrix to begin with. Row reducing a general $A$ to echelon form changes its eigenvalues. For example, $\begin{bmatrix} 1 & 6 \\ 5 & 2 \end{bmatrix} \sim \begin{bmatrix} 1 & 6 \\ 0 & -28 \end{bmatrix}$, but the eigenvalues of the original matrix are $7$ and $-4$. Tomorrow's lesson shows how to find eigenvalues when the matrix is not triangular.
+
+## Practice
+
+<Check>
+Let $A = \begin{bmatrix} 3 & 1 \\ 2 & 2 \end{bmatrix}$. Both $(1, 1)$ and $(1, -2)$ are eigenvectors of $A$. Find the eigenvalue for each. (Modeled on Lay §5.1, Exercises 3–6.)
+
+<VectorAnswer answer={[4, 1]} labels={["λ for (1, 1)", "λ for (1, −2)"]} />
+
+<Answer>
+Multiply and compare with the input:
+
+$$
+A\begin{bmatrix} 1 \\ 1 \end{bmatrix} = \begin{bmatrix} 4 \\ 4 \end{bmatrix} = 4\begin{bmatrix} 1 \\ 1 \end{bmatrix},
+\qquad
+A\begin{bmatrix} 1 \\ -2 \end{bmatrix} = \begin{bmatrix} 3 - 2 \\ 2 - 4 \end{bmatrix} = 1\begin{bmatrix} 1 \\ -2 \end{bmatrix}.
+$$
+
+By contrast, $A(1, 2) = (5, 6)$, which is not a multiple of $(1, 2)$.
+</Answer>
+</Check>
+
+<Check>
+Show that $3$ is an eigenvalue of $A = \begin{bmatrix} 5 & -2 & 2 \\ 1 & 2 & 1 \\ -1 & 2 & 2 \end{bmatrix}$ and find the eigenvector in its eigenspace whose third entry is $1$. (Modeled on Lay §5.1, Exercises 13–16.)
+
+<VectorAnswer answer={[-1, 0, 1]} />
+
+<Answer>
+$$
+\begin{aligned}
+A - 3I = \begin{bmatrix} 2 & -2 & 2 \\ 1 & -1 & 1 \\ -1 & 2 & -1 \end{bmatrix}
+&\sim \begin{bmatrix} 1 & -1 & 1 \\ 0 & 1 & 0 \\ 0 & 0 & 0 \end{bmatrix}
+\sim \begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & 0 \\ 0 & 0 & 0 \end{bmatrix} \\
+x_1 = -x_3, \quad x_2 = 0, \quad \mathbf x &= x_3\begin{bmatrix} -1 \\ 0 \\ 1 \end{bmatrix}
+\end{aligned}
+$$
+
+The free variable $x_3$ shows that $3$ is an eigenvalue. Check: $A(-1, 0, 1) = (-3, 0, 3) = 3(-1, 0, 1)$.
+</Answer>
+</Check>
+
+<Check>
+Let $T = \begin{bmatrix} 2 & 1 & 1 \\ 0 & 1 & 1 \\ 0 & 0 & 2 \end{bmatrix}$. Its diagonal says the eigenvalues are $1$ and $2$, so $T$ is invertible. Find the eigenvector for $\lambda = 2$ whose first entry is $1$. (Modeled on Lay §5.1, Exercises 17–18.)
+
+<VectorAnswer answer={[1, 0, 0]} />
+
+<Answer>
+$$
+T - 2I = \begin{bmatrix} 0 & 1 & 1 \\ 0 & -1 & 1 \\ 0 & 0 & 0 \end{bmatrix}
+$$
+
+The first two rows say $x_2 + x_3 = 0$ and $-x_2 + x_3 = 0$, so $x_2 = x_3 = 0$ and only $x_1$ is free. The eigenspace is the line through $(1, 0, 0)$, even though $2$ appears twice on the diagonal. Since $0$ is not on the diagonal, $0$ is not an eigenvalue, which is another way to see that $T$ is invertible.
+</Answer>
+</Check>
