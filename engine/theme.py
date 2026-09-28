@@ -790,3 +790,24 @@ def parallelepiped(project, first, second, third, color: str = Palette.teal, opa
             corners = (base, base + edges[i], base + edges[i] + edges[j], base + edges[j])
             faces.add(Polygon(*[project(corner) for corner in corners], color=color, fill_opacity=opacity, stroke_width=stroke_width, stroke_opacity=0.7))
     return faces
+def circle_image(plane: NumberPlane, transform, radius: float = 1.0, color: str = Palette.teal, stroke_width: float = 5, samples: int = 180):
+    """The image of the circle of `radius` (plane units) under a 2x2 matrix: an ellipse, or a segment when it is singular."""
+    from manim import VMobject
+
+    transform = np.asarray(transform, dtype=float)
+    angles = np.linspace(0, 2 * math.pi, samples)
+    points = [plane.c2p(*(transform @ (radius * np.array([math.cos(t), math.sin(t)])))) for t in angles]
+    return VMobject(color=color, stroke_width=stroke_width).set_points_as_corners(points)
+
+
+def right_angle_mark(plane: NumberPlane, first, second, size: float = 0.24, color: str = Palette.glow, stroke_width: float = 3.5):
+    """The small square corner at the origin between two perpendicular directions."""
+    from manim import VMobject
+
+    origin = plane.c2p(0, 0)
+    legs = []
+    for direction in (first, second):
+        step = plane.c2p(*direction[:2]) - origin
+        legs.append(size * step / np.linalg.norm(step))
+    corners = [origin + legs[0], origin + legs[0] + legs[1], origin + legs[1]]
+    return VMobject(color=color, stroke_width=stroke_width).set_points_as_corners(corners)
