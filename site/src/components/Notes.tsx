@@ -30,6 +30,7 @@ import { PivotHunt, PolynomialRecipe, ThirdVectorHunt } from "@/components/inter
 import { DifferenceInKernel, EvaluationKernel } from "@/components/interactive/kernel";
 import { ComplementLanding, RangeCollapse } from "@/components/interactive/image-range";
 import { DiagonalZeroHunt, EigenDirectionHunt, EigenGapHunt } from "@/components/interactive/eigenvectors";
+import { AreaShearSlide, CornerToOrigin } from "@/components/interactive/determinants-as-area";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
 import { katexMacros } from "@/lib/katex-macros";
 
@@ -159,6 +160,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     EigenDirectionHunt,
     EigenGapHunt,
     DiagonalZeroHunt,
+    AreaShearSlide,
+    CornerToOrigin,
   };
   return (
     <div className="notes">
