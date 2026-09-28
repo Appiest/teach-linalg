@@ -17,18 +17,22 @@ from manim import (
     RIGHT,
     UP,
     Arrow,
+    Arrow3D,
     Create,
     DecimalNumber,
     Dot,
     FadeIn,
     FadeOut,
     GrowFromCenter,
+    Line,
     MathTex,
     Matrix,
     NumberLine,
     NumberPlane,
     Scene,
+    Surface,
     Tex,
+    ThreeDScene,
     ValueTracker,
     VGroup,
     config,
@@ -225,3 +229,71 @@ class LessonScene(Scene):
         self.play(GrowFromCenter(pulse), run_time=0.8, rate_func=spring)
         self.wait(Timing.read_long + 1.5)
         self.play(FadeOut(idea), FadeOut(pulse), run_time=0.8)
+
+
+def clip_to_box(start, end, x_limits, y_limits):
+    """The part of segment start-end inside the box, or None (Liang-Barsky)."""
+    start, end = np.asarray(start, dtype=float), np.asarray(end, dtype=float)
+    delta = end - start
+    low, high = 0.0, 1.0
+    for axis, (lower, upper) in enumerate((x_limits, y_limits)):
+        for step, gap in ((-delta[axis], start[axis] - lower), (delta[axis], upper - start[axis])):
+            if step == 0:
+                if gap < 0:
+                    return None
+                continue
+            ratio = gap / step
+            low, high = (max(low, ratio), high) if step < 0 else (low, min(high, ratio))
+    return (start + low * delta, start + high * delta) if low < high else None
+
+
+def skewed_grid(plane: NumberPlane, v, w, reach: int = 12, color: str = Palette.teal, opacity: float = 0.5, box=None) -> VGroup:
+    """Lines of a*v + t*w and t*v + b*w for integer a and b, clipped to box (plane coords, default the plane)."""
+    v = np.array([v[0], v[1]], dtype=float)
+    w = np.array([w[0], w[1]], dtype=float)
+    x_limits, y_limits = box or (tuple(plane.x_range[:2]), tuple(plane.y_range[:2]))
+    lines = VGroup()
+    for k in range(-reach, reach + 1):
+        for offset, direction in ((k * v, w), (k * w, v)):
+            segment = clip_to_box(offset - reach * direction, offset + reach * direction, x_limits, y_limits)
+            if segment is not None:
+                lines.add(Line(plane.c2p(*segment[0]), plane.c2p(*segment[1]), color=color, stroke_width=1.6, stroke_opacity=opacity))
+    return lines
+
+
+def vector_arrow_3d(axes, coords, color: str = Palette.yellow, start=(0, 0, 0)) -> Arrow3D:
+    return Arrow3D(axes.c2p(*start), axes.c2p(*coords), color=color, thickness=0.025, height=0.28, base_radius=0.09, resolution=12)
+
+
+def span_sheet(axes, u, v, s_range=(-1, 1), t_range=(-1, 1), color: str = Palette.teal, resolution=(8, 8), opacity: float = 0.32) -> Surface:
+    """The parallelogram of combinations s*u + t*v over the given weight ranges."""
+    u = np.array(u, dtype=float)
+    v = np.array(v, dtype=float)
+    return Surface(
+        lambda s, t: axes.c2p(*(s * u + t * v)),
+        u_range=s_range,
+        v_range=t_range,
+        resolution=resolution,
+        checkerboard_colors=[color, color],
+        fill_opacity=opacity,
+        stroke_color=color,
+        stroke_width=0.8,
+        stroke_opacity=0.6,
+    )
+
+
+class LessonScene3D(LessonScene, ThreeDScene):
+    """LessonScene with a 3D camera. It opens flat, and captions and overlays stay pinned to the screen."""
+
+    def pin(self, *mobjects):
+        self.add_fixed_in_frame_mobjects(*mobjects)
+        return mobjects[0] if len(mobjects) == 1 else VGroup(*mobjects)
+
+    def say(self, text: str, current: Tex | None = None, hold: float = Timing.read_short, **kwargs) -> Tex:
+        line = caption(text, **kwargs)
+        if current is not None:
+            self.play(FadeOut(current, shift=DOWN * 0.15), run_time=0.35)
+        self.pin(line)
+        self.play(FadeIn(line, shift=UP * 0.15), run_time=0.5)
+        self.wait(hold)
+        return line

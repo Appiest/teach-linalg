@@ -1,0 +1,121 @@
+Yesterday's lesson ended with the combinations $a\,\yellow{\vec v} + b\,\blue{\vec w}$ covering the whole plane. Today we give that set a name and learn to test whether a particular vector belongs to it.
+
+<Definition term="Span">
+If $\vec v_1, \dots, \vec v_p$ are in $\mathbb{R}^n$, then $\operatorname{Span}\{\vec v_1, \dots, \vec v_p\}$ is the set of all linear combinations
+
+$$
+c_1 \vec v_1 + c_2 \vec v_2 + \cdots + c_p \vec v_p
+$$
+
+where $c_1, \dots, c_p$ can be any scalars. We say the vectors **span** (or generate) this set.
+</Definition>
+
+Every span contains $\vec 0$, because all the weights can be zero. Every span also contains each $\vec v_i$ and all of its multiples, since $c\,\vec v_1 = c\,\vec v_1 + 0\,\vec v_2 + \cdots + 0\,\vec v_p$. The list $\{\vec v_1, \vec v_2\}$ holds just two vectors, but its span holds infinitely many as soon as one of them is nonzero.
+
+A span is also closed under addition. If $\vec x = c_1 \vec v_1 + c_2 \vec v_2$ and $\vec y = d_1 \vec v_1 + d_2 \vec v_2$, then
+
+$$
+\begin{aligned}
+\vec x + \vec y &= c_1 \vec v_1 + c_2 \vec v_2 + d_1 \vec v_1 + d_2 \vec v_2 \\
+&= (c_1 + d_1)\,\vec v_1 + (c_2 + d_2)\,\vec v_2,
+\end{aligned}
+$$
+
+and the sums $c_i + d_i$ are scalars, so $\vec x + \vec y$ is another combination of $\vec v_1$ and $\vec v_2$.
+
+## Two vectors in the plane
+
+<Figure src="two-spans" alt="Two panels. On the left, v = (3, 2) and w = (−1, 2) with a slanted teal grid of combination lines that covers the plane. On the right, v = (3, 2) and w = (−1.5, −1), which points opposite v, and a single teal line through the origin along v." wide />
+
+Two vectors in $\mathbb{R}^2$ that point in different directions span all of $\mathbb{R}^2$. When one vector is a multiple of the other, every combination is a multiple of a single vector, so the span shrinks to a line through the origin.
+
+<SpanPainter v={[3, 2]} w={[-1, 2]} />
+
+The algebra says the same thing. Write $\yellow{\vec v} = (v_1, v_2)$ and $\blue{\vec w} = (w_1, w_2)$, and look for weights with $x_1 \yellow{\vec v} + x_2 \blue{\vec w} = (h, k)$. Eliminating one unknown at a time gives
+
+$$
+x_1 = \frac{w_2 h - w_1 k}{v_1 w_2 - v_2 w_1}, \qquad x_2 = \frac{v_1 k - v_2 h}{v_1 w_2 - v_2 w_1}.
+$$
+
+When $v_1 w_2 - v_2 w_1 \neq 0$, these weights exist for every target $(h, k)$, so the span is all of $\mathbb{R}^2$. For nonzero vectors, that number is zero exactly when $\blue{\vec w}$ is a multiple of $\yellow{\vec v}$. It comes back later in the course as the determinant.
+
+## Membership as an equation
+
+Asking whether $\pink{\vec b}$ is in $\operatorname{Span}\{\vec a_1, \dots, \vec a_n\}$ is the same as asking whether the **vector equation** $x_1 \vec a_1 + \cdots + x_n \vec a_n = \pink{\vec b}$ has a solution. Matching the vectors entry by entry turns it into a linear system with one equation per entry. The **augmented matrix** of that system lists the vectors as its columns, in order: $[\,\vec a_1\ \cdots\ \vec a_n\ \ \pink{\vec b}\,]$.
+
+<Pair>
+<Figure src="reach-b" alt="The vectors v = (3, 2) and w = (−1, 2). From the tip of v, the arrow −2w runs down to the point (5, −2), which is the tip of the pink vector b = v − 2w, marked with an orange dot." />
+
+$$
+x_1 \yellow{\begin{bmatrix} 3 \\ 2 \end{bmatrix}} + x_2 \blue{\begin{bmatrix} -1 \\ 2 \end{bmatrix}} = \pink{\begin{bmatrix} 5 \\ -2 \end{bmatrix}}
+$$
+
+$$
+\left[\begin{array}{cc|c} \yellow{3} & \blue{-1} & \pink{5} \\ \yellow{2} & \blue{2} & \pink{-2} \end{array}\right]
+$$
+
+$$
+\begin{aligned}
+3x_1 - x_2 &= 5 \\
+x_1 + x_2 &= -1 && \text{(row 2 halved)} \\
+4x_1 &= 4 && \text{(sum of the two)}
+\end{aligned}
+$$
+
+So $x_1 = 1$ and $x_2 = -2$, which means $\pink{\vec b} = \yellow{\vec v} - 2\blue{\vec w}$.
+</Pair>
+
+<CombinationTarget v={[2, -1]} w={[2, 1]} target={[4, -4]} />
+
+## A plane in space
+
+<Figure src="plane-in-space" alt="Three-dimensional axes with a teal plane through the origin spanned by u = (2, −1, 1) and v = (1, 2, 1). The pink vector to (4, 3, 3) ends on the plane at an orange dot. A second pink vector to (4, 3, −1) ends below the plane, joined to the dot by a dashed orange segment." wide />
+
+In $\mathbb{R}^3$, two vectors that are not multiples of each other span a plane through the origin. Many vectors lie off that plane, and the system tells you which ones. With $\yellow{\vec u} = (2, -1, 1)$, $\blue{\vec v} = (1, 2, 1)$ and $\pink{\vec b} = (4, 3, h)$, the vector equation $x_1 \yellow{\vec u} + x_2 \blue{\vec v} = \pink{\vec b}$ has three rows:
+
+$$
+\begin{aligned}
+2x_1 + x_2 &= 4 \\
+-x_1 + 2x_2 &= 3 \\
+x_1 + x_2 &= h
+\end{aligned}
+$$
+
+Adding twice the second row to the first gives $5x_2 = 10$, so the first two rows force $x_2 = 2$ and $x_1 = 1$. The third row then holds only if $h = 3$. For $h = -1$ it reads $3 = -1$, so $(4, 3, -1)$ is not in the span. Always check every row, because two unknowns can satisfy two rows and still fail the third.
+
+The same test works in the plane. Below, $\blue{\vec w} = -2\yellow{\vec v}$, so the span is one line, and only one height $h$ puts $\pink{\vec b}$ on it.
+
+<EntryHunt v={[2, 1]} w={[-4, -2]} x={4} answer={2} min={-3} max={4} />
+
+## Practice
+
+<Check>
+Let $\vec a_1 = \begin{bmatrix} 1 \\ 3 \\ -1 \end{bmatrix}$, $\vec a_2 = \begin{bmatrix} 2 \\ -1 \\ 4 \end{bmatrix}$ and $\vec b = \begin{bmatrix} -1 \\ 11 \\ -11 \end{bmatrix}$. Find weights with $x_1 \vec a_1 + x_2 \vec a_2 = \vec b$. (Modeled on Lay §1.3, Example 5.)
+
+<VectorAnswer answer={[3, -2]} labels={["x₁", "x₂"]} />
+
+<Answer>
+The system is $x_1 + 2x_2 = -1$, $3x_1 - x_2 = 11$ and $-x_1 + 4x_2 = -11$. The first row gives $x_1 = -1 - 2x_2$. Substituting into the second gives $-3 - 7x_2 = 11$, so $x_2 = -2$ and $x_1 = 3$.
+
+The third row must agree too, and it does: $-3 + 4(-2) = -11$. So $\vec b = 3\vec a_1 - 2\vec a_2$ is in $\operatorname{Span}\{\vec a_1, \vec a_2\}$.
+</Answer>
+</Check>
+
+<Check>
+Let $\vec v_1 = \begin{bmatrix} 1 \\ -2 \\ 3 \end{bmatrix}$, $\vec v_2 = \begin{bmatrix} 2 \\ 1 \\ -1 \end{bmatrix}$ and $\vec y = \begin{bmatrix} 4 \\ h \\ 5 \end{bmatrix}$. For what value of $h$ is $\vec y$ in $\operatorname{Span}\{\vec v_1, \vec v_2\}$? (Modeled on Lay §1.3, Exercise 17.)
+
+<VectorAnswer answer={[-3]} labels={["h"]} prefix="h =" />
+
+<Answer>
+The first and third rows do not involve $h$:
+
+$$
+\begin{aligned}
+x_1 + 2x_2 &= 4 \\
+3x_1 - x_2 &= 5
+\end{aligned}
+$$
+
+Adding twice the second row to the first gives $7x_1 = 14$, so $x_1 = 2$ and $x_2 = 1$. The second row then says $h = -2(2) + 1(1) = -3$. For any other $h$ that row is false, so $\vec y$ is in the span only when $h = -3$.
+</Answer>
+</Check>
