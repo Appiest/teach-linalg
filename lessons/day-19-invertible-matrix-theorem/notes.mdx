@@ -1,4 +1,4 @@
-Day 7 found that an inverse exists exactly when a matrix does not flatten the plane. Days 12 to 18 then gave you a pile of new words for square matrices: independent columns, spanning columns, pivots, $\operatorname{Nul}A$, $\operatorname{Col}A$, rank and nullity. Today shows that for a square matrix all of those words describe one single fact, so checking any one of them tells you all the others.
+Day 7 found that an inverse exists exactly when a matrix does not flatten the plane. Days 12 to 18 then gave you a pile of new words for square matrices: independent columns, spanning columns, pivots, $\operatorname{Nul}A$, $\operatorname{Col}A$, rank and nullity. That raises a practical question: to decide whether a square matrix is invertible, how many of these do you have to check? Today shows that for a square matrix all of those words describe one single fact, so checking any one of them tells you all the others. You will lean on this shortcut often, for example on Day 29, where finding eigenvalues comes down to asking when $A - \lambda I$ fails to be invertible.
 
 ## The theorem
 
@@ -66,11 +66,11 @@ $M$ crushes the direction $(2, -1)$, so it has nullity $1$ and rank $1$. Its out
 
 ## Deciding fast
 
-You never need $A^{-1}$ itself to know that it exists. Pick whichever statement is cheapest to check.
+You never need $A^{-1}$ itself to know that it exists. The goal is a yes or no answer with the least work, so pick whichever statement is cheapest to check.
 
 - Two columns that are multiples of each other, or a zero column, make the columns dependent, so (e) fails.
 - A triangular matrix with no zero on its diagonal has $n$ pivots, so (c) holds. A zero on the diagonal leaves fewer than $n$ pivots.
-- Otherwise, row reduce until you can count the pivots.
+- Otherwise, row reduce until you can count the pivots. The aim is only to count pivots, so you can stop at echelon form instead of going all the way to $I$.
 
 <Pair>
 <Figure src="decide" alt="Top: B with rows (2, 1, 0), (1, 3, 1), (0, 1, 2) is row equivalent to the echelon form with rows (2, 1, 0), (0, 5, 2), (0, 0, 8); orange boxes mark the pivots 2, 5 and 8. Bottom: C with rows (1, 2, −1), (2, 4, 0), (3, 6, 1) with its first two columns boxed in orange, beside the relation c2 = 2 c1." />
@@ -103,7 +103,9 @@ The same logic runs backwards. If one statement fails, they all fail: a singular
 A linear transformation $T:\mathbb R^n \to \mathbb R^n$ is **invertible** if some function $S$ satisfies $S(T(\mathbf x)) = \mathbf x$ and $T(S(\mathbf x)) = \mathbf x$ for every $\mathbf x$. If $A$ is the standard matrix of $T$, then $T$ is invertible exactly when $A$ is, and then $T^{-1}(\mathbf x) = A^{-1}\mathbf x$ (Lay §2.3, Theorem 9).
 </Definition>
 
-Because (f) and (i) are on the list, a linear map from $\mathbb R^n$ to itself that is one-to-one is automatically onto, and the other way round. For $2\times 2$ matrices you also know from Day 7 that $A$ is invertible exactly when $ad - bc \ne 0$. The determinant unit will extend "$\det A \ne 0$" to every $n\times n$ matrix and add it to the list.
+Because (f) and (i) are on the list, a linear map from $\mathbb R^n$ to itself that is one-to-one is automatically onto, and the other way round. For $2\times 2$ matrices you also know from Day 7 that $A$ is invertible exactly when $ad - bc \ne 0$. The determinant unit will extend "$\det A \ne 0$" to every $n\times n$ matrix, and Day 26 adds it to the list.
+
+Tomorrow the words one-to-one and onto leave $\mathbb R^n$ behind: Day 20 asks them of linear maps between any two vector spaces, such as differentiation on polynomials.
 
 ## Practice
 

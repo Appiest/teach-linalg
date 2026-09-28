@@ -173,7 +173,8 @@ class Lesson(LessonScene):
         plane = plane_at(PLANE_ORIGIN, PLANE_UNIT)
         pulse = self.open_episode(plane)
         self.play(FadeOut(pulse), run_time=0.5)
-        line = self.turn_keeps_sums(plane)
+        line = self.pose_question()
+        line = self.turn_keeps_sums(plane, line)
         line = self.translation_fails(plane, line)
         line = self.general_definition(line)
         line = self.derivative_square(line)
@@ -189,7 +190,24 @@ class Lesson(LessonScene):
     def parallelogram(self, plane, corners, opacity=0.14):
         return Polygon(*[plane.c2p(*corner) for corner in corners], stroke_width=0, fill_color=Palette.teal, fill_opacity=opacity)
 
-    def turn_keeps_sums(self, plane):
+    def pose_question(self):
+        spaces = VGroup(
+            MathTex(r"1 + 2t + t^2", r"\text{ in }", r"\mathbb P_3", color=Palette.text, font_size=40),
+            MathTex(r"\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}", r"\text{ in }", r"M_{2\times 2}", color=Palette.text, font_size=40),
+            MathTex(r"(3, 2)", r"\text{ in }", r"\mathbb R^2", color=Palette.text, font_size=40),
+        ).arrange(DOWN, buff=0.3, aligned_edge=LEFT)
+        question = MathTex(r"T : V \to W", color=Palette.text, font_size=44).next_to(spaces, DOWN, buff=0.4, aligned_edge=LEFT)
+        panel = backed(VGroup(spaces, question), padding=0.3).to_corner(UL, buff=0.5)
+        line = self.say(r"Since Day 10, polynomials and matrices count as vectors too.", hold=0.2)
+        self.play(FadeIn(panel.background_rectangle), LaggedStart(*[FadeIn(row, shift=DOWN * 0.1) for row in spaces], lag_ratio=0.3), run_time=1.6)
+        self.wait(0.5)
+        line = self.say(r"So which maps between vector spaces deserve the name linear?", line, hold=0.2)
+        self.play(Write(question), run_time=1.0)
+        self.wait(Timing.beat + 0.5)
+        self.play(FadeOut(panel), run_time=0.5)
+        return line
+
+    def turn_keeps_sums(self, plane, line):
         shape = self.parallelogram(plane, [(0, 0), V, V_PLUS_W, W])
         arrows = VGroup(
             vector_arrow(V, Palette.yellow, plane),
@@ -201,7 +219,7 @@ class Lesson(LessonScene):
             backed(MathTex(r"\mathbf w", color=Palette.blue)).next_to(plane.c2p(*W), LEFT, buff=0.15),
             backed(MathTex(r"\mathbf v + \mathbf w", color=Palette.teal)).next_to(plane.c2p(*V_PLUS_W), UP, buff=0.12),
         )
-        line = self.say(r"On Day 5, a matrix moved the plane and kept sums.", hold=0.2)
+        line = self.say(r"On Day 5, a matrix moved the plane and kept sums.", line, hold=0.2)
         self.play(GrowArrow(arrows[0]), GrowArrow(arrows[1]), FadeIn(names[:2]), run_time=1.2, rate_func=spring_soft)
         self.play(FadeIn(shape), GrowArrow(arrows[2]), FadeIn(names[2]), run_time=1.2, rate_func=spring_soft)
         self.wait(Timing.read_short)
@@ -322,7 +340,10 @@ class Lesson(LessonScene):
         top_left = panel_formulas(panels["tl"], (r"\mathbf p = 1 + 2t + t^2", Palette.yellow), (r"\mathbf q = t - t^3", Palette.blue))
         line = self.say(r"Here are two polynomials in $\mathbb P_3$.", line, hold=0.2)
         self.play(FadeIn(top_left), Create(curves["p"]), Create(curves["q"]), run_time=1.6, rate_func=smooth)
-        self.wait(Timing.read_short)
+        self.wait(Timing.beat)
+        line = self.say(r"If $D$ is linear, both routes around this square agree.", line, hold=0.2)
+        self.play(Indicate(VGroup(curves["p"], curves["q"]), color=Palette.glow, scale_factor=1.04), run_time=1.0)
+        self.wait(0.5)
 
         line = self.say(r"First add them, then take the derivative.", line, hold=0.2)
         curves["sum"] = self.add_across(panels["tl"], panels["tr"], [curves["p"], curves["q"]], plot(panels["tr"], sum_curve, Palette.teal), routes["top"])
@@ -488,6 +509,9 @@ class Lesson(LessonScene):
         line = self.say(r"So $D$ is not one-to-one.", line, hold=Timing.read_short)
         line = self.missing_cubic(right, line)
         line = self.say(r"So $D$ is not onto $\mathbb P_3$ either.", line, hold=Timing.read_short)
+        line = self.say(r"Next, Day 21 writes maps like $D$ as matrices.", line, hold=0.2)
+        self.play(Indicate(arrow, color=Palette.glow, scale_factor=1.15), run_time=1.0)
+        self.wait(Timing.read_short)
         return line
 
     def missing_cubic(self, right, line):

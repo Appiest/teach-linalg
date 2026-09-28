@@ -1,4 +1,4 @@
-On Day 5 a matrix moved the plane and kept sums and multiples. Day 10 showed that polynomials, functions and matrices add and scale just like arrows. Today puts the two together: a linear transformation can go from any vector space to any other, as long as it respects adding and scaling. Differentiation is the first one you will meet that is not a matrix.
+On Day 5 a matrix moved the plane and kept sums and multiples. Since then, Days 10 to 19 built a language of subspaces, bases, dimension, null spaces and column spaces that works for polynomials, functions and matrices as well as for arrows. With that language in hand, the course returns to transformations and asks which maps between any two vector spaces deserve the name linear. The answer is any map that respects adding and scaling, and differentiation is the first one you will meet that is not a matrix. Settling the definition today lets Day 21 write any such map as a matrix, and lets Days 23 and 24 carry the null space and column space over to it as the kernel and the image.
 
 ## The definition
 
@@ -25,7 +25,7 @@ $$
 
 Setting $c = d = 1$ recovers (i), and setting $d = 0$ recovers (ii). Repeating the test gives **superposition**: $T$ of any linear combination is the same combination of the images.
 
-Here is the test at work on the map $T : \mathbb P_2 \to \mathbb R^2$ that evaluates a polynomial at two points, $T(\mathbf p) = (\mathbf p(0), \mathbf p(1))$ (modeled on Lay §4.2 #31). For any $\mathbf p, \mathbf q$ in $\mathbb P_2$ and scalars $c, d$:
+To prove a map is linear, the goal is to rewrite $T(c\,\mathbf u + d\,\mathbf v)$ as $c\,T(\mathbf u) + d\,T(\mathbf v)$ using only the definition of $T$ and the arithmetic of each space. Here is the test at work on the map $T : \mathbb P_2 \to \mathbb R^2$ that evaluates a polynomial at two points, $T(\mathbf p) = (\mathbf p(0), \mathbf p(1))$ (modeled on Lay §4.2 #31). For any $\mathbf p, \mathbf q$ in $\mathbb P_2$ and scalars $c, d$:
 
 $$
 \begin{aligned}
@@ -65,7 +65,7 @@ The transpose $T(A) = A^T$ on $2 \times 2$ matrices is linear for the same kind 
 
 ## Maps that are not linear
 
-The quickest test is $T(\mathbf 0)$. A **translation** $T(\mathbf x) = \mathbf x + \mathbf b$ with $\mathbf b \neq \mathbf 0$ moves the origin to $\mathbf b$, so it cannot be linear. The same goes for any affine map $A\mathbf x + \mathbf b$ and for $f(x) = mx + b$ with $b \neq 0$, even though its graph is a straight line.
+To show a map is not linear you only need one failure, and $T(\mathbf 0)$ is the cheapest place to look. A **translation** $T(\mathbf x) = \mathbf x + \mathbf b$ with $\mathbf b \neq \mathbf 0$ moves the origin to $\mathbf b$, so it cannot be linear. The same goes for any affine map $A\mathbf x + \mathbf b$ and for $f(x) = mx + b$ with $b \neq 0$, even though its graph is a straight line.
 
 <Pair>
 <Figure src="translation-misses" alt="A teal parallelogram shifted by b = (1, −1), with a glowing orange dot at its corner T(0) = (1, −1). From the true origin, yellow T(v) = (4, 1) and blue T(w) = (0, 1) are added tip to tail, and the pink sum lands at (4, 2). The teal corner T(v + w) sits at (3, 3), joined to the pink tip by an orange dashed gap." />
@@ -86,7 +86,7 @@ Passing $T(\mathbf 0) = \mathbf 0$ does not prove a map is linear. For $T(x_1, x
 
 ## Counting preimages
 
-A vector $\mathbf x$ with $T(\mathbf x) = \mathbf b$ is a **preimage** of $\mathbf b$. Two questions ask how many preimages each $\mathbf b$ in $W$ has.
+A vector $\mathbf x$ with $T(\mathbf x) = \mathbf b$ is a **preimage** of $\mathbf b$. Two questions ask how many preimages each $\mathbf b$ in $W$ has. They are Day 19's statements (f) and (i) asked of any linear map, and Days 23 and 24 answer them with the kernel and the image.
 
 <Definition term="Onto and one-to-one">
 $T : V \to W$ is **onto** $W$ if every $\mathbf b$ in $W$ is the image of **at least one** $\mathbf x$ in $V$. This is an existence question, and it means the range is all of $W$.
@@ -107,6 +107,8 @@ The codomain matters. With the same rule written as $D : \mathbb P_3 \to \mathbb
 The transpose on $M_{2\times2}$ passes both tests. If $A^T = B^T$ then transposing again gives $A = B$, and any $B$ is the image of $B^T$.
 
 For a matrix map $\mathbf x \mapsto A\mathbf x$ from $\mathbb R^n$ to $\mathbb R^m$, the pivots of $A$ answer both questions (Lay §1.9, Theorem 12). The map is onto $\mathbb R^m$ exactly when $A$ has a pivot in every row, because then $A\mathbf x = \mathbf b$ is consistent for every $\mathbf b$. It is one-to-one exactly when $A$ has a pivot in every column, because then $A\mathbf x = \mathbf b$ has no free variables. For example, a $3 \times 2$ matrix with independent columns gives a one-to-one map that cannot be onto $\mathbb R^3$, since two pivots cannot fill three rows.
+
+Tomorrow, Day 21 picks a basis on each side and turns any linear map, the derivative included, into a matrix you can row reduce.
 
 ## Practice
 
