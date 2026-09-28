@@ -1,2 +1,2 @@
-Day 12 is up! Today is about why the span is the smallest subspace holding your vectors, and a quick pivot test for when they reach everything. Watch what happens to the plane when the third arrow tips out of it.
+Day 12 is up! Now that every span counts as a subspace, spans become the way we build subspaces, so today asks how small a span is and which of its vectors it really needs. Watch what happens to the plane when the third arrow tips out of it.
 https://appiest.github.io/teach-linalg/day/12/

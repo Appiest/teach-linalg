@@ -183,14 +183,16 @@ class Lesson(LessonScene):
         plane = self.plane
         self.h_line = set_line(plane, 0)
         self.h_name = set_name(plane, 0)
-        line = self.say(r"Yesterday's vector spaces were sets closed under adding and scaling.", hold=Timing.read_short)
-        line = self.say(r"A subspace sits inside a vector space and is one itself.", line, hold=0.2)
+        line = self.say(r"Yesterday's vector spaces were sets closed under adding and scaling.", hold=0.2)
         self.play(Create(self.h_line), run_time=1.4, rate_func=smooth)
         self.play(FadeIn(self.h_name, shift=LEFT * 0.2), run_time=0.6)
-        self.wait(Timing.read_short)
+        self.wait(Timing.beat)
+        line = self.say(r"Is this line inside $\mathbb R^2$ a vector space on its own?", line, hold=Timing.read_short)
+        line = self.say(r"A subspace sits inside a vector space and is one itself.", line, hold=Timing.read_short)
+        line = self.say(r"Most spaces from here on sit inside a bigger one.", line, hold=Timing.read_short)
 
         self.checks = checklist()
-        line = self.say(r"To test a set, check these three things.", line, hold=0.2)
+        line = self.say(r"To test a set, three checks replace yesterday's ten rules.", line, hold=0.2)
         self.play(FadeIn(self.checks.background_rectangle), run_time=0.3)
         for row in self.checks[1:]:
             self.play(FadeIn(row, shift=RIGHT * 0.15), run_time=0.6, rate_func=spring_soft)
@@ -410,7 +412,7 @@ class Lesson(LessonScene):
             self.play(Create(mark), run_time=0.5)
             row.add(mark)
             self.wait(Timing.read_short)
-        self.wait(Timing.beat)
+        line = self.say(r"Tomorrow we use spans to build subspaces on purpose.", line, hold=Timing.read_short)
         return line
 
 
