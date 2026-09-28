@@ -207,10 +207,11 @@ class Lesson(LessonScene):
     def recall_b(self, plane):
         self.b_arrows, self.b_labels = b_parts(plane)
         self.b_grid = b_grid(plane)
-        line = self.say(r"Day 15 gave $\mathbf x$ an address in the basis $\mathcal B$.", hold=0.2)
+        line = self.say(r"Yesterday a matrix depended on the basis we picked.", hold=0.2)
         self.play(plane.animate.set_opacity(0.22), run_time=0.6)
         self.add(self.b_grid)
         self.play(Create(self.b_grid, lag_ratio=0.01), run_time=1.4)
+        line = self.say(r"Day 15 gave $\mathbf x$ an address in the basis $\mathcal B$.", line, hold=0.2)
         self.play(GrowArrow(self.b_arrows[0]), GrowArrow(self.b_arrows[1]), FadeIn(self.b_labels), run_time=1.1, rate_func=spring_soft)
         self.x = x_arrow(plane)
         self.x_name = x_label(plane)
@@ -236,7 +237,8 @@ class Lesson(LessonScene):
         self.add(self.c_grid)
         self.bring_arrows_forward()
         self.play(Create(self.c_grid, lag_ratio=0.01), run_time=1.6)
-        self.wait(Timing.read_short)
+        self.wait(Timing.beat)
+        line = self.say(r"Today we translate an address from one basis to another.", line, hold=Timing.read_short)
         return line
 
     def bring_arrows_forward(self):
@@ -301,8 +303,10 @@ class Lesson(LessonScene):
         return line
 
     def columns_of_p(self, plane, line):
-        line = self.say(r"To translate, write each $\mathcal B$ vector in $\mathcal C$ coordinates.", line, hold=0.2)
+        line = self.say(r"We want one matrix that turns $[\mathbf x]_{\mathcal B}$ into $[\mathbf x]_{\mathcal C}$.", line, hold=0.2)
         self.play(FadeOut(self.b_walk), FadeOut(self.c_walk), FadeOut(self.ring), self.x.animate.set_opacity(0.35), self.x_name.animate.set_opacity(0.35), run_time=0.7)
+        self.play(Indicate(self.x_in_b, color=Palette.glow, scale_factor=1.1), Indicate(self.x_in_c, color=Palette.glow, scale_factor=1.1), run_time=1.0)
+        line = self.say(r"To translate, write each $\mathcal B$ vector in $\mathcal C$ coordinates.", line, hold=0.2)
         self.p_label = MathTex(r"P_{\mathcal C \leftarrow \mathcal B}", "=", color=Palette.text, font_size=44)
         self.p_matrix = column_colored_matrix([["3", "1"], ["1", "2"]]).scale(0.85)
         p_row = on_panel(VGroup(self.p_label, self.p_matrix).arrange(RIGHT, buff=0.2), -1.25)
@@ -410,6 +414,7 @@ class Lesson(LessonScene):
         line = self.say(r"With real vectors, row reduce $[\,\mathbf c_1\ \mathbf c_2 \mid \mathbf b_1\ \mathbf b_2\,]$.", line, hold=0.2)
         self.play(FadeIn(veil), run_time=0.7)
         self.play(FadeIn(start), FadeIn(heads, shift=DOWN * 0.1), run_time=0.9, rate_func=spring_soft)
+        line = self.say(r"One row reduction finds both columns of $P$ at once.", line, hold=0.2)
         self.play(FadeIn(step), run_time=0.5)
         reduced = start.copy().set_z_index(21)
         self.add(reduced)
@@ -485,7 +490,8 @@ class Lesson(LessonScene):
         line = self.say(r"So $[T]_{\mathcal B} = P^{-1}AP$, and the two matrices are similar.", line, hold=0.2)
         self.play(FadeIn(numbers, shift=UP * 0.15), run_time=0.9, rate_func=spring_soft)
         self.remove(*[m for m in self.mobjects if m.z_index < 20])
-        self.wait(Timing.read_long)
+        self.wait(Timing.read_short)
+        line = self.say(r"Day 32 picks a basis that makes this matrix diagonal.", line, hold=Timing.read_short)
         return line
 
 
