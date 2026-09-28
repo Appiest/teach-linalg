@@ -1,4 +1,4 @@
-Yesterday a vector already in the span added nothing to it. Today gives that redundancy a precise test. A set of vectors is independent when none of them is redundant, and the test asks whether some weights other than zero can combine the vectors into $\mathbf 0$.
+Yesterday a vector already in the span added nothing to it. Today's question is how to tell, for any list of vectors, whether one of them is spare in that way. It comes now because tomorrow's basis needs a spanning set with no spare vectors, so you need a test for spare vectors first. A set of vectors is independent when none of them is redundant, and the test asks whether some weights other than zero can combine the vectors into $\mathbf 0$.
 
 ## The definition
 
@@ -30,13 +30,13 @@ The theorem does not say that *every* vector in a dependent set is a combination
 
 <Figure src="flat-box" alt="Two 3D views side by side. Left: yellow u = (1, −1, 0) and blue v = (1, 2, 0) lie in a teal floor plane, and pink w = (2, 1, 2) rises above it, building a box with height 2. Right: w has dropped to (2, 1, 0), the box is flat inside the plane, and a copy of v from the tip of u shows that u + v − w = 0." wide />
 
-In space, two independent vectors $\yellow{\mathbf u}$ and $\blue{\mathbf v}$ span a plane. A third vector $\pink{\mathbf w}$ makes the set dependent exactly when it lies in that plane. While $\pink{\mathbf w}$ sticks out, the three arrows build a box with real volume. When $\pink{\mathbf w}$ drops into the plane, the box goes flat.
+In space, two independent vectors $\yellow{\mathbf u}$ and $\blue{\mathbf v}$ span a plane. A third vector $\pink{\mathbf w}$ makes the set dependent exactly when it lies in that plane. While $\pink{\mathbf w}$ sticks out, the three arrows build a box with real volume. When $\pink{\mathbf w}$ drops into the plane, the box goes flat. On Day 25 the determinant measures this volume, so a determinant of zero will also signal dependent columns.
 
 <LiftToPlane v1={[1, 0, 1]} v2={[0, 1, 2]} v3={[1, 2]} min={-2} max={8} />
 
 ## The pivot test
 
-The vector equation $x_1 \mathbf v_1 + \cdots + x_p \mathbf v_p = \mathbf 0$ is the system $A\mathbf x = \mathbf 0$, where $A = [\,\mathbf v_1\ \cdots\ \mathbf v_p\,]$. A nonzero solution exists exactly when the system has a free variable, and a variable is free exactly when its column has no pivot.
+Checking every vector against the others by hand gets slow, so the goal here is one row reduction that settles the whole set. The vector equation $x_1 \mathbf v_1 + \cdots + x_p \mathbf v_p = \mathbf 0$ is the system $A\mathbf x = \mathbf 0$, where $A = [\,\mathbf v_1\ \cdots\ \mathbf v_p\,]$. A nonzero solution exists exactly when the system has a free variable, and a variable is free exactly when its column has no pivot.
 
 $$
 \text{columns of } A \text{ are independent} \iff A \text{ has a pivot in every column}
@@ -78,6 +78,8 @@ The last rule only works in one direction. Three vectors in $\mathbb R^3$ can be
 <LoopAnywhere v={[3, 1]} w={[1, 2]} start={[-2, 3]} goal={[1, -1]} />
 
 The definition never mentions entries, so it works in any vector space. In $\mathbb P_1$, the polynomials $1$, $t$ and $3 + 2t$ are dependent, because $3 \cdot 1 + 2 \cdot t - (3 + 2t) = 0$ for every $t$.
+
+Tomorrow a set that passes this test and also spans a space becomes a basis, which gives every vector in that space exactly one list of weights.
 
 ## Practice
 

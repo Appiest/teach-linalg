@@ -1,2 +1,2 @@
-Day 14 is up! Today is about a basis: a set of vectors that builds the whole space with nothing spare, so every point gets exactly one address. Watch one point stay still while the grid under it skews, and see how its address changes.
+Day 14 is up! The last two days tested whether a set spans and whether it has a spare vector, and today shows what a set passing both tests gives you: every point gets exactly one address. That set is called a basis, so watch one point stay still while the grid under it skews and its address changes.
 https://appiest.github.io/teach-linalg/day/14/

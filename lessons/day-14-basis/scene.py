@@ -240,6 +240,8 @@ class Lesson(LessonScene):
         for leg in walk:
             self.play(Create(leg[0]), LaggedStart(*[GrowFromCenter(d) for d in leg[1]], lag_ratio=0.3), run_time=1.2)
         self.wait(Timing.read_short)
+        line = self.say(r"Day 12 tested spanning, and Day 13 tested independence.", line, hold=Timing.read_short)
+        line = self.say(r"Which sets give every point exactly one address like this?", line, hold=Timing.read_short)
         self.play(FadeOut(VGroup(arrows, labels, walk)), run_time=0.6)
         return line
 
@@ -299,6 +301,7 @@ class Lesson(LessonScene):
 
     def trim_to_basis(self, line):
         plane = self.plane
+        line = self.say(r"Next, trim this spanning set until nothing spare is left.", line, hold=Timing.read_short)
         line = self.say(r"Drop the spare arrow and the span does not shrink.", line, hold=0.2)
         self.play(FadeOut(VGroup(self.u_arrow, self.u_label, self.recipe_path, self.recipe_rows)), run_time=0.8)
         self.play(*self.checklist.switch(True, True), run_time=0.8)
@@ -369,6 +372,7 @@ class Lesson(LessonScene):
             self.play(Indicate(row, color=Palette.glow, scale_factor=1.06), run_time=0.8)
         self.play(Indicate(self.x_point[0], color=Palette.glow, scale_factor=1.6), run_time=0.8)
         self.wait(Timing.read_short)
+        line = self.say(r"Tomorrow these addresses become coordinate vectors.", line, hold=Timing.read_short)
         self.play(FadeOut(VGroup(marks, rows, self.live_grid, self.live_arrows, self.x_point, self.plane)), run_time=0.8)
         return line
 
