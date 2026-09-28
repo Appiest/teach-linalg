@@ -1,10 +1,12 @@
-Yesterday you multiplied a matrix by one vector at a time. Today you read the product as a rule: feed in any $\yellow{\mathbf x}$ and the matrix hands back $A\yellow{\mathbf x}$. Doing that to every point at once moves the whole plane.
+Yesterday you multiplied a matrix by one vector at a time. Today asks what a matrix does to every vector at once. Read that way, the product is a rule: feed in any $\yellow{\mathbf x}$ and the matrix hands back $A\yellow{\mathbf x}$, and doing that to every point at once moves the whole plane. The rest of the course leans on this picture of a matrix as a motion, starting tomorrow, when Day 6 runs two motions in a row.
 
 <Definition term="Transformation">
 A **transformation** $T$ from $\mathbb{R}^n$ to $\mathbb{R}^m$ is a rule that assigns to each vector $\mathbf x$ in $\mathbb{R}^n$ a vector $T(\mathbf x)$ in $\mathbb{R}^m$. We write $T : \mathbb{R}^n \to \mathbb{R}^m$. The set $\mathbb{R}^n$ is the **domain**, $\mathbb{R}^m$ is the **codomain**, and $T(\mathbf x)$ is the **image** of $\mathbf x$. The set of all images is the **range** of $T$.
 
 When $A$ is an $m \times n$ matrix, $T(\mathbf x) = A\mathbf x$ is a **matrix transformation**. Its domain is $\mathbb{R}^n$ because $\mathbf x$ needs one entry per column of $A$, and its codomain is $\mathbb{R}^m$ because each column has $m$ entries.
 </Definition>
+
+The range matters because it says which equations $A\mathbf x = \mathbf b$ have a solution. On Day 16 the range of $\mathbf x \mapsto A\mathbf x$ gets its own name, the column space of $A$.
 
 <Pair>
 <Figure src="shear" alt="A shear. The blue grid lines lean to the right while the horizontal lines stay put. The green arrow e1 stays at (1, 0), the red arrow e2 lands on (1, 1), and the yellow arrow Ax ends at (3, 2). The matrix A has green first column (1, 0) and red second column (1, 1)." />
@@ -17,6 +19,8 @@ This matrix is a **shear**. It slides each point sideways by its height, so the 
 </Pair>
 
 ## The standard matrix
+
+Often you know a move in words, such as a quarter turn, and want its matrix. The goal of this section is a recipe for that matrix that needs no algebra.
 
 Every $\mathbf x$ in $\mathbb{R}^2$ is $x_1\green{\mathbf e_1} + x_2\red{\mathbf e_2}$, where $\green{\mathbf e_1} = (1, 0)$ and $\red{\mathbf e_2} = (0, 1)$. So once you know where $\green{\mathbf e_1}$ and $\red{\mathbf e_2}$ land, you know where everything lands. Those two landing spots are the columns of the matrix.
 
@@ -43,6 +47,8 @@ $$
 <TransformExplorer matrix={[[1, 0], [0, 1]]} goal={{ matrix: [[0, 1], [-1, 0]], prompt: "Drag the green and red tips to build a quarter turn clockwise. Picture where $\\mathbf e_1$ and $\\mathbf e_2$ should end up first.", success: "That's it. Turning clockwise sends $\\mathbf e_1$ down to $(0, -1)$ and $\\mathbf e_2$ right to $(1, 0)$, so those are the two columns." }} />
 
 ## Linearity
+
+The recipe above works only because matrix maps obey two rules, and naming those rules tells you which moves a matrix can make. On Day 20 the same two rules become the definition of a linear map between any vector spaces, so differentiation counts too.
 
 <Definition term="Linear transformation">
 A transformation $T$ is **linear** when, for all vectors $\mathbf u, \mathbf v$ in its domain and every scalar $c$,
@@ -77,7 +83,7 @@ $$
 
 and the standard matrix is $\begin{bmatrix} \green{1} & \red{-3} \\ \green{2} & \red{1} \end{bmatrix}$.
 
-Going backwards asks which $\mathbf x$ has a given image $\mathbf b$. Because the moved grid is made of copies of $\green{T(\mathbf e_1)}$ and $\red{T(\mathbf e_2)}$, you can count how many of each step reach $\mathbf b$.
+Going backwards asks which $\mathbf x$ has a given image $\mathbf b$, so it is Day 4's equation $A\mathbf x = \mathbf b$ seen as a picture. Because the moved grid is made of copies of $\green{T(\mathbf e_1)}$ and $\red{T(\mathbf e_2)}$, you can count how many of each step reach $\mathbf b$.
 
 <PreimageHunt matrix={[[2, -1], [1, 1]]} target={[1, 5]} success="Found it. With $\mathbf x = (2, 3)$ you take two green steps and three red steps, and $2(2, 1) + 3(-1, 1) = (1, 5)$." />
 
@@ -91,7 +97,7 @@ $$
 
 <Figure src="gallery" alt="Four small grids, each with the unit square outlined in gray and its image filled. A stretch doubles the square's width. A reflection flips it to the left and fills it pink. A vertical shear tilts it upward. A projection flattens the whole grid onto the horizontal axis. Each matrix is printed below its grid." wide />
 
-Each matrix above is $\begin{bmatrix} T(\mathbf e_1) & T(\mathbf e_2) \end{bmatrix}$, so you can rebuild it from the picture. From left to right they are $\begin{bmatrix} 2 & 0 \\ 0 & 1 \end{bmatrix}$, $\begin{bmatrix} -1 & 0 \\ 0 & 1 \end{bmatrix}$, $\begin{bmatrix} 1 & 0 \\ 1 & 1 \end{bmatrix}$ and $\begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix}$. A pink square means the map flipped the plane over. Turning $\green{\mathbf e_1}$ and $\red{\mathbf e_2}$ through an angle $\varphi$ gives the rotation matrix the same way:
+Each matrix above is $\begin{bmatrix} T(\mathbf e_1) & T(\mathbf e_2) \end{bmatrix}$, so you can rebuild it from the picture. From left to right they are $\begin{bmatrix} 2 & 0 \\ 0 & 1 \end{bmatrix}$, $\begin{bmatrix} -1 & 0 \\ 0 & 1 \end{bmatrix}$, $\begin{bmatrix} 1 & 0 \\ 1 & 1 \end{bmatrix}$ and $\begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix}$. A pink square means the map flipped the plane over, and on Day 25 the sign of the determinant detects exactly that flip. Turning $\green{\mathbf e_1}$ and $\red{\mathbf e_2}$ through an angle $\varphi$ gives the rotation matrix the same way:
 
 $$
 \begin{bmatrix} \green{\cos\varphi} & \red{-\sin\varphi} \\ \green{\sin\varphi} & \red{\cos\varphi} \end{bmatrix}
@@ -145,3 +151,5 @@ $$
 In the same way $\mathbf e_2 = \tfrac12(\mathbf u - \mathbf v)$ gives $T(\mathbf e_2) = (1, 3)$, so the standard matrix is $\begin{bmatrix} 3 & 1 \\ -1 & 3 \end{bmatrix}$.
 </Answer>
 </Check>
+
+Tomorrow you run two of these moves in a row, and the matrix of the combined move turns out to be a product of matrices.
