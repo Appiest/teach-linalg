@@ -98,7 +98,7 @@ A triangular matrix is invertible exactly when none of its diagonal entries is z
 
 ## Transposes and products
 
-Two more rules let you skip the arithmetic entirely. The rows of $A^T$ are the columns of $A$, so expanding $A^T$ along a row is the same computation as expanding $A$ down a column, and $\det A^T = \det A$. As a result, every rule above holds for columns as well as rows. For products, $\det(AB) = (\det A)(\det B)$, because $B$ scales area by $|\det B|$ and then $A$ scales the result by $|\det A|$. Day 27 proves both. Sums have no such rule, and $\det(A + B)$ is usually not $\det A + \det B$.
+Two more rules let you skip the arithmetic entirely. The rows of $A^T$ are the columns of $A$, so expanding $A^T$ along a row is the same computation as expanding $A$ down a column, and $\det A^T = \det A$. As a result, every rule above holds for columns as well as rows. For products, $\det(AB) = (\det A)(\det B)$, because $B$ scales area by $|\det B|$ and then $A$ scales the result by $|\det A|$. Day 27 proves the product rule. Sums have no such rule, and $\det(A + B)$ is usually not $\det A + \det B$.
 
 Scaling the whole matrix scales every row. For an $n \times n$ matrix that is $n$ separate row scalings, so
 
