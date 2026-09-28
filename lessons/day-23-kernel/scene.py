@@ -237,7 +237,8 @@ class Lesson(LessonScene):
         self.play(s.animate.set_value(0.0), run_time=1.4, rate_func=spring_soft)
         line = self.say(r"That line was $\operatorname{Nul}P$, the null space of $P$.", line, hold=0.2)
         self.play(FadeIn(name, shift=DOWN * 0.1), run_time=0.7)
-        self.wait(Timing.read_short)
+        self.wait(Timing.beat)
+        line = self.say(r"Today we ask whether two inputs can share one output.", line, hold=Timing.read_short)
         return line
 
     def define_kernel(self, line):
@@ -251,7 +252,7 @@ class Lesson(LessonScene):
         ).arrange(DOWN, buff=0.55).move_to(UP * 0.5)
         self.play(FadeIn(veil), run_time=0.6)
         self.play(FadeIn(card[0], shift=UP * 0.15), run_time=0.8, rate_func=spring_soft)
-        line = self.say(r"Any linear map $T : V \to W$ can ask that question.", line, hold=Timing.beat)
+        line = self.say(r"Every linear map $T : V \to W$ sends some inputs to $\mathbf 0$.", line, hold=Timing.beat)
         line = self.say(r"Its \emph{kernel} is everything $T$ sends to $\mathbf 0$.", line, hold=0.2)
         self.play(Write(rule), run_time=1.4)
         self.wait(Timing.beat)
@@ -259,7 +260,8 @@ class Lesson(LessonScene):
         self.play(Indicate(rule[2], color=Palette.glow, scale_factor=1.1), run_time=0.9)
         self.wait(Timing.beat)
         self.play(FadeIn(card[2], shift=UP * 0.1), run_time=0.8)
-        self.wait(Timing.read_short)
+        self.wait(Timing.beat)
+        line = self.say(r"On Day 28, eigenvectors fill the kernel of $A - \lambda I$.", line, hold=Timing.read_short)
         self.play(*[FadeOut(m) for m in self.mobjects], run_time=0.7)
         return None
 
@@ -364,6 +366,7 @@ class Lesson(LessonScene):
     def centerpiece(self, line):
         panel = self.panel
         self.k = draw(panel, kernel_curve, Palette.pink, stroke_width=6)
+        line = self.say(r"To see why they collide, look at their difference.", line, hold=Timing.beat)
         line = self.say(r"Subtract them: $\mathbf u - \mathbf v = t^2 - t$.", line, hold=0.2)
         self.play(FadeTransform(VGroup(self.u.copy(), self.v.copy()), self.k), FadeIn(self.legend[2]), run_time=1.6)
         self.wait(Timing.beat)
@@ -485,7 +488,8 @@ class Lesson(LessonScene):
         self.wait(Timing.beat)
         self.play(c.animate.set_value(0.0), run_time=1.6, rate_func=spring)
         self.wait(Timing.beat)
-        line = self.say(r"So this new $T$ has $\ker T = \{\mathbf 0\}$ and is one-to-one.", line, hold=Timing.read_long)
+        line = self.say(r"So this new $T$ has $\ker T = \{\mathbf 0\}$ and is one-to-one.", line, hold=Timing.read_short)
+        line = self.say(r"Tomorrow we ask which outputs $T$ can reach.", line, hold=Timing.read_short)
         return line
 
     def third_height(self, c_value):

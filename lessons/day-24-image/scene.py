@@ -225,6 +225,8 @@ class Lesson(LessonScene):
         self.play(Create(self.axes), run_time=1.0)
         self.play(FadeIn(self.dots, lag_ratio=0.1), run_time=1.0)
         self.play(self.view.turn_to(FACE_ON), run_time=2.2, rate_func=smooth)
+        line = self.say(r"Yesterday we asked which inputs $T$ sends to $\mathbf 0$.", line, hold=Timing.beat)
+        line = self.say(r"Today we ask which outputs $T$ can reach.", line, hold=Timing.read_short)
         return line
 
     def input_dots(self):
@@ -317,7 +319,8 @@ class Lesson(LessonScene):
         self.wait(Timing.read_short)
         line = self.say(r"This range is only a plane in $\mathbb R^3$, so $T$ is not onto.", line, hold=0.2)
         self.play(Indicate(self.sheet, color=RANGE_COLOR, scale_factor=1.0), Indicate(ring, color=Palette.glow), run_time=1.0)
-        self.wait(Timing.read_short)
+        self.wait(Timing.beat)
+        line = self.say(r"Day 38 finds the closest output when $\mathbf b$ is unreachable.", line, hold=Timing.read_short)
         self.clear_stage(keep=(line, self.map_group, self.axes))
         return line
 
@@ -328,6 +331,7 @@ class Lesson(LessonScene):
         self.kernel = always_redraw(lambda: kernel_line(self.project, self.amount.get_value()))
         kernel_tag = space_tag(self.project, KERNEL_REACH * KERNEL, r"\ker T", KERNEL_COLOR, RIGHT)
         floor_tag = space_tag(self.project, (-2, 1, 0), r"x_3 = 0", INPUT_COLOR, UP)
+        line = self.say(r"We want to count how many input dimensions survive $T$.", line, hold=Timing.beat)
         line = self.say(r"Now go back to the inputs and split them in two.", line, hold=0.2)
         self.play(Create(self.kernel), FadeIn(kernel_tag), run_time=1.0)
         self.wait(Timing.beat)

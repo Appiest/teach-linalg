@@ -1,4 +1,4 @@
-On Day 17 the null space collected every input a matrix sends to $\mathbf 0$. Day 20 widened "matrix" to any linear map between vector spaces, including the derivative. Today asks Day 17's question of those maps. The answer is again a subspace, and its size decides whether the map can ever send two different inputs to the same place.
+On Day 17 the null space collected every input a matrix sends to $\mathbf 0$, and it decided whether a solution of $A\mathbf x = \mathbf b$ is unique. Day 20 widened "matrix" to any linear map between vector spaces, including the derivative, and Day 21 wrote such a map as a matrix. With those maps in hand, today asks Day 17's question of them. The answer is again a subspace, called the kernel, and its size decides whether the map can ever send two different inputs to the same place. Tomorrow asks the companion question of which outputs the map can reach.
 
 ## The kernel
 
@@ -18,7 +18,7 @@ Testing one vector takes one evaluation. Take Day 20's map $T(\mathbf p) = (\gre
 
 <EvaluationKernel start={[1, 1, 0]} />
 
-To find the whole kernel, write $\mathbf p = a_0 + a_1 t + a_2 t^2$ and turn $T(\mathbf p) = \mathbf 0$ into equations on the coefficients:
+Testing polynomials one at a time never finishes, so the goal is a short list of polynomials whose span is exactly the kernel. To find it, write $\mathbf p = a_0 + a_1 t + a_2 t^2$ and turn $T(\mathbf p) = \mathbf 0$ into equations on the coefficients:
 
 $$
 \begin{aligned}
@@ -46,7 +46,7 @@ $$
 \end{aligned}
 $$
 
-Line (a) is Day 20's fact that every linear map sends zero to zero, and lines (b) and (c) use only the two rules in the definition of linear. Day 17's proof for $\operatorname{Nul}A$ is the special case $T(\mathbf x) = A\mathbf x$. The theorem also explains why the solutions of a homogeneous differential equation such as $y'' + \omega^2 y = 0$ can be added and scaled: they form the kernel of the linear map $y \mapsto y'' + \omega^2 y$ (Lay §4.2, Example 9).
+Line (a) is Day 20's fact that every linear map sends zero to zero, and lines (b) and (c) use only the two rules in the definition of linear. Day 17's proof for $\operatorname{Nul}A$ is the special case $T(\mathbf x) = A\mathbf x$. The theorem also explains why the solutions of a homogeneous differential equation such as $y'' + \omega^2 y = 0$ can be added and scaled: they form the kernel of the linear map $y \mapsto y'' + \omega^2 y$ (Lay §4.2, Example 9). Day 28 uses the same fact for eigenvectors: the eigenvectors of $A$ for an eigenvalue $\lambda$, together with $\mathbf 0$, form the kernel of $\mathbf x \mapsto (A - \lambda I)\mathbf x$, so they make a subspace.
 
 ## The derivative
 
@@ -62,7 +62,7 @@ $$
 A constant has slope 0 everywhere. This kernel is the reason every antiderivative carries a $+\,C$.
 </Pair>
 
-Day 21's recipe gives the same answer. With $\mathcal B = \{1, t, t^2, t^3\}$, a polynomial is in $\ker D$ exactly when its coordinate vector is in the null space of $[D]_{\mathcal B}$, because $[D\mathbf p]_{\mathcal B} = [D]_{\mathcal B}[\mathbf p]_{\mathcal B}$ and only the zero polynomial has zero coordinates:
+Day 21's recipe gives the same answer, and it turns a question about polynomials into a null space computation you already know how to do. With $\mathcal B = \{1, t, t^2, t^3\}$, a polynomial is in $\ker D$ exactly when its coordinate vector is in the null space of $[D]_{\mathcal B}$, because $[D\mathbf p]_{\mathcal B} = [D]_{\mathcal B}[\mathbf p]_{\mathcal B}$ and only the zero polynomial has zero coordinates:
 
 $$
 [D]_{\mathcal B} = \begin{bmatrix} 0 & 1 & 0 & 0 \\ 0 & 0 & 2 & 0 \\ 0 & 0 & 0 & 3 \\ 0 & 0 & 0 & 0 \end{bmatrix},
@@ -100,7 +100,7 @@ Here $\yellow{\mathbf u} = t^2$ and $\blue{\mathbf v} = t$ both land on $\teal{\
 Adding a third pin changes the verdict. The map $S(\mathbf p) = (\mathbf p(-1), \mathbf p(0), \mathbf p(1))$ from $\mathbb P_2$ to $\mathbb R^3$ reads $t^2 - t$ as $(2, 0, 0)$. A nonzero polynomial of degree at most 2 has at most two roots, so only the zero polynomial reads 0 at all three pins. That gives $\ker S = \{\mathbf 0\}$, and $S$ is one-to-one.
 </Pair>
 
-For a matrix map $\mathbf x \mapsto A\mathbf x$, look for free variables. Each free variable in $A\mathbf x = \mathbf 0$ produces a nonzero kernel vector, so the map is one-to-one exactly when every column of $A$ has a pivot. For example,
+For a matrix map $\mathbf x \mapsto A\mathbf x$, the test is whether $A\mathbf x = \mathbf 0$ has a nonzero solution, so row reduce and look for free variables. Each free variable in $A\mathbf x = \mathbf 0$ produces a nonzero kernel vector, so the map is one-to-one exactly when every column of $A$ has a pivot. For example,
 
 $$
 \begin{aligned}
@@ -111,6 +111,8 @@ x_4 &= 0, \quad x_2 = -3x_3, \quad x_1 = -2x_2 = 6x_3 && x_3 \text{ free} \\
 $$
 
 so this $T : \mathbb R^4 \to \mathbb R^3$ is not one-to-one. Any map from $\mathbb R^4$ to $\mathbb R^3$ has at least one free variable, since three rows hold at most three pivots. Having fewer columns than rows does not guarantee a pivot in every column, though, so a tall matrix still needs row reduction. The theorem also needs linearity. For $f(x) = x^2$, only $0$ goes to $0$, yet $f(1) = f(-1)$.
+
+For a square matrix, Day 25 packs this test into one number: the determinant is zero exactly when the map squashes space and many inputs share an output. First, tomorrow on Day 24, the range collects every output of $T$, and the dimensions of the kernel and the range turn out to add up to $\dim V$.
 
 ## Practice
 
