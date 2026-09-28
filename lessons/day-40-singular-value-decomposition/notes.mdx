@@ -1,0 +1,110 @@
+Diagonalization on Day 32 needed a square matrix with enough eigenvectors. The singular value decomposition needs nothing: every $m \times n$ matrix $A$ turns one set of perpendicular directions $\yellow{\mathbf v_1}, \blue{\mathbf v_2}, \dots$ into another set of perpendicular directions $\yellow{\mathbf u_1}, \blue{\mathbf u_2}, \dots$ and stretches each one by a number $\glow{\sigma_i} \ge 0$. The video's matrix is $A = \begin{bmatrix} 2 & -1 \\ 2 & 2 \end{bmatrix}$, which sends the unit circle to a tilted ellipse.
+
+## Singular values
+
+The length of $A\mathbf x$ is controlled by the symmetric matrix $A^TA$, because $\|A\mathbf x\|^2 = (A\mathbf x)^T(A\mathbf x) = \mathbf x^T(A^TA)\mathbf x$. By Day 34, $A^TA$ has an orthonormal basis of eigenvectors $\mathbf v_1, \dots, \mathbf v_n$, ordered so that $\lambda_1 \ge \lambda_2 \ge \dots \ge \lambda_n$. For each one,
+
+$$
+\|A\mathbf v_i\|^2 = \mathbf v_i^T(A^TA)\mathbf v_i = \mathbf v_i^T(\lambda_i \mathbf v_i) = \lambda_i,
+$$
+
+so every $\lambda_i$ is at least $0$. The **singular values** of $A$ are $\glow{\sigma_i} = \sqrt{\lambda_i}$, and $\glow{\sigma_i}$ is the length of $A\mathbf v_i$.
+
+<Pair>
+<Figure src="singular-axes" alt="A dashed unit circle and the teal ellipse it becomes under A = [2 −1; 2 2]. Short yellow v1 and blue v2 lie on the circle at right angles. Long yellow Av1 = 3u1 reaches the far end of the ellipse and blue Av2 = 2u2 reaches the near side, with a small orange right-angle mark between them." />
+
+For the video's matrix, $A^TA = \begin{bmatrix} 8 & 2 \\ 2 & 5 \end{bmatrix}$ has eigenvalues $9$ and $4$, so $\glow{\sigma_1} = 3$ and $\glow{\sigma_2} = 2$. The unit eigenvectors are $\yellow{\mathbf v_1} = \tfrac{1}{\sqrt5}(2, 1)$ and $\blue{\mathbf v_2} = \tfrac{1}{\sqrt5}(-1, 2)$.
+
+Day 39 showed that $\mathbf x^T(A^TA)\mathbf x$ is largest over unit vectors at the top eigenvector. So $\glow{\sigma_1}$ is the longest $\|A\mathbf x\|$ can be, reached at $\mathbf x = \yellow{\mathbf v_1}$, and the outputs $A\yellow{\mathbf v_1}$ and $A\blue{\mathbf v_2}$ are the ellipse's two axes.
+</Pair>
+
+<LongestStretchHunt matrix={[[2, -1], [2, 2]]} start={[0, 2]} />
+
+## The decomposition
+
+<Definition term="The singular value decomposition">
+Let $A$ be an $m \times n$ matrix of rank $r$. Then $A = U\Sigma V^T$, where $V$ is an $n \times n$ orthogonal matrix whose columns $\mathbf v_i$ are unit eigenvectors of $A^TA$, $\Sigma$ is the $m \times n$ matrix with $\glow{\sigma_1} \ge \dots \ge \glow{\sigma_r} > 0$ down its diagonal and zeros elsewhere, and $U$ is an $m \times m$ orthogonal matrix whose first $r$ columns are $\mathbf u_i = A\mathbf v_i / \glow{\sigma_i}$.
+</Definition>
+
+The formula $\mathbf u_i = A\mathbf v_i/\sigma_i$ gives $A\mathbf v_i = \sigma_i \mathbf u_i$ for each $i$, which says $AV = U\Sigma$ one column at a time. Multiplying on the right by $V^{-1} = V^T$ gives $A = U\Sigma V^T$. If $r < m$, the missing columns of $U$ come from an orthonormal basis of $\operatorname{Nul} A^T$, found with Gram–Schmidt (Day 37).
+
+<Figure src="three-moves" alt="Four small grids in two rows. Start: a teal unit circle with yellow v1 and blue v2. After V transpose: the grid has turned, the circle is unchanged, and yellow and blue lie along the axes. After Sigma: the circle is an upright ellipse three wide and two tall. After U: the ellipse is tilted, with the yellow arrow on its long axis and the blue arrow on its short axis." wide />
+
+Read right to left, the factors are three moves. $V^T$ turns $\yellow{\mathbf v_1}$ and $\blue{\mathbf v_2}$ onto the coordinate axes, which leaves the circle looking unchanged. $\Sigma$ stretches axis $i$ by $\glow{\sigma_i}$, which makes an upright ellipse. $U$ turns the axes onto $\yellow{\mathbf u_1}$ and $\blue{\mathbf u_2}$, so the ellipse's half-axes end up as $\glow{\sigma_1}\yellow{\mathbf u_1}$ and $\glow{\sigma_2}\blue{\mathbf u_2}$.
+
+<SvdEllipseMatch target={{ sigmas: [3, 1.5], turn: 60 }} />
+
+Here is the whole recipe for $A = \begin{bmatrix} 3 & 0 \\ 4 & 5 \end{bmatrix}$. Diagonalize $A^TA$, take square roots, and build each $\mathbf u_i$ from $A\mathbf v_i$:
+
+$$
+\begin{aligned}
+A^TA &= \begin{bmatrix} 25 & 20 \\ 20 & 25 \end{bmatrix}, \qquad \lambda = 45,\ 5 \\
+\yellow{\mathbf v_1} &= \tfrac{1}{\sqrt2}\begin{bmatrix} 1 \\ 1 \end{bmatrix}, \quad \blue{\mathbf v_2} = \tfrac{1}{\sqrt2}\begin{bmatrix} -1 \\ 1 \end{bmatrix}, \qquad \glow{\sigma_1} = 3\sqrt5, \quad \glow{\sigma_2} = \sqrt5 \\
+\yellow{\mathbf u_1} &= \frac{A\yellow{\mathbf v_1}}{\glow{\sigma_1}} = \frac{1}{3\sqrt5}\cdot\frac{1}{\sqrt2}\begin{bmatrix} 3 \\ 9 \end{bmatrix} = \tfrac{1}{\sqrt{10}}\begin{bmatrix} 1 \\ 3 \end{bmatrix}, \qquad \blue{\mathbf u_2} = \frac{A\blue{\mathbf v_2}}{\glow{\sigma_2}} = \tfrac{1}{\sqrt{10}}\begin{bmatrix} -3 \\ 1 \end{bmatrix} \\
+A &= \underbrace{\tfrac{1}{\sqrt{10}}\begin{bmatrix} 1 & -3 \\ 3 & 1 \end{bmatrix}}_{U}\underbrace{\begin{bmatrix} 3\sqrt5 & 0 \\ 0 & \sqrt5 \end{bmatrix}}_{\Sigma}\underbrace{\tfrac{1}{\sqrt2}\begin{bmatrix} 1 & 1 \\ -1 & 1 \end{bmatrix}}_{V^T}.
+\end{aligned}
+$$
+
+Note that the rows of $V^T$ are the $\mathbf v_i$. A quick check is $|\det A| = 15 = \sigma_1\sigma_2$, which holds for every square matrix because $U$ and $V$ have determinant $\pm1$.
+
+The SVD also hands over the four subspaces of Day 16 and Day 35 with orthonormal bases. The rank of $A$ is the number of nonzero singular values $r$. The vectors $\mathbf u_1, \dots, \mathbf u_r$ span $\operatorname{Col} A$, and $\mathbf v_{r+1}, \dots, \mathbf v_n$ span $\operatorname{Nul} A$ because $A$ sends each of them to $\mathbf 0$.
+
+## Rank-k approximation
+
+Multiplying out $U\Sigma V^T$ column by row writes $A$ as a sum of **rank-one layers**, each an outer product of a column and a row:
+
+$$
+A = \glow{\sigma_1}\yellow{\mathbf u_1}\yellow{\mathbf v_1^T} + \glow{\sigma_2}\blue{\mathbf u_2}\blue{\mathbf v_2^T} + \dots + \glow{\sigma_r}\mathbf u_r\mathbf v_r^T.
+$$
+
+Keeping only the first $k$ layers gives the **rank-$k$ approximation** $A_k$. Its error is measured by the square root of the sum of the squared entries of $A - A_k$, and that error equals $\sqrt{\sigma_{k+1}^2 + \dots + \sigma_r^2}$. The Eckart–Young theorem, stated here without proof, says no other matrix of rank $k$ comes closer. An $m \times n$ matrix stored at rank $k$ costs $k(m + n + 1)$ numbers instead of $mn$, since each layer needs one $\mathbf u$, one $\mathbf v$ and one $\sigma$.
+
+<Figure src="rank-copies" alt="A grayscale landscape with a sky, a round sun and two ridges of hills, rebuilt from 1, 2, 5 and 20 layers beside the original. One layer shows only horizontal and vertical bands, two layers show a bright column where the sun is, five show a blocky sun and hills, and twenty look nearly the same as the original. A bar chart of the first 30 singular values on a log scale has its first 20 bars in teal." wide />
+
+A grayscale picture is a matrix of brightness values, and its singular values fall off fast. The same idea runs principal component analysis in Lay §7.5, where the first few singular directions of a data table carry most of its variation.
+
+<RankCopyBudget tolerance={0.05} />
+
+## Practice
+
+<Check>
+Find the singular values of $A = \begin{bmatrix} 3 & 8 \\ 0 & 3 \end{bmatrix}$, largest first. (Modeled on Lay §7.4, Exercise 3.)
+
+<VectorAnswer answer={[9, 1]} labels={["σ₁", "σ₂"]} />
+
+<Answer>
+$$
+\begin{aligned}
+A^TA &= \begin{bmatrix} 3 & 0 \\ 8 & 3 \end{bmatrix}\begin{bmatrix} 3 & 8 \\ 0 & 3 \end{bmatrix} = \begin{bmatrix} 9 & 24 \\ 24 & 73 \end{bmatrix} \\
+\det(A^TA - \lambda I) &= \lambda^2 - 82\lambda + 81 = (\lambda - 81)(\lambda - 1) \\
+\sigma_1 &= \sqrt{81} = 9, \qquad \sigma_2 = \sqrt1 = 1.
+\end{aligned}
+$$
+
+The eigenvalues of $A$ itself are $3$ and $3$, so singular values are not the eigenvalues of $A$. They come from $A^TA$. As a check, $\sigma_1\sigma_2 = 9 = |\det A|$.
+</Answer>
+</Check>
+
+<Check>
+Use the worked example's SVD of $A = \begin{bmatrix} 3 & 0 \\ 4 & 5 \end{bmatrix}$ to find its rank-one approximation $A_1 = \sigma_1\mathbf u_1\mathbf v_1^T$. Enter its four entries. (Modeled on Lay §7.4, Exercise 23.)
+
+<VectorAnswer answer={[1.5, 1.5, 4.5, 4.5]} labels={["top left", "top right", "bottom left", "bottom right"]} />
+
+<Answer>
+$$
+A_1 = 3\sqrt5 \cdot \tfrac{1}{\sqrt{10}}\begin{bmatrix} 1 \\ 3 \end{bmatrix} \tfrac{1}{\sqrt2}\begin{bmatrix} 1 & 1 \end{bmatrix} = \tfrac{3\sqrt5}{\sqrt{20}}\begin{bmatrix} 1 & 1 \\ 3 & 3 \end{bmatrix} = \begin{bmatrix} 3/2 & 3/2 \\ 9/2 & 9/2 \end{bmatrix}.
+$$
+
+The leftover is $A - A_1 = \begin{bmatrix} 3/2 & -3/2 \\ -1/2 & 1/2 \end{bmatrix}$, and the square root of the sum of its squared entries is $\sqrt{5} = \sigma_2$. The dropped singular value measures exactly what was thrown away.
+</Answer>
+</Check>
+
+<Check>
+A $3 \times 3$ matrix $B$ has singular values $6$, $2$ and $0$. What is its rank, and what is the largest value of $\|B\mathbf x\|$ over unit vectors $\mathbf x$? (Modeled on Lay §7.4, Exercises 14 and 15.)
+
+<VectorAnswer answer={[2, 6]} labels={["rank", "largest length"]} />
+
+<Answer>
+The rank is the number of nonzero singular values, which is $2$. The longest output of a unit vector is $\sigma_1 = 6$, reached at $\mathbf x = \mathbf v_1$. The third right singular vector $\mathbf v_3$ satisfies $\|B\mathbf v_3\| = \sigma_3 = 0$, so it spans $\operatorname{Nul} B$.
+</Answer>
+</Check>

@@ -1,0 +1,2 @@
+Day 40 is the last lesson! It's the singular value decomposition: every matrix turns, stretches along the axes, then turns again. Watch the circle become an ellipse in three moves, then see a picture rebuilt from just a few layers.
+https://appiest.github.io/teach-linalg/day/40/
