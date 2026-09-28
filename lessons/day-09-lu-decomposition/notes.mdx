@@ -1,0 +1,143 @@
+Row reducing $A\mathbf x = \mathbf b$ from scratch repeats the same elimination every time $\mathbf b$ changes. An **LU factorization** writes down that elimination once, as a product $A = LU$, so each new $\mathbf b$ costs only two short substitutions.
+
+## Triangular matrices
+
+A square matrix is **lower triangular** when every entry above its main diagonal is $0$, and **upper triangular** when every entry below it is $0$. A lower triangular matrix with 1s on its diagonal is **unit lower triangular**.
+
+$$
+L = \begin{bmatrix} 1 & 0 & 0 \\ \pink{2} & 1 & 0 \\ \pink{-1} & \pink{3} & 1 \end{bmatrix}
+\qquad
+U = \begin{bmatrix} 2 & 1 & -1 \\ 0 & 3 & 2 \\ 0 & 0 & -2 \end{bmatrix}
+$$
+
+A triangular system is easy because one of its rows mentions a single unknown. In $L\mathbf y = \mathbf b$ the top row gives $y_1$ outright, and each row below adds exactly one new unknown. Solving from the top down is **forward substitution**. In $U\mathbf x = \mathbf y$ the bottom row holds the lone unknown, so you solve from the bottom up, which is **back substitution**.
+
+<Pair>
+<Figure src="shears" alt="Three small grids. On the left, a yellow arrow x = (1, 1) sits on a square grid. An arrow labelled U leads to the middle grid, sheared sideways, where x has become the blue arrow y = (2, 1). An arrow labelled L leads to the right grid, sheared vertically as well, where y has become the teal arrow b = (2, 5)." />
+
+Both factors of this $A$ are shears.
+
+$$
+\begin{bmatrix} 1 & 1 \\ 2 & 3 \end{bmatrix} = \begin{bmatrix} 1 & 0 \\ \pink{2} & 1 \end{bmatrix}\begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}
+$$
+
+Multiplying by $A$ applies $U$ first and then $L$, so $\yellow{\mathbf x} \to \blue{\mathbf y} \to \teal{\mathbf b}$. Solving runs the picture backward: undo $L$ to find $\blue{\mathbf y}$, then undo $U$ to find $\yellow{\mathbf x}$.
+</Pair>
+
+## Building L from elimination
+
+<Definition term="LU factorization">
+Suppose the $m \times n$ matrix $A$ can be reduced to an echelon form $U$ using only row replacements that add a multiple of a row to a row below it. Then
+
+$$
+A = LU,
+$$
+
+where $L$ is an $m \times m$ unit lower triangular matrix and $U$ is that $m \times n$ echelon form. The entry of $L$ in row $i$, column $j$ is the **multiplier** $\ell_{ij}$ used in the step $R_i \leftarrow R_i - \ell_{ij} R_j$.
+</Definition>
+
+To find the multipliers, look at each pivot column of the current matrix. Divide the pivot and every entry below it by the pivot, and write the results into the matching column of $L$. Here is the matrix from the video, a fresh problem modeled on Lay §2.5, Example 2.
+
+$$
+A = \begin{bmatrix} \glow{2} & 1 & -1 \\ \glow{4} & 5 & 0 \\ \glow{-2} & 8 & 5 \end{bmatrix}
+\xrightarrow[R_3 \,-\, (\pink{-1})R_1]{R_2 \,-\, \pink{2}R_1}
+\begin{bmatrix} 2 & 1 & -1 \\ 0 & \glow{3} & 2 \\ 0 & \glow{9} & 4 \end{bmatrix}
+\xrightarrow{R_3 \,-\, \pink{3}R_2}
+\begin{bmatrix} 2 & 1 & -1 \\ 0 & 3 & 2 \\ 0 & 0 & \glow{-2} \end{bmatrix}
+$$
+
+The last matrix is $U$. The first pivot column $(2, 4, -2)$ divided by $2$ is $(1, \pink{2}, \pink{-1})$, and the second, $(3, 9)$ divided by $3$, is $(1, \pink{3})$. Those are the columns of $L$ shown above. The multipliers land in $L$ because elimination is a product of elementary matrices from Day 8: $E_2E_1A = U$, so $A = (E_2E_1)^{-1}U$, and $L = (E_2E_1)^{-1}$ is the matrix that undoes each subtraction by adding the same multiple back.
+
+<LUBuilder matrix={[[2, 1, 3], [-4, 1, -7], [6, 0, 12]]} />
+
+<Pair>
+<Figure src="factor" alt="The equation A = L U with 3 by 3 matrices. A is 2, 1, −1; 4, 5, 0; −2, 8, 5. L has 1s on its diagonal, zeros above, and the pink multipliers 2, −1 and 3 below. U is 2, 1, −1; 0, 3, 2; 0, 0, −2, with its pivots 2, 3 and −2 boxed in orange." />
+
+When $A$ has fewer pivots than rows, fill the remaining columns of $L$ from the identity. $L$ is always square with as many rows as $A$, while $U$ has the shape of $A$. If a zero lands in a pivot position with a nonzero entry below it, a row swap is needed and plain LU does not exist. Software then uses a **permuted LU** factorization, which is the same idea with the rows reordered.
+</Pair>
+
+## Solving with L and U
+
+If $A = LU$, then $A\mathbf x = L(U\mathbf x)$. Call $U\mathbf x = \blue{\mathbf y}$ and solve two triangular systems in order.
+
+$$
+L\blue{\mathbf y} = \teal{\mathbf b}, \qquad U\yellow{\mathbf x} = \blue{\mathbf y}
+$$
+
+For $\teal{\mathbf b} = (-1, -1, 0)$ with the $L$ and $U$ above, forward substitution runs top to bottom and back substitution runs bottom to top.
+
+$$
+\begin{aligned}
+\blue{y_1} &= -1, & \blue{y_2} &= -1 - 2(-1) = 1, & \blue{y_3} &= 0 + (-1) - 3(1) = -4 \\
+\yellow{x_3} &= \tfrac{-4}{-2} = 2, & \yellow{x_2} &= \tfrac{1 - 2(2)}{3} = -1, & \yellow{x_1} &= \tfrac{-1 - (-1) + 2}{2} = 1
+\end{aligned}
+$$
+
+So $\yellow{\mathbf x} = (1, -1, 2)$. The two widgets below solve $A\yellow{\mathbf x} = \teal{(5, 14, 9)}$ with the same factors. Find $\blue{\mathbf y}$ first, then use it as the right side for $U$.
+
+<SubstitutionSolver matrix={[[1, 0, 0], [2, 1, 0], [-1, 3, 1]]} rhs={[5, 14, 9]} kind="lower" name="y" hue="blue" />
+
+<SubstitutionSolver matrix={[[2, 1, -1], [0, 3, 2], [0, 0, -2]]} rhs={[5, 4, 2]} kind="upper" name="x" hue="yellow" />
+
+## Why this saves work
+
+A **flop** is one addition, subtraction, multiplication or division. For a dense $n \times n$ matrix with $n$ in the dozens or more, Lay's numerical notes give these counts.
+
+$$
+\begin{array}{ll}
+\textsf{Task} & \textsf{Approximate flops} \\[8pt]
+\textsf{Factor } A = LU \textsf{ or row reduce } [\,A \;\; \mathbf b\,] & \tfrac23 n^3 \\[6pt]
+\textsf{Compute } A^{-1} & 2n^3 \\[6pt]
+\textsf{Solve } L\mathbf y = \mathbf b \textsf{ and } U\mathbf x = \mathbf y & 2n^2
+\end{array}
+$$
+
+The factorization costs as much as one row reduction, and after that each new $\mathbf b$ costs only $2n^2$. With $n = 1000$ and 100 right-hand sides, row reducing each time takes about $6.7 \times 10^{10}$ flops and LU takes about $8.7 \times 10^8$, roughly 77 times less. Computing $A^{-1}$ first costs about $2.2 \times 10^9$, and $A^{-1}\mathbf b$ is also less accurate because of roundoff.
+
+<Figure src="cost" alt="A line chart of billions of flops against the number of right-hand sides k from 0 to 100, for n = 1000. The purple-gray line for row reducing each time climbs steadily to about 67 at k = 100. The teal line for LU once stays nearly flat along the bottom and ends at about 0.87." wide />
+
+<CostCompare target={50} />
+
+## Practice
+
+<Check>
+Use the factorization to solve $A\mathbf x = \mathbf b$ for $\mathbf b = (0, -2, -2)$ (modeled on Lay §2.5, #1).
+
+$$
+A = \begin{bmatrix} 1 & 0 & 0 \\ -1 & 1 & 0 \\ 3 & 2 & 1 \end{bmatrix}\begin{bmatrix} 1 & 2 & 0 \\ 0 & 1 & -1 \\ 0 & 0 & 2 \end{bmatrix}
+$$
+
+<VectorAnswer answer={[2, -1, 1]} labels={["x₁", "x₂", "x₃"]} />
+
+<Answer>
+Forward substitution in $L\mathbf y = \mathbf b$ gives $y_1 = 0$, then $y_2 = -2 + y_1 = -2$, then $y_3 = -2 - 3y_1 - 2y_2 = 2$.
+
+Back substitution in $U\mathbf x = \mathbf y$ gives the rest.
+
+$$
+\begin{aligned}
+2x_3 &= 2 &&\Rightarrow\ x_3 = 1 \\
+x_2 - x_3 &= -2 &&\Rightarrow\ x_2 = -1 \\
+x_1 + 2x_2 &= 0 &&\Rightarrow\ x_1 = 2
+\end{aligned}
+$$
+
+So $\mathbf x = (2, -1, 1)$.
+</Answer>
+</Check>
+
+<Check>
+Find an LU factorization of $A = \begin{bmatrix} 4 & -2 \\ 6 & 1 \end{bmatrix}$. Enter the multiplier $\ell_{21}$ and the lower-right entry $u_{22}$ of $U$ (modeled on Lay §2.5, #7).
+
+<VectorAnswer answer={[1.5, 4]} labels={["ℓ₂₁", "u₂₂"]} />
+
+<Answer>
+The first pivot column is $(4, 6)$, and dividing by the pivot $4$ gives $(1, \tfrac32)$, so $\ell_{21} = \tfrac32$. The step $R_2 \leftarrow R_2 - \tfrac32 R_1$ turns row 2 into $(0,\ 1 + 3) = (0, 4)$.
+
+$$
+A = \begin{bmatrix} 1 & 0 \\ \tfrac32 & 1 \end{bmatrix}\begin{bmatrix} 4 & -2 \\ 0 & 4 \end{bmatrix}
+$$
+
+Check row 2: $\tfrac32(4, -2) + (0, 4) = (6, 1)$.
+</Answer>
+</Check>
