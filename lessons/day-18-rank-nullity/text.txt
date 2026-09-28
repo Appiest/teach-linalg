@@ -1,0 +1,2 @@
+Day 18 is up! Today is about rank and nullity: every column of a matrix either adds a dimension to what comes out or gets crushed to zero, so the two counts always add up to the number of columns. Watch a whole cube of inputs flatten into a plane while one line shrinks into the origin.
+https://appiest.github.io/teach-linalg/day/18/
