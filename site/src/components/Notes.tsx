@@ -29,6 +29,7 @@ import { DerivativeTarget, SharedDerivativeHunt, TranslationGap } from "@/compon
 import { PivotHunt, PolynomialRecipe, ThirdVectorHunt } from "@/components/interactive/span-revisited";
 import { DifferenceInKernel, EvaluationKernel } from "@/components/interactive/kernel";
 import { ComplementLanding, RangeCollapse } from "@/components/interactive/image-range";
+import { DiagonalZeroHunt, EigenDirectionHunt, EigenGapHunt } from "@/components/interactive/eigenvectors";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
 import { katexMacros } from "@/lib/katex-macros";
 
@@ -155,6 +156,9 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     EvaluationKernel,
     RangeCollapse,
     ComplementLanding,
+    EigenDirectionHunt,
+    EigenGapHunt,
+    DiagonalZeroHunt,
   };
   return (
     <div className="notes">

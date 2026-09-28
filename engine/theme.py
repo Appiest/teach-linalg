@@ -736,3 +736,10 @@ def clipped_plot(axes, function, x_range, y_range, color: str, stroke_width: flo
     if len(run) > 1:
         pieces.add(VMobject(color=color, stroke_width=stroke_width).set_points_smoothly(run))
     return pieces
+def line_through_origin(plane: NumberPlane, direction, color: str = Palette.yellow, stroke_width: float = 4, dashed: bool = False, opacity: float = 1.0):
+    """The whole line through the origin along `direction`, clipped to the plane: a span, or an eigenspace."""
+    from manim import DashedLine
+
+    ends = clip_line_to_box((direction[1], -direction[0], 0), plane.x_range[:2], plane.y_range[:2])
+    kind = DashedLine if dashed else Line
+    return kind(plane.c2p(*ends[0]), plane.c2p(*ends[1]), color=color, stroke_width=stroke_width, stroke_opacity=opacity)
