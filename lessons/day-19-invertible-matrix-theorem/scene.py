@@ -39,6 +39,14 @@ B_STEPS = [
     [[2, 1, 0], [0, 5, 2], [0, 0, 8]],
 ]
 C_ROWS = [[1, 2, -1], [2, 4, 0], [3, 6, 1]]
+VOCABULARY = (
+    r"independent columns",
+    r"columns span $\mathbb R^n$",
+    r"$n$ pivot positions",
+    r"$\operatorname{Nul}A = \{\mathbf 0\}$",
+    r"$\operatorname{rank}A = n$",
+    r"$A^{-1}$ exists",
+)
 
 NODE_FONT = 30
 SIDE_WIDTH = 3.7
@@ -285,7 +293,8 @@ class Lesson(LessonScene):
         self.panel = None
         pulse = self.open_episode(plane)
         self.play(FadeOut(pulse), run_time=0.5)
-        line = self.nothing_squashed()
+        line = self.pose_question()
+        line = self.nothing_squashed(line)
         line = self.squashed(line)
         line = self.rank_bars(line)
         line, web = self.build_web(line)
@@ -322,9 +331,19 @@ class Lesson(LessonScene):
     def move(self, animation, run_time=1.8):
         self.play(animation, run_time=run_time, rate_func=spring_soft)
 
-    def nothing_squashed(self):
+    def pose_question(self):
+        words = VGroup(*[Tex(text, color=Palette.text, font_size=36) for text in VOCABULARY]).arrange(DOWN, buff=0.18, aligned_edge=LEFT)
+        line = self.say(r"Days 12 to 18 gave square matrices many new words.", hold=0.2)
+        self.set_panel(words, run_time=1.2)
+        self.wait(Timing.beat)
+        line = self.say(r"Do these all say the same thing about a square matrix?", line, hold=0.2)
+        self.play(LaggedStart(*[Indicate(word, color=Palette.teal, scale_factor=1.06) for word in words], lag_ratio=0.25), run_time=1.6)
+        self.wait(Timing.beat)
+        return line
+
+    def nothing_squashed(self, line):
         plane = self.plane
-        line = self.say(r"Day 7's matrix $A$ moves every point of the plane.", hold=0.2)
+        line = self.say(r"Day 7's matrix $A$ moves every point of the plane.", line, hold=0.2)
         self.set_panel(named("A", basis_matrix(A)))
         self.start_live_grid()
         self.wait(Timing.beat)
@@ -418,8 +437,9 @@ class Lesson(LessonScene):
     def light_flood(self, line, web):
         b_mat = named("B", plain_matrix(B_ROWS), font_size=44)
         stage = self.center_stage(b_mat)
-        line = self.say(r"Test one statement. Row reduce $B$ and count pivots.", line, hold=0.2)
+        line = self.say(r"So we can check one cheap statement and trust the rest.", line, hold=0.2)
         self.play(FadeIn(stage), FadeIn(b_mat), run_time=0.8)
+        line = self.say(r"Row reduce $B$ only far enough to count its pivots.", line, hold=0.2)
         for rows in B_STEPS:
             morph_matrix(self, b_mat[1], plain_matrix(rows).move_to(b_mat[1]), run_time=0.9)
             self.wait(0.4)
@@ -476,8 +496,11 @@ class Lesson(LessonScene):
         label = Tex(r"$\det A \neq 0$", color=Palette.text_muted, font_size=NODE_FONT)
         frame = DashedVMobject(Rectangle(width=label.width + 0.4, height=label.height + 0.3, color=Palette.text_muted, stroke_width=2), num_dashes=24)
         preview = VGroup(frame, label).move_to([SIDE_X, 3.3, 0])
-        line = self.say(r"Later in the course, $\det A \neq 0$ joins the list.", line, hold=0.2)
+        line = self.say(r"On Day 26, $\det A \neq 0$ joins the list.", line, hold=0.2)
         self.play(FadeIn(preview, shift=UP * 0.1), run_time=0.8, rate_func=spring_soft)
+        self.wait(Timing.read_short)
+        line = self.say(r"Day 29 uses this list to hunt for eigenvalues.", line, hold=0.2)
+        self.play(Indicate(web.nodes["a"], color=Palette.glow, scale_factor=1.08), run_time=1.0)
         self.wait(Timing.read_short)
         return line
 
