@@ -1,4 +1,4 @@
-On Day 30 the symmetric matrix $A = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$ stretched the yellow line through $(1, 1)$ by $\yellow{3}$ and the blue line through $(-1, 1)$ by $\blue{1}$. Today the same matrix does a different job. It turns every vector $\mathbf x$ into a single number $\mathbf x^TA\mathbf x$, and its eigenvectors and eigenvalues describe the shape of that function completely.
+Day 34 showed that every symmetric matrix has perpendicular eigenvectors, and today puts that fact to work. On Day 30 the symmetric matrix $A = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$ stretched the yellow line through $(1, 1)$ by $\yellow{3}$ and the blue line through $(-1, 1)$ by $\blue{1}$. Today the same matrix does a different job. It turns every vector $\mathbf x$ into a single number $\mathbf x^TA\mathbf x$, and squared lengths and variances are both numbers of this kind. Day 38's matrix $X^TX$ came from one, since $\|X\boldsymbol\beta\|^2 = \boldsymbol\beta^T(X^TX)\boldsymbol\beta$. We want to know what shape this function has, whether it can go negative, and which unit vector makes it largest. The eigenvectors and eigenvalues of $A$ answer all three questions, and Day 40 needs the last answer to find how far a matrix can stretch a vector.
 
 ## The matrix of a form
 
@@ -19,7 +19,7 @@ Going the other way, put the square coefficients on the diagonal and split each 
 <Pair>
 <Figure src="principal-axes" alt="The teal ellipse 2x1² + 2x1x2 + 2x2² = 14, tilted 45 degrees, under a purple-gray grid turned by 45 degrees. The yellow y1 axis runs along (1, 1) and the blue y2 axis along (−1, 1). A thick yellow half-axis reaches the ellipse along y1 and a longer thick blue half-axis reaches it along y2. Beside it, the equation is written both ways: with the orange cross term 2x1x2, and as 3y1² + 1y2² = 14." />
 
-The points with $Q = 14$ form a tilted ellipse, and the cross term is what tilts it. Measuring in axes along the eigenvectors removes the cross term, and the ellipse sits in **standard position**. The coefficients left over are the eigenvalues, so the half-axes have lengths $\sqrt{14/\yellow{3}}$ along $\yellow{y_1}$ and $\sqrt{14/\blue{1}}$ along $\blue{y_2}$. A bigger eigenvalue always gives a shorter axis.
+The points with $Q = 14$ form a tilted ellipse, and the cross term is what tilts it. The goal of this section is a set of axes in which the cross term disappears, because then the shape can be read straight from the coefficients. Measuring in axes along the eigenvectors removes the cross term, and the ellipse sits in **standard position**. The coefficients left over are the eigenvalues, so the half-axes have lengths $\sqrt{14/\yellow{3}}$ along $\yellow{y_1}$ and $\sqrt{14/\blue{1}}$ along $\blue{y_2}$. A bigger eigenvalue always gives a shorter axis.
 </Pair>
 
 <QuadraticAxisTurner matrix={[[6, 2], [2, 3]]} level={14} start={[1, 0]} />
@@ -47,11 +47,13 @@ $$
 
 <Figure src="bowl-trough-saddle" alt="Three graphs of z = Q(x) over a disk, each with the yellow and blue eigen-lines on the floor and the unit circle lifted onto the surface in white. With eigenvalues 3 and 1 the surface is a teal bowl, labelled positive definite. With 3 and 0 it is a teal trough that stays on the floor along the blue line, labelled positive semidefinite. With 3 and −2 it is a saddle, teal where it rises along yellow and pink where it drops below the floor along blue, labelled indefinite." wide />
 
-In principal axes $Q = \lambda_1y_1^2 + \lambda_2y_2^2$, and each squared term is never negative. So the signs of the eigenvalues decide the signs of $Q$. When both are positive, every nonzero $\mathbf x$ gives a positive value and the graph is a bowl. When one is $0$, the graph stays on the floor along that eigenvector. When one is negative, the graph dips below the floor in that direction and becomes a saddle.
+The next question is whether $Q$ ever goes negative, which decides whether the origin sits at the bottom of a bowl. In principal axes $Q = \lambda_1y_1^2 + \lambda_2y_2^2$, and each squared term is never negative. So the signs of the eigenvalues decide the signs of $Q$. When both are positive, every nonzero $\mathbf x$ gives a positive value and the graph is a bowl. When one is $0$, the graph stays on the floor along that eigenvector. When one is negative, the graph dips below the floor in that direction and becomes a saddle.
 
 <Definition term="Classifying a form by its eigenvalues">
 A quadratic form $Q$ is **positive definite** if $Q(\mathbf x) > 0$ for every $\mathbf x \ne \mathbf 0$, **negative definite** if $Q(\mathbf x) < 0$ for every $\mathbf x \ne \mathbf 0$, and **indefinite** if it takes both positive and negative values. It is **positive semidefinite** if $Q(\mathbf x) \ge 0$ for all $\mathbf x$. For symmetric $A$, the form $\mathbf x^TA\mathbf x$ is positive definite exactly when every eigenvalue is positive, negative definite exactly when every eigenvalue is negative, and indefinite exactly when $A$ has eigenvalues of both signs.
 </Definition>
+
+On Day 40 the form $\mathbf x^T(A^TA)\mathbf x$ equals $\|A\mathbf x\|^2$, which is never negative, so every eigenvalue of $A^TA$ is at least $0$.
 
 Plus signs in front of every term prove nothing. The form $x_1^2 + 4x_1x_2 + x_2^2$ has all plus signs, yet $Q(1, -1) = 1 - 4 + 1 = -2$, because its matrix $\begin{bmatrix} 1 & 2 \\ 2 & 1 \end{bmatrix}$ has eigenvalues $3$ and $-1$.
 
@@ -62,7 +64,7 @@ Plus signs in front of every term prove nothing. The form $x_1^2 + 4x_1x_2 + x_2
 <Pair>
 <Figure src="unit-circle-heights" alt="A graph of Q(cos θ, sin θ) = 2 + sin 2θ for θ from 0 to 360 degrees. The teal curve waves between 1 and 3. Yellow dots mark its tops at 45 and 225 degrees, labelled M = λ1 = 3, and blue dots mark its bottoms at 135 and 315 degrees, labelled m = λ2 = 1." />
 
-Walk around the unit circle $\|\mathbf x\| = 1$ and record $Q(\mathbf x)$. Because $P$ is orthogonal, $\|\mathbf y\| = \|\mathbf x\| = 1$ too, so $y_1^2 + y_2^2 = 1$ and
+The last question is which unit vector makes $Q$ largest. Walk around the unit circle $\|\mathbf x\| = 1$ and record $Q(\mathbf x)$. Because $P$ is orthogonal, $\|\mathbf y\| = \|\mathbf x\| = 1$ too, so $y_1^2 + y_2^2 = 1$ and
 
 $$
 \begin{aligned}
@@ -76,7 +78,7 @@ The largest value is the largest eigenvalue, reached at its unit eigenvector. Th
 
 <QuadraticCircleMax matrix={[[5, 2], [2, 2]]} start={[1, -1]} />
 
-In $\mathbb R^n$ this works one eigenvalue at a time. If you also require $\mathbf x$ to be perpendicular to the top unit eigenvector $\mathbf u_1$, then $y_1 = 0$ and the largest term drops out. The maximum becomes the second largest eigenvalue $\lambda_2$, reached at $\mathbf u_2$. Day 40 uses these largest and smallest values to find the singular values.
+In $\mathbb R^n$ this works one eigenvalue at a time. If you also require $\mathbf x$ to be perpendicular to the top unit eigenvector $\mathbf u_1$, then $y_1 = 0$ and the largest term drops out. The maximum becomes the second largest eigenvalue $\lambda_2$, reached at $\mathbf u_2$. Tomorrow, on Day 40, the form $\|A\mathbf x\|^2 = \mathbf x^T(A^TA)\mathbf x$ gets exactly this treatment, and its largest value on the unit circle tells how far $A$ can stretch a vector.
 
 ## Practice
 

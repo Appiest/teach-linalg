@@ -171,7 +171,8 @@ class Lesson(LessonScene):
         self.plane = plane
         pulse = self.open_episode(plane)
         self.play(FadeOut(pulse), run_time=0.5)
-        line = self.meet_form()
+        line = self.recall_eigenvectors()
+        line = self.meet_form(line)
         line = self.level_curve(line)
         line = self.turn_axes(line)
         line = self.read_eigenvalues(line)
@@ -189,7 +190,22 @@ class Lesson(LessonScene):
         rows.next_to([PANEL_LEFT, 0, 0], RIGHT, buff=0).to_edge(UP, buff=0.55)
         return rows
 
-    def meet_form(self):
+    def recall_eigenvectors(self):
+        plane = self.plane
+        lines = VGroup(boxed_axis(plane, U1, Palette.yellow, 5), boxed_axis(plane, U2, Palette.blue, 5))
+        names = VGroup(
+            name_label(r"\lambda = 3", Palette.yellow, plane.c2p(2.3, 2.3), RIGHT),
+            name_label(r"\lambda = 1", Palette.blue, plane.c2p(-2.3, 2.3), LEFT),
+        )
+        line = self.say(r"Day 34 gave every symmetric matrix perpendicular eigenvectors.", hold=0.2)
+        self.play(Create(lines[0]), Create(lines[1]), run_time=1.0)
+        self.play(FadeIn(names[0], shift=LEFT * 0.1), FadeIn(names[1], shift=RIGHT * 0.1), run_time=0.6, rate_func=spring)
+        self.wait(Timing.beat)
+        line = self.say(r"Today we ask what shape $\mathbf x^TA\mathbf x$ has, and where it peaks.", line, hold=Timing.read_short)
+        self.intro_lines = VGroup(lines, names)
+        return line
+
+    def meet_form(self, line):
         title_row = tex(r"Q(\mathbf x)", "=", r"\mathbf x^T A\,\mathbf x", colors=(Palette.teal,))
         product = product_row()
         expanded = tex("=", "2x_1^2", "+", "2x_1x_2", "+", "2x_2^2")
@@ -198,12 +214,13 @@ class Lesson(LessonScene):
         self.plate = Rectangle(width=config.frame_width / 2 - PANEL_LEFT + 0.6, height=6.4, fill_color=Palette.background, fill_opacity=0.92, stroke_width=0)
         self.plate.align_to([config.frame_width / 2 + 0.1, 0, 0], RIGHT).align_to(rows, UP).shift(UP * 0.35)
         self.rows = rows
-        line = self.say(r"A symmetric $A$ turns each vector $\mathbf x$ into one number.", hold=0.2)
-        self.play(FadeIn(self.plate), FadeIn(title_row, shift=DOWN * 0.1), run_time=0.8)
+        line = self.say(r"A symmetric $A$ turns each vector $\mathbf x$ into one number.", line, hold=0.2)
+        self.play(FadeOut(self.intro_lines), FadeIn(self.plate), FadeIn(title_row, shift=DOWN * 0.1), run_time=0.8)
         self.play(FadeIn(product, shift=DOWN * 0.1), run_time=0.9, rate_func=spring_soft)
         self.wait(Timing.beat)
         self.play(FadeIn(expanded, shift=DOWN * 0.1), run_time=0.9, rate_func=spring_soft)
-        self.wait(Timing.read_short)
+        self.wait(Timing.beat)
+        line = self.say(r"Squared lengths and variances are numbers of this kind.", line, hold=Timing.read_short)
         entries = product[2].get_entries()
         line = self.say(r"The diagonal gives the squares, and both 1s make the cross term.", line, hold=0.2)
         squares = VGroup(entries[0], entries[3], expanded[1], expanded[5])
@@ -257,12 +274,12 @@ class Lesson(LessonScene):
         grid = always_redraw(lambda: turned_grid(plane, angle.get_value()))
         axes = always_redraw(lambda: turned_axes(plane, angle.get_value()))
         row, numbers = self.live_row(angle)
-        line = self.say(r"Turn the axes and watch the cross term.", line, hold=0.2)
+        line = self.say(r"We want axes where the cross term disappears.", line, hold=0.2)
         self.play(plane.animate.set_opacity(0.35), FadeIn(grid), FadeIn(axes), FadeIn(row, shift=DOWN * 0.1), run_time=1.0)
         self.bring_to_front(self.ellipse, self.plate, self.rows, cross_box, row)
         self.play(angle.animate.set_value(math.radians(20)), run_time=2.2, rate_func=smooth)
         self.wait(Timing.beat)
-        line = self.say(r"Along the eigenvectors the cross term disappears.", line, hold=0.2)
+        line = self.say(r"Along the eigenvectors the cross term reaches zero.", line, hold=0.2)
         self.play(angle.animate.set_value(math.radians(45)), run_time=2.4, rate_func=spring_soft)
         for number in numbers:
             number.clear_updaters()
@@ -333,7 +350,7 @@ class Lesson(LessonScene):
         value.add_updater(lambda m: m.set_value(form_value((math.cos(angle.get_value()), math.sin(angle.get_value())))))
         value_row = VGroup(value_label, value).arrange(RIGHT, buff=0.2)
         readout = VGroup(readout_label, value_row).arrange(DOWN, buff=0.35, aligned_edge=LEFT).move_to([4.6, 2.4, 0])
-        line = self.say(r"Walk around the unit circle and watch the height.", line, hold=0.2)
+        line = self.say(r"Which unit vector makes $Q$ largest? Walk the circle.", line, hold=0.2)
         self.play(Create(base), run_time=1.0)
         self.play(Create(path), FadeIn(step), FadeIn(readout), run_time=1.2)
         self.play(angle.animate.set_value(PI / 4), run_time=2.0, rate_func=smooth)
@@ -341,6 +358,7 @@ class Lesson(LessonScene):
         line = self.say(r"The highest point sits above $\mathbf u_1$, at height $3$.", line, hold=0.2)
         self.play(GrowFromCenter(top), run_time=0.6, rate_func=spring)
         self.wait(Timing.beat)
+        line = self.say(r"Day 40 uses this peak to find singular values.", line, hold=Timing.read_short)
         self.play(angle.animate.set_value(3 * PI / 4), run_time=2.4, rate_func=smooth)
         low = always_redraw(lambda: surface_mark(view, U2, self.second.get_value(), Palette.blue))
         line = self.say(r"The lowest sits above $\mathbf u_2$, at height $1$.", line, hold=0.2)
@@ -369,8 +387,11 @@ class Lesson(LessonScene):
     def morph_surface(self, line):
         meter = self.eigen_meter()
         kind = self.kind_label(1.0)
+        line = self.say(r"The eigenvalues decide whether $Q$ is ever negative.", line, hold=0.2)
+        self.play(FadeIn(meter, shift=DOWN * 0.1), run_time=0.9)
+        self.wait(Timing.beat)
         line = self.say(r"Both eigenvalues are positive, so every value is positive.", line, hold=0.2)
-        self.play(FadeIn(meter, shift=DOWN * 0.1), FadeIn(kind, shift=DOWN * 0.1), run_time=0.9)
+        self.play(FadeIn(kind, shift=DOWN * 0.1), run_time=0.7)
         self.wait(Timing.read_short)
         line = self.say(r"At $\lambda_2 = 0$ the bowl flattens into a trough.", line, hold=0.2)
         self.play(self.second.animate.set_value(0.0), run_time=2.6, rate_func=spring_soft)
