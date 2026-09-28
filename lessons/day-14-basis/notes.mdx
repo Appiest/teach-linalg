@@ -1,0 +1,130 @@
+A spanning set tells you how to build every vector in a space, and an independent set has no vector that the others can already build. A set that does both jobs at once is a basis. Because it has no spare vectors, it gives each vector in the space exactly one list of weights, which the video calls its **address**.
+
+## The definition
+
+<Definition term="Basis">
+Let $H$ be a subspace of a vector space $V$. A set $\mathcal B = \{\mathbf b_1, \dots, \mathbf b_p\}$ in $V$ is a **basis** for $H$ when both of these hold:
+
+- (i) $\mathcal B$ is linearly independent, and
+- (ii) $\operatorname{Span}\{\mathbf b_1, \dots, \mathbf b_p\} = H$.
+
+Condition (ii) forces every $\mathbf b_i$ to lie in $H$. The definition also applies with $H = V$.
+</Definition>
+
+The columns of the identity matrix $I_n$ form the **standard basis** of $\mathbb R^n$. In $\mathbb R^2$ they are $\green{\mathbf e_1} = (1, 0)$ and $\red{\mathbf e_2} = (0, 1)$, the arrows that draw ordinary graph paper.
+
+<Figure src="three-sets" alt="Three planes side by side. Left: the yellow vector b1 = (2, 1) with its span drawn as a single teal line. Middle: b1 and the blue vector b2 = (−1, 1) with a teal skewed grid covering the whole plane. Right: the same grid with a third pink vector u = (1, 2) added." wide />
+
+Read the three pictures from left to right. The single vector $\yellow{\mathbf b_1}$ is independent but spans only a line. The pair $\{\yellow{\mathbf b_1}, \blue{\mathbf b_2}\}$ is independent and spans $\mathbb R^2$, so it is a basis. Adding $\pink{\mathbf u} = \yellow{\mathbf b_1} + \blue{\mathbf b_2}$ keeps the span but breaks independence. You always have to check both conditions, because each one can hold while the other fails.
+
+## A square set of vectors
+
+When you have exactly $n$ vectors in $\mathbb R^n$, put them into the columns of an $n \times n$ matrix $A$. A pivot in every row means the columns span $\mathbb R^n$, and a pivot in every column means they are independent. For a square matrix those two conditions happen together, so one row reduction settles both, and the columns form a basis exactly when $A$ is invertible.
+
+$$
+\begin{bmatrix} 1 & 0 & 2 \\ 2 & 1 & 5 \\ 0 & 3 & 4 \end{bmatrix}
+\sim \begin{bmatrix} 1 & 0 & 2 \\ 0 & 1 & 1 \\ 0 & 3 & 4 \end{bmatrix}
+\sim \begin{bmatrix} 1 & 0 & 2 \\ 0 & 1 & 1 \\ 0 & 0 & 1 \end{bmatrix}
+$$
+
+This matrix has three pivots, so $(1, 2, 0)$, $(0, 1, 3)$ and $(2, 5, 4)$ form a basis for $\mathbb R^3$.
+
+The count matters too. Fewer than $n$ vectors in $\mathbb R^n$ cannot have a pivot in every row, so they cannot span. More than $n$ vectors in $\mathbb R^n$ are always dependent. So every basis of $\mathbb R^n$ has exactly $n$ vectors.
+
+## Trimming a spanning set
+
+<Definition term="The Spanning Set Theorem">
+Let $S = \{\mathbf v_1, \dots, \mathbf v_p\}$ and $H = \operatorname{Span} S$.
+
+- (a) If some $\mathbf v_k$ is a linear combination of the other vectors in $S$, then removing $\mathbf v_k$ leaves a set that still spans $H$.
+- (b) If $H \neq \{\mathbf 0\}$, some subset of $S$ is a basis for $H$.
+</Definition>
+
+Part (a) works because you can substitute. Take $\mathbf v_1 = (1, 2, 3)$, $\mathbf v_2 = (2, 0, 1)$ and $\mathbf v_3 = (4, 4, 7)$. Here $\mathbf v_3 = 2\mathbf v_1 + \mathbf v_2$, so any combination that uses $\mathbf v_3$ can be rewritten without it:
+
+$$
+\begin{aligned}
+c_1\mathbf v_1 + c_2\mathbf v_2 + c_3\mathbf v_3 &= c_1\mathbf v_1 + c_2\mathbf v_2 + c_3(2\mathbf v_1 + \mathbf v_2) \\
+&= (c_1 + 2c_3)\,\mathbf v_1 + (c_2 + c_3)\,\mathbf v_2 .
+\end{aligned}
+$$
+
+So $\operatorname{Span}\{\mathbf v_1, \mathbf v_2, \mathbf v_3\} = \operatorname{Span}\{\mathbf v_1, \mathbf v_2\}$. Neither of $\mathbf v_1$ and $\mathbf v_2$ is a multiple of the other, so the pair is independent and is a basis for that plane. Part (b) repeats this step until no vector can be removed.
+
+Only a vector with a nonzero weight in a dependence relation can go. In the widget, $\pink{\mathbf c} = 2\yellow{\mathbf a} + 0\,\blue{\mathbf b}$, so $\blue{\mathbf b}$ has weight zero and is not a combination of the others.
+
+<TrimToBasis />
+
+This gives two ways to picture a basis. It is a spanning set that is as small as possible, since removing any vector breaks spanning. It is also an independent set that is as large as possible, since any vector you add is already a combination of the basis.
+
+## One address for every vector
+
+<Definition term="The Unique Representation Theorem">
+If $\mathcal B = \{\mathbf b_1, \dots, \mathbf b_n\}$ is a basis for $V$, then each $\mathbf x$ in $V$ can be written as $\mathbf x = c_1\mathbf b_1 + \dots + c_n\mathbf b_n$ for exactly one list of weights $c_1, \dots, c_n$.
+</Definition>
+
+Spanning guarantees that at least one list of weights exists. If two lists $c_i$ and $d_i$ both built $\mathbf x$, subtracting would give $\mathbf 0 = (c_1 - d_1)\mathbf b_1 + \dots + (c_n - d_n)\mathbf b_n$, and independence forces every $c_i - d_i = 0$. With a spare vector this argument fails, which is why $\teal{\mathbf x}$ had three different recipes in the video.
+
+<Figure src="same-grids" alt="The point x = (1, 5) on two grids. Left: the standard grid, reached by one green step along e1 and five red steps along e2. Right: the skewed grid of b1 = (2, 1) and b2 = (−1, 1), where the same point is reached by two yellow steps along b1 and three blue steps along b2." wide />
+
+The point stays put while the grid changes. On the standard grid $\teal{\mathbf x} = 1\,\green{\mathbf e_1} + 5\,\red{\mathbf e_2}$, and on the skewed grid $\teal{\mathbf x} = 2\,\yellow{\mathbf b_1} + 3\,\blue{\mathbf b_2}$. Each basis gives its own address, and each address is the only one in its basis. Tomorrow names this list of weights the coordinate vector.
+
+<AddressHunt />
+
+## A basis for polynomials
+
+The standard basis of $\mathbb P_n$ is $\{1, t, t^2, \dots, t^n\}$. It spans $\mathbb P_n$ because every polynomial of degree at most $n$ is written in these powers. It is independent because a combination $c_0 + c_1 t + \dots + c_n t^n$ that equals zero for every $t$ has infinitely many roots, while a nonzero polynomial of degree at most $n$ has at most $n$ roots. So every $c_i$ is $0$.
+
+<Pair>
+<Figure src="polynomial-basis" alt="Graphs of the basis polynomials 1 in green, t in red and t squared in pink, with the yellow curve p(t) = 1 + 2t − t² drawn over them." />
+
+In this basis the address of a polynomial is its list of coefficients:
+
+$$
+\yellow{\mathbf p(t)} = \green{1}\cdot 1 + \red{2}\cdot t + \pink{(-1)}\cdot t^2
+\;\longleftrightarrow\;
+\begin{bmatrix} \green{1} \\ \red{2} \\ \pink{-1} \end{bmatrix}
+$$
+</Pair>
+
+Other bases of $\mathbb P_2$ give other addresses. The set $\{1,\ 1 + t,\ 1 + t + t^2\}$ is a basis too, because its coefficient columns $(1, 0, 0)$, $(1, 1, 0)$ and $(1, 1, 1)$ form a triangular matrix with three pivots.
+
+<StaircaseBasis />
+
+## Practice
+
+<Check>
+Let $\mathbf v_1 = (1, 0, 2)$, $\mathbf v_2 = (0, 1, -1)$ and $\mathbf v_3 = (3, -2, 8)$. Find weights $a$ and $b$ with $\mathbf v_3 = a\mathbf v_1 + b\mathbf v_2$, then give a basis for $\operatorname{Span}\{\mathbf v_1, \mathbf v_2, \mathbf v_3\}$. (Modeled on Lay §4.3 #19.)
+
+<VectorAnswer answer={[3, -2]} labels={["a", "b"]} />
+
+<Answer>
+The first two entries give $a = 3$ and $b = -2$. The third entry checks out, since $3 \cdot 2 + (-2)(-1) = 8$. So $3\mathbf v_1 - 2\mathbf v_2 - \mathbf v_3 = \mathbf 0$, and the Spanning Set Theorem lets you remove $\mathbf v_3$. The remaining pair $\{\mathbf v_1, \mathbf v_2\}$ is independent because neither vector is a multiple of the other, so it is a basis for the span.
+</Answer>
+</Check>
+
+<Check>
+The set $\mathcal B = \{(1, 1),\ (1, -1)\}$ is a basis for $\mathbb R^2$. Find the weights $c_1$ and $c_2$ with $c_1(1, 1) + c_2(1, -1) = (4, 2)$. (Modeled on Lay §4.4, Example 1.)
+
+<VectorAnswer answer={[3, 1]} labels={["c₁", "c₂"]} />
+
+<Answer>
+Matching entries gives $c_1 + c_2 = 4$ and $c_1 - c_2 = 2$. Adding the equations gives $2c_1 = 6$, so $c_1 = 3$ and $c_2 = 1$.
+
+$$
+3\begin{bmatrix} 1 \\ 1 \end{bmatrix} + 1\begin{bmatrix} 1 \\ -1 \end{bmatrix} = \begin{bmatrix} 4 \\ 2 \end{bmatrix}
+$$
+
+These are the only weights that work, because $\mathcal B$ is a basis.
+</Answer>
+</Check>
+
+<Check>
+In $\mathbb P_1$, let $\mathbf p_1(t) = 1 + 2t$, $\mathbf p_2(t) = 1 - 2t$ and $\mathbf p_3(t) = 3$. Find $a$ and $b$ with $\mathbf p_3 = a\,\mathbf p_1 + b\,\mathbf p_2$. (Modeled on Lay §4.3 #34.)
+
+<VectorAnswer answer={[1.5, 1.5]} labels={["a", "b"]} />
+
+<Answer>
+Matching coefficients gives $a + b = 3$ for the constant term and $2a - 2b = 0$ for the $t$ term. So $a = b$ and $a = b = \tfrac32$. Because $\mathbf p_3$ is a combination of $\mathbf p_1$ and $\mathbf p_2$, it can be dropped, and $\{\mathbf p_1, \mathbf p_2\}$ is a basis for the span, which is all of $\mathbb P_1$.
+</Answer>
+</Check>
