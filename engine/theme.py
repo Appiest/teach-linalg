@@ -415,3 +415,50 @@ def scrim(opacity: float = 0.96):
         fill_opacity=opacity,
         stroke_width=0,
     )
+
+
+def oblique_projector(origin=(0.0, 0.0), unit: float = 1.0, azimuth: float = math.radians(30), elevation: float = math.radians(25)):
+    """A fixed orthographic view of 3D coordinates drawn in a flat scene: x toward the viewer, y right, z up."""
+    center = np.array([origin[0], origin[1], 0.0])
+
+    def project(point):
+        x, y, z = (float(value) for value in point)
+        across = -x * math.sin(azimuth) + y * math.cos(azimuth)
+        depth = x * math.cos(azimuth) + y * math.sin(azimuth)
+        up = z * math.cos(elevation) - depth * math.sin(elevation)
+        return center + unit * np.array([across, up, 0.0])
+
+    return project
+
+
+def projected_axes(project, reach=((-1, 3), (-2, 4), (-2, 2)), labels=("x", "y", "z"), floor: bool = True) -> VGroup:
+    """Three labelled axes seen through `project`, with a faint grid on the floor plane z = 0 for depth."""
+    axes = VGroup()
+    if floor:
+        for x in range(reach[0][0], reach[0][1] + 1):
+            axes.add(Line(project((x, reach[1][0], 0)), project((x, reach[1][1], 0)), color=Palette.grid_faint, stroke_width=1.2))
+        for y in range(reach[1][0], reach[1][1] + 1):
+            axes.add(Line(project((reach[0][0], y, 0)), project((reach[0][1], y, 0)), color=Palette.grid_faint, stroke_width=1.2))
+    for index, (low, high) in enumerate(reach):
+        start, end = np.zeros(3), np.zeros(3)
+        start[index], end[index] = low, high + 0.4
+        axes.add(Line(project(start), project(end), color=Palette.axis, stroke_width=2))
+        label = MathTex(labels[index], color=Palette.text_muted, font_size=34)
+        tip = project(end)
+        away = tip - project((0, 0, 0))
+        label.move_to(tip + 0.32 * away / np.linalg.norm(away))
+        axes.add(label)
+    return axes
+
+
+def projected_arrow(project, coords, color: str = Palette.yellow, start=(0, 0, 0), stroke_width: float = 6) -> Arrow:
+    """An arrow between two 3D points seen through `project`."""
+    return Arrow(
+        project(start),
+        project(coords),
+        buff=0,
+        color=color,
+        stroke_width=stroke_width,
+        max_tip_length_to_length_ratio=0.2,
+        max_stroke_width_to_length_ratio=12,
+    )
