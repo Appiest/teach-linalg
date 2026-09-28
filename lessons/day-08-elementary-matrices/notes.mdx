@@ -1,4 +1,4 @@
-On Day 3 you used three row operations to solve systems, and yesterday you met $A^{-1}$, the matrix that undoes $A$. Today's lesson connects them. Each row operation is itself a matrix, and running row reduction on $A$ and $I$ side by side computes $A^{-1}$.
+On Day 3 you used three row operations to solve systems, and yesterday you met $A^{-1}$, the matrix that undoes $A$. Yesterday's formula only works for $2 \times 2$ matrices, so today asks how to find the inverse of a matrix of any size, and the answer connects those two ideas. Each row operation is itself a matrix, and running row reduction on $A$ and $I$ side by side computes $A^{-1}$.
 
 <Definition term="Elementary matrix">
 An **elementary matrix** is a matrix you get by doing one elementary row operation to an identity matrix. There is one kind for each row operation: replacement, interchange and scaling.
@@ -7,6 +7,8 @@ If you do a row operation to an $m \times n$ matrix $A$, the result is $EA$, whe
 </Definition>
 
 ## Elementary matrices
+
+Writing a row operation as a matrix turns row reduction into ordinary matrix algebra. Day 9 uses that to factor $A = LU$, and Day 26 uses it to track how each row operation changes a determinant.
 
 Start with $I$ and subtract 2 times row 1 from row 2. The result is an elementary matrix $E$. Multiplying any matrix by $E$ on the left does the same row operation to it:
 
@@ -28,6 +30,8 @@ As a transformation of the plane, each elementary matrix is a simple move. The w
 Every row operation can be undone by another row operation of the same kind, so **every elementary matrix is invertible**, and its inverse is elementary too. You can write the inverse down without any computation. A replacement is undone by flipping the sign of the multiple, a swap undoes itself, and scaling by $c$ is undone by scaling by $\tfrac1c$. That is also why scaling by $0$ is not allowed.
 
 ## Inverting by row reduction
+
+On Day 3, row reduction aimed for reduced echelon form so you could read off the solution. For an invertible square matrix that form is $I$, so here the goal is to reduce $A$ all the way to $I$ while keeping a record of the steps, because their product turns out to be $A^{-1}$.
 
 <Definition term="Theorem 7">
 An $n \times n$ matrix $A$ is invertible if and only if it is row equivalent to $I_n$. In that case, any sequence of row operations that reduces $A$ to $I_n$ also turns $I_n$ into $A^{-1}$.
@@ -67,13 +71,15 @@ $$
 A = E_1^{-1}E_2^{-1}E_3^{-1}E_4^{-1},
 $$
 
-and every factor is elementary. The same argument works for any invertible matrix, and a product of elementary matrices is always invertible because each factor is. So **$A$ is invertible exactly when it is a product of elementary matrices.**
+and every factor is elementary. The same argument works for any invertible matrix, and a product of elementary matrices is always invertible because each factor is. So **$A$ is invertible exactly when it is a product of elementary matrices.** Day 27 uses this fact to prove that $\det(AB) = (\det A)(\det B)$.
 
 <Figure src="product-steps" alt="Five small grids from left to right: the square grid I, then the grid after E4 inverse, after E3 inverse E4 inverse, after E2 inverse E3 inverse E4 inverse, and finally the slanted grid of A = E1 inverse E2 inverse E3 inverse E4 inverse." wide />
 
 If $A$ is not invertible, row reduction tells you. For $B = \begin{bmatrix} 1 & 2 \\ 1 & 2 \end{bmatrix}$ the step $R_2 \leftarrow R_2 - R_1$ gives the row $[\,0 \;\; 0 \mid -1 \;\; 1\,]$. A zero row on the left can never become a row of $I$, so you can stop there: $B$ has no inverse. Geometrically, $B$ flattens the plane onto a line, and no sequence of invertible moves can unflatten it.
 
 You can also get a single column of $A^{-1}$ on its own. Because $AA^{-1} = I$, column $j$ of $A^{-1}$ is the solution of $A\mathbf x = \mathbf e_j$, so you row reduce $[\,A \;\; \mathbf e_j\,]$ instead of the whole $[\,A \;\; I\,]$.
+
+Tomorrow the same record of steps, stopped at an echelon form instead of at $I$, gives the factorization $A = LU$, which solves $A\mathbf x = \mathbf b$ quickly for many different $\mathbf b$.
 
 ## Practice
 

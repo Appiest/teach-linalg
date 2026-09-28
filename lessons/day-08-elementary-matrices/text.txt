@@ -1,2 +1,2 @@
-Day 8 is up! Today every row operation turns out to be a matrix, and that gives you a way to compute inverses by row reducing. Watch the grid in the video: each step moves it, and when it's square again the inverse is sitting right there on the right.
+Day 8 is up! Yesterday's inverse formula only works for 2×2 matrices, and today every row operation turns out to be a matrix, which gives you a way to find inverses of any size by row reducing. Watch the grid in the video: each step moves it, and when it's square again the inverse is sitting right there on the right.
 https://appiest.github.io/teach-linalg/day/8/

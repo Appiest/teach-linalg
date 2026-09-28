@@ -198,8 +198,10 @@ class Lesson(LessonScene):
         self.play(animation, run_time=run_time, rate_func=rate_func)
 
     def meet_a(self):
-        line = self.say(r"Here is a matrix $A$ and a point $\mathbf x$.", hold=0.2)
+        line = self.say(r"Yesterday we chained moves. Today we undo one.", hold=0.2)
         self.set_panel(named(["A"], basis_matrix(A)))
+        self.wait(Timing.beat)
+        line = self.say(r"Here is a matrix $A$ and a point $\mathbf x$.", line, hold=0.2)
         self.start_live_grid()
         self.x_arrow = live_arrow(self.plane, self.live, X, Palette.yellow)
         self.x_name = name_label([r"\mathbf x"], [Palette.yellow], self.plane.c2p(*X), UR)
@@ -222,6 +224,7 @@ class Lesson(LessonScene):
         home = stamp(self.plane, X)
         self.play(GrowFromCenter(home), run_time=0.5, rate_func=spring)
         self.wait(Timing.beat)
+        line = self.say(r"Undoing $A$ would solve $A\mathbf x = \mathbf b$ in one step.", line, hold=Timing.read_short)
 
         line = self.say(r"The matrix that undoes $A$ is its inverse, $A^{-1}$.", line, hold=0.2)
         both = VGroup(named(["A"], basis_matrix(A)), named([r"A^{-1}"], pink_matrix(A_INV), colors=(Palette.pink,))).arrange(RIGHT, buff=0.6)
@@ -261,7 +264,8 @@ class Lesson(LessonScene):
             self.play(FadeIn(VGroup(*product[:3])), run_time=0.9)
             self.play(FadeIn(product[3]), FadeIn(product[4], shift=LEFT * 0.3), run_time=0.9, rate_func=spring)
             self.wait(0.5)
-        self.wait(Timing.read_short)
+        self.wait(Timing.beat)
+        line = self.say(r"We want a matrix whose product with $A$ is $I$.", line, hold=Timing.read_short)
         self.play(FadeOut(products), run_time=0.6)
         line = self.formula(line)
         self.play(FadeOut(veil), run_time=0.7)
@@ -278,7 +282,7 @@ class Lesson(LessonScene):
         row = formula_row().move_to(DOWN * 0.8)
         start = named(["A"], basis_matrix(A))
         start.shift(row[2].get_center() - start[1].get_center())
-        line = self.say(r"A $2\times 2$ inverse has a formula.", line, hold=0.2)
+        line = self.say(r"For $2\times 2$ matrices, a formula builds it directly.", line, hold=0.2)
         self.play(Write(general), run_time=1.6)
         self.play(FadeIn(start), run_time=0.7)
 
@@ -295,6 +299,7 @@ class Lesson(LessonScene):
         self.play(FadeIn(row[0]), FadeIn(row[1], shift=DOWN * 0.2), run_time=0.9, rate_func=spring_soft)
         self.play(FadeIn(row[3]), FadeIn(row[4], shift=LEFT * 0.3), run_time=0.9, rate_func=spring)
         self.wait(Timing.read_short)
+        line = self.say(r"On Day 25 the determinant turns out to measure area.", line, hold=Timing.read_short)
 
         line = self.say(r"When $ad - bc = 0$, the formula divides by zero.", line, hold=0.2)
         self.play(Circumscribe(general[2], color=Palette.glow, buff=0.1), run_time=1.2)
@@ -390,7 +395,8 @@ class Lesson(LessonScene):
         ).arrange(DOWN, buff=0.35, aligned_edge=LEFT)
         line = self.say(r"Shoes come off before socks, so the order reverses.", line, hold=0.2)
         self.set_panel(rule)
-        self.wait(Timing.read_long)
+        self.wait(Timing.read_short)
+        line = self.say(r"Tomorrow this rule undoes a whole chain of row operations.", line, hold=Timing.read_short)
         self.play(FadeOut(self.x_arrow), FadeOut(home), run_time=0.5)
         return line
 
@@ -416,7 +422,8 @@ class Lesson(LessonScene):
         line = self.say(r"Going back would need three answers, so no inverse exists.", line, hold=0.2)
         paths = VGroup(*[DashedLine(plane.c2p(*SHARED_IMAGE), plane.c2p(*point), color=Palette.glow, stroke_width=3).add_tip(tip_length=0.18) for point in PREIMAGES])
         self.play(LaggedStart(*[Create(path) for path in paths], lag_ratio=0.25), ghosts.animate.set_opacity(1), run_time=1.6)
-        self.wait(Timing.read_long)
+        self.wait(Timing.read_short)
+        line = self.say(r"Next, row reduction finds inverses of any size.", line, hold=Timing.read_short)
         return line
 
 

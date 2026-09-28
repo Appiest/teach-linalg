@@ -1,4 +1,4 @@
-On Day 5 a matrix became a motion of the whole plane, and on Day 6 two motions chained into a product. Today asks whether a motion can be run backwards. Take $A = \begin{bmatrix} \green{2} & \red{1} \\ \green{1} & \red{1} \end{bmatrix}$. It sends $\hat\imath$ to $\green{(2, 1)}$, $\hat\jmath$ to $\red{(1, 1)}$, and $\yellow{\mathbf x} = (1, 1)$ to $(3, 2)$.
+On Day 5 a matrix became a motion of the whole plane, and on Day 6 two motions chained into a product. Today asks whether a motion can be run backwards. The answer matters for solving equations, because $A\mathbf x = \mathbf b$ asks which point $A$ moves onto $\mathbf b$, and a matrix that runs $A$ backwards would carry $\mathbf b$ straight to that point. Take $A = \begin{bmatrix} \green{2} & \red{1} \\ \green{1} & \red{1} \end{bmatrix}$. It sends $\hat\imath$ to $\green{(2, 1)}$, $\hat\jmath$ to $\red{(1, 1)}$, and $\yellow{\mathbf x} = (1, 1)$ to $(3, 2)$.
 
 <Pair>
 <Figure src="undo" alt="Left: the standard grid with the yellow arrow x = (1, 1). Right: the same grid after A, slanted into long parallelograms, with x carried to Ax = (3, 2) in teal. A white arrow labelled A points from left to right, and a pink arrow labelled A inverse points back." />
@@ -31,6 +31,8 @@ The columns of $A^{-1}$ have a direct meaning. Column 1 of $A^{-1}$ is $A^{-1}\h
 
 ## The formula for a 2 × 2 inverse
 
+The definition tells you how to check an inverse but not how to find one. For $2 \times 2$ matrices a formula builds the matrix whose product with $A$ is $I$ directly from the four entries.
+
 <Definition term="Theorem 4">
 Let $A = \begin{bmatrix} a & b \\ c & d \end{bmatrix}$. If $ad - bc \neq 0$, then $A$ is invertible and
 
@@ -40,6 +42,8 @@ $$
 
 If $ad - bc = 0$, then $A$ is not invertible. The number $ad - bc$ is the **determinant** of $A$, written $\det A$.
 </Definition>
+
+The determinant comes back on Day 25, which shows that it measures how much $A$ scales area.
 
 <Figure src="formula" alt="The general formula for the inverse of a 2 by 2 matrix. Below it, the formula applied to A = [2 1; 1 1]: the diagonal entries have swapped places, the off-diagonal entries have flipped sign, and the fraction 1 over 2·1 − 1·1 gives A inverse = [1 −1; −1 2] in pink." wide />
 
@@ -59,7 +63,7 @@ AA^{-1} &= \begin{bmatrix} 4 - 3 & -6 + 6 \\ 2 - 2 & -3 + 4 \end{bmatrix} = \beg
 \end{aligned}
 $$
 
-The last line is the ten-second check. Multiplying your answer by $A$ catches a swapped sign or a forgotten division right away.
+The last line is the ten-second check. Multiplying your answer by $A$ catches a swapped sign or a forgotten division right away. Larger matrices have no recipe this short, so Day 8 computes their inverses by row reduction.
 
 ## Solving with the inverse
 
@@ -77,7 +81,7 @@ Matrices never get divided. Because $A^{-1}B$ and $BA^{-1}$ are usually differen
 
 ## The inverse of a product
 
-If you shear the plane with $S$ and then turn it with $R$, the combined motion is $RS$. To undo it you have to undo the turn first, just as you take off your shoes before your socks.
+Day 8 will build an inverse by undoing a chain of row operations, so it needs to know how to undo a product. If you shear the plane with $S$ and then turn it with $R$, the combined motion is $RS$. To undo it you have to undo the turn first, just as you take off your shoes before your socks.
 
 <Figure src="undo-order" alt="Three small grids in a row: the standard grid, the grid after the shear S, and the grid after the shear and then the quarter turn R. White arrows labelled S and R point forward between them, and pink arrows labelled S inverse and R inverse point back." wide />
 
@@ -110,6 +114,8 @@ When $ad - bc = 0$, the two columns of $A$ lie on one line through the origin, a
 For $M = \begin{bmatrix} 1 & 2 \\ 2 & 4 \end{bmatrix}$, the determinant is $1 \cdot 4 - 2 \cdot 2 = 0$. The points $(1, 0)$, $(-1, 1)$ and $(3, -1)$ all land on $(1, 2)$, because they differ by multiples of $(-2, 1)$ and $M(-2, 1) = \mathbf 0$. In general, $\mathbf x = (-b, a)$ gives $A\mathbf x = (0, ad - bc)$, so when the determinant is zero some nonzero vector lands on $\mathbf 0$, and Theorem 5's uniqueness fails.
 
 <SingularHunt matrix={[[2, 1], [1, 2]]} />
+
+Day 19 gathers many other tests for whether a square matrix flattens space and shows they all agree with this one. Tomorrow each row operation from Day 3 becomes a matrix, and that turns row reduction into a way to compute $A^{-1}$ for a matrix of any size.
 
 ## Practice
 

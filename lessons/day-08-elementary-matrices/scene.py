@@ -172,7 +172,7 @@ class Lesson(LessonScene):
     def grid_appears(self, plane):
         self.grid = live_grid(plane, self.live, opacity=GRID_OPACITY, reach=GRID_REACH)
         self.arrows = live_basis_arrows(plane, self.live)
-        line = self.say(r"Row operations from Day 3 can be written as matrices.", hold=0.2)
+        line = self.say(r"Yesterday's formula only inverts $2\times 2$ matrices.", hold=0.2)
         self.play(
             plane.background_lines.animate.set_stroke(opacity=0.25),
             plane.faded_lines.animate.set_stroke(opacity=0.2),
@@ -180,7 +180,9 @@ class Lesson(LessonScene):
             run_time=1.0,
         )
         self.play(FadeIn(self.arrows, scale=0.6), run_time=0.8, rate_func=spring_soft)
-        self.wait(Timing.read_short)
+        self.wait(Timing.beat)
+        line = self.say(r"Today row reduction finds inverses of any size.", line, hold=Timing.read_short)
+        line = self.say(r"First, row operations from Day 3 become matrices.", line, hold=Timing.read_short)
         return line
 
     def show_panel(self, content, *extra, run_time=0.8):
@@ -204,6 +206,7 @@ class Lesson(LessonScene):
         morph_matrix(self, equation[1], e_card[0][1], FadeTransform(equation[0], e_name), run_time=1.2, rate_func=spring)
         equation.submobjects[0] = e_name
         line = self.say(r"The result is called an elementary matrix, $E$.", line, hold=Timing.read_short)
+        line = self.say(r"Day 9 uses these matrices again to factor $A = LU$.", line, hold=Timing.read_short)
         return line
 
     def e_times_a(self, line):
@@ -265,7 +268,8 @@ class Lesson(LessonScene):
         self.play(*self.live.move_to(A), run_time=GRID_MOVE, rate_func=spring)
         self.wait(Timing.beat)
 
-        line = self.say(r"Row reduce $A$ to $I$, doing each step to $I$ too.", line, hold=0.2)
+        line = self.say(r"The goal is to reduce $A$ all the way to $I$.", line, hold=Timing.beat)
+        line = self.say(r"Do every step to a copy of $I$ beside it.", line, hold=0.2)
         self.block = block(states[0]).to_corner(UL, buff=0.6)
         self.grow_plate(self.block)
         left_entries = VGroup(*[self.block.get_rows()[r][c] for r in range(2) for c in range(2)])
@@ -378,6 +382,7 @@ class Lesson(LessonScene):
         self.play(Indicate(zero_row, color=Palette.glow, scale_factor=1.2), run_time=0.8)
         self.wait(Timing.beat)
         line = self.say(r"A flattened plane can't be unflattened, so $B$ has no inverse.", line, hold=Timing.read_short)
+        line = self.say(r"Tomorrow, stopping partway gives the factorization $A = LU$.", line, hold=Timing.read_short)
         return line
 
 

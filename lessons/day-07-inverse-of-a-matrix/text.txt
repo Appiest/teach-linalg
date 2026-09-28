@@ -1,2 +1,2 @@
-Day 7 is up! Today is the inverse of a matrix: the matrix that runs a transformation backwards. Watch the grid play in reverse, then see why a matrix that flattens the plane can never be undone.
+Day 7 is up! Today is the inverse of a matrix, the matrix that runs a transformation backwards, and it lets you solve Ax = b in a single step. Watch the grid play in reverse, then see why a matrix that flattens the plane can never be undone.
 https://appiest.github.io/teach-linalg/day/7/
