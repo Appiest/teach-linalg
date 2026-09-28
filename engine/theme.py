@@ -823,3 +823,34 @@ def patch_image(plane: NumberPlane, transform, half: int = 2, color: str = Palet
     if len(parts) == 0:
         parts.add(Dot(plane.c2p(0, 0), radius=0.06, color=color))
     return parts
+
+
+def height_field(view: OrbitingView, height, radius: float = 1.5, rings: int = 10, spokes: int = 40, z_scale: float = 1.0,
+                 positive: str = Palette.teal, negative: str = Palette.pink, opacity: float = 0.55, stroke_width: float = 1.0) -> VGroup:
+    """The graph z = height(x, y) over a disk, as a polar mesh seen through `view` and drawn back to front.
+
+    Cells where the surface sits above the floor take `positive`, cells below it take `negative`.
+    """
+    from manim import Polygon
+
+    azimuth, elevation = math.radians(view.azimuth.get_value()), math.radians(view.elevation)
+
+    def lifted(r, phi):
+        x, y = r * math.cos(phi), r * math.sin(phi)
+        return (x, y, z_scale * height(x, y))
+
+    def toward_viewer(point):
+        return (point[0] * math.cos(azimuth) + point[1] * math.sin(azimuth)) * math.cos(elevation) + point[2] * math.sin(elevation)
+
+    cells = []
+    for ring in range(rings):
+        inner, outer = radius * ring / rings, radius * (ring + 1) / rings
+        for spoke in range(spokes):
+            start, end = 2 * math.pi * spoke / spokes, 2 * math.pi * (spoke + 1) / spokes
+            corners = [lifted(inner, start), lifted(outer, start), lifted(outer, end), lifted(inner, end)]
+            cells.append((sum(toward_viewer(corner) for corner in corners) / 4, sum(corner[2] for corner in corners) / 4, corners))
+    mesh = VGroup()
+    for _, mean_height, corners in sorted(cells, key=lambda cell: cell[0]):
+        color = negative if mean_height < -1e-9 else positive
+        mesh.add(Polygon(*[view.project(corner) for corner in corners], color=color, fill_opacity=opacity, stroke_width=stroke_width, stroke_opacity=0.5))
+    return mesh

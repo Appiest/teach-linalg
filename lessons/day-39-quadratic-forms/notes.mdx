@@ -1,0 +1,126 @@
+On Day 30 the symmetric matrix $A = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$ stretched the yellow line through $(1, 1)$ by $\yellow{3}$ and the blue line through $(-1, 1)$ by $\blue{1}$. Today the same matrix does a different job. It turns every vector $\mathbf x$ into a single number $\mathbf x^TA\mathbf x$, and its eigenvectors and eigenvalues describe the shape of that function completely.
+
+## The matrix of a form
+
+<Definition term="Quadratic form">
+A **quadratic form** on $\mathbb R^n$ is a function $Q(\mathbf x) = \mathbf x^TA\mathbf x$, where $A$ is a symmetric $n \times n$ matrix called the **matrix of the form**. Every term of $Q$ has degree two: a square $x_i^2$ or a **cross term** $x_ix_j$ with $i \ne j$.
+</Definition>
+
+Multiplying out shows where each entry goes. The diagonal entries multiply the squares. The two equal off-diagonal entries $a_{12}$ and $a_{21}$ both multiply $x_1x_2$, so the cross term's coefficient is $2a_{12}$:
+
+$$
+\mathbf x^T\begin{bmatrix} 2 & \glow{1} \\ \glow{1} & 2 \end{bmatrix}\mathbf x = 2x_1^2 + \glow{1}\,x_1x_2 + \glow{1}\,x_2x_1 + 2x_2^2 = 2x_1^2 + \glow{2}\,x_1x_2 + 2x_2^2.
+$$
+
+Going the other way, put the square coefficients on the diagonal and split each cross coefficient in half between its two mirror positions. At $\mathbf x = (1, 2)$ this form gives $Q = 2 + 4 + 8 = \teal{14}$.
+
+## Principal axes
+
+<Pair>
+<Figure src="principal-axes" alt="The teal ellipse 2x1² + 2x1x2 + 2x2² = 14, tilted 45 degrees, under a purple-gray grid turned by 45 degrees. The yellow y1 axis runs along (1, 1) and the blue y2 axis along (−1, 1). A thick yellow half-axis reaches the ellipse along y1 and a longer thick blue half-axis reaches it along y2. Beside it, the equation is written both ways: with the orange cross term 2x1x2, and as 3y1² + 1y2² = 14." />
+
+The points with $Q = 14$ form a tilted ellipse, and the cross term is what tilts it. Measuring in axes along the eigenvectors removes the cross term, and the ellipse sits in **standard position**. The coefficients left over are the eigenvalues, so the half-axes have lengths $\sqrt{14/\yellow{3}}$ along $\yellow{y_1}$ and $\sqrt{14/\blue{1}}$ along $\blue{y_2}$. A bigger eigenvalue always gives a shorter axis.
+</Pair>
+
+<QuadraticAxisTurner matrix={[[6, 2], [2, 3]]} level={14} start={[1, 0]} />
+
+Day 34 guarantees the right axes always exist. A symmetric $A$ factors as $A = PDP^T$, where the columns of $P$ are orthonormal eigenvectors and $D$ holds the eigenvalues. Substituting $\mathbf x = P\mathbf y$ gives
+
+$$
+\mathbf x^TA\mathbf x = (P\mathbf y)^TA(P\mathbf y) = \mathbf y^T(P^TAP)\mathbf y = \mathbf y^TD\mathbf y = \lambda_1y_1^2 + \cdots + \lambda_ny_n^2.
+$$
+
+<Definition term="The principal axes theorem">
+For every symmetric $n \times n$ matrix $A$ there is an orthogonal change of variable $\mathbf x = P\mathbf y$ that turns $\mathbf x^TA\mathbf x$ into $\mathbf y^TD\mathbf y$ with no cross terms. The columns of $P$, which are unit eigenvectors of $A$, are the **principal axes** of the form.
+</Definition>
+
+For the video's matrix, $P = \tfrac{1}{\sqrt2}\begin{bmatrix} \yellow{1} & \blue{-1} \\ \yellow{1} & \blue{1} \end{bmatrix}$ and $D = \begin{bmatrix} \yellow{3} & 0 \\ 0 & \blue{1} \end{bmatrix}$. The new coordinates of $\mathbf x = (1, 2)$ are $\mathbf y = P^T\mathbf x$, and both routes give the same value:
+
+$$
+\begin{aligned}
+\mathbf y &= \tfrac{1}{\sqrt2}\begin{bmatrix} 1 & 1 \\ -1 & 1 \end{bmatrix}\begin{bmatrix} 1 \\ 2 \end{bmatrix} = \begin{bmatrix} 3/\sqrt2 \\ 1/\sqrt2 \end{bmatrix} \\
+\yellow{3}y_1^2 + \blue{1}y_2^2 &= 3 \cdot \tfrac{9}{2} + \tfrac{1}{2} = \tfrac{28}{2} = \teal{14}.
+\end{aligned}
+$$
+
+## Definiteness
+
+<Figure src="bowl-trough-saddle" alt="Three graphs of z = Q(x) over a disk, each with the yellow and blue eigen-lines on the floor and the unit circle lifted onto the surface in white. With eigenvalues 3 and 1 the surface is a teal bowl, labelled positive definite. With 3 and 0 it is a teal trough that stays on the floor along the blue line, labelled positive semidefinite. With 3 and −2 it is a saddle, teal where it rises along yellow and pink where it drops below the floor along blue, labelled indefinite." wide />
+
+In principal axes $Q = \lambda_1y_1^2 + \lambda_2y_2^2$, and each squared term is never negative. So the signs of the eigenvalues decide the signs of $Q$. When both are positive, every nonzero $\mathbf x$ gives a positive value and the graph is a bowl. When one is $0$, the graph stays on the floor along that eigenvector. When one is negative, the graph dips below the floor in that direction and becomes a saddle.
+
+<Definition term="Classifying a form by its eigenvalues">
+A quadratic form $Q$ is **positive definite** if $Q(\mathbf x) > 0$ for every $\mathbf x \ne \mathbf 0$, **negative definite** if $Q(\mathbf x) < 0$ for every $\mathbf x \ne \mathbf 0$, and **indefinite** if it takes both positive and negative values. It is **positive semidefinite** if $Q(\mathbf x) \ge 0$ for all $\mathbf x$. For symmetric $A$, the form $\mathbf x^TA\mathbf x$ is positive definite exactly when every eigenvalue is positive, negative definite exactly when every eigenvalue is negative, and indefinite exactly when $A$ has eigenvalues of both signs.
+</Definition>
+
+Plus signs in front of every term prove nothing. The form $x_1^2 + 4x_1x_2 + x_2^2$ has all plus signs, yet $Q(1, -1) = 1 - 4 + 1 = -2$, because its matrix $\begin{bmatrix} 1 & 2 \\ 2 & 1 \end{bmatrix}$ has eigenvalues $3$ and $-1$.
+
+<QuadraticSurfaceShaper a={1} d={4} start={0} />
+
+## The unit circle constraint
+
+<Pair>
+<Figure src="unit-circle-heights" alt="A graph of Q(cos θ, sin θ) = 2 + sin 2θ for θ from 0 to 360 degrees. The teal curve waves between 1 and 3. Yellow dots mark its tops at 45 and 225 degrees, labelled M = λ1 = 3, and blue dots mark its bottoms at 135 and 315 degrees, labelled m = λ2 = 1." />
+
+Walk around the unit circle $\|\mathbf x\| = 1$ and record $Q(\mathbf x)$. Because $P$ is orthogonal, $\|\mathbf y\| = \|\mathbf x\| = 1$ too, so $y_1^2 + y_2^2 = 1$ and
+
+$$
+\begin{aligned}
+Q &= \lambda_1y_1^2 + \lambda_2y_2^2 \le \lambda_1(y_1^2 + y_2^2) = \lambda_1 \\
+Q &= \lambda_1y_1^2 + \lambda_2y_2^2 \ge \lambda_2(y_1^2 + y_2^2) = \lambda_2
+\end{aligned}
+$$
+
+The largest value is the largest eigenvalue, reached at its unit eigenvector. The smallest value is the smallest eigenvalue, reached the same way.
+</Pair>
+
+<QuadraticCircleMax matrix={[[5, 2], [2, 2]]} start={[1, -1]} />
+
+In $\mathbb R^n$ this works one eigenvalue at a time. If you also require $\mathbf x$ to be perpendicular to the top unit eigenvector $\mathbf u_1$, then $y_1 = 0$ and the largest term drops out. The maximum becomes the second largest eigenvalue $\lambda_2$, reached at $\mathbf u_2$. Day 40 builds the singular value decomposition on exactly this step.
+
+## Practice
+
+<Check>
+Write the symmetric matrix of $Q(\mathbf x) = 4x_1^2 - 6x_1x_2 + x_2^2$, then evaluate $Q$ at $\mathbf x = (2, 1)$. Enter the entries $a_{11}$, $a_{12}$, $a_{22}$ and the value. (Modeled on Lay §7.2, Exercises 1–4.)
+
+<VectorAnswer answer={[4, -3, 1, 5]} labels={["a11", "a12", "a22", "Q(2, 1)"]} />
+
+<Answer>
+The squares go on the diagonal and the cross coefficient $-6$ splits in half between the two off-diagonal spots:
+
+$$
+\begin{aligned}
+A &= \begin{bmatrix} 4 & -3 \\ -3 & 1 \end{bmatrix} \\
+Q(2, 1) &= 4(4) - 6(2)(1) + 1 = 16 - 12 + 1 = 5.
+\end{aligned}
+$$
+</Answer>
+</Check>
+
+<Check>
+Find the eigenvalues of the matrix of $Q(\mathbf x) = 2x_1^2 + 12x_1x_2 - 7x_2^2$, larger one first, and classify $Q$. (Modeled on Lay §7.2, Exercises 9–14.)
+
+<VectorAnswer answer={[5, -10]} labels={["λ1", "λ2"]} />
+
+<Answer>
+The matrix is $A = \begin{bmatrix} 2 & 6 \\ 6 & -7 \end{bmatrix}$, so
+
+$$
+\det(A - \lambda I) = (2 - \lambda)(-7 - \lambda) - 36 = \lambda^2 + 5\lambda - 50 = (\lambda - 5)(\lambda + 10).
+$$
+
+The eigenvalues $5$ and $-10$ have opposite signs, so $Q$ is indefinite. The eigenvector for $5$ is $(2, 1)$ and for $-10$ it is $(-1, 2)$, so $P = \tfrac{1}{\sqrt5}\begin{bmatrix} 2 & -1 \\ 1 & 2 \end{bmatrix}$ turns $Q$ into $5y_1^2 - 10y_2^2$.
+</Answer>
+</Check>
+
+<Check>
+Let $Q(\mathbf x) = 4x_1^2 + 4x_2^2 + 4x_3^2 + 2x_1x_2 + 2x_1x_3 + 2x_2x_3$. Find the maximum and minimum of $Q$ on the unit sphere $\|\mathbf x\| = 1$, and then the maximum when $\mathbf x$ must also be perpendicular to the unit vector where the first maximum happens. (Modeled on Lay §7.3, Exercises 1–6.)
+
+<VectorAnswer answer={[6, 3, 3]} labels={["maximum", "minimum", "second maximum"]} />
+
+<Answer>
+The matrix is $A = \begin{bmatrix} 4 & 1 & 1 \\ 1 & 4 & 1 \\ 1 & 1 & 4 \end{bmatrix} = 3I + J$, where $J$ is all ones. $J$ has eigenvalue $3$ on $(1, 1, 1)$ and $0$ on the plane $x_1 + x_2 + x_3 = 0$, so $A$ has eigenvalues $6, 3, 3$.
+
+The maximum on the unit sphere is $6$, at $\mathbf u_1 = (1, 1, 1)/\sqrt3$, and the minimum is $3$. Every unit vector perpendicular to $\mathbf u_1$ lies in the eigenspace for $3$, so the second maximum is $3$, reached for example at $(1, -1, 0)/\sqrt2$.
+</Answer>
+</Check>
