@@ -35,6 +35,7 @@ import { CramerAreas, HeightStack, ProductAreaHunt } from "@/components/interact
 import { CofactorLinePicker, MultipleAreaScale, ReplacementShear } from "@/components/interactive/cofactor-expansion";
 import { IterateSwing, ShiftToSingular, TraceCurveMatch } from "@/components/interactive/eigenvalue-properties";
 import { JordanChainBuilder, MultiplicityGapSlider, NullPowerClimb } from "@/components/interactive/generalized-eigenvectors";
+import { DiagonalBasisHunt, EigenOrbitSettle, EigenPolynomialHunt } from "@/components/interactive/diagonalizing-transformations";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
 import { katexMacros } from "@/lib/katex-macros";
 
@@ -178,6 +179,9 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     MultiplicityGapSlider,
     JordanChainBuilder,
     NullPowerClimb,
+    DiagonalBasisHunt,
+    EigenOrbitSettle,
+    EigenPolynomialHunt,
   };
   return (
     <div className="notes">
