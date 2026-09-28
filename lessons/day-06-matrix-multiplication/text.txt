@@ -1,2 +1,2 @@
-Day 6 is up! Today is matrix multiplication, which turns out to be just doing one transformation after another. Watch the shear and the quarter turn run side by side in both orders and land in different places.
+Day 6 is up! Yesterday one matrix moved the plane, and today we ask what happens when two moves run back to back, which is where matrix multiplication comes from. Watch the shear and the quarter turn run side by side in both orders and land in different places.
 https://appiest.github.io/teach-linalg/day/6/

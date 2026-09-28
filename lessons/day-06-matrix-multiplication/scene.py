@@ -205,9 +205,11 @@ class Lesson(LessonScene):
         self.x_name = backed(tex(r"\mathbf x", font_size=40).set_color(Palette.yellow)).next_to(plane.c2p(*X), RIGHT, buff=0.12)
         self.panel = named_matrix("S", S).scale(0.8).to_corner(UL, buff=0.6)
         self.plate = plate_for(self.panel)
-        line = self.say(r"Start with yesterday's shear $S$.", hold=0.2)
+        line = self.say(r"Yesterday one matrix moved the plane. What do two do?", hold=0.2)
         self.add(grid)
         self.play(GrowArrow(i_arrow), GrowArrow(j_arrow), run_time=1.0, rate_func=spring_soft)
+        self.wait(Timing.beat)
+        line = self.say(r"Start with yesterday's shear $S$.", line, hold=0.2)
         self.play(GrowArrow(x_arrow), FadeIn(self.x_name), run_time=1.0, rate_func=spring_soft)
         self.play(FadeIn(self.plate), Write(self.panel), run_time=1.2)
         self.wait(Timing.beat)
@@ -281,6 +283,7 @@ class Lesson(LessonScene):
         result = named_matrix("RS", RS)
         right = VGroup(rows, result).arrange(RIGHT, buff=1.2)
         VGroup(symbolic, right).arrange(DOWN, buff=0.7).move_to(UP * 0.5)
+        line = self.say(r"Next we find $RS$ by arithmetic instead of drawing.", line, hold=Timing.read_short)
         line = self.say(r"Each column of $RS$ is $R$ applied to a column of $S$.", line, hold=0.2)
         self.raise_veil(veil, line)
         self.play(Write(symbolic), run_time=1.6)
@@ -307,8 +310,11 @@ class Lesson(LessonScene):
         stage = VGroup(product, sizes).move_to(UP * 1.0)
         entries = product[3].get_entries()
         entries.set_opacity(0)
+        line = self.say(r"By hand, it is quicker to find one entry at a time.", line, hold=0.2)
+        self.play(FadeIn(product[:3]), FadeIn(product[3].get_brackets()), run_time=1.0)
+        self.wait(Timing.beat)
         line = self.say(r"Inner sizes must match; outer sizes give the product's size.", line, hold=0.2)
-        self.play(FadeIn(product[:3]), FadeIn(product[3].get_brackets()), FadeIn(sizes[0]), FadeIn(sizes[1]), run_time=1.0)
+        self.play(FadeIn(sizes[0]), FadeIn(sizes[1]), run_time=0.8)
         self.play(Indicate(VGroup(sizes[0][2], sizes[1][0]), color=Palette.glow, scale_factor=1.3), run_time=1.0)
         self.play(
             TransformFromCopy(sizes[0][0], sizes[2][0]),
@@ -376,6 +382,7 @@ class Lesson(LessonScene):
 
         line = self.say(r"They end in different places, so $RS \neq SR$.", line, hold=0.2)
         self.write_landings(panels)
+        line = self.say(r"Tomorrow, undoing $RS$ will mean undoing $R$ first.", line, hold=Timing.read_short)
         return line
 
     def write_landings(self, panels):
@@ -410,6 +417,7 @@ class Lesson(LessonScene):
         self.play(FadeIn(tags, shift=UP * 0.15), run_time=0.8)
         self.play(Indicate(VGroup(tags[1], tags[3]), color=Palette.glow, scale_factor=1.3), run_time=1.0)
         self.wait(Timing.read_long)
+        line = self.say(r"Dot products on Day 35 are built from the transpose.", line, hold=Timing.read_short)
         return line
 
 
