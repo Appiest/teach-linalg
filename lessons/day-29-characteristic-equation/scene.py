@@ -295,6 +295,8 @@ class Lesson(LessonScene):
         self.play(Create(yellow), Create(blue), run_time=1.0)
         self.play(FadeIn(labels), run_time=0.5)
         self.wait(Timing.beat)
+        line = self.say(r"We could check each $\lambda$, but only after guessing it.", line, hold=Timing.read_short)
+        line = self.say(r"Today we find every eigenvalue directly, with no guessing.", line, hold=Timing.read_short)
         line = self.say(r"Then $A - 2I$ squashed the whole plane flat.", line, hold=0.2)
         self.play(FadeOut(labels), run_time=0.4)
         self.play(live.apply(RECAP_SQUASH), run_time=3.0, rate_func=spring_soft)
@@ -316,6 +318,7 @@ class Lesson(LessonScene):
             MathTex(r"\iff A - \lambda I \text{ is not invertible}", color=Palette.text, font_size=48),
             MathTex(r"\iff \det(A - \lambda I) = 0", color=Palette.text, font_size=48),
         ).arrange(DOWN, buff=0.45, aligned_edge=LEFT).move_to(UP * 0.55).set_z_index(21)
+        line = self.say(r"The goal is an equation whose only unknown is $\lambda$.", line, hold=Timing.read_short)
         line = self.say(r"The same test works for any $\lambda$ and any $A$.", line, hold=0.2)
         self.play(FadeIn(self.veil), run_time=0.6)
         self.remove(*self.recap_parts)
@@ -474,7 +477,8 @@ class Lesson(LessonScene):
         self.wait(Timing.beat)
         line = self.say(r"So $\lambda = 2$ has \emph{algebraic multiplicity} 2.", line, hold=0.2)
         self.play(FadeIn(notes, shift=UP * 0.1), run_time=0.7)
-        self.wait(Timing.read_long)
+        self.wait(Timing.read_short)
+        line = self.say(r"Day 31 asks whether a double root gives two eigenvectors.", line, hold=Timing.read_long)
         self.play(FadeOut(VGroup(top, stage)), FadeOut(line), run_time=0.6)
         self.remove(self.veil)
         return None

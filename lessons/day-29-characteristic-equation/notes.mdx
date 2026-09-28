@@ -1,4 +1,4 @@
-Yesterday you checked a proposed eigenvalue by row reducing $A - \lambda I$ and looking for a free variable. That works once you have a candidate, but it gives no way to find one. Today the determinant turns the search into a single equation in $\lambda$, and its roots are exactly the eigenvalues.
+Yesterday you checked a proposed eigenvalue by row reducing $A - \lambda I$ and looking for a free variable. That works once you have a candidate, but it gives no way to find one. The course spent Days 25 to 27 on determinants so that today they can turn the search into a single equation in $\lambda$, whose roots are exactly the eigenvalues.
 
 <Figure src="snapshots" alt="Three planes for A = [1 2; 2 1], each transformed by A − λI. At λ = −1 the grid collapses onto the yellow line, the blue line through (1, −1) glows with an orange ring at the origin, and det(A − λI) = 0. At λ = 1 the unit square becomes a pink square of signed area −4 and both eigen-arrows stay nonzero. At λ = 3 the grid collapses onto the blue line, the yellow line through (1, 1) glows, and det(A − λI) = 0." wide />
 
@@ -29,7 +29,7 @@ In pictures, $\det(A - \lambda I)$ is the signed area of the unit square after $
 
 ## A 2 by 2 example
 
-Take $A = \begin{bmatrix} 4 & 1 \\ 2 & 3 \end{bmatrix}$. Subtract $\lambda$ from the diagonal only, then use $ad - bc$:
+Computing the characteristic polynomial aims for a factored polynomial in $\lambda$, because you can read the roots straight off the factors. Take $A = \begin{bmatrix} 4 & 1 \\ 2 & 3 \end{bmatrix}$. Subtract $\lambda$ from the diagonal only, then use $ad - bc$:
 
 $$
 \begin{aligned}
@@ -40,7 +40,7 @@ $$
 \end{aligned}
 $$
 
-The eigenvalues are $2$ and $5$. Once $\lambda$ is a number, row reduce $A - \lambda I$ exactly as on Day 28:
+The eigenvalues are $2$ and $5$. Once $\lambda$ is a number, row reduce $A - \lambda I$ exactly as on Day 28. That step aims for the null space of $A - \lambda I$, because its nonzero vectors are the eigenvectors:
 
 $$
 \begin{aligned}
@@ -71,7 +71,7 @@ Leave the polynomial factored, since the roots $4$, $1$ and $3$ are already visi
 
 ## Multiplicity
 
-The **algebraic multiplicity** of an eigenvalue is the number of times its factor appears in the characteristic polynomial. An $n \times n$ matrix has $n$ eigenvalues when you count them with multiplicity and allow complex numbers, so it has at most $n$ different ones.
+The **algebraic multiplicity** of an eigenvalue is the number of times its factor appears in the characteristic polynomial. An $n \times n$ matrix has $n$ eigenvalues when you count them with multiplicity and allow complex numbers, so it has at most $n$ different ones. On Day 31 this count gets a partner, the number of independent eigenvectors for the same eigenvalue, and the two numbers can disagree.
 
 <Pair>
 <Figure src="multiplicity" alt="The graph of det(B − λI) = (2 − λ)²(4 − λ) for λ from 0.5 to 5. The curve comes down, touches the λ-axis at 2 without crossing, rises to a small hump, then crosses the axis at 4 and falls. Orange rings mark 2, labelled multiplicity 2, and 4, labelled multiplicity 1." />
@@ -91,6 +91,8 @@ So $B$ has eigenvalue $2$ with multiplicity $2$ and eigenvalue $4$ with multipli
 For a triangular matrix, $A - \lambda I$ is still triangular, so the characteristic polynomial is the product of $(a_{ii} - \lambda)$ down the diagonal. Every diagonal entry is an eigenvalue, repeated as often as it appears.
 
 Setting $\lambda = 0$ in the characteristic equation gives $\det A = 0$. That adds two more statements to the Invertible Matrix Theorem: $A$ is invertible exactly when $0$ is not an eigenvalue of $A$, and exactly when $\det A \ne 0$.
+
+Tomorrow, on Day 30, the eigenvalues found this way give the trace and determinant of $A$ without more work, and they predict what happens when you apply $A$ over and over.
 
 ## Practice
 
