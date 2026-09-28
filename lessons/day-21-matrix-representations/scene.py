@@ -318,9 +318,12 @@ class Lesson(LessonScene):
         self.tracker = MatrixTracker()
         grid = always_redraw(lambda: moved_grid(plane, self.tracker))
         arrows = basis_arrows(plane, self.tracker)
-        line = self.say(r"A linear map $T$ moves the whole plane.", hold=0.2)
+        line = self.say(r"Day 20 showed that maps like $\tfrac{d}{dt}$ are linear.", hold=0.2)
         still = VGroup(vector_arrow((1, 0), Palette.i_hat, plane), vector_arrow((0, 1), Palette.j_hat, plane))
         self.play(GrowArrow(still[0]), GrowArrow(still[1]), run_time=1.0, rate_func=spring_soft)
+        self.wait(Timing.beat)
+        line = self.say(r"Today we write every linear map as a matrix.", line, hold=Timing.read_short)
+        line = self.say(r"A linear map $T$ moves the whole plane.", line, hold=0.2)
         self.remove(*still)
         self.add(arrows)
         self.play(plane.animate.set_opacity(0.35), FadeIn(grid), run_time=0.8)
@@ -380,8 +383,10 @@ class Lesson(LessonScene):
     def set_up_pipeline(self, line):
         stage = pipeline_stage()
         self.stage = stage
-        line = self.say(r"Build the matrix of $\tfrac{d}{dt}$ on $\mathbb P_2$ one column at a time.", line, hold=0.2)
+        line = self.say(r"We want a matrix that differentiates by multiplying coordinates.", line, hold=0.2)
         self.play(Write(stage["header"]), run_time=1.2)
+        self.wait(Timing.beat)
+        line = self.say(r"Build the matrix of $\tfrac{d}{dt}$ on $\mathbb P_2$ one column at a time.", line, hold=0.2)
         self.play(Create(stage["input_axes"]), Create(stage["output_axes"]), FadeIn(stage["gates"]), run_time=1.2)
         self.play(
             FadeIn(stage["matrix"].get_brackets()),
@@ -577,6 +582,7 @@ class Lesson(LessonScene):
         line = self.say(r"With standard bases on $\mathbb R^n$, it gives the standard matrix.", line, hold=0.2)
         self.play(FadeIn(standard, shift=UP * 0.2), run_time=1.0, rate_func=spring_soft)
         self.wait(Timing.read_short)
+        line = self.say(r"Tomorrow $T$ is the identity, and the matrix changes basis.", line, hold=Timing.read_short)
         return line
 
 
