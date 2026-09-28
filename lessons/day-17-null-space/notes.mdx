@@ -1,0 +1,140 @@
+Yesterday's column space collected every output $A\mathbf x$. Today asks the opposite question: which inputs does $A$ send to $\mathbf 0$? Those inputs form a second subspace that comes with every matrix, and it controls what every solution of $A\mathbf x = \mathbf b$ looks like.
+
+## The null space
+
+<Definition term="Null space">
+The **null space** of an $m \times n$ matrix $A$ is the set of all solutions of the homogeneous equation $A\mathbf x = \mathbf 0$:
+
+$$
+\operatorname{Nul}A = \{\, \mathbf x \in \mathbb R^n : A\mathbf x = \mathbf 0 \,\}.
+$$
+
+It lives in $\mathbb R^n$, where $n$ is the number of **columns**, because only vectors with $n$ entries can be multiplied by $A$.
+</Definition>
+
+<Pair>
+<Figure src="collapse" alt="A plane with the teal diagonal line Col P and the pink anti-diagonal line Nul P crossing at the origin. Gray arrows show several points sliding in the direction (1, −1) until they land on the teal line. The pink dots on the anti-diagonal all head to the origin, which is circled in orange. A panel shows P = ½[1 1; 1 1] and P(1, −1) = (0, 0)." />
+
+$$
+P = \tfrac12 \begin{bmatrix} 1 & 1 \\ 1 & 1 \end{bmatrix},
+\qquad
+P\,\pink{\begin{bmatrix} 1 \\ -1 \end{bmatrix}} = \teal{\begin{bmatrix} 0 \\ 0 \end{bmatrix}}
+$$
+
+The projection $P$ slides every point along $(1, -1)$ onto the diagonal. The points already on the anti-diagonal slide all the way to the origin, so $\operatorname{Nul}P = \operatorname{Span}\{(1, -1)\}$.
+</Pair>
+
+Testing one vector takes a single multiplication. For example, $P(2, 1) = (1.5, 1.5) \ne \mathbf 0$, so $(2, 1)$ is not in $\operatorname{Nul}P$. Finding the whole null space takes more work, which is the reverse of the column space, where listing members is easy and testing one takes a row reduction.
+
+<LandingHunt matrix={[[1, 2], [2, 4]]} start={[1, 1]} prompt="Find two different nonzero inputs $\mathbf x$ that this $A$ sends to $\mathbf 0$." success="Both land on $\mathbf 0$, and so does every point of the pink line through them. That line is $\operatorname{Nul}A = \operatorname{Span}\{(2, -1)\}$." />
+
+## Why it is a subspace
+
+<Definition term="Theorem">
+The null space of an $m \times n$ matrix is a subspace of $\mathbb R^n$.
+</Definition>
+
+Run Day 11's three checks. Suppose $A\mathbf u = \mathbf 0$ and $A\mathbf v = \mathbf 0$, and let $c$ be any scalar.
+
+$$
+\begin{aligned}
+&\text{(a)} \quad A\mathbf 0 = \mathbf 0 \\
+&\text{(b)} \quad A(\mathbf u + \mathbf v) = A\mathbf u + A\mathbf v = \mathbf 0 + \mathbf 0 = \mathbf 0 \\
+&\text{(c)} \quad A(c\,\mathbf u) = c\,A\mathbf u = c\,\mathbf 0 = \mathbf 0
+\end{aligned}
+$$
+
+Each line uses only the fact that matrix multiplication distributes over sums and pulls out scalars. So any set cut out by **homogeneous** linear equations, meaning equations whose right side is $0$, is a null space and therefore a subspace. For example, $\{(a, b, c) : a + 2b = c,\ 3a = b\}$ equals $\operatorname{Nul}\begin{bmatrix} 1 & 2 & -1 \\ 3 & -1 & 0 \end{bmatrix}$. The set $\{(a, b, c) : a + b + c = 1\}$ is not a subspace, because $(0, 0, 0)$ gives $0 = 1$.
+
+## Basis from free variables
+
+To describe $\operatorname{Nul}A$ explicitly, solve $A\mathbf x = \mathbf 0$. Row reduce $A$ to **reduced** echelon form, since the zero column of $[\,A \ \ \mathbf 0\,]$ never changes, then write each basic variable in terms of the free ones.
+
+$$
+\begin{aligned}
+A = \begin{bmatrix} 1 & -2 & 0 & 3 \\ 2 & -4 & 1 & 4 \end{bmatrix}
+&\sim \begin{bmatrix} 1 & -2 & 0 & 3 \\ 0 & 0 & 1 & -2 \end{bmatrix} \\[4pt]
+x_1 = 2\yellow{x_2} - 3\blue{x_4}, &\qquad x_3 = 2\blue{x_4} \\[4pt]
+\mathbf x = \begin{bmatrix} 2x_2 - 3x_4 \\ x_2 \\ 2x_4 \\ x_4 \end{bmatrix}
+&= \yellow{x_2} \yellow{\begin{bmatrix} 2 \\ 1 \\ 0 \\ 0 \end{bmatrix}} + \blue{x_4} \blue{\begin{bmatrix} -3 \\ 0 \\ 2 \\ 1 \end{bmatrix}}
+\end{aligned}
+$$
+
+<Pair>
+<Figure src="free-variables" alt="The reduced form of A with rows (1, −2, 0, 3) and (0, 0, 1, −2), the equations x1 = 2x2 − 3x4 and x3 = 2x4, and the vector x written as x2 times the yellow vector u = (2, 1, 0, 0) plus x4 times the blue vector v = (−3, 0, 2, 1). Orange boxes mark entries 2 and 4 of u and v, which read 1, 0 and 0, 1." />
+
+The vectors $\yellow{\mathbf u}$ and $\blue{\mathbf v}$ span $\operatorname{Nul}A$. They are also independent, because entries 2 and 4 of $x_2\mathbf u + x_4\mathbf v$ are $x_2$ and $x_4$ themselves. That combination can only be $\mathbf 0$ when both weights are $0$, so $\{\mathbf u, \mathbf v\}$ is a basis, with one vector for each free variable.
+</Pair>
+
+<FreeWeights u={[2, 1, 0, 0]} v={[-3, 0, 2, 1]} target={[-7, -2, 2, 1]} />
+
+The two spaces of this $A$ live in different places. $\operatorname{Nul}A$ sits in $\mathbb R^4$ because $A$ has four columns, and $\operatorname{Col}A$ sits in $\mathbb R^2$ because each column has two entries. So a vector's length alone tells you which of the two it could belong to.
+
+## Solutions of Ax = b
+
+<Definition term="Solution sets are shifted null spaces">
+If $A\mathbf p = \mathbf b$ for one vector $\mathbf p$, then the solutions of $A\mathbf x = \mathbf b$ are exactly the vectors $\mathbf p + \mathbf v$ with $\mathbf v$ in $\operatorname{Nul}A$.
+</Definition>
+
+The reason takes two lines. If $A\mathbf v = \mathbf 0$, then $A(\mathbf p + \mathbf v) = \mathbf b + \mathbf 0 = \mathbf b$. If $A\mathbf w = \mathbf b$, then $A(\mathbf w - \mathbf p) = \mathbf b - \mathbf b = \mathbf 0$, so $\mathbf w$ is $\mathbf p$ plus a null-space vector.
+
+<Pair>
+<Figure src="shifted-copy" alt="The pink line Nul P through the origin and a parallel yellow line through the tip of the yellow arrow p = (4, 0). The yellow line crosses the teal line Col P at b = (2, 2), which is circled in orange. A second orange circle marks the origin, which the yellow line misses." />
+
+For the projection $P$ and $\mathbf b = (2, 2)$, one solution is $\yellow{\mathbf p} = (4, 0)$, so
+
+$$
+\begin{aligned}
+\{\mathbf x : P\mathbf x = \mathbf b\} &= \yellow{\mathbf p} + \pink{\operatorname{Nul}P} \\
+&= \left\{ \begin{bmatrix} 4 \\ 0 \end{bmatrix} + t\begin{bmatrix} 1 \\ -1 \end{bmatrix} \right\}.
+\end{aligned}
+$$
+
+This line is parallel to $\operatorname{Nul}P$ but misses $\mathbf 0$, so it is not a subspace whenever $\mathbf b \ne \mathbf 0$.
+</Pair>
+
+<LandingHunt matrix={[[1, 2], [2, 4]]} target={[1, 2]} start={[2, 2]} prompt="On Day 7 this matrix sent three different points to $\mathbf b = (1, 2)$. Find two inputs with $A\mathbf x = \mathbf b$." success="Both solve it, and their difference is in $\operatorname{Nul}A$. The yellow line of all solutions is the dashed pink null space shifted off the origin." />
+
+## Practice
+
+<Check>
+Let $A = \begin{bmatrix} 2 & -1 & 3 \\ 4 & 1 & -1 \end{bmatrix}$ and $\mathbf u = (1, -7, -3)$. Compute $A\mathbf u$. Is $\mathbf u$ in $\operatorname{Nul}A$, and could it be in $\operatorname{Col}A$? (Modeled on Lay §4.2, Example 1.)
+
+<VectorAnswer answer={[0, 0]} />
+
+<Answer>
+$$
+A\mathbf u = \begin{bmatrix} 2 + 7 - 9 \\ 4 - 7 + 3 \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \end{bmatrix}
+$$
+
+So $\mathbf u$ is in $\operatorname{Nul}A$. It cannot be in $\operatorname{Col}A$, because $\operatorname{Col}A$ is a subspace of $\mathbb R^2$ and $\mathbf u$ has three entries.
+</Answer>
+</Check>
+
+<Check>
+Find a basis for $\operatorname{Nul}A$, where $A = \begin{bmatrix} 1 & 2 & 0 & -1 \\ 2 & 4 & 1 & 1 \\ 1 & 2 & 1 & 2 \end{bmatrix}$. Enter the basis vector that comes from the free variable $x_4$. (Modeled on Lay §4.2, Exercise 3.)
+
+<VectorAnswer answer={[1, 0, -3, 1]} labels={["x₁", "x₂", "x₃", "x₄"]} />
+
+<Answer>
+$$
+\begin{aligned}
+A &\sim \begin{bmatrix} 1 & 2 & 0 & -1 \\ 0 & 0 & 1 & 3 \\ 0 & 0 & 1 & 3 \end{bmatrix} \sim \begin{bmatrix} 1 & 2 & 0 & -1 \\ 0 & 0 & 1 & 3 \\ 0 & 0 & 0 & 0 \end{bmatrix} \\[4pt]
+x_1 &= -2x_2 + x_4, \qquad x_3 = -3x_4 \\[4pt]
+\mathbf x &= x_2 \begin{bmatrix} -2 \\ 1 \\ 0 \\ 0 \end{bmatrix} + x_4 \begin{bmatrix} 1 \\ 0 \\ -3 \\ 1 \end{bmatrix}
+\end{aligned}
+$$
+
+The basis is $\{(-2, 1, 0, 0),\ (1, 0, -3, 1)\}$. Rows 2 and 4 read $1, 0$ and $0, 1$, which is why the two vectors are independent.
+</Answer>
+</Check>
+
+<Check>
+Let $A = \begin{bmatrix} 1 & -1 & 2 \\ 2 & -2 & 4 \end{bmatrix}$ and $\mathbf b = (3, 6)$. One solution of $A\mathbf x = \mathbf b$ is $\mathbf p = (3, 0, 0)$, and $\operatorname{Nul}A$ has basis $(1, 1, 0)$ and $(-2, 0, 1)$. The vector $(0, 1, 2)$ also solves the system. Find $s$ and $t$ with $(0, 1, 2) = \mathbf p + s(1, 1, 0) + t(-2, 0, 1)$. (Modeled on Lay §1.5, Example 3.)
+
+<VectorAnswer answer={[1, 2]} labels={["s", "t"]} />
+
+<Answer>
+The difference $(0, 1, 2) - (3, 0, 0) = (-3, 1, 2)$ must lie in $\operatorname{Nul}A$. Its second entry gives $s = 1$ and its third gives $t = 2$, and then the first entry is $1 - 4 = -3$, which matches. As a check, $A(0, 1, 2) = (0 - 1 + 4,\ 0 - 2 + 8) = (3, 6)$.
+</Answer>
+</Check>

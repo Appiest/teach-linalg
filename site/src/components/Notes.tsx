@@ -24,6 +24,7 @@ import { PivotBudget, RankTally } from "@/components/interactive/rank-nullity";
 import { ColumnBuilder, DerivativeRoutes } from "@/components/interactive/matrix-representations";
 import { InvertibilityCalls, StatementBoard } from "@/components/interactive/invertible-matrix-theorem";
 import { ColumnBuilder, SimilarityHunt, TwoAddresses } from "@/components/interactive/change-of-basis";
+import { FreeWeights, LandingHunt } from "@/components/interactive/null-space";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
 import { katexMacros } from "@/lib/katex-macros";
 
@@ -138,6 +139,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     TwoAddresses,
     ColumnBuilder,
     SimilarityHunt,
+    LandingHunt,
+    FreeWeights,
   };
   return (
     <div className="notes">

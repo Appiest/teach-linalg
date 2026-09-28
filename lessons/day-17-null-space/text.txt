@@ -1,0 +1,2 @@
+Day 17 is up! Today is about the null space, which is every input a matrix squashes down to zero. Watch a whole pink line of points slide into the origin, then see how the solutions of Ax = b turn out to be that same line shifted over.
+https://appiest.github.io/teach-linalg/day/17/
