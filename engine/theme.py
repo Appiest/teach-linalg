@@ -844,3 +844,26 @@ def right_angle_mark(plane: NumberPlane, first, second, size: float = 0.24, colo
         legs.append(size * step / np.linalg.norm(step))
     corners = [origin + legs[0], origin + legs[0] + legs[1], origin + legs[1]]
     return VMobject(color=color, stroke_width=stroke_width).set_points_as_corners(corners)
+
+
+def corner_mark(to_scene, corner, first, second, size: float = 0.3, color: str = Palette.glow, stroke_width: float = 4):
+    """A small square corner at `corner` between directions `first` and `second`, in any coordinates `to_scene` maps.
+
+    `to_scene` takes one point: a projector for an oblique 3D view, or lambda p: plane.c2p(*p) for a flat plane.
+    """
+    from manim import VMobject
+
+    corner = np.asarray(corner, dtype=float)
+    first = np.asarray(first, dtype=float) / np.linalg.norm(first)
+    second = np.asarray(second, dtype=float) / np.linalg.norm(second)
+    points = [corner + size * first, corner + size * (first + second), corner + size * second]
+    return VMobject(color=color, stroke_width=stroke_width).set_points_as_corners([to_scene(point) for point in points])
+
+
+def projected_patch(project, first, second, s_range=(-1, 1), t_range=(-1, 1), color: str = Palette.teal, opacity: float = 0.2, stroke_width: float = 2):
+    """The flat parallelogram of s*first + t*second over the weight ranges, seen through an oblique `project`."""
+    from manim import Polygon
+
+    first, second = np.asarray(first, dtype=float), np.asarray(second, dtype=float)
+    corners = [s * first + t * second for s, t in ((s_range[0], t_range[0]), (s_range[1], t_range[0]), (s_range[1], t_range[1]), (s_range[0], t_range[1]))]
+    return Polygon(*[project(corner) for corner in corners], stroke_color=color, stroke_width=stroke_width, stroke_opacity=0.8, fill_color=color, fill_opacity=opacity)
