@@ -1,2 +1,2 @@
-Today is quadratic forms: a symmetric matrix turns each vector into one number, and its graph is a bowl, a trough or a saddle. Watch the cross term shrink to zero as the axes turn onto the eigenvectors.
+Today is quadratic forms: a symmetric matrix turns each vector into one number, and its eigenvalues decide whether the graph is a bowl, a trough or a saddle. Where that number peaks on the unit circle sets up tomorrow's final lesson.
 https://appiest.github.io/teach-linalg/day/39/

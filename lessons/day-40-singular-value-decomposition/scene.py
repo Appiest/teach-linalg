@@ -234,10 +234,15 @@ class Lesson(LessonScene):
     def circle_to_ellipse(self):
         plane, live = self.plane, self.live
         self.panel = a_panel()
-        line = self.say(r"Here is a matrix $A$ and the unit circle.", hold=0.2)
+        line = self.say(r"Day 32 could diagonalize only some square matrices.", hold=0.2)
         self.play(FadeIn(self.panel, shift=DOWN * 0.1), run_time=0.8, rate_func=spring_soft)
+        self.wait(Timing.beat)
+        line = self.say(r"Today we take apart every matrix, square or not.", line, hold=0.2)
         self.grid = always_redraw(lambda: live.grid(plane, color=Palette.purple_gray, opacity=0.55))
         self.play(plane.animate.set_opacity(0.2), FadeIn(self.grid), run_time=0.8)
+        self.wait(Timing.beat)
+        line = self.say(r"Yesterday's quadratic forms are the tool that makes it work.", line, hold=Timing.read_short)
+        line = self.say(r"Here is a matrix $A$ and the unit circle.", line, hold=0.2)
         self.circle = always_redraw(lambda: ellipse_shape(plane, live.point))
         self.play(Create(self.circle), run_time=1.2)
         self.bring_to_front(self.panel)
@@ -296,7 +301,7 @@ class Lesson(LessonScene):
         return self.pair_arrows
 
     def undo(self, line):
-        line = self.say(r"Undo $A$ and split it into three simpler moves.", line, hold=0.2)
+        line = self.say(r"The goal is to split $A$ into three simple moves.", line, hold=0.2)
         self.play(FadeOut(self.sweep_leftovers), run_time=0.6)
         self.move(self.live.apply(A_INVERSE), run_time=2.2)
         self.wait(Timing.beat)
@@ -344,10 +349,12 @@ class Lesson(LessonScene):
             board_row(r"\sigma_1 = \sqrt9 = ", "3", r",\qquad", r"\sigma_2 = \sqrt4 = ", "2", colors=(None, Palette.glow, None, None, Palette.glow)),
             board_row(r"\mathbf u_i", "=", r"A\mathbf v_i", "/", r"\sigma_i"),
         ).arrange(DOWN, buff=0.5).move_to(UP * 0.5).set_z_index(21)
+        line = self.say(r"Now we compute the three factors, starting with $V$.", line, hold=Timing.read_short)
         line = self.say(r"The stretches come from the symmetric matrix $A^TA$.", line, hold=0.2)
         self.play(FadeIn(veil), run_time=0.6)
         self.play(FadeIn(rows[0], shift=DOWN * 0.1), run_time=0.8, rate_func=spring_soft)
         self.wait(Timing.beat)
+        line = self.say(r"Day 39 showed this form peaks at the top eigenvector.", line, hold=Timing.read_short)
         line = self.say(r"Its eigenvalues are 9 and 4, with eigenvectors $\mathbf v_1$ and $\mathbf v_2$.", line, hold=0.2)
         self.play(FadeIn(rows[1], shift=DOWN * 0.1), run_time=0.8, rate_func=spring_soft)
         self.wait(Timing.read_short)
@@ -373,6 +380,7 @@ class Lesson(LessonScene):
         image = picture(layers.original).move_to(RIGHT * 2.9 + UP * 0.55).set_z_index(22)
         size_note = MathTex(r"90 \times 135 = 12{,}150 \text{ numbers}", color=Palette.text_muted, font_size=34)
         size_note.next_to(image, UP, buff=0.2).set_z_index(22)
+        line = self.say(r"Dropping the weakest layers stores a big matrix in fewer numbers.", line, hold=Timing.read_short)
         line = self.say(r"A grayscale picture is a matrix of brightness values.", line, hold=0.2)
         self.play(self.board[1].animate.scale(0.6).to_edge(UP, buff=0.35).to_edge(LEFT, buff=0.5), run_time=0.8, rate_func=spring_soft)
         self.play(FadeIn(image), FadeIn(size_note), run_time=0.8)
@@ -395,6 +403,7 @@ class Lesson(LessonScene):
         line = self.say(r"Rank 20 stores 4,520 numbers instead of 12,150.", line, hold=Timing.read_short)
         self.play(Indicate(count, color=Palette.glow, scale_factor=1.08), run_time=0.9)
         self.wait(Timing.beat)
+        line = self.say(r"The whole course has been building to this one factorization.", line, hold=Timing.read_short)
 
     def show_rank(self, layers, k, chart, image, count):
         new_chart = bar_chart(layers.values, k).move_to(chart).set_z_index(22)

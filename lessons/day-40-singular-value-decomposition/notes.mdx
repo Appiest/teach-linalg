@@ -1,4 +1,4 @@
-Diagonalization on Day 32 needed a square matrix with enough eigenvectors. The singular value decomposition needs nothing: every $m \times n$ matrix $A$ turns one set of perpendicular directions $\yellow{\mathbf v_1}, \blue{\mathbf v_2}, \dots$ into another set of perpendicular directions $\yellow{\mathbf u_1}, \blue{\mathbf u_2}, \dots$ and stretches each one by a number $\glow{\sigma_i} \ge 0$. The video's matrix is $A = \begin{bmatrix} 2 & -1 \\ 2 & 2 \end{bmatrix}$, which sends the unit circle to a tilted ellipse.
+Diagonalization on Day 32 needed a square matrix with enough eigenvectors, so it could not take apart a rectangular matrix or a shear. Yesterday's quadratic forms remove that limit, because the squared length $\|A\mathbf x\|^2$ is a quadratic form for every matrix $A$. Today asks which unit input $A$ stretches the most, and the answer leads to a factorization that every matrix has. The singular value decomposition works for every matrix, because every $m \times n$ matrix $A$ turns one set of perpendicular directions $\yellow{\mathbf v_1}, \blue{\mathbf v_2}, \dots$ into another set of perpendicular directions $\yellow{\mathbf u_1}, \blue{\mathbf u_2}, \dots$ and stretches each one by a number $\glow{\sigma_i} \ge 0$. The video's matrix is $A = \begin{bmatrix} 2 & -1 \\ 2 & 2 \end{bmatrix}$, which sends the unit circle to a tilted ellipse.
 
 ## Singular values
 
@@ -34,7 +34,7 @@ Read right to left, the factors are three moves. $V^T$ turns $\yellow{\mathbf v_
 
 <SvdEllipseMatch target={{ sigmas: [3, 1.5], turn: 60 }} />
 
-Here is the whole recipe for $A = \begin{bmatrix} 3 & 0 \\ 4 & 5 \end{bmatrix}$. Diagonalize $A^TA$, take square roots, and build each $\mathbf u_i$ from $A\mathbf v_i$:
+The recipe aims to find the three factors, and it finds $V$ first because $V$ comes from a symmetric matrix that Day 34 already knows how to diagonalize. Here is the whole recipe for $A = \begin{bmatrix} 3 & 0 \\ 4 & 5 \end{bmatrix}$. Diagonalize $A^TA$, take square roots, and build each $\mathbf u_i$ from $A\mathbf v_i$:
 
 $$
 \begin{aligned}
@@ -51,7 +51,7 @@ The SVD also gives orthonormal bases for the column space (Day 16) and the null 
 
 ## Rank-k approximation
 
-Multiplying out $U\Sigma V^T$ column by row writes $A$ as a sum of **rank-one layers**, each an outer product of a column and a row:
+The goal of this section is to store a large matrix with far fewer numbers while losing as little as possible. Multiplying out $U\Sigma V^T$ column by row writes $A$ as a sum of **rank-one layers**, each an outer product of a column and a row:
 
 $$
 A = \glow{\sigma_1}\yellow{\mathbf u_1}\yellow{\mathbf v_1^T} + \glow{\sigma_2}\blue{\mathbf u_2}\blue{\mathbf v_2^T} + \dots + \glow{\sigma_r}\mathbf u_r\mathbf v_r^T.
@@ -62,6 +62,8 @@ Keeping only the first $k$ layers gives the **rank-$k$ approximation** $A_k$. It
 <Figure src="rank-copies" alt="A grayscale landscape with a sky, a round sun and two ridges of hills, rebuilt from 1, 2, 5 and 20 layers beside the original. One layer shows only horizontal and vertical bands, two layers show a bright column where the sun is, five show a blocky sun and hills, and twenty look nearly the same as the original. A bar chart of the first 30 singular values on a log scale has its first 20 bars in teal." wide />
 
 A grayscale picture is a matrix of brightness values, and its singular values fall off fast. The same idea runs principal component analysis in Lay §7.5, where the first few singular directions of a data table carry most of its variation.
+
+This factorization is what the whole course has been building toward. It uses Day 34's orthonormal eigenvectors of a symmetric matrix, Day 39's largest value of a quadratic form and Day 37's Gram–Schmidt, and it reads off the rank, the column space and the null space along the way. With it you can take any matrix apart into perpendicular directions and the stretches between them.
 
 <RankCopyBudget tolerance={0.05} />
 
