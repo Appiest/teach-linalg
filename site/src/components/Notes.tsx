@@ -38,6 +38,7 @@ import { JordanChainBuilder, MultiplicityGapSlider, NullPowerClimb } from "@/com
 import { DiagonalBasisHunt, EigenOrbitSettle, EigenPolynomialHunt } from "@/components/interactive/diagonalizing-transformations";
 import { DiagonalFactorSteps, EigenCoordinateTarget } from "@/components/interactive/diagonalization";
 import { CharacteristicSweep, EigenpairHunt } from "@/components/interactive/characteristic-equation";
+import { SpectralEllipseBuilder, SymmetricPerpendicularHunt } from "@/components/interactive/symmetric-matrices";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
 import { katexMacros } from "@/lib/katex-macros";
 
@@ -188,6 +189,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     DiagonalFactorSteps,
     CharacteristicSweep,
     EigenpairHunt,
+    SymmetricPerpendicularHunt,
+    SpectralEllipseBuilder,
   };
   return (
     <div className="notes">
