@@ -1,2 +1,2 @@
-Day 34 is about symmetric matrices, the ones that equal their own transpose, and why their eigenvectors always meet at right angles. In the video, watch the unit circle stretch into an ellipse whose axes land exactly on the two eigenvectors, then see a non-symmetric matrix miss.
+Day 34 asks which matrices always have eigenvectors at right angles, and the answer is the symmetric ones that equal their own transpose. In the video, watch the unit circle stretch into an ellipse whose axes land exactly on the two eigenvectors, then see a non-symmetric matrix miss.
 https://appiest.github.io/teach-linalg/day/34/

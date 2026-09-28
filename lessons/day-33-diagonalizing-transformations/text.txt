@@ -1,2 +1,2 @@
-Day 33 is up! If you describe a map using its own eigenvectors as the basis, its matrix turns diagonal and the map just stretches each axis. In the video, watch the same map act on two grids side by side and see which grid stays lined up with itself.
+Day 33 is up! Every basis gives a map its own matrix, so which basis makes that matrix simplest? The answer is the map's own eigenvectors, and in the video you can watch the same map act on two grids side by side to see why.
 https://appiest.github.io/teach-linalg/day/33/
