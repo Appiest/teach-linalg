@@ -33,6 +33,7 @@ import { DiagonalZeroHunt, EigenDirectionHunt, EigenGapHunt } from "@/components
 import { AreaShearSlide, CornerToOrigin } from "@/components/interactive/determinants-as-area";
 import { CramerAreas, HeightStack, ProductAreaHunt } from "@/components/interactive/determinant-properties";
 import { CofactorLinePicker, MultipleAreaScale, ReplacementShear } from "@/components/interactive/cofactor-expansion";
+import { IterateSwing, ShiftToSingular, TraceCurveMatch } from "@/components/interactive/eigenvalue-properties";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
 import { katexMacros } from "@/lib/katex-macros";
 
@@ -170,6 +171,9 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     CofactorLinePicker,
     ReplacementShear,
     MultipleAreaScale,
+    TraceCurveMatch,
+    ShiftToSingular,
+    IterateSwing,
   };
   return (
     <div className="notes">
