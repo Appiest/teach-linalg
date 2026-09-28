@@ -1,0 +1,110 @@
+On Day 4 you learned that $A\mathbf x = \mathbf b$ has a solution exactly when $\mathbf b$ is in the span of the columns of $A$, which Day 16 named $\operatorname{Col}A$. Real measurements almost never land exactly in $\operatorname{Col}A$, so the system has no solution. Least squares finds the $\mathbf x$ that comes closest, and Day 36's orthogonal projection tells you where that is.
+
+## Residuals
+
+Suppose you want the line $y = \beta_0 + \beta_1 x$ through the points $(0, 0)$, $(1, 4)$ and $(2, 2)$. Each point asks for one equation, $\beta_0 + x_j\beta_1 = y_j$, so the three together form the system $X\boldsymbol\beta = \mathbf y$:
+
+$$
+\begin{bmatrix} \green{1} & \red{0} \\ \green{1} & \red{1} \\ \green{1} & \red{2} \end{bmatrix}
+\begin{bmatrix} \beta_0 \\ \beta_1 \end{bmatrix}
+= \yellow{\begin{bmatrix} 0 \\ 4 \\ 2 \end{bmatrix}}
+$$
+
+The matrix $X$ is called the **design matrix**. Its first column is all ones because every point uses $\beta_0$ once, and its second column lists the $x$-values. No line passes through all three points, so this system has no solution.
+
+For any line you pick, the **residual** at a point is the observed $y_j$ minus the height the line predicts there, $r_j = y_j - (\beta_0 + \beta_1 x_j)$. A **least-squares line** is a line that makes $r_1^2 + r_2^2 + \cdots + r_n^2$ as small as possible. Squaring keeps a miss below the line from cancelling a miss above it.
+
+<Figure src="residuals" alt="The points (0, 0), (1, 4) and (2, 2) with the teal line y = 1 + x. Pink vertical segments join each point to the line, and a pink square sits on each segment. The residuals are r1 = −1, r2 = 2 and r3 = −1, so the squares have areas 1, 4 and 1." />
+
+The widget below uses four new points. Each pink square has the squared residual as its area, so shrinking the total pink area is exactly the least-squares problem.
+
+<ResidualSquaresFit points={[[-1, 0], [0, 2], [1, 3], [2, 3]]} handleXs={[-2, 3]} start={[1, 1]} />
+
+## Projection onto the column space
+
+Stack the three heights into one vector $\yellow{\mathbf y}$ in $\mathbb R^3$. Every line gives a vector of predictions $X\boldsymbol\beta = \beta_0\green{\mathbf a_1} + \beta_1\red{\mathbf a_2}$, which always lies on the plane $\operatorname{Col}X$. The residuals are the entries of $\pink{\mathbf y - X\boldsymbol\beta}$, so the sum of their squares is $\|\pink{\mathbf y - X\boldsymbol\beta}\|^2$. Making it small means finding the point of $\operatorname{Col}X$ nearest to $\yellow{\mathbf y}$.
+
+<Pair>
+<Figure src="projection" alt="A 3D view of the teal plane Col X spanned by green a1 = (1, 1, 1) and red a2 = (0, 1, 2). The yellow arrow y = (0, 4, 2) rises above the plane. A pink segment drops from the tip of y to the tip of the teal arrow X beta-hat on the plane, and an orange corner marks a right angle there." />
+
+Day 36's Best Approximation Theorem says the nearest point is the orthogonal projection $\hat{\mathbf y} = \operatorname{proj}_{\operatorname{Col}X}\mathbf y$. So the best weights $\hat{\boldsymbol\beta}$ are the ones with $X\hat{\boldsymbol\beta} = \hat{\mathbf y}$. That equation always has a solution because $\hat{\mathbf y}$ lies in $\operatorname{Col}X$.
+</Pair>
+
+<Definition term="Least-squares solution">
+If $A$ is $m \times n$ and $\mathbf b$ is in $\mathbb R^m$, a **least-squares solution** of $A\mathbf x = \mathbf b$ is a vector $\hat{\mathbf x}$ in $\mathbb R^n$ such that
+
+$$
+\|\mathbf b - A\hat{\mathbf x}\| \le \|\mathbf b - A\mathbf x\| \quad \text{for every } \mathbf x \text{ in } \mathbb R^n.
+$$
+
+The distance $\|\mathbf b - A\hat{\mathbf x}\|$ is the **least-squares error**.
+</Definition>
+
+The nearest point has one feature you can test without knowing where it is. The residual $\mathbf b - A\hat{\mathbf x}$ meets $\operatorname{Col}A$ at a right angle. The widget shrinks the picture to $\mathbb R^2$, where $A = \begin{bmatrix} 2 \\ 1 \end{bmatrix}$ has one column and $\operatorname{Col}A$ is a line.
+
+<ProjectionRightAngle column={[2, 1]} b={[1, 3]} start={2.5} />
+
+## Normal equations
+
+A vector is perpendicular to $\operatorname{Col}A$ when it is perpendicular to every column $\mathbf a_j$. The rows of $A^T$ are those columns, so all of the conditions $\mathbf a_j \cdot (\mathbf b - A\hat{\mathbf x}) = 0$ stack into the single equation $A^T(\mathbf b - A\hat{\mathbf x}) = \mathbf 0$. Moving $A^TA\hat{\mathbf x}$ to the other side gives the theorem.
+
+<Definition term="The normal equations (Lay, Theorem 13)">
+The least-squares solutions of $A\mathbf x = \mathbf b$ are exactly the solutions of the **normal equations**
+
+$$
+A^TA\,\mathbf x = A^T\mathbf b,
+$$
+
+and this system always has at least one solution. When the columns of $A$ are linearly independent, $A^TA$ is invertible and the least-squares solution is unique.
+</Definition>
+
+Here are the steps for the video's three points:
+
+$$
+\begin{aligned}
+X^TX &= \begin{bmatrix} 1 & 1 & 1 \\ 0 & 1 & 2 \end{bmatrix}\begin{bmatrix} 1 & 0 \\ 1 & 1 \\ 1 & 2 \end{bmatrix} = \begin{bmatrix} 3 & 3 \\ 3 & 5 \end{bmatrix} \\
+X^T\yellow{\mathbf y} &= \begin{bmatrix} 1 & 1 & 1 \\ 0 & 1 & 2 \end{bmatrix}\yellow{\begin{bmatrix} 0 \\ 4 \\ 2 \end{bmatrix}} = \begin{bmatrix} 6 \\ 8 \end{bmatrix} \\
+\begin{bmatrix} 3 & 3 \\ 3 & 5 \end{bmatrix}\hat{\boldsymbol\beta} &= \begin{bmatrix} 6 \\ 8 \end{bmatrix}
+\;\Longrightarrow\; \hat{\boldsymbol\beta} = \frac16\begin{bmatrix} 5 & -3 \\ -3 & 3 \end{bmatrix}\begin{bmatrix} 6 \\ 8 \end{bmatrix} = \teal{\begin{bmatrix} 1 \\ 1 \end{bmatrix}} \\
+X\hat{\boldsymbol\beta} &= \teal{\begin{bmatrix} 1 \\ 2 \\ 3 \end{bmatrix}}, \qquad \pink{\mathbf y - X\hat{\boldsymbol\beta}} = \pink{\begin{bmatrix} -1 \\ 2 \\ -1 \end{bmatrix}}, \qquad \|\pink{\mathbf y - X\hat{\boldsymbol\beta}}\| = \sqrt{6}
+\end{aligned}
+$$
+
+The best line is $y = 1 + x$. As a check, the residual is perpendicular to both columns: $(-1) + 2 + (-1) = 0$ and $0 + 2 - 2 = 0$. When one of these dot products comes out nonzero, the arithmetic has gone wrong somewhere.
+
+## Practice
+
+<Check>
+Find the least-squares solution of $A\mathbf x = \mathbf b$ for $A = \begin{bmatrix} 1 & 2 \\ 0 & 1 \\ 1 & 0 \end{bmatrix}$ and $\mathbf b = \begin{bmatrix} 3 \\ 3 \\ 3 \end{bmatrix}$. (Modeled on Lay §6.5 #1.)
+
+<VectorAnswer answer={[2, 1]} labels={["\\hat x_1", "\\hat x_2"]} />
+
+<Answer>
+$$
+\begin{aligned}
+A^TA &= \begin{bmatrix} 1 & 0 & 1 \\ 2 & 1 & 0 \end{bmatrix}\begin{bmatrix} 1 & 2 \\ 0 & 1 \\ 1 & 0 \end{bmatrix} = \begin{bmatrix} 2 & 2 \\ 2 & 5 \end{bmatrix}, \qquad A^T\mathbf b = \begin{bmatrix} 6 \\ 9 \end{bmatrix} \\
+\hat{\mathbf x} &= \frac16\begin{bmatrix} 5 & -2 \\ -2 & 2 \end{bmatrix}\begin{bmatrix} 6 \\ 9 \end{bmatrix} = \begin{bmatrix} 2 \\ 1 \end{bmatrix}
+\end{aligned}
+$$
+
+Then $A\hat{\mathbf x} = (4, 1, 2)$ and the residual is $\mathbf b - A\hat{\mathbf x} = (-1, 2, 1)$. It is perpendicular to both columns, since $-1 + 1 = 0$ and $-2 + 2 = 0$, and the least-squares error is $\sqrt 6$.
+</Answer>
+</Check>
+
+<Check>
+Find the least-squares line $y = \beta_0 + \beta_1 x$ for the points $(0, 2)$, $(1, 1)$ and $(2, 3)$. (Modeled on Lay §6.6 #1.)
+
+<VectorAnswer answer={[1.5, 0.5]} labels={["\\beta_0", "\\beta_1"]} />
+
+<Answer>
+The design matrix is the same as in the video, so $X^TX = \begin{bmatrix} 3 & 3 \\ 3 & 5 \end{bmatrix}$ again. Only the right side changes:
+
+$$
+X^T\mathbf y = \begin{bmatrix} 2 + 1 + 3 \\ 0 + 1 + 6 \end{bmatrix} = \begin{bmatrix} 6 \\ 7 \end{bmatrix},
+\qquad
+\hat{\boldsymbol\beta} = \frac16\begin{bmatrix} 5 & -3 \\ -3 & 3 \end{bmatrix}\begin{bmatrix} 6 \\ 7 \end{bmatrix} = \begin{bmatrix} 3/2 \\ 1/2 \end{bmatrix}.
+$$
+
+The line is $y = \tfrac32 + \tfrac12 x$. Its predictions are $(1.5, 2, 2.5)$, so the residuals are $(0.5, -1, 0.5)$. They add to $0$, which is the dot product with the column of ones.
+</Answer>
+</Check>
