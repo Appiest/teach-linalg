@@ -299,7 +299,9 @@ class Lesson(LessonScene):
         self.play(FadeIn(plate), FadeIn(card, shift=UP * 0.15), run_time=0.8, rate_func=spring_soft)
         line = self.say(r"For 2 by 2, the formula $ad - bc$ gives it.", line, hold=0.2)
         self.play(Write(formula), run_time=1.2)
-        self.wait(Timing.read_short)
+        self.wait(Timing.beat)
+        line = self.say(r"Today we compute $\det$ for square matrices of any size.", line, hold=Timing.read_short)
+        line = self.say(r"Day 29 needs 3 by 3 determinants to find eigenvalues.", line, hold=Timing.read_short)
         self.dismiss(plate, card, formula)
         return line
 
@@ -333,7 +335,8 @@ class Lesson(LessonScene):
         self.wait(Timing.beat)
         line = self.say(r"The \emph{cofactor} $C_{23}$ gives that minor a sign.", line, hold=0.2)
         self.play(Write(cofactor), run_time=1.2)
-        self.wait(Timing.read_short)
+        self.wait(Timing.beat)
+        line = self.say(r"Day 27 builds a formula for $A^{-1}$ out of cofactors.", line, hold=Timing.read_short)
 
         line = self.say(r"The sign depends only on the position, like a checkerboard.", line, hold=0.2)
         self.restyle(rest_styles(self.a_mat, None), run_time=0.5)
@@ -467,7 +470,8 @@ class Lesson(LessonScene):
         self.play(FadeIn(tail[:2]), run_time=0.8)
         self.play(FadeIn(tail[2:], shift=LEFT * 0.15), run_time=0.6)
         self.play(Indicate(diagonal, color=Palette.glow, scale_factor=1.2), Indicate(tail[3], color=Palette.glow), run_time=1.0)
-        self.wait(Timing.read_short)
+        self.wait(Timing.beat)
+        line = self.say(r"Big expansions take millions of steps, so aim for triangular.", line, hold=Timing.read_short)
         self.dismiss(u_group, outline, head, top, minor, tail)
         return line
 
@@ -537,7 +541,8 @@ class Lesson(LessonScene):
         self.play(FadeIn(tail[:2], shift=LEFT * 0.15), run_time=0.7)
         self.play(FadeIn(tail[2:], shift=LEFT * 0.15), run_time=0.6)
         self.play(Indicate(tail[3], color=Palette.glow, scale_factor=1.3), run_time=0.9)
-        self.wait(Timing.read_short)
+        self.wait(Timing.beat)
+        line = self.say(r"$\det A \neq 0$ exactly when $A$ is invertible, at any size.", line, hold=Timing.read_short)
         self.dismiss(head, minus, b_mat, tail, label)
         return line
 
