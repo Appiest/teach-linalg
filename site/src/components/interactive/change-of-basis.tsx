@@ -120,7 +120,7 @@ function ColumnWalk({ weights, c1, c2, end }: { weights: Vec; c1: Vec; c2: Vec; 
 }
 
 /** Four sliders set the two columns of P; each column walks along c1 and c2 and should land on its b vector. */
-export function ColumnBuilder({ b1 = [2, 1], b2 = [-1, 2], c1 = [1, 0], c2 = [-1, 1] }: TwoBases) {
+export function ChangeMatrixBuilder({ b1 = [2, 1], b2 = [-1, 2], c1 = [1, 0], c2 = [-1, 1] }: TwoBases) {
   const [columns, setColumns] = useState<[Vec, Vec]>([[1, 0], [0, 1]]);
   const lands = (index: 0 | 1, target: Vec) => nearlyEqual(add(scale(columns[index][0], c1), scale(columns[index][1], c2)), target);
   const { settled, gesture } = useSettled(`${lands(0, b1)}-${lands(1, b2)}`);
