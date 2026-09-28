@@ -718,3 +718,30 @@ def floor_and_axes(project, reach=((-2, 3), (-2, 3), (-2, 2))) -> VGroup:
         start[index], end[index] = low, high + 0.4
         parts.add(Line(project(start), project(end), color=Palette.axis, stroke_width=2))
     return parts
+
+
+def signed_area(first, second) -> float:
+    """det [first second]: the parallelogram's area, negative when the turn from first to second is clockwise."""
+    return float(first[0] * second[1] - first[1] * second[0])
+
+
+def signed_parallelogram(plane: NumberPlane, first, second, opacity: float = 0.32, stroke_width: float = 3, offset=(0, 0)):
+    """The parallelogram on two columns: yellow when they turn counterclockwise, pink when the plane is flipped."""
+    from manim import Polygon
+
+    color = Palette.pink if signed_area(first, second) < -1e-9 else Palette.yellow
+    corners = [(0, 0), first, (first[0] + second[0], first[1] + second[1]), second]
+    points = [plane.c2p(corner[0] + offset[0], corner[1] + offset[1]) for corner in corners]
+    return Polygon(*points, color=color, fill_opacity=opacity, stroke_width=stroke_width, stroke_opacity=0.95)
+
+
+def orientation_arc(plane: NumberPlane, first, second, radius: float = 0.8, color: str = Palette.glow, min_turn: float = 0.22):
+    """A small curved arrow at the origin turning the short way from `first` to `second`; empty when they nearly align."""
+    from manim import Arc, VMobject
+
+    start = math.atan2(first[1], first[0])
+    turn = (math.atan2(second[1], second[0]) - start + math.pi) % (2 * math.pi) - math.pi
+    if abs(turn) < min_turn:
+        return VMobject()
+    arc = Arc(radius=radius, start_angle=start, angle=turn, arc_center=plane.c2p(0, 0), color=color, stroke_width=4)
+    return arc.add_tip(tip_length=0.18, tip_width=0.18)
