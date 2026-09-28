@@ -72,6 +72,11 @@ export function Goal({ solved, prompt, success }: { solved: boolean; prompt: Rea
   );
 }
 
+/** A TeX label read aloud as plain text, e.g. "\\ell_{21}" becomes "ell 21". */
+function spokenLabel(tex: string): string {
+  return tex.replace(/\\([a-zA-Z]+)/g, "$1").replace(/[{}]/g, "").replace(/[_^]/g, " ").trim();
+}
+
 export function Slider({ label, value, onChange, min, max, step, color }: {
   label: string; value: number; onChange: (value: number) => void; min: number; max: number; step: number; color: string;
 }) {
@@ -87,7 +92,7 @@ export function Slider({ label, value, onChange, min, max, step, color }: {
         max={max}
         step={step}
         value={value}
-        aria-label={label}
+        aria-label={spokenLabel(label)}
         aria-valuetext={formatNumber(value)}
         onPointerDown={gesture.begin}
         onChange={(event) => onChange(Number(event.target.value))}
