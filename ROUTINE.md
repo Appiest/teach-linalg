@@ -65,6 +65,23 @@ Read these before you write anything:
 - The previous lesson's `notes.mdx` and `scene.py`, so today's lesson picks up where yesterday's ended, reuses
   its vectors and colors where it can, and doesn't re-teach it.
 
+## Motivation comes first
+
+Every lesson must tell the learner why they are learning this, and why now. This is a hard requirement for both the
+video and the notes.
+
+- **Open with the question.** Right after the title, say what problem or question today's idea answers and how it
+  follows from what came before ("Yesterday we asked whether b is in the span. Answering that means solving
+  equations, so today we learn to solve them.").
+- **State the goal before any procedure.** Before running an algorithm (row reduction, cofactor expansion,
+  Gram–Schmidt, diagonalizing), say what it is trying to reach and why that end state is useful ("Row reduction aims
+  for a matrix so simple you can read the answer off it."). Then run it.
+- **Point forward when you introduce a tool.** When a new form, notation or definition appears mainly because a later
+  lesson needs it, say so in one clause and name the day ("We keep only the numbers in an augmented matrix; on Day 3
+  that is the form we row reduce."). Check the later lesson so the pointer is accurate.
+- **Close with what it unlocks.** End the notes with one sentence on what today makes possible next.
+- Keep each of these to a sentence or two. The point is orientation, not a lecture.
+
 ## 3. Storyboard
 
 Write `<folder>/storyboard.md` as a timeline table like Day 1's: each state, when it happens, and what triggers it.
