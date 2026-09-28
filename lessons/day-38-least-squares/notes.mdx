@@ -1,4 +1,4 @@
-On Day 4 you learned that $A\mathbf x = \mathbf b$ has a solution exactly when $\mathbf b$ is in the span of the columns of $A$, which Day 16 named $\operatorname{Col}A$. Real measurements almost never land exactly in $\operatorname{Col}A$, so the system has no solution. Least squares finds the $\mathbf x$ that comes closest, and Day 36's orthogonal projection tells you where that is.
+On Day 4 you learned that $A\mathbf x = \mathbf b$ has a solution exactly when $\mathbf b$ is in the span of the columns of $A$, which Day 16 named $\operatorname{Col}A$. Real measurements almost never land exactly in $\operatorname{Col}A$, so the system has no solution. Least squares finds the $\mathbf x$ that comes closest instead, and it is the payoff of the last two days, because Day 36's orthogonal projection tells you exactly where that closest point is.
 
 ## Residuals
 
@@ -22,7 +22,7 @@ The widget below uses four new points. Each pink square has the squared residual
 
 ## Projection onto the column space
 
-Stack the three heights into one vector $\yellow{\mathbf y}$ in $\mathbb R^3$. Every line gives a vector of predictions $X\boldsymbol\beta = \beta_0\green{\mathbf a_1} + \beta_1\red{\mathbf a_2}$, which always lies on the plane $\operatorname{Col}X$. The residuals are the entries of $\pink{\mathbf y - X\boldsymbol\beta}$, so the sum of their squares is $\|\pink{\mathbf y - X\boldsymbol\beta}\|^2$. Making it small means finding the point of $\operatorname{Col}X$ nearest to $\yellow{\mathbf y}$.
+Sliding a line around by hand never proves which line is best. Rewriting the fit as a question about vectors turns it into the closest-point problem Day 36 already solved. Stack the three heights into one vector $\yellow{\mathbf y}$ in $\mathbb R^3$. Every line gives a vector of predictions $X\boldsymbol\beta = \beta_0\green{\mathbf a_1} + \beta_1\red{\mathbf a_2}$, which always lies on the plane $\operatorname{Col}X$. The residuals are the entries of $\pink{\mathbf y - X\boldsymbol\beta}$, so the sum of their squares is $\|\pink{\mathbf y - X\boldsymbol\beta}\|^2$. Making it small means finding the point of $\operatorname{Col}X$ nearest to $\yellow{\mathbf y}$.
 
 <Pair>
 <Figure src="projection" alt="A 3D view of the teal plane Col X spanned by green a1 = (1, 1, 1) and red a2 = (0, 1, 2). The yellow arrow y = (0, 4, 2) rises above the plane. A pink segment drops from the tip of y to the tip of the teal arrow X beta-hat on the plane, and an orange corner marks a right angle there." />
@@ -46,7 +46,7 @@ The nearest point has one feature you can test without knowing where it is. The 
 
 ## Normal equations
 
-A vector is perpendicular to $\operatorname{Col}A$ when it is perpendicular to every column $\mathbf a_j$. The rows of $A^T$ are those columns, so all of the conditions $\mathbf a_j \cdot (\mathbf b - A\hat{\mathbf x}) = 0$ stack into the single equation $A^T(\mathbf b - A\hat{\mathbf x}) = \mathbf 0$. Moving $A^TA\hat{\mathbf x}$ to the other side gives the theorem.
+The goal here is an equation for $\hat{\mathbf x}$ that skips computing the projection first, since Day 36's formula would need an orthogonal basis of $\operatorname{Col}A$ from Day 37's Gram–Schmidt. A vector is perpendicular to $\operatorname{Col}A$ when it is perpendicular to every column $\mathbf a_j$. The rows of $A^T$ are those columns, so all of the conditions $\mathbf a_j \cdot (\mathbf b - A\hat{\mathbf x}) = 0$ stack into the single equation $A^T(\mathbf b - A\hat{\mathbf x}) = \mathbf 0$. Moving $A^TA\hat{\mathbf x}$ to the other side gives the theorem.
 
 <Definition term="The normal equations (Lay, Theorem 13)">
 The least-squares solutions of $A\mathbf x = \mathbf b$ are exactly the solutions of the **normal equations**
@@ -71,6 +71,10 @@ X\hat{\boldsymbol\beta} &= \teal{\begin{bmatrix} 1 \\ 2 \\ 3 \end{bmatrix}}, \qq
 $$
 
 The best line is $y = 1 + x$. As a check, the residual is perpendicular to both columns: $(-1) + 2 + (-1) = 0$ and $0 + 2 - 2 = 0$. When one of these dot products comes out nonzero, the arithmetic has gone wrong somewhere.
+
+If you already have $A = QR$ from Day 37, the normal equations get simpler. Since $A^TA = R^TQ^TQR = R^TR$ and $A^T\mathbf b = R^TQ^T\mathbf b$, you can cancel the invertible $R^T$ and solve $R\hat{\mathbf x} = Q^T\mathbf b$ by back substitution. Software usually takes this route because it never has to form $A^TA$, a step that magnifies rounding errors.
+
+The matrix $A^TA$ from the normal equations is symmetric, and Day 40 uses its eigenvalues to build the singular value decomposition of $A$.
 
 ## Practice
 
