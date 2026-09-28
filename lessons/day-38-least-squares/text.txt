@@ -1,0 +1,2 @@
+Day 38 is up! Today is least squares: when no line goes through all your data points, you find the one that misses by the least. Watch the line settle on the left while the same move drops a vector straight down onto a plane on the right.
+https://appiest.github.io/teach-linalg/day/38/

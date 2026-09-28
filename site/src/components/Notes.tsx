@@ -43,6 +43,7 @@ import { DotShadowHunt, RowPerpendicularHunt, UnitCircleScale } from "@/componen
 import { LongestStretchHunt, RankCopyBudget, SvdEllipseMatch } from "@/components/interactive/singular-value-decomposition";
 import { LineFootHunt, NearestPlanePoint, ShadowSumBasis } from "@/components/interactive/orthogonal-projection";
 import { QrWeightSliders, ShadowSubtractSlider, StraightenedTargetHunt } from "@/components/interactive/gram-schmidt";
+import { ProjectionRightAngle, ResidualSquaresFit } from "@/components/interactive/least-squares";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
 import { katexMacros } from "@/lib/katex-macros";
 
@@ -207,6 +208,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     ShadowSubtractSlider,
     StraightenedTargetHunt,
     QrWeightSliders,
+    ResidualSquaresFit,
+    ProjectionRightAngle,
   };
   return (
     <div className="notes">
