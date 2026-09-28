@@ -1,2 +1,2 @@
-Day 32 is diagonalization: when a matrix has enough eigenvectors, you can use them as a new grid, and on that grid the matrix only stretches each axis. In the video, watch the grid straighten out, stretch, and swing back, and see the arrow land exactly where A sends it.
+Day 32 is diagonalization: when a matrix has enough eigenvectors, you can use them as a new grid, and on that grid the matrix only stretches each axis. That turns into A = PDP⁻¹, which makes a big power like A¹⁰ take two products instead of nine. In the video, watch the grid straighten out, stretch, and swing back, and see the arrow land exactly where A sends it.
 https://appiest.github.io/teach-linalg/day/32/

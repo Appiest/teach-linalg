@@ -1,16 +1,16 @@
-Day 28 found eigenvectors one line at a time, and Day 29 found every eigenvalue as a root of $\det(A - \lambda I)$. A repeated root raises a question those lessons left open: does a root counted twice always come with two independent eigenvectors? The shear $S = \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$ from Day 5 says no, and today builds what takes the missing eigenvector's place.
+Day 28 found eigenvectors one line at a time, and Day 29 found every eigenvalue as a root of $\det(A - \lambda I)$. Day 30 showed that different eigenvalues give independent eigenvectors, but a repeated root gets no such promise. It raises a question those lessons left open: does a root counted twice always come with two independent eigenvectors? The shear $S = \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$ from Day 5 says no, and today builds what takes the missing eigenvector's place. The question matters now because Day 32 builds a basis out of eigenvectors, and a matrix that runs short of them needs a substitute before any such basis exists.
 
 <Figure src="one-eigenline" alt="A square patch of grid sheared into a parallelogram by S = [1 1; 0 1]. Twelve gray arrows from the origin have tipped over toward the right and faded. Only the two horizontal arrows stay on their own line, which is drawn in yellow and labelled λ = 1, with an orange dot on each tip." wide />
 
 ## Two multiplicities
 
-The shear's characteristic polynomial is $\det(S - \lambda I) = (1 - \lambda)^2$, so $\lambda = 1$ is a double root. Yet $S - I = \begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix}$ has rank 1, so its null space is only the line through $\green{\mathbf e_1}$. Every other direction gets tipped over, because the shear slides each point sideways by its height.
+To tell whether a matrix has enough eigenvectors, count each eigenvalue in two ways and compare the counts. The shear's characteristic polynomial is $\det(S - \lambda I) = (1 - \lambda)^2$, so $\lambda = 1$ is a double root. Yet $S - I = \begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix}$ has rank 1, so its null space is only the line through $\green{\mathbf e_1}$. Every other direction gets tipped over, because the shear slides each point sideways by its height.
 
 <Definition term="Algebraic and geometric multiplicity">
 Let $\lambda$ be an eigenvalue of an $n \times n$ matrix $A$. Its **algebraic multiplicity** is its multiplicity as a root of the characteristic polynomial. Its **geometric multiplicity** is $\dim \operatorname{Nul}(A - \lambda I)$, the dimension of its eigenspace. The geometric multiplicity is always at least 1 and at most the algebraic multiplicity (Lay §5.3, Theorem 7a). A matrix is **defective** when some eigenvalue has geometric multiplicity smaller than its algebraic multiplicity.
 </Definition>
 
-The geometric multiplicity is $n - \operatorname{rank}(A - \lambda I)$, so you find it by row reducing, never by reading exponents off the polynomial. Since eigenvectors for different eigenvalues are independent (Day 30), a defective matrix has too few independent eigenvectors to form a basis of $\mathbb R^n$. Being defective has nothing to do with being invertible: $S$ has determinant 1 and is defective, while $\begin{bmatrix} 0 & 0 \\ 0 & 1 \end{bmatrix}$ is singular and not defective.
+The geometric multiplicity is $n - \operatorname{rank}(A - \lambda I)$, so you find it by row reducing, never by reading exponents off the polynomial. Since eigenvectors for different eigenvalues are independent (Day 30), a defective matrix has too few independent eigenvectors to form a basis of $\mathbb R^n$. On Day 32 this count decides which matrices can be diagonalized. Being defective has nothing to do with being invertible: $S$ has determinant 1 and is defective, while $\begin{bmatrix} 0 & 0 \\ 0 & 1 \end{bmatrix}$ is singular and not defective.
 
 <MultiplicityGapSlider lambda={2} start={1} />
 
@@ -18,7 +18,7 @@ The matrices $\begin{bmatrix} 2 & 1 \\ 0 & 2 \end{bmatrix}$ and $2I$ share the c
 
 ## Jordan chains
 
-When eigenvectors run short, apply $A - \lambda I$ to a vector that is not an eigenvector. For the shear, take $\blue{\mathbf v_2} = (1, 2)$. The push from $\blue{\mathbf v_2}$ to $S\blue{\mathbf v_2} = (3, 2)$ is $(S - I)\blue{\mathbf v_2} = (2, 0)$, which lies on the eigenline, and one more push sends it to $\mathbf 0$.
+What we want here is a second vector that completes the basis and still belongs to the eigenvalue. When eigenvectors run short, apply $A - \lambda I$ to a vector that is not an eigenvector. For the shear, take $\blue{\mathbf v_2} = (1, 2)$. The push from $\blue{\mathbf v_2}$ to $S\blue{\mathbf v_2} = (3, 2)$ is $(S - I)\blue{\mathbf v_2} = (2, 0)$, which lies on the eigenline, and one more push sends it to $\mathbf 0$.
 
 <Pair>
 <Figure src="chain" alt="The sheared patch with the yellow eigenline along the x-axis. The blue arrow v2 = (1, 2) and the teal arrow S v2 = (3, 2) are joined at their tips by a pink arrow labelled (S − I)v2. A yellow arrow v1 = (2, 0) of the same length lies on the eigenline with an orange dot on its tip. A panel reads v2 → v1 → 0, each arrow labelled S − I." />
@@ -51,7 +51,7 @@ Both multiplicities show up: $\lambda = 4$ is a double root, and its eigenspace 
 
 ## Longer chains
 
-In larger matrices a chain can need more pushes, and $\dim \operatorname{Nul}(A - \lambda I)^k$ counts how many independent vectors $k$ pushes can finish. These dimensions grow with $k$ and stop exactly at the algebraic multiplicity. The null space where they stop is the **generalized eigenspace** of $\lambda$. For $A = \begin{bmatrix} 1 & 1 & 0 \\ -1 & 3 & 0 \\ -3 & 3 & -1 \end{bmatrix}$, whose characteristic polynomial is $-(\lambda - 2)^2(\lambda + 1)$, watch the dimension for $\lambda = 2$ climb.
+The goal is still a basis, now built from chains whose lengths add up to each eigenvalue's algebraic multiplicity. In larger matrices a chain can need more pushes, and $\dim \operatorname{Nul}(A - \lambda I)^k$ counts how many independent vectors $k$ pushes can finish. These dimensions grow with $k$ and stop exactly at the algebraic multiplicity. The null space where they stop is the **generalized eigenspace** of $\lambda$. For $A = \begin{bmatrix} 1 & 1 & 0 \\ -1 & 3 & 0 \\ -3 & 3 & -1 \end{bmatrix}$, whose characteristic polynomial is $-(\lambda - 2)^2(\lambda + 1)$, watch the dimension for $\lambda = 2$ climb.
 
 <NullPowerClimb matrix={[[1, 1, 0], [-1, 3, 0], [-3, 3, -1]]} lambda={2} multiplicity={2} />
 
@@ -61,7 +61,7 @@ To build the chain, pick $\blue{\mathbf v_2}$ in $\operatorname{Nul}(A - 2I)^2$ 
 
 ## Jordan form
 
-Unpacking the chain gives two equations about $A$:
+The chains were built to serve as a basis, and in that basis the matrix of $A$ is as close to diagonal as $A$ allows. Unpacking the chain gives two equations about $A$:
 
 $$
 A\yellow{\mathbf v_1} = \lambda\yellow{\mathbf v_1}, \qquad A\blue{\mathbf v_2} = 1\,\yellow{\mathbf v_1} + \lambda\blue{\mathbf v_2}.
@@ -79,7 +79,7 @@ The 1 above the diagonal is the push: $A$ scales $\blue{\mathbf v_2}$ by $\lambd
 A **Jordan block** $J_k(\lambda)$ is the $k \times k$ matrix with $\lambda$ on the diagonal, 1 directly above it, and 0 everywhere else. If the characteristic polynomial of $A$ factors into linear factors, then $A$ is similar to a block diagonal matrix $J$ of Jordan blocks, its **Jordan form**. For each eigenvalue, the number of blocks equals the geometric multiplicity and the block sizes add up to the algebraic multiplicity. The columns of $P$ are Jordan chains, each listed from $\mathbf v_1$ up.
 </Definition>
 
-For the $3 \times 3$ matrix above, $P = \begin{bmatrix} 0 & 1 & 0 \\ 0 & 1 & 1 \\ 1 & 0 & 1 \end{bmatrix}$ lists $(0, 0, 1)$, then $\yellow{\mathbf v_1}$, then $\blue{\mathbf v_2}$, and $P^{-1}AP = \begin{bmatrix} -1 & 0 & 0 \\ 0 & 2 & 1 \\ 0 & 0 & 2 \end{bmatrix}$ has a block of size 1 and a block of size 2. Tomorrow covers the case with no chains at all, where every block has size 1 and $J$ is diagonal.
+For the $3 \times 3$ matrix above, $P = \begin{bmatrix} 0 & 1 & 0 \\ 0 & 1 & 1 \\ 1 & 0 & 1 \end{bmatrix}$ lists $(0, 0, 1)$, then $\yellow{\mathbf v_1}$, then $\blue{\mathbf v_2}$, and $P^{-1}AP = \begin{bmatrix} -1 & 0 & 0 \\ 0 & 2 & 1 \\ 0 & 0 & 2 \end{bmatrix}$ has a block of size 1 and a block of size 2. Tomorrow covers the case with no chains at all, where every block has size 1 and $J$ is diagonal. Day 33 comes back to a Jordan chain as the best basis for a map that has too few eigenvectors.
 
 ## Practice
 

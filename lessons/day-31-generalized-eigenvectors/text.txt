@@ -1,2 +1,2 @@
-Day 31 is about what happens when a matrix runs out of eigenvectors, like the shear from Day 5, and how a chain of pushes by A − λI fills the gap. In the video, watch a whole patch of the plane squash onto one line and then shrink to a point.
+Day 31 asks whether a matrix always has enough eigenvectors to build a basis, which tomorrow's diagonalization will need. The shear from Day 5 doesn't, and today a chain of pushes by A − λI fills the gap. In the video, watch a whole patch of the plane squash onto one line and then shrink to a point.
 https://appiest.github.io/teach-linalg/day/31/
