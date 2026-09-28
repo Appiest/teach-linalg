@@ -203,7 +203,7 @@ class Lesson(LessonScene):
         self.a2_name = name_label([r"\mathbf a_2"], [Palette.blue], plane.c2p(*A2), LEFT)
         for col, arrow, name in zip(self.a_mat.get_columns(), (self.a1, self.a2), (self.a1_name, self.a2_name)):
             self.play(Indicate(col, color=Palette.glow, scale_factor=1.12), run_time=0.8)
-            self.play(GrowArrow(arrow), TransformFromCopy(col, name), run_time=1.3, rate_func=spring_soft)
+            self.play(GrowArrow(arrow), FadeTransform(col.copy(), name), run_time=1.3, rate_func=spring_soft)
         self.wait(Timing.read_short)
         return line
 
@@ -363,7 +363,7 @@ class Lesson(LessonScene):
         self.play(FadeIn(veil), FadeOut(self.plate), FadeOut(self.controls), run_time=0.7)
         self.play(FadeIn(labels[0]), Write(forms[0]), run_time=1.4)
         for index in (1, 2):
-            self.play(FadeIn(labels[index]), TransformFromCopy(forms[index - 1], forms[index]), run_time=1.4)
+            self.play(FadeIn(labels[index]), FadeTransform(forms[index - 1].copy(), forms[index]), run_time=1.4)
             self.wait(Timing.beat)
         self.wait(Timing.beat)
 
@@ -372,7 +372,7 @@ class Lesson(LessonScene):
         self.wait(Timing.beat)
         line = self.say(r"Row reduction confirms the weights $2$ and $-1$.", line, hold=0.2)
         self.play(FadeIn(reduction[1]), FadeIn(reduction[2], shift=LEFT * 0.3), run_time=1.0, rate_func=spring)
-        self.play(TransformFromCopy(reduction[2].get_columns()[2], answer), run_time=1.2)
+        self.play(FadeTransform(reduction[2].get_columns()[2].copy(), answer), run_time=1.2)
         self.wait(Timing.read_long)
         self.play(FadeOut(VGroup(labels, forms, reduction, answer)), FadeOut(veil), run_time=0.7)
         return line
