@@ -790,3 +790,36 @@ def parallelepiped(project, first, second, third, color: str = Palette.teal, opa
             corners = (base, base + edges[i], base + edges[i] + edges[j], base + edges[j])
             faces.add(Polygon(*[project(corner) for corner in corners], color=color, fill_opacity=opacity, stroke_width=stroke_width, stroke_opacity=0.7))
     return faces
+
+
+def patch_image(plane: NumberPlane, transform, half: int = 2, color: str = Palette.blue, opacity: float = 0.75, fill_opacity: float = 0.1) -> VGroup:
+    """The square patch -half <= x, y <= half of the integer grid carried by a 2x2 matrix, with a faint fill.
+
+    Unlike a full grid, a finite patch shows a singular matrix squashing it onto a segment and the zero matrix
+    shrinking it to the origin.
+    """
+    from manim import Polygon
+
+    transform = np.asarray(transform, dtype=float)
+
+    def carry(point):
+        return plane.c2p(*(transform @ np.asarray(point, dtype=float)))
+
+    corners = [(-half, -half), (half, -half), (half, half), (-half, half)]
+    parts = VGroup()
+    if abs(np.linalg.det(transform)) > 1e-4:
+        parts.add(Polygon(*[carry(corner) for corner in corners], color=color, fill_opacity=fill_opacity, stroke_width=0))
+    for k in range(-half, half + 1):
+        for start, end in (((k, -half), (k, half)), ((-half, k), (half, k))):
+            a, b = carry(start), carry(end)
+            if np.linalg.norm(b - a) < 1e-3:
+                continue
+            axis = k == 0
+            parts.add(Line(a, b, color=Palette.axis if axis else color, stroke_width=2.6 if axis else 2, stroke_opacity=0.95 if axis else opacity))
+    images = [carry(corner) for corner in corners]
+    far = max(((a, b) for a in images for b in images), key=lambda pair: np.linalg.norm(pair[1] - pair[0]))
+    if abs(np.linalg.det(transform)) <= 1e-4 and np.linalg.norm(far[1] - far[0]) > 1e-3:
+        parts.add(Line(*far, color=color, stroke_width=14, stroke_opacity=0.5))
+    if len(parts) == 0:
+        parts.add(Dot(plane.c2p(0, 0), radius=0.06, color=color))
+    return parts
