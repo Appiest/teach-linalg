@@ -6,6 +6,7 @@ import remarkMath from "remark-math";
 import { VectorAnswer } from "@/components/interactive/answers";
 import { TransformExplorer } from "@/components/interactive/transform";
 import { EntryHunt, SpanPainter } from "@/components/interactive/span";
+import { RowReduceExplorer, SolutionCountExplorer } from "@/components/interactive/systems";
 import { AdditionExplorer, CombinationTarget, ScaleExplorer, VectorExplorer } from "@/components/interactive/vectors";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
 import { katexMacros } from "@/lib/katex-macros";
@@ -80,6 +81,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     VectorAnswer,
     SpanPainter,
     EntryHunt,
+    RowReduceExplorer,
+    SolutionCountExplorer,
   };
   return (
     <div className="notes">
