@@ -111,6 +111,11 @@ using `ANIMATION_SOUNDS` in `engine/theme.py`, and `scripts/render_lesson.py` la
   - `glow` (orange) is only for small marks, stamps and highlights, never a large fill.
 - Use `spring` or `spring_soft` for anything that moves into place. Never use bouncy easing.
   Use `smooth` only for continuous sweeps.
+- Never let glyphs melt into each other. `Transform` and `TransformFromCopy` only work between mobjects with the
+  same glyphs, like a copy of the same symbol moving somewhere. When a matrix entry changes value, use
+  `morph_matrix(self, mat, target, ...)` from `engine/theme.py`, which crossfades only the entries that change.
+  When one expression becomes a different expression, use `FadeTransform(old.copy(), new)`. Check these
+  moments in step 5 at 3 frames per second, not only on the contact sheet.
 - Write all on-screen math with `MathTex` and all words with `Tex`. Captions go through `self.say(...)`, one line
   of 11 words or fewer, in sentence case, and never in all caps.
 - Put text on the grid through `backed(...)` so it stays legible.
