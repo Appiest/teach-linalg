@@ -16,6 +16,7 @@ import { CommuteHunt, CompositionExplorer, ProductColumns } from "@/components/i
 import { ElementaryMoves, InverseBuilder } from "@/components/interactive/elementary";
 import { InverseColumnsHunt, SingularHunt, UndoOrder } from "@/components/interactive/inverse";
 import { CoordinateFinder, PolynomialCoordinates } from "@/components/interactive/coordinates";
+import { QuadrantEscape, ShiftedLineTest } from "@/components/interactive/subspaces";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
 import { katexMacros } from "@/lib/katex-macros";
 
@@ -110,6 +111,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     UndoOrder,
     CoordinateFinder,
     PolynomialCoordinates,
+    ShiftedLineTest,
+    QuadrantEscape,
   };
   return (
     <div className="notes">

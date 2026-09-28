@@ -1,0 +1,2 @@
+Day 11 is up! Today is about subspaces, the flat pieces through the origin that adding and scaling can never leave. Watch what happens to the sum when the line slides up by just one unit.
+https://appiest.github.io/teach-linalg/day/11/
