@@ -1,0 +1,143 @@
+Yesterday's dot product can tell when two vectors are perpendicular. Today it finds the point of a line or plane that sits closest to a given vector. You get there by dropping a perpendicular, and the dot product tells you where it lands.
+
+## Projection onto a line
+
+<Pair>
+<Figure src="line-projection" alt="A grid with the teal line L through the green vector u = (1, 1). The yellow vector y = (1, 5) ends above the line. A teal arrow runs from the origin to ŷ = (3, 3) on L, and a pink arrow z runs from ŷ up to the tip of y. An orange square marks the right angle between z and L. A panel reads ŷ = (y·u)/(u·u) u = 6/2 u = (3, 3)." />
+
+Let $L$ be the line through a nonzero vector $\green{\mathbf u}$. The **orthogonal projection** of $\yellow{\mathbf y}$ onto $L$ is the point of $L$ where the perpendicular from the tip of $\yellow{\mathbf y}$ lands:
+
+$$
+\teal{\hat{\mathbf y}} = \operatorname{proj}_L \mathbf y = \frac{\mathbf y\cdot\mathbf u}{\mathbf u\cdot\mathbf u}\,\green{\mathbf u}.
+$$
+
+The vector $\pink{\mathbf z} = \yellow{\mathbf y} - \teal{\hat{\mathbf y}}$ is the **component of $\mathbf y$ orthogonal to $\mathbf u$**.
+</Pair>
+
+The weight comes from asking for $\mathbf z \cdot \mathbf u = 0$. If $\hat{\mathbf y} = c\,\mathbf u$, then $(\mathbf y - c\,\mathbf u)\cdot\mathbf u = \mathbf y\cdot\mathbf u - c\,(\mathbf u\cdot\mathbf u)$, and that is zero only for $c = \frac{\mathbf y\cdot\mathbf u}{\mathbf u\cdot\mathbf u}$. The denominator is $\mathbf u\cdot\mathbf u = \|\mathbf u\|^2$, not $\|\mathbf u\|$. With the square, rescaling $\mathbf u$ leaves $\hat{\mathbf y}$ unchanged, so the projection depends only on the line.
+
+In the video, $\mathbf y = (1, 5)$ and $\mathbf u = (1, 1)$ give $\mathbf y\cdot\mathbf u = 6$ and $\mathbf u\cdot\mathbf u = 2$, so $\hat{\mathbf y} = 3\mathbf u = (3, 3)$ and $\mathbf z = (-2, 2)$. This is Day 17's matrix $P$ at work, since $P\mathbf y = (3, 3)$ too.
+
+<LineFootHunt y={[2, 6]} u={[2, 1]} start={-1} limits={[-2, 3]} />
+
+## Projection onto a subspace
+
+When $W$ has an orthogonal basis, you project onto each basis line separately and add the pieces.
+
+<Definition term="The orthogonal decomposition theorem">
+Let $W$ be a subspace of $\mathbb R^n$. Every $\mathbf y$ in $\mathbb R^n$ can be written in exactly one way as
+
+$$
+\yellow{\mathbf y} = \teal{\hat{\mathbf y}} + \pink{\mathbf z}, \qquad \teal{\hat{\mathbf y}} \in W, \quad \pink{\mathbf z} \in W^\perp.
+$$
+
+If $\{\mathbf u_1, \dots, \mathbf u_p\}$ is any orthogonal basis of $W$, then
+
+$$
+\teal{\hat{\mathbf y}} = \operatorname{proj}_W \mathbf y = \frac{\mathbf y\cdot\mathbf u_1}{\mathbf u_1\cdot\mathbf u_1}\,\mathbf u_1 + \cdots + \frac{\mathbf y\cdot\mathbf u_p}{\mathbf u_p\cdot\mathbf u_p}\,\mathbf u_p.
+$$
+</Definition>
+
+The formula works because dotting $\mathbf z = \mathbf y - \hat{\mathbf y}$ with $\mathbf u_1$ kills every term except the first, since $\mathbf u_1 \cdot \mathbf u_j = 0$ for $j \ne 1$, and the first term cancels $\mathbf y\cdot\mathbf u_1$ exactly. The split is unique because a vector in both $W$ and $W^\perp$ is perpendicular to itself, and only $\mathbf 0$ is. So every orthogonal basis of $W$ gives the same $\hat{\mathbf y}$.
+
+<Pair>
+<Figure src="plane-projection" alt="An oblique 3D view of the teal plane W. The yellow vector y = (2, 2, 3) rises above it, the teal arrow ŷ = (1, 3, 1) lies in it, and the pink arrow z joins them with an orange right-angle mark. Dashed green and red lines run along u1 and u2 inside W. A green arrow reaches 2u1, and a red arrow u2 continues from its tip to ŷ. The panel reads ŷ = 4/2 u1 + 3/3 u2 = (1, 3, 1)." />
+
+Here is the video's example, with $\green{\mathbf u_1} = (1, 1, 0)$, $\red{\mathbf u_2} = (-1, 1, 1)$ and $\yellow{\mathbf y} = (2, 2, 3)$. First check $\mathbf u_1\cdot\mathbf u_2 = -1 + 1 + 0 = 0$.
+
+$$
+\begin{aligned}
+\teal{\hat{\mathbf y}} &= \tfrac{4}{2}\,\green{\mathbf u_1} + \tfrac{3}{3}\,\red{\mathbf u_2} = \begin{bmatrix} 2 \\ 2 \\ 0 \end{bmatrix} + \begin{bmatrix} -1 \\ 1 \\ 1 \end{bmatrix} = \begin{bmatrix} 1 \\ 3 \\ 1 \end{bmatrix} \\
+\pink{\mathbf z} &= \mathbf y - \hat{\mathbf y} = \begin{bmatrix} 1 \\ -1 \\ 2 \end{bmatrix} \\
+\mathbf z\cdot\mathbf u_1 &= 1 - 1 + 0 = 0, \qquad \mathbf z\cdot\mathbf u_2 = -1 - 1 + 2 = 0
+\end{aligned}
+$$
+</Pair>
+
+The last line is the check to do every time. If $\mathbf z$ is not perpendicular to every basis vector, some arithmetic went wrong.
+
+The formula needs the basis to be orthogonal. In the widget below, $W$ is the whole plane $\mathbb R^2$, so the correct projection of $\mathbf y$ is $\mathbf y$ itself. The formula only gets there when the two basis vectors are perpendicular.
+
+<ShadowSumBasis y={[3, 4]} u1={[2, 1]} start={[1, 2]} />
+
+When a basis is not orthogonal, you first straighten it with Gram–Schmidt, which is tomorrow's lesson.
+
+## The closest point
+
+<Definition term="The best approximation theorem">
+Let $W$ be a subspace of $\mathbb R^n$ and let $\hat{\mathbf y} = \operatorname{proj}_W \mathbf y$. Then $\hat{\mathbf y}$ is the closest point in $W$ to $\mathbf y$:
+
+$$
+\|\mathbf y - \hat{\mathbf y}\| < \|\mathbf y - \mathbf v\| \quad \text{for every } \mathbf v \text{ in } W \text{ other than } \hat{\mathbf y}.
+$$
+
+The **distance from $\mathbf y$ to $W$** is $\|\mathbf z\| = \|\mathbf y - \hat{\mathbf y}\|$.
+</Definition>
+
+<Pair>
+<Figure src="closest-point" alt="The same plane W, with y, ŷ and the pink z. A blue point v sits elsewhere in W, joined to y by a blue segment and to ŷ by a dashed teal segment, which makes a right triangle with its right angle at ŷ. The panel reads ‖y − v‖² = ‖z‖² + ‖ŷ − v‖², and below it 11.25 = 6 + 5.25." />
+
+For any $\mathbf v$ in $W$, split the trip from $\mathbf v$ to $\mathbf y$ at $\hat{\mathbf y}$. The piece $\hat{\mathbf y} - \mathbf v$ lies in $W$ and the piece $\mathbf z$ is perpendicular to $W$, so Pythagoras gives
+
+$$
+\blue{\|\mathbf y - \mathbf v\|^2} = \pink{\|\mathbf z\|^2} + \teal{\|\hat{\mathbf y} - \mathbf v\|^2}.
+$$
+
+The last term is positive unless $\mathbf v = \hat{\mathbf y}$. In the example, $\|\mathbf z\|^2 = 6$, so the distance from $\mathbf y$ to $W$ is $\sqrt 6 \approx 2.45$.
+</Pair>
+
+<NearestPlanePoint u1={[1, 1, 0]} u2={[-1, 1, 1]} y={[2, 2, 3]} />
+
+## The projection matrix
+
+If the basis is **orthonormal**, every $\mathbf u_j\cdot\mathbf u_j = 1$ and the denominators disappear. Put the basis vectors in the columns of $U$. The weights $\mathbf y\cdot\mathbf u_j$ are the entries of $U^T\mathbf y$, and multiplying by $U$ combines the columns with those weights, so
+
+$$
+\operatorname{proj}_W \mathbf y = (\mathbf y\cdot\mathbf u_1)\,\mathbf u_1 + \cdots + (\mathbf y\cdot\mathbf u_p)\,\mathbf u_p = UU^T\mathbf y.
+$$
+
+For the line $L$ through $(1, 1)$, the unit vector is $\mathbf u = \tfrac{1}{\sqrt2}(1, 1)$. Then
+
+$$
+U^TU = \begin{bmatrix} 1 \end{bmatrix}, \qquad UU^T = \tfrac12\begin{bmatrix} 1 & 1 \\ 1 & 1 \end{bmatrix},
+$$
+
+and $UU^T$ is exactly Day 17's projection $P$. A tall $U$ with orthonormal columns always has $U^TU = I$, but $UU^T$ is a projection. It equals $I$ only when $U$ is square.
+
+## Practice
+
+<Check>
+Let $\mathbf y = \begin{bmatrix} 1 \\ 7 \end{bmatrix}$ and $\mathbf u = \begin{bmatrix} 3 \\ 1 \end{bmatrix}$. Find the orthogonal projection $\hat{\mathbf y}$ of $\mathbf y$ onto $\operatorname{Span}\{\mathbf u\}$. (Modeled on Lay §6.2, Example 3.)
+
+<VectorAnswer answer={[3, 1]} />
+
+<Answer>
+$$
+\begin{aligned}
+\mathbf y\cdot\mathbf u &= 3 + 7 = 10, \qquad \mathbf u\cdot\mathbf u = 9 + 1 = 10 \\
+\hat{\mathbf y} &= \tfrac{10}{10}\,\mathbf u = \begin{bmatrix} 3 \\ 1 \end{bmatrix}, \qquad \mathbf z = \mathbf y - \hat{\mathbf y} = \begin{bmatrix} -2 \\ 6 \end{bmatrix}
+\end{aligned}
+$$
+
+Check: $\hat{\mathbf y}\cdot\mathbf z = -6 + 6 = 0$. The distance from $\mathbf y$ to the line is $\|\mathbf z\| = \sqrt{40} = 2\sqrt{10}$.
+</Answer>
+</Check>
+
+<Check>
+Let $\mathbf u_1 = \begin{bmatrix} 1 \\ 2 \\ 2 \end{bmatrix}$, $\mathbf u_2 = \begin{bmatrix} 2 \\ 1 \\ -2 \end{bmatrix}$ and $\mathbf y = \begin{bmatrix} 5 \\ 1 \\ 1 \end{bmatrix}$. Find the closest point to $\mathbf y$ in $W = \operatorname{Span}\{\mathbf u_1, \mathbf u_2\}$. (Modeled on Lay §6.3, Exercises 7–10.)
+
+<VectorAnswer answer={[3, 3, 0]} />
+
+<Answer>
+The basis is orthogonal because $\mathbf u_1\cdot\mathbf u_2 = 2 + 2 - 4 = 0$.
+
+$$
+\begin{aligned}
+\hat{\mathbf y} &= \tfrac{9}{9}\,\mathbf u_1 + \tfrac{9}{9}\,\mathbf u_2 = \begin{bmatrix} 3 \\ 3 \\ 0 \end{bmatrix} \\
+\mathbf z &= \mathbf y - \hat{\mathbf y} = \begin{bmatrix} 2 \\ -2 \\ 1 \end{bmatrix}, \qquad \mathbf z\cdot\mathbf u_1 = 2 - 4 + 2 = 0, \qquad \mathbf z\cdot\mathbf u_2 = 4 - 2 - 2 = 0
+\end{aligned}
+$$
+
+By the best approximation theorem, $\hat{\mathbf y} = (3, 3, 0)$ is the closest point, and the distance from $\mathbf y$ to $W$ is $\|\mathbf z\| = 3$.
+</Answer>
+</Check>

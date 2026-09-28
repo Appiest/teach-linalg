@@ -1,0 +1,2 @@
+Day 36 is up! Today you drop a perpendicular from a vector onto a line or a plane, and the spot where it lands is the closest point. In the video, watch the orange right angle as the camera swings around the plane.
+https://appiest.github.io/teach-linalg/day/36/
