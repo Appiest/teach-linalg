@@ -2,7 +2,7 @@ Diagonalization on Day 32 needed a square matrix with enough eigenvectors. The s
 
 ## Singular values
 
-The length of $A\mathbf x$ is controlled by the symmetric matrix $A^TA$, because $\|A\mathbf x\|^2 = (A\mathbf x)^T(A\mathbf x) = \mathbf x^T(A^TA)\mathbf x$. By Day 34, $A^TA$ has an orthonormal basis of eigenvectors $\mathbf v_1, \dots, \mathbf v_n$, ordered so that $\lambda_1 \ge \lambda_2 \ge \dots \ge \lambda_n$. For each one,
+The length of $A\mathbf x$ is controlled by the symmetric matrix $A^TA$, because $\|A\mathbf x\|^2 = (A\mathbf x)^T(A\mathbf x) = \mathbf x^T(A^TA)\mathbf x$. By Day 34, $A^TA$ has an orthonormal basis of eigenvectors $\mathbf v_1, \dots, \mathbf v_n$, ordered so that $\lambda_1 \ge \lambda_2 \ge \dots \ge \lambda_n$. Days 34 and 39 called unit eigenvectors $\mathbf u$. Here they are named $\mathbf v$, because $\mathbf u$ is saved for the output directions. For each one,
 
 $$
 \|A\mathbf v_i\|^2 = \mathbf v_i^T(A^TA)\mathbf v_i = \mathbf v_i^T(\lambda_i \mathbf v_i) = \lambda_i,
@@ -47,7 +47,7 @@ $$
 
 Note that the rows of $V^T$ are the $\mathbf v_i$. A quick check is $|\det A| = 15 = \sigma_1\sigma_2$, which holds for every square matrix because $U$ and $V$ have determinant $\pm1$.
 
-The SVD also hands over the four subspaces of Day 16 and Day 35 with orthonormal bases. The rank of $A$ is the number of nonzero singular values $r$. The vectors $\mathbf u_1, \dots, \mathbf u_r$ span $\operatorname{Col} A$, and $\mathbf v_{r+1}, \dots, \mathbf v_n$ span $\operatorname{Nul} A$ because $A$ sends each of them to $\mathbf 0$.
+The SVD also gives orthonormal bases for the column space (Day 16) and the null space (Day 17). The rank of $A$ is the number of nonzero singular values $r$. The vectors $\mathbf u_1, \dots, \mathbf u_r$ span $\operatorname{Col} A$, and $\mathbf v_{r+1}, \dots, \mathbf v_n$ span $\operatorname{Nul} A$ because $A$ sends each of them to $\mathbf 0$.
 
 ## Rank-k approximation
 

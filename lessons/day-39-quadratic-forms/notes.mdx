@@ -76,7 +76,7 @@ The largest value is the largest eigenvalue, reached at its unit eigenvector. Th
 
 <QuadraticCircleMax matrix={[[5, 2], [2, 2]]} start={[1, -1]} />
 
-In $\mathbb R^n$ this works one eigenvalue at a time. If you also require $\mathbf x$ to be perpendicular to the top unit eigenvector $\mathbf u_1$, then $y_1 = 0$ and the largest term drops out. The maximum becomes the second largest eigenvalue $\lambda_2$, reached at $\mathbf u_2$. Day 40 builds the singular value decomposition on exactly this step.
+In $\mathbb R^n$ this works one eigenvalue at a time. If you also require $\mathbf x$ to be perpendicular to the top unit eigenvector $\mathbf u_1$, then $y_1 = 0$ and the largest term drops out. The maximum becomes the second largest eigenvalue $\lambda_2$, reached at $\mathbf u_2$. Day 40 uses these largest and smallest values to find the singular values.
 
 ## Practice
 
