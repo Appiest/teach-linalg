@@ -8,6 +8,7 @@ import { TransformExplorer } from "@/components/interactive/transform";
 import { EntryHunt, SpanPainter } from "@/components/interactive/span";
 import { RowReduceExplorer, SolutionCountExplorer } from "@/components/interactive/systems";
 import { ColumnSpanCheck, MatrixVectorExplorer } from "@/components/interactive/matrix";
+import { PreimageHunt, ShapeMatch } from "@/components/interactive/transformations";
 import { AdditionExplorer, CombinationTarget, ScaleExplorer, VectorExplorer } from "@/components/interactive/vectors";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
 import { katexMacros } from "@/lib/katex-macros";
@@ -86,6 +87,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     SolutionCountExplorer,
     MatrixVectorExplorer,
     ColumnSpanCheck,
+    PreimageHunt,
+    ShapeMatch,
   };
   return (
     <div className="notes">
