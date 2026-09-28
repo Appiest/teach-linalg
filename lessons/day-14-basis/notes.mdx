@@ -1,4 +1,4 @@
-A spanning set tells you how to build every vector in a space, and an independent set has no vector that the others can already build. A set that does both jobs at once is a basis. Because it has no spare vectors, it gives each vector in the space exactly one list of weights, which the video calls its **address**.
+Day 12 tested whether a set spans a space, and Day 13 tested whether it has a spare vector. Today asks what you gain when a set passes both tests at once. A spanning set tells you how to build every vector in a space, and an independent set has no vector that the others can already build. A set that does both jobs at once is a basis. Because it has no spare vectors, it gives each vector in the space exactly one list of weights, which the video calls its **address**.
 
 ## The definition
 
@@ -29,9 +29,11 @@ $$
 
 This matrix has three pivots, so $(1, 2, 0)$, $(0, 1, 3)$ and $(2, 5, 4)$ form a basis for $\mathbb R^3$.
 
-The count matters too. Fewer than $n$ vectors in $\mathbb R^n$ cannot have a pivot in every row, so they cannot span. More than $n$ vectors in $\mathbb R^n$ are always dependent. So every basis of $\mathbb R^n$ has exactly $n$ vectors.
+The count matters too. Fewer than $n$ vectors in $\mathbb R^n$ cannot have a pivot in every row, so they cannot span. More than $n$ vectors in $\mathbb R^n$ are always dependent. So every basis of $\mathbb R^n$ has exactly $n$ vectors. Day 15 proves that every basis of any space has the same size and names that size the dimension.
 
 ## Trimming a spanning set
+
+Often you start with a set that spans but has spare vectors, and the goal is to remove vectors until what is left is a basis. Day 16 uses this idea to read a basis for a column space straight off a row reduction.
 
 <Definition term="The Spanning Set Theorem">
 Let $S = \{\mathbf v_1, \dots, \mathbf v_p\}$ and $H = \operatorname{Span} S$.
@@ -90,6 +92,8 @@ $$
 Other bases of $\mathbb P_2$ give other addresses. The set $\{1,\ 1 + t,\ 1 + t + t^2\}$ is a basis too, because its coefficient columns $(1, 0, 0)$, $(1, 1, 0)$ and $(1, 1, 1)$ form a triangular matrix with three pivots.
 
 <StaircaseBasis />
+
+Tomorrow the address becomes a coordinate vector, which lets you do any computation in a space with a basis of $n$ vectors as if it were $\mathbb R^n$.
 
 ## Practice
 
