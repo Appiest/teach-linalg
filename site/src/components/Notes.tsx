@@ -39,6 +39,7 @@ import { DiagonalBasisHunt, EigenOrbitSettle, EigenPolynomialHunt } from "@/comp
 import { DiagonalFactorSteps, EigenCoordinateTarget } from "@/components/interactive/diagonalization";
 import { CharacteristicSweep, EigenpairHunt } from "@/components/interactive/characteristic-equation";
 import { SpectralEllipseBuilder, SymmetricPerpendicularHunt } from "@/components/interactive/symmetric-matrices";
+import { DotShadowHunt, RowPerpendicularHunt, UnitCircleScale } from "@/components/interactive/inner-products";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
 import { katexMacros } from "@/lib/katex-macros";
 
@@ -191,6 +192,9 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     EigenpairHunt,
     SymmetricPerpendicularHunt,
     SpectralEllipseBuilder,
+    DotShadowHunt,
+    UnitCircleScale,
+    RowPerpendicularHunt,
   };
   return (
     <div className="notes">
