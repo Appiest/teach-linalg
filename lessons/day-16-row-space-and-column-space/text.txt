@@ -1,0 +1,2 @@
+Day 16 is up! Today is about the column space, which is every output a matrix can make, and how to find a basis for it. Watch a grid fly off the plane and land as a tilted sheet in 3D, then turn edge on to prove it is flat.
+https://appiest.github.io/teach-linalg/day/16/

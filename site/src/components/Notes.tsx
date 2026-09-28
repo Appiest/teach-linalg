@@ -19,6 +19,7 @@ import { CoordinateFinder, PolynomialCoordinates } from "@/components/interactiv
 import { QuadrantEscape, ShiftedLineTest } from "@/components/interactive/subspaces";
 import { AddressHunt, StaircaseBasis, TrimToBasis } from "@/components/interactive/basis";
 import { LiftToPlane, LoopAnywhere, RelationFinder } from "@/components/interactive/independence";
+import { OutputReach, PivotPicker, RowSlide } from "@/components/interactive/column-space";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
 import { katexMacros } from "@/lib/katex-macros";
 
@@ -121,6 +122,9 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     RelationFinder,
     LiftToPlane,
     LoopAnywhere,
+    OutputReach,
+    PivotPicker,
+    RowSlide,
   };
   return (
     <div className="notes">
