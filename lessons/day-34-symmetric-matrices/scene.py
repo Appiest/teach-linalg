@@ -39,6 +39,9 @@ THETA = math.atan2(1, 2)
 B_V1 = (1, -1)
 B_V2 = (1, -2)
 X_START = math.pi / 2
+DAY32_V1 = (2, 1)
+DAY32_V2 = (1, 1)
+PERP_TURN = math.atan2(V2[1], V2[0]) - math.atan2(DAY32_V2[1], DAY32_V2[0])
 
 
 def inverse(rows):
@@ -136,13 +139,27 @@ class Lesson(LessonScene):
     def move_grid(self, rows, run_time=3.0, rate_func=spring_soft):
         self.play(self.live.apply(rows), run_time=run_time, rate_func=rate_func)
 
+    def ask_question(self):
+        day32_lines = VGroup(
+            line_through_origin(self.plane, DAY32_V1, Palette.yellow, 4, dashed=True),
+            line_through_origin(self.plane, DAY32_V2, Palette.blue, 4, dashed=True),
+        )
+        self.play(Create(day32_lines), run_time=1.0)
+        line = self.say(r"On Day 32, eigenvectors could point in any directions.", hold=Timing.read_short)
+        line = self.say(r"Which matrices always get eigenvectors at right angles?", line, hold=0.2)
+        self.play(Rotate(day32_lines[1], angle=PERP_TURN, about_point=self.plane.c2p(0, 0)), run_time=1.4, rate_func=spring_soft)
+        self.wait(Timing.beat)
+        self.play(FadeOut(day32_lines), run_time=0.5)
+        return line
+
     def mirror(self):
+        line = self.ask_question()
         veil = scrim().set_z_index(20)
         self.add(veil)
         original = named("A", number_matrix(A), font_size=60).scale(1.25).move_to(LEFT * 3 + UP * 0.6)
         flipped = named("A^T", number_matrix(A), font_size=60).scale(1.25).move_to(RIGHT * 3 + UP * 0.6)
         VGroup(original, flipped).set_z_index(21)
-        line = self.say(r"A matrix is \emph{symmetric} when it mirrors across its diagonal.", hold=0.2)
+        line = self.say(r"A matrix is \emph{symmetric} when it mirrors across its diagonal.", line, hold=0.2)
         self.play(FadeIn(original, shift=UP * 0.1), run_time=0.8, rate_func=spring_soft)
         entries = original[1].get_entries()
         diagonal = DashedLine(entries[0].get_center() + UL * 0.45, entries[3].get_center() + DR * 0.45, color=Palette.text_muted, stroke_width=3).set_z_index(20.5)
@@ -262,7 +279,8 @@ class Lesson(LessonScene):
         line = self.say(r"A dot product of 0 means the arrows are perpendicular.", line, hold=0.2)
         self.play(FadeIn(rows[1], shift=DOWN * 0.1), run_time=0.8, rate_func=spring_soft)
         self.play(Indicate(self.corner, color=Palette.glow, scale_factor=1.4), run_time=0.8)
-        self.wait(Timing.read_short)
+        self.wait(Timing.beat)
+        line = self.say(r"Day 35 explains why a zero dot product means a right angle.", line)
         self.play(FadeOut(VGroup(plate, rows, self.centerpiece_marks, self.eigen_arrows[0], self.corner, self.eigen_lines)), run_time=0.8)
         self.move_grid(inverse(A), run_time=1.6)
         return line
@@ -330,6 +348,7 @@ class Lesson(LessonScene):
         self.grow_then_follow(self.eigen_arrows, U1, U2)
         self.bring_to_front(panel)
         self.wait(Timing.beat)
+        line = self.say(r"Perpendicular unit eigenvectors make $P^{-1}$ simply $P^T$.", line)
 
         cursor = SurroundingRectangle(formula[4], color=Palette.glow, buff=0.1, stroke_width=3).set_z_index(12)
         line = self.say(r"First $P^T$ turns the eigenvectors onto the axes.", line, hold=0.2)

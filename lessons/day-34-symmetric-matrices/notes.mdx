@@ -1,4 +1,4 @@
-On Day 32 a matrix with enough eigenvectors factored as $A = PDP^{-1}$, but its eigenvectors could point in any directions at all. Today's matrices are the ones that equal their own transpose. For them the eigenvectors always meet at right angles, so $A$ stretches the plane along two perpendicular lines and the unit circle becomes an ellipse whose axes are exactly those eigenvectors.
+On Day 32 a matrix with enough eigenvectors factored as $A = PDP^{-1}$, and yesterday that factorization turned out to be the map written in a basis of its eigenvectors. Those eigenvectors could point in any directions at all, and some matrices do not have enough of them. Today asks which matrices always have a full set of eigenvectors at right angles. The answer is the matrices that equal their own transpose. Such a matrix $A$ stretches the plane along two perpendicular lines and the unit circle becomes an ellipse whose axes are exactly those eigenvectors. The course's last lessons depend on this, because Day 39's quadratic forms and Day 40's matrix $A^TA$ are both symmetric.
 
 <Figure src="circle-to-ellipse" alt="The unit circle in purple-gray and its image under A = [7 2; 2 4], a tilted teal ellipse. A yellow arrow 8u1 runs along the dashed yellow line through (2, 1) to the far end of the ellipse, and a blue arrow 3u2 runs along the dashed blue line through (−1, 2) to its near side. An orange right-angle mark sits at the origin between them." wide />
 
@@ -50,7 +50,7 @@ The matrix $B = \begin{bmatrix} 7 & 2 \\ -4 & 1 \end{bmatrix}$ is not symmetric,
 
 ## Orthogonal diagonalization
 
-A square matrix $P$ is an **orthogonal matrix** when its columns are orthonormal, which means they are unit vectors and each pair is orthogonal. Entry $(i, j)$ of $P^TP$ is the dot product of column $i$ with column $j$, so orthonormal columns give $P^TP = I$ and therefore $P^{-1} = P^T$. For a symmetric matrix, the normalized eigenvectors from different eigenvalues make exactly such a $P$.
+A square matrix $P$ is an **orthogonal matrix** when its columns are orthonormal, which means they are unit vectors and each pair is orthogonal. Entry $(i, j)$ of $P^TP$ is the dot product of column $i$ with column $j$, so orthonormal columns give $P^TP = I$ and therefore $P^{-1} = P^T$. Undoing $P$ then costs a transpose instead of a row reduction. For a symmetric matrix, the normalized eigenvectors from different eigenvalues make exactly such a $P$.
 
 <Definition term="The spectral theorem">
 An $n \times n$ symmetric matrix $A$ has $n$ real eigenvalues, counted with multiplicity. The eigenspace for each eigenvalue has dimension equal to that multiplicity, eigenspaces for different eigenvalues are orthogonal, and $A$ is **orthogonally diagonalizable**:
@@ -68,7 +68,7 @@ Conversely, every matrix of the form $PDP^T$ is symmetric, because $(PDP^T)^T = 
 Reading $PDP^T\mathbf x$ from right to left, $P^T$ turns the eigenvectors onto the axes, $D$ stretches along the axes, and $P$ turns them back. The circle ends up as the same ellipse that $A$ makes in one step.
 </Pair>
 
-Here is a worked example with $A = \begin{bmatrix} 6 & 2 \\ 2 & 3 \end{bmatrix}$:
+To orthogonally diagonalize a symmetric matrix, the goal is a $P$ with orthonormal columns. Find the eigenvalues and eigenvectors as on Day 32, then divide each eigenvector by its length. Here is a worked example with $A = \begin{bmatrix} 6 & 2 \\ 2 & 3 \end{bmatrix}$:
 
 $$
 \begin{aligned}
@@ -85,13 +85,13 @@ When an eigenvalue repeats, row reduction hands back a basis for its eigenspace 
 
 ## Spectral decomposition
 
-Multiplying out $PDP^T$ column by row splits $A$ into one piece per eigenvalue:
+The factorization describes $A$ as three moves, but it can also show what $A$ does along each eigenline separately. Multiplying out $PDP^T$ column by row splits $A$ into one piece per eigenvalue:
 
 $$
 A = \lambda_1\mathbf u_1\mathbf u_1^T + \lambda_2\mathbf u_2\mathbf u_2^T + \cdots + \lambda_n\mathbf u_n\mathbf u_n^T .
 $$
 
-This sum is the **spectral decomposition** of $A$. Each $\mathbf u_j\mathbf u_j^T$ is an $n \times n$ matrix, and $(\mathbf u_j\mathbf u_j^T)\mathbf x = (\mathbf u_j \cdot \mathbf x)\,\mathbf u_j$ is the shadow of $\mathbf x$ on the line through $\mathbf u_j$. So $A\mathbf x$ is built by taking the shadow of $\mathbf x$ on each eigenline and stretching it by that eigenvalue. Note the order: $\mathbf u^T\mathbf u$ is the number $1$, while $\mathbf u\mathbf u^T$ is a matrix.
+This sum is the **spectral decomposition** of $A$. Each $\mathbf u_j\mathbf u_j^T$ is an $n \times n$ matrix, and $(\mathbf u_j\mathbf u_j^T)\mathbf x = (\mathbf u_j \cdot \mathbf x)\,\mathbf u_j$ is the shadow of $\mathbf x$ on the line through $\mathbf u_j$. Day 36 calls these shadows orthogonal projections and builds the same kind of matrix for any subspace. So $A\mathbf x$ is built by taking the shadow of $\mathbf x$ on each eigenline and stretching it by that eigenvalue. Note the order: $\mathbf u^T\mathbf u$ is the number $1$, while $\mathbf u\mathbf u^T$ is a matrix.
 
 <Pair>
 <Figure src="shadow-pieces" alt="The unit circle with x = (0, 1) drawn as a short purple-gray arrow. Dashed drops run from its tip to its shadows on the yellow and blue eigenlines. A yellow arrow 8 times the first shadow and a blue arrow 3 times the second meet tip to tail at Ax = (2, 4), drawn in teal, which lies on the ellipse." />
@@ -110,6 +110,8 @@ $$
 $$
 
 Setting both eigenvalues to $1$ gives $\mathbf u_1\mathbf u_1^T + \mathbf u_2\mathbf u_2^T = PP^T = I$, since the two shadows of $\mathbf x$ add back to $\mathbf x$.
+
+Tomorrow goes back to the dot product this lesson borrowed and explains why a zero dot product means a right angle, and Day 39 uses $A = PDP^T$ to find the principal axes of a quadratic form.
 
 ## Practice
 
