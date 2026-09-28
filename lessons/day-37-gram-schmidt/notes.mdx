@@ -1,11 +1,11 @@
-Day 36 showed how to project a vector onto a subspace when you already have an orthogonal basis for it. Today turns that around. Starting from any basis, the **Gram–Schmidt process** builds an orthogonal one by projecting each new vector onto the ones already built and keeping only the part that sticks out.
+Day 36 showed how to project a vector onto a subspace, but its formula only works when the basis of that subspace is orthogonal. The bases you are handed, such as the columns of a matrix, almost never are, so today asks how to repair one. Starting from any basis, the **Gram–Schmidt process** builds an orthogonal basis for the same subspace by projecting each new vector onto the ones already built and keeping only the part that sticks out.
 
 ## Subtracting the shadow
 
 <Pair>
 <Figure src="second-step" alt="Oblique 3D view. Yellow v1 = (1, 1, 0) lies on the floor with a faint yellow line through it. The faded blue arrow x2 = (1, 0, 1) drops a dashed line onto that line, landing at the tip of a purple-gray bar labelled one half v1. A solid blue v2 rises from the origin with a small orange right-angle corner between it and v1, and a dashed blue segment joins the tips of x2 and v2." />
 
-Keep $\yellow{\mathbf v_1} = \mathbf x_1$. The **shadow** of $\blue{\mathbf x_2}$ on the line through $\yellow{\mathbf v_1}$ is its projection $\frac{\mathbf x_2\cdot\mathbf v_1}{\mathbf v_1\cdot\mathbf v_1}\,\yellow{\mathbf v_1}$. That shadow is the part of $\blue{\mathbf x_2}$ that leans along $\yellow{\mathbf v_1}$, so removing it leaves a vector at a right angle to $\yellow{\mathbf v_1}$:
+The goal is a new basis with the same span in which every pair of vectors meets at a right angle, built one vector at a time. Keep $\yellow{\mathbf v_1} = \mathbf x_1$. The **shadow** of $\blue{\mathbf x_2}$ on the line through $\yellow{\mathbf v_1}$ is its projection $\frac{\mathbf x_2\cdot\mathbf v_1}{\mathbf v_1\cdot\mathbf v_1}\,\yellow{\mathbf v_1}$. That shadow is the part of $\blue{\mathbf x_2}$ that leans along $\yellow{\mathbf v_1}$, so removing it leaves a vector at a right angle to $\yellow{\mathbf v_1}$:
 
 $$
 \blue{\mathbf v_2} = \mathbf x_2 - \frac{\mathbf x_2\cdot\mathbf v_1}{\mathbf v_1\cdot\mathbf v_1}\,\yellow{\mathbf v_1}.
@@ -55,7 +55,7 @@ You may rescale any $\mathbf v_k$ to clear fractions before the next step, for e
 
 ## Normalizing
 
-A set is **orthonormal** when its vectors are orthogonal and each has length 1. Dividing each $\mathbf v_k$ by its length keeps every right angle and turns an orthogonal basis into an orthonormal one:
+A set is **orthonormal** when its vectors are orthogonal and each has length 1. Unit vectors make every denominator $\mathbf u\cdot\mathbf u$ in Day 36's formula equal to 1, so each projection weight becomes a single dot product. Dividing each $\mathbf v_k$ by its length keeps every right angle and turns an orthogonal basis into an orthonormal one:
 
 $$
 \mathbf u_k = \frac{\mathbf v_k}{\lVert\mathbf v_k\rVert}
@@ -71,7 +71,7 @@ Normalize last. If you normalize along the way, every later projection carries s
 
 ## QR factorization
 
-Put the $\mathbf x$'s into the columns of $A$ and the $\mathbf u$'s into the columns of $Q$. The span property says $\mathbf x_k$ is a combination of $\mathbf u_1, \dots, \mathbf u_k$ only, so the weights that rebuild $\mathbf x_k$ have zeros below position $k$. Those weight columns form an upper triangular $R$ with $A = QR$.
+The goal of this section is to record all of Gram–Schmidt's work in two matrices you can reuse. $Q$ holds the orthonormal basis, and $R$ holds the weights that rebuild the original vectors from it. Put the $\mathbf x$'s into the columns of $A$ and the $\mathbf u$'s into the columns of $Q$. The span property says $\mathbf x_k$ is a combination of $\mathbf u_1, \dots, \mathbf u_k$ only, so the weights that rebuild $\mathbf x_k$ have zeros below position $k$. Those weight columns form an upper triangular $R$ with $A = QR$.
 
 <Pair>
 <Figure src="qr-weights" alt="Three equations: x1 = r11 u1, x2 = r12 u1 + r22 u2, x3 = r13 u1 + r23 u2 + r33 u3. Beside them, R is a 3 by 3 matrix with the r entries on and above the diagonal and orange zeros below it." />
@@ -92,6 +92,8 @@ The diagonal holds the lengths $\lVert\mathbf v_1\rVert = \sqrt2$, $\lVert\mathb
 <QrWeightSliders u1={[0.8, 0.6]} u2={[-0.6, 0.8]} x1={[4, 3]} x2={[2.5, 5]} />
 
 On a computer, rounding errors pile up in the plain process, so software uses a reordered version called modified Gram–Schmidt, or builds $Q$ from reflections instead.
+
+Tomorrow, on Day 38, you find the $\mathbf x$ that comes closest to solving a system with no exact solution. Day 38 solves it with the normal equations and then shows how $A = QR$ shortens them to the triangular system $R\hat{\mathbf x} = Q^T\mathbf b$. Day 40 uses Gram–Schmidt once more to finish an orthonormal basis for the singular value decomposition.
 
 ## Practice
 

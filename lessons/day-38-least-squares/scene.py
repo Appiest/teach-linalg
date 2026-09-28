@@ -247,8 +247,11 @@ class Lesson(LessonScene):
                 for x, y, dot, direction in zip(XS, YS, self.dots, (LEFT, UP, RIGHT))
             ]
         )
-        line = self.say(r"Three measurements, and we want one line through them.", hold=0.2)
+        line = self.say(r"When $A\mathbf x = \mathbf b$ has no solution, what is the best $\mathbf x$?", hold=0.2)
         self.play(LaggedStart(*[GrowFromCenter(dot) for dot in self.dots], lag_ratio=0.3), run_time=1.2)
+        self.wait(Timing.beat)
+        line = self.say(r"Day 36's projection finds closest points, so it can answer this.", line, hold=Timing.read_short)
+        line = self.say(r"Three measurements, and we want one line through them.", line, hold=0.2)
         self.play(FadeIn(self.coordinates), run_time=0.6)
         self.wait(Timing.read_short)
 
@@ -309,6 +312,7 @@ class Lesson(LessonScene):
 
     def stack_the_heights(self, line):
         self.space = always_redraw(lambda: floor_and_axes(self.view.project, SPACE_REACH))
+        line = self.say(r"Rewrite the fit so that projection can find the best line.", line, hold=Timing.read_short)
         line = self.say(r"Now stack the three heights into one vector $\mathbf y$.", line, hold=0.2)
         heights = self.system[3].copy()
         self.remove(self.system)
@@ -369,6 +373,7 @@ class Lesson(LessonScene):
         return line
 
     def normal_equations(self, line):
+        line = self.say(r"Now turn that right angle into equations we can solve.", line, hold=Timing.read_short)
         self.play(FadeOut(VGroup(self.plane, self.dots, self.line, self.misses, self.squares, self.readout)), run_time=0.8)
         self.remove(self.line, self.misses, self.squares, self.readout)
         first = MathTex(r"\mathbf a_1", r"\cdot", r"(\mathbf y - X\hat{\boldsymbol\beta})", "=", "0", color=Palette.text, font_size=52)
@@ -421,7 +426,10 @@ class Lesson(LessonScene):
         line = self.say(r"Any system $A\mathbf x = \mathbf b$ with no solution works the same way.", line, hold=0.2)
         self.play(FadeOut(self.derivation), run_time=0.6)
         self.play(FadeIn(general, shift=UP * 0.2), Create(frame), run_time=1.0, rate_func=spring_soft)
-        self.wait(Timing.read_long)
+        self.wait(Timing.read_short)
+        line = self.say(r"Day 40 builds the SVD from the symmetric matrix $A^TA$.", line, hold=0.2)
+        self.play(Indicate(general[0], color=Palette.glow, scale_factor=1.15), run_time=1.0)
+        self.wait(Timing.read_short)
         return line
 
 
