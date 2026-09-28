@@ -1,0 +1,2 @@
+Day 19 is up! Today ties the last two weeks together: for a square matrix, independent columns, spanning columns, full pivots, a zero null space and having an inverse are all the same fact. Watch one pivot count light up a whole web of statements, then one doubled column switch them all off.
+https://appiest.github.io/teach-linalg/day/19/
