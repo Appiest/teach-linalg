@@ -51,7 +51,20 @@ def has_audio(video: Path) -> bool:
     return bool(probe.stdout.strip())
 
 
+MAX_VIDEO_BYTES = 12_000_000
+CRF_STEPS = (23, 25, 27, 29)
+
+
 def encode_with_bed(rendered: Path, target: Path) -> None:
+    """Encode at the best quality that keeps the video under the size limit."""
+    for crf in CRF_STEPS:
+        encode_at(rendered, target, crf)
+        if target.stat().st_size <= MAX_VIDEO_BYTES:
+            return
+    print(f"Warning: {target.name} is still over {MAX_VIDEO_BYTES / 1e6:.0f} MB at CRF {CRF_STEPS[-1]}.")
+
+
+def encode_at(rendered: Path, target: Path, crf: int) -> None:
     """Lay the ambient bed under the scene's effects, fade it at both ends, and level the mix."""
     duration = video_duration(rendered)
     bed = ROOT / "engine" / "sounds" / "ambient.mp3"
@@ -62,7 +75,7 @@ def encode_with_bed(rendered: Path, target: Path) -> None:
         mix = f"{pad};[bed]anull[mix]"
     subprocess.run(
         ["ffmpeg", "-loglevel", "error", "-y", "-i", str(rendered), "-i", str(bed), "-filter_complex", mix,
-         "-map", "0:v", "-map", "[mix]", "-c:v", "libx264", "-crf", "23", "-preset", "slow", "-pix_fmt", "yuv420p",
+         "-map", "0:v", "-map", "[mix]", "-c:v", "libx264", "-crf", str(crf), "-preset", "slow", "-pix_fmt", "yuv420p",
          "-c:a", "aac", "-b:a", "128k", "-ar", "48000", "-movflags", "+faststart", str(target)],
         check=True,
     )
