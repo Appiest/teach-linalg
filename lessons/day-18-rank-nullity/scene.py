@@ -202,9 +202,13 @@ class Lesson(LessonScene):
         self.axes = always_redraw(lambda: floor_and_axes(self.project, SPACE_REACH))
         self.cube = always_redraw(lambda: cube_lines(self.project, self.squash_amount.get_value()))
         self.null = always_redraw(lambda: null_line(self.project, self.crush.get_value()))
-        line = self.say(r"Day 16's matrix has three columns, so it acts on $\mathbb R^3$.", hold=0.2)
+        line = self.say(r"Days 16 and 17 gave every matrix two subspaces.", hold=0.2)
         self.play(Write(self.cube_matrix), run_time=1.2)
+        self.wait(Timing.beat)
+        line = self.say(r"Today we ask how their sizes are related.", line, hold=0.2)
         self.play(Create(self.axes), run_time=1.0)
+        self.wait(Timing.beat)
+        line = self.say(r"Day 16's matrix has three columns, so it acts on $\mathbb R^3$.", line, hold=0.2)
         self.play(Create(self.cube, lag_ratio=0.03), run_time=1.6)
         self.play(Create(self.null), run_time=0.8)
         self.play(self.view.turn_to(FACE_ON), run_time=2.2, rate_func=smooth)
@@ -270,7 +274,7 @@ class Lesson(LessonScene):
         line = self.say(r"Here is a bigger matrix with five columns.", line, hold=0.2)
         self.play(Write(VGroup(self.big_name, self.big)), run_time=1.6)
         self.wait(Timing.beat)
-        line = self.say(r"Row reduce it to find the pivots.", line, hold=0.2)
+        line = self.say(r"Row reduce until the pivots show, since they decide both counts.", line, hold=0.2)
         operation = None
         for tex, rows in TALLY_STEPS:
             target = numbered_matrix(rows, h_buff=1.05).scale(BIG_SCALE).move_to(self.big)
@@ -418,6 +422,7 @@ class Lesson(LessonScene):
         self.add(shorter[0])
         self.play(Create(cross), seventh.animate.set_opacity(0.3), run_time=0.8)
         self.wait(Timing.read_long)
+        line = self.say(r"Tomorrow this count ties together the tests for an inverse.", line, hold=Timing.read_short)
         return line
 
 

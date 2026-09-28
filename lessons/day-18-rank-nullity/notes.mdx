@@ -1,4 +1,4 @@
-Day 16 found a basis for the column space from the pivot columns, and Day 17 found a basis for the null space from the free variables. Today counts both bases. Every column of a matrix is either a pivot column or a free column, so the two counts always add up to the number of columns.
+Day 16 found a basis for the column space from the pivot columns, and Day 17 found a basis for the null space from the free variables. Those two spaces answer the two questions about $A\mathbf x = \mathbf b$: which right sides have a solution, and how many solutions each one has. Today asks how their sizes are related, and the answer is a count. Every column of a matrix is either a pivot column or a free column, so the two counts always add up to the number of columns. That lets you learn about one space from the other, often without solving anything.
 
 ## Rank and nullity
 
@@ -32,7 +32,7 @@ $$
 $$
 </Definition>
 
-The proof is a count. Row reduce $A$ to an echelon form. A column with a pivot adds one vector to the basis of $\operatorname{Col}A$. A column without a pivot gives a free variable, and each free variable adds one vector to the basis of $\operatorname{Nul}A$. No column can be both or neither, so the two counts add up to $n$. Only the number of free columns matters for the null space, not the entries in those columns.
+The proof is a count, and row reduction is only there to make the pivots visible, so an echelon form is enough and the reduced form is not needed. Row reduce $A$ to an echelon form. A column with a pivot adds one vector to the basis of $\operatorname{Col}A$. A column without a pivot gives a free variable, and each free variable adds one vector to the basis of $\operatorname{Nul}A$. No column can be both or neither, so the two counts add up to $n$. Only the number of free columns matters for the null space, not the entries in those columns.
 
 <Pair>
 <Figure src="tally" alt="The echelon form with rows (1, 0, 2, 0, 1), (0, 1, −1, 0, 2), (0, 0, 0, 1, −1) and a zero row. Columns 1, 2 and 4 are teal with orange boxes on their pivots, columns 3 and 5 are pink, and x3 and x5 above them are pink. A bar of three teal cells and two pink cells is braced as 3 and 2 above and n = 5 below." />
@@ -48,7 +48,7 @@ $$
 
 <RankTally rows={[[2, 1, -1, 0, 3, 1], [0, 0, 3, 1, -2, 0], [0, 0, 0, 0, 4, 2]]} pivots={[0, 2, 4]} />
 
-The theorem also answers questions about a matrix you never see. A $7 \times 9$ matrix with a two-dimensional null space has rank $9 - 2 = 7$. Be careful to subtract from the number of **columns**, not rows.
+The theorem also answers questions about a matrix you never see. A $7 \times 9$ matrix with a two-dimensional null space has rank $9 - 2 = 7$. Be careful to subtract from the number of **columns**, not rows. Day 19 uses this equation for square matrices to show that crushing nothing and reaching every output are the same condition, and Day 24 restates it for any linear map.
 
 ## Row rank equals column rank
 
@@ -73,6 +73,8 @@ An $m \times n$ matrix has at most one pivot in each row and at most one in each
 <PivotBudget rows={4} columns={6} />
 
 This is why a $6 \times 9$ matrix cannot have a two-dimensional null space. Its rank would have to be $9 - 2 = 7$, but six rows allow only six pivots.
+
+Day 31 uses the same count to measure eigenspaces, since the dimension of $\operatorname{Nul}(A - \lambda I)$ is $n - \operatorname{rank}(A - \lambda I)$. Tomorrow, on Day 19, this count helps show that a long list of tests for square matrices all decide whether $A$ is invertible.
 
 ## Practice
 
