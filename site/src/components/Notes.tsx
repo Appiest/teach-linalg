@@ -9,6 +9,7 @@ import { EntryHunt, SpanPainter } from "@/components/interactive/span";
 import { RowReduceExplorer, SolutionCountExplorer } from "@/components/interactive/systems";
 import { ColumnSpanCheck, MatrixVectorExplorer } from "@/components/interactive/matrix";
 import { AdditionExplorer, CombinationTarget, ScaleExplorer, VectorExplorer } from "@/components/interactive/vectors";
+import { ElementaryMoves, InverseBuilder } from "@/components/interactive/elementary";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
 import { katexMacros } from "@/lib/katex-macros";
 
@@ -86,6 +87,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     SolutionCountExplorer,
     MatrixVectorExplorer,
     ColumnSpanCheck,
+    ElementaryMoves,
+    InverseBuilder,
   };
   return (
     <div className="notes">

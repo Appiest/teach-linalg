@@ -415,3 +415,60 @@ def scrim(opacity: float = 0.96):
         fill_opacity=opacity,
         stroke_width=0,
     )
+
+
+class LiveMatrix:
+    """A 2x2 matrix held in ValueTrackers, so a grid and its basis arrows can follow it while it changes."""
+
+    def __init__(self, entries=((1, 0), (0, 1))):
+        self.trackers = [[ValueTracker(float(value)) for value in row] for row in entries]
+
+    def value(self) -> np.ndarray:
+        return np.array([[tracker.get_value() for tracker in row] for row in self.trackers])
+
+    def column(self, index: int):
+        current = self.value()
+        return (current[0, index], current[1, index])
+
+    def move_to(self, target) -> list:
+        """Animations that carry every entry to `target`. Entries move linearly, so the grid moves like ApplyMatrix."""
+        return [
+            tracker.animate.set_value(float(value))
+            for tracker_row, value_row in zip(self.trackers, target)
+            for tracker, value in zip(tracker_row, value_row)
+        ]
+
+    def left_multiply(self, factor) -> list:
+        """Animations that apply `factor` after the current matrix, as a row operation does."""
+        return self.move_to(np.array(factor, dtype=float) @ self.value())
+
+
+def live_grid(plane: NumberPlane, live: LiveMatrix, color: str = Palette.blue, opacity: float = 0.55, reach: int = 20):
+    """The image of the integer grid under `live`, redrawn every frame and clipped to the plane."""
+    from manim import always_redraw
+
+    return always_redraw(lambda: skewed_grid(plane, live.column(0), live.column(1), reach=reach, color=color, opacity=opacity))
+
+
+def live_basis_arrows(plane: NumberPlane, live: LiveMatrix) -> VGroup:
+    """Green and red arrows to where i-hat and j-hat land under `live`: its two columns."""
+    from manim import always_redraw
+
+    return VGroup(
+        always_redraw(lambda: vector_arrow(live.column(0), Palette.i_hat, plane)),
+        always_redraw(lambda: vector_arrow(live.column(1), Palette.j_hat, plane)),
+    )
+
+
+def augmented_block(rows, split: int, color: str = Palette.text, **kwargs) -> Matrix:
+    """A matrix with a vertical bar after column `split`, like [A | I]. Entries may be numbers or TeX strings."""
+    mat = matrix([[str(entry) for entry in row] for row in rows], **kwargs)
+    mat.set_color(color)
+    columns = mat.get_columns()
+    bar_x = (columns[split - 1].get_right()[0] + columns[split].get_left()[0]) / 2
+    brackets = mat.get_brackets()
+    top, bottom = brackets.get_top()[1] - 0.12, brackets.get_bottom()[1] + 0.12
+    bar = Line([bar_x, top, 0], [bar_x, bottom, 0], color=color, stroke_width=2.5)
+    mat.add(bar)
+    mat.bar = bar
+    return mat
