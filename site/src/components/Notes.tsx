@@ -36,6 +36,7 @@ import { CofactorLinePicker, MultipleAreaScale, ReplacementShear } from "@/compo
 import { IterateSwing, ShiftToSingular, TraceCurveMatch } from "@/components/interactive/eigenvalue-properties";
 import { JordanChainBuilder, MultiplicityGapSlider, NullPowerClimb } from "@/components/interactive/generalized-eigenvectors";
 import { DiagonalBasisHunt, EigenOrbitSettle, EigenPolynomialHunt } from "@/components/interactive/diagonalizing-transformations";
+import { DiagonalFactorSteps, EigenCoordinateTarget } from "@/components/interactive/diagonalization";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
 import { katexMacros } from "@/lib/katex-macros";
 
@@ -182,6 +183,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     DiagonalBasisHunt,
     EigenOrbitSettle,
     EigenPolynomialHunt,
+    EigenCoordinateTarget,
+    DiagonalFactorSteps,
   };
   return (
     <div className="notes">

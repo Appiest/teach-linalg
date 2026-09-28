@@ -1,0 +1,127 @@
+On Day 28 the matrix $A = \begin{bmatrix} 3 & -2 \\ 1 & 0 \end{bmatrix}$ kept two lines, doubling the yellow one through $\yellow{\mathbf v_1} = (2, 1)$ and leaving the blue one through $\blue{\mathbf v_2} = (1, 1)$ alone. Today those two eigenvectors become the axes of a new grid. On that grid $A$ does nothing except stretch each axis, and that picture turns into a factorization $A = PDP^{-1}$ that makes $A$ easy to understand and easy to raise to powers.
+
+<Figure src="three-moves" alt="Four small grids. Start: the slanted purple-gray eigen-grid with the yellow v1 = (2, 1), the blue v2 = (1, 1), the gray vector u = (0, 1) and an orange ring at Au = (−2, 0). After P inverse: the grid is the ordinary square grid, yellow and blue lie on the axes, and u sits at (−1, 2). After D: the grid is stretched to twice its width, and u sits at (−2, 2). After P: the grid is slanted again with the yellow arrow at (4, 2), and u lands inside the ring at (−2, 0)." wide />
+
+## The eigenbasis
+
+Because $\yellow{\mathbf v_1}$ and $\blue{\mathbf v_2}$ are independent, every $\mathbf x$ in $\mathbb R^2$ has one address $\mathbf x = c_1\yellow{\mathbf v_1} + c_2\blue{\mathbf v_2}$. Applying $A$ and using linearity gives
+
+$$
+A\mathbf x = c_1 A\yellow{\mathbf v_1} + c_2 A\blue{\mathbf v_2} = \glow{2}\,c_1\yellow{\mathbf v_1} + \glow{1}\,c_2\blue{\mathbf v_2}.
+$$
+
+In these eigen-coordinates $A$ multiplies the first coordinate by $2$ and the second by $1$. No coordinate leaks into the other, so $A$ acts like the diagonal matrix $\begin{bmatrix} 2 & 0 \\ 0 & 1 \end{bmatrix}$.
+
+<Pair>
+<Figure src="eigen-grid-stretch" alt="Two copies of the slanted eigen-grid of v1 = (2, 1) and v2 = (1, 1) with one shaded cell. After A acts, the yellow arrow reaches (4, 2), the blue arrow is unchanged, and the shaded cell is twice as long along the yellow line." />
+
+A basis of $\mathbb R^n$ made of eigenvectors of $A$ is called an **eigenvector basis**, or eigenbasis. The picture shows why it is the right grid for $A$. Every yellow step doubles and every blue step stays the same length, so each grid cell stretches along one axis and nothing turns.
+</Pair>
+
+<EigenCoordinateTarget v1={[2, 1]} v2={[1, 1]} lambdas={[2, 1]} target={[-1, 1]} start={[1, 0]} />
+
+## The diagonalization theorem
+
+Put the eigenvectors into the columns of $P = [\,\yellow{\mathbf v_1}\ \blue{\mathbf v_2}\,]$ and the eigenvalues, in the same order, on the diagonal of $D$. Multiplying $A$ into $P$ one column at a time gives
+
+$$
+AP = [\,A\yellow{\mathbf v_1}\ \ A\blue{\mathbf v_2}\,] = [\,\glow{2}\yellow{\mathbf v_1}\ \ \glow{1}\blue{\mathbf v_2}\,] = [\,\yellow{\mathbf v_1}\ \ \blue{\mathbf v_2}\,]\begin{bmatrix} \glow{2} & 0 \\ 0 & \glow{1} \end{bmatrix} = PD.
+$$
+
+The columns of $P$ are independent, so $P$ is invertible, and multiplying $AP = PD$ on the right by $P^{-1}$ gives $A = PDP^{-1}$. Read right to left, the factorization is three moves: $P^{-1}$ converts $\mathbf x$ into eigen-coordinates, $D$ stretches each coordinate, and $P$ converts back.
+
+<Definition term="The diagonalization theorem">
+A square matrix $A$ is **diagonalizable** if $A = PDP^{-1}$ for some invertible $P$ and diagonal $D$. An $n \times n$ matrix $A$ is diagonalizable exactly when it has $n$ linearly independent eigenvectors. In that case the columns of $P$ are those eigenvectors, and the diagonal entries of $D$ are their eigenvalues in the same order.
+</Definition>
+
+The argument above runs in both directions. If $AP = PD$ with $D$ diagonal, column $j$ says $A\mathbf p_j = d_j\mathbf p_j$, so the columns of any such $P$ must be eigenvectors.
+
+<DiagonalFactorSteps v1={[2, 1]} v2={[1, 1]} lambdas={[2, 1]} u={[0, 1]} />
+
+<Pair>
+<Figure src="enough-eigenvectors" alt="Left: the matrix A = [3 −2; 1 0] with its yellow and blue eigen-lines and the slanted eigen-grid they make. Right: the shear S = [1 1; 0 1] with a single yellow eigen-line along the x-axis. A gray arrow (0, 2) is carried to the teal arrow (2, 2), off its dashed line." />
+
+Not every matrix has enough eigenvectors. The shear $S$ from Day 31 has eigenvalue $1$ twice, but its only eigenvectors lie on the $x$-axis. One line cannot supply two independent columns for $P$, so $S$ is not diagonalizable.
+
+Distinct eigenvalues always avoid this problem. Eigenvectors for different eigenvalues are independent (Day 30), so an $n \times n$ matrix with $n$ distinct eigenvalues is diagonalizable. The converse fails: $2I$ has only one eigenvalue and is already diagonal.
+</Pair>
+
+## Diagonalizing step by step
+
+For a repeated eigenvalue, count: $A$ is diagonalizable exactly when the eigenspace dimensions add up to $n$. Here is the full recipe with $A = \begin{bmatrix} 4 & 1 \\ 2 & 3 \end{bmatrix}$. Find the eigenvalues, find a basis for each eigenspace, and build $P$ and $D$ in matching order:
+
+$$
+\begin{aligned}
+\det(A - \lambda I) &= (4 - \lambda)(3 - \lambda) - 2 = \lambda^2 - 7\lambda + 10 = (\lambda - 5)(\lambda - 2) \\
+A - 5I &= \begin{bmatrix} -1 & 1 \\ 2 & -2 \end{bmatrix} \;\Rightarrow\; \yellow{\mathbf v_1} = \begin{bmatrix} 1 \\ 1 \end{bmatrix} \\
+A - 2I &= \begin{bmatrix} 2 & 1 \\ 2 & 1 \end{bmatrix} \;\Rightarrow\; \blue{\mathbf v_2} = \begin{bmatrix} 1 \\ -2 \end{bmatrix} \\
+P &= \begin{bmatrix} \yellow{1} & \blue{1} \\ \yellow{1} & \blue{-2} \end{bmatrix}, \qquad D = \begin{bmatrix} \glow{5} & 0 \\ 0 & \glow{2} \end{bmatrix} \\
+AP &= \begin{bmatrix} 5 & 2 \\ 5 & -4 \end{bmatrix} = PD.
+\end{aligned}
+$$
+
+Checking $AP = PD$ avoids computing $P^{-1}$. It proves nothing unless $P$ is invertible, and here $\det P = -3 \ne 0$.
+
+## Powers of A
+
+Squaring $A = PDP^{-1}$ puts $P^{-1}P = I$ in the middle, and the same cancellation happens for every power:
+
+$$
+A^2 = PD(P^{-1}P)DP^{-1} = PD^2P^{-1}, \qquad A^k = PD^kP^{-1}.
+$$
+
+$$
+D^k = \begin{bmatrix} \glow{d_1^k} & 0 \\ 0 & \glow{d_2^k} \end{bmatrix}
+$$
+
+Only $D$ takes the power, and a diagonal matrix raises each diagonal entry separately. For the video's matrix, $P = \begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}$ and $P^{-1} = \begin{bmatrix} 1 & -1 \\ -1 & 2 \end{bmatrix}$, so
+
+$$
+A^k = \begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}\begin{bmatrix} 2^k & 0 \\ 0 & 1 \end{bmatrix}\begin{bmatrix} 1 & -1 \\ -1 & 2 \end{bmatrix} = \begin{bmatrix} 2^{k+1} - 1 & 2 - 2^{k+1} \\ 2^k - 1 & 2 - 2^k \end{bmatrix}.
+$$
+
+At $k = 1$ this gives back $A$, and at $k = 10$ it gives $\begin{bmatrix} 2047 & -2046 \\ 1023 & -1022 \end{bmatrix}$ without nine separate multiplications.
+
+## Practice
+
+<Check>
+Diagonalize $A = \begin{bmatrix} 5 & -2 \\ 1 & 2 \end{bmatrix}$ and use $A = PDP^{-1}$ to compute $A^3$. Enter its four entries. (Modeled on Lay §5.3, Practice Problem 1.)
+
+<VectorAnswer answer={[101, -74, 37, -10]} labels={["top left", "top right", "bottom left", "bottom right"]} />
+
+<Answer>
+The characteristic polynomial is $\lambda^2 - 7\lambda + 12 = (\lambda - 4)(\lambda - 3)$. Then $A - 4I = \begin{bmatrix} 1 & -2 \\ 1 & -2 \end{bmatrix}$ gives $(2, 1)$, and $A - 3I = \begin{bmatrix} 2 & -2 \\ 1 & -1 \end{bmatrix}$ gives $(1, 1)$. That is the same $P$ as in the video:
+
+$$
+\begin{aligned}
+A^3 &= \begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}\begin{bmatrix} 64 & 0 \\ 0 & 27 \end{bmatrix}\begin{bmatrix} 1 & -1 \\ -1 & 2 \end{bmatrix}
+= \begin{bmatrix} 128 & 27 \\ 64 & 27 \end{bmatrix}\begin{bmatrix} 1 & -1 \\ -1 & 2 \end{bmatrix} \\
+&= \begin{bmatrix} 101 & -74 \\ 37 & -10 \end{bmatrix}.
+\end{aligned}
+$$
+</Answer>
+</Check>
+
+<Check>
+Both $B = \begin{bmatrix} 2 & 0 & 0 \\ 1 & 2 & 0 \\ 0 & 0 & 3 \end{bmatrix}$ and $C = \begin{bmatrix} 2 & 0 & 0 \\ 0 & 2 & 0 \\ 1 & 0 & 3 \end{bmatrix}$ have eigenvalues $2, 2, 3$. Find the dimension of the eigenspace for $\lambda = 2$ in each, and decide which matrix is diagonalizable. (Modeled on Lay §5.3, Exercises 13–20.)
+
+<VectorAnswer answer={[1, 2]} labels={["for B", "for C"]} />
+
+<Answer>
+$$
+B - 2I = \begin{bmatrix} 0 & 0 & 0 \\ 1 & 0 & 0 \\ 0 & 0 & 1 \end{bmatrix}, \qquad C - 2I = \begin{bmatrix} 0 & 0 & 0 \\ 0 & 0 & 0 \\ 1 & 0 & 1 \end{bmatrix}.
+$$
+
+$B - 2I$ has two pivots, so its null space is the line through $(0, 1, 0)$. $B$ has at most $1 + 1 = 2$ independent eigenvectors and is not diagonalizable. $C - 2I$ has one pivot, so its null space is a plane with basis $(0, 1, 0), (-1, 0, 1)$. Adding an eigenvector for $3$ gives three, so $C$ is diagonalizable with $P = \begin{bmatrix} 0 & -1 & 0 \\ 1 & 0 & 0 \\ 0 & 1 & 1 \end{bmatrix}$ and $D = \begin{bmatrix} 2 & 0 & 0 \\ 0 & 2 & 0 \\ 0 & 0 & 3 \end{bmatrix}$.
+</Answer>
+</Check>
+
+<Check>
+A $5 \times 5$ matrix has three different eigenvalues. The eigenspace for the first has dimension $2$, and the eigenspace for the second also has dimension $2$. How many independent eigenvectors does it have in total? (Modeled on Lay §5.3, Exercise 25.)
+
+<VectorAnswer answer={[5]} labels={["how many"]} />
+
+<Answer>
+The third eigenvalue has at least one eigenvector, so the total is at least $2 + 2 + 1 = 5$. It cannot exceed $5$ in $\mathbb R^5$, so it is exactly $5$ and the matrix is diagonalizable. You never needed to know the entries.
+</Answer>
+</Check>
