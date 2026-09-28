@@ -9,6 +9,7 @@ import { EntryHunt, SpanPainter } from "@/components/interactive/span";
 import { RowReduceExplorer, SolutionCountExplorer } from "@/components/interactive/systems";
 import { ColumnSpanCheck, MatrixVectorExplorer } from "@/components/interactive/matrix";
 import { PreimageHunt, ShapeMatch } from "@/components/interactive/transformations";
+import { ClosureHunt, PolynomialCombiner } from "@/components/interactive/vector-spaces";
 import { AdditionExplorer, CombinationTarget, ScaleExplorer, VectorExplorer } from "@/components/interactive/vectors";
 import { CommuteHunt, CompositionExplorer, ProductColumns } from "@/components/interactive/product";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
@@ -93,6 +94,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     CompositionExplorer,
     ProductColumns,
     CommuteHunt,
+    PolynomialCombiner,
+    ClosureHunt,
   };
   return (
     <div className="notes">
