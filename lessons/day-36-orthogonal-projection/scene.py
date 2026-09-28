@@ -201,7 +201,11 @@ class Lesson(LessonScene):
         self.play(Create(self.line_l), run_time=1.0)
         self.play(GrowArrow(self.u_arrow), FadeIn(self.flat_labels[:2]), run_time=0.9, rate_func=spring_soft)
         self.play(GrowArrow(self.y_arrow), FadeIn(self.flat_labels[2]), run_time=1.1, rate_func=spring_soft)
-        self.wait(Timing.read_short)
+        self.wait(Timing.beat)
+        line = self.say(r"Yesterday the dot product told us when vectors are perpendicular.", line, hold=Timing.beat)
+        line = self.say(r"Today we find the point of $L$ closest to $\mathbf y$.", line, hold=0.2)
+        self.play(Indicate(self.line_l, color=Palette.glow, scale_factor=1.0), run_time=1.0)
+        line = self.say(r"Day 38 needs this when $A\mathbf x = \mathbf b$ has no solution.", line, hold=Timing.read_short)
         return line
 
     def drop_to_line(self, plane, line):
@@ -313,6 +317,7 @@ class Lesson(LessonScene):
         numbers.shift(RIGHT * (formula[1].get_left()[0] - numbers[0].get_left()[0]))
         self.panel_rows = VGroup(givens, formula, numbers)
         self.panel_plate = plate_for(self.panel_rows, padding=0.3)
+        line = self.say(r"We want a formula for $\hat{\mathbf y}$, not just a picture.", line, hold=Timing.beat)
         line = self.say(r"Give $W$ a basis whose vectors are perpendicular.", line, hold=0.2)
         self.play(FadeIn(self.panel_plate), FadeIn(givens), run_time=0.8)
         self.play(Create(axis1), Create(axis2), run_time=1.0)
@@ -338,7 +343,10 @@ class Lesson(LessonScene):
         self.add(moved)
         self.play(FadeOut(drops), moved.animate.shift(self.project(first_shadow) - self.project((0, 0, 0))), run_time=1.5, rate_func=spring)
         self.play(Flash(self.project(YHAT), color=Palette.glow, line_length=0.25, flash_radius=0.4), run_time=0.8)
-        self.wait(Timing.read_short)
+        self.wait(Timing.beat)
+        line = self.say(r"Day 37 builds a perpendicular basis from any basis.", line, hold=0.2)
+        self.play(Indicate(VGroup(u1_arrow, u2_arrow), color=Palette.glow, scale_factor=1.0), run_time=1.0)
+        self.wait(Timing.beat)
         self.play(FadeOut(VGroup(shadow1, shadow2, moved)), run_time=0.6)
         self.remove(drops)
         self.basis_parts = VGroup(axis1, axis2, u1_arrow, u2_arrow)

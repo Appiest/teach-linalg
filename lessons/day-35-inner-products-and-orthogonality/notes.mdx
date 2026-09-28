@@ -1,4 +1,6 @@
-Day 1's vectors $\yellow{\mathbf v} = (3, 2)$ and $\blue{\mathbf w} = (-1, 2)$ come back today to explain a tool Day 34 borrowed early. The **dot product** (or **inner product**) of two vectors in $\mathbb R^n$ multiplies matching entries and adds the results, so it turns two vectors into a single number:
+Everything in the course so far has been built from adding and scaling vectors, and neither operation can tell you how long a vector is or whether two vectors are perpendicular. The rest of the course needs both. On Day 38 an equation $A\mathbf x = \mathbf b$ will have no solution, and you will look for the $\mathbf x$ that brings $A\mathbf x$ as close to $\mathbf b$ as possible, which is a question about distance. On Day 40 every matrix will turn out to send one set of perpendicular directions to another. Both rest on a single number, the dot product, which Day 34 borrowed early to show that a symmetric matrix has perpendicular eigenvectors. Today Day 1's vectors $\yellow{\mathbf v} = (3, 2)$ and $\blue{\mathbf w} = (-1, 2)$ come back to show what that number measures.
+
+The **dot product** (or **inner product**) of two vectors in $\mathbb R^n$ multiplies matching entries and adds the results, so it turns two vectors into a single number:
 
 $$
 \yellow{\mathbf v}\cdot\blue{\mathbf w} = \mathbf v^T\mathbf w = v_1w_1 + v_2w_2 + \cdots + v_nw_n, \qquad \yellow{\begin{bmatrix} 3 \\ 2 \end{bmatrix}}\cdot\blue{\begin{bmatrix} -1 \\ 2 \end{bmatrix}} = (3)(-1) + (2)(2) = 1.
@@ -57,7 +59,7 @@ These agree only when $\mathbf v\cdot\mathbf w = 0$, and the second line then be
 
 ## Orthogonal complements
 
-If $W$ is a subspace of $\mathbb R^n$, its **orthogonal complement** $W^\perp$ is the set of all vectors orthogonal to every vector in $W$. It is a subspace too, and to test a vector you only need to check it against a spanning set of $W$. The row–column rule for $A\mathbf x$ says that entry $i$ of $A\mathbf x$ is (row $i$)$\,\cdot\,\mathbf x$, so $A\mathbf x = \mathbf 0$ says exactly that $\mathbf x$ is orthogonal to every row:
+If $W$ is a subspace of $\mathbb R^n$, its **orthogonal complement** $W^\perp$ is the set of all vectors orthogonal to every vector in $W$. Day 36 splits every vector into a piece in $W$ and a piece in $W^\perp$, and Day 38 finds its best approximate solutions by asking for an error that lies in $(\operatorname{Col}A)^\perp$. The complement is a subspace too, and to test a vector you only need to check it against a spanning set of $W$. The row–column rule for $A\mathbf x$ says that entry $i$ of $A\mathbf x$ is (row $i$)$\,\cdot\,\mathbf x$, so $A\mathbf x = \mathbf 0$ says exactly that $\mathbf x$ is orthogonal to every row:
 
 $$
 (\operatorname{Row}A)^\perp = \operatorname{Nul}A \qquad\text{and}\qquad (\operatorname{Col}A)^\perp = \operatorname{Nul}A^T .
@@ -68,7 +70,7 @@ $$
 <Pair>
 <Figure src="complement" alt="The yellow line W through v = (3, 2) and the blue line W-perp through u = (−2, 3) cross at the origin with an orange right-angle mark. Beside the grid, A = [3 2] and Nul A = (Row A)-perp." />
 
-So finding $W^\perp$ takes one null-space computation. Put a spanning set of $W$ in the rows of a matrix and solve $A\mathbf x = \mathbf 0$. With the rank theorem, $\dim W + \dim W^\perp = n$. In the video, $W$ is the line through $\yellow{\mathbf v}$, the matrix is $A = [\,3\ \ 2\,]$, and $W^\perp$ is the line through $\blue{\mathbf u} = (-2, 3)$, so $1 + 1 = 2$.
+The goal is a basis for $W^\perp$, and the identity $(\operatorname{Row}A)^\perp = \operatorname{Nul}A$ turns that into a problem you already know how to solve. Finding $W^\perp$ takes one null-space computation. Put a spanning set of $W$ in the rows of a matrix and solve $A\mathbf x = \mathbf 0$. With the rank theorem, $\dim W + \dim W^\perp = n$. In the video, $W$ is the line through $\yellow{\mathbf v}$, the matrix is $A = [\,3\ \ 2\,]$, and $W^\perp$ is the line through $\blue{\mathbf u} = (-2, 3)$, so $1 + 1 = 2$.
 </Pair>
 
 Here is the same idea in $\mathbb R^4$, where no picture can help. Take $W$ to be spanned by the rows of $A = \begin{bmatrix} 1 & 2 & -1 & 3 \\ 2 & 4 & 1 & 0 \end{bmatrix}$:
@@ -90,16 +92,18 @@ A set $\{\mathbf u_1, \dots, \mathbf u_p\}$ is an **orthogonal set** when every 
 <Pair>
 <Figure src="orthogonal-weights" alt="Yellow v = (3, 2) and blue u = (−2, 3) with an orange right-angle mark between them. A blue arrow labelled −u runs from the tip of v down to the tip of teal y = v − u = (5, −1). Beside the grid, c1 = (y·v)/(v·v) = 13/13 = 1 and c2 = (y·u)/(u·u) = −13/13 = −1." />
 
-The same trick finds coordinates. If $\{\mathbf u_1, \dots, \mathbf u_p\}$ is an orthogonal basis for $W$ and $\mathbf y$ is in $W$, dotting $\mathbf y = c_1\mathbf u_1 + \cdots + c_p\mathbf u_p$ with $\mathbf u_j$ leaves only the $j$th term:
+The same trick finds coordinates, and the goal here is to get the weights without row reducing anything. If $\{\mathbf u_1, \dots, \mathbf u_p\}$ is an orthogonal basis for $W$ and $\mathbf y$ is in $W$, dotting $\mathbf y = c_1\mathbf u_1 + \cdots + c_p\mathbf u_p$ with $\mathbf u_j$ leaves only the $j$th term:
 
 $$
 c_j = \frac{\mathbf y\cdot\mathbf u_j}{\mathbf u_j\cdot\mathbf u_j}.
 $$
 
-For $\teal{\mathbf y} = (5, -1)$ in the basis $\{\yellow{\mathbf v}, \blue{\mathbf u}\}$, the weights are $13/13 = 1$ and $-13/13 = -1$, with no row reduction.
+For $\teal{\mathbf y} = (5, -1)$ in the basis $\{\yellow{\mathbf v}, \blue{\mathbf u}\}$, the weights are $13/13 = 1$ and $-13/13 = -1$, with no row reduction. Day 36's projection formula is a sum of exactly these ratios, and Day 37's Gram–Schmidt process exists to turn any basis into an orthogonal one so that the ratios apply.
 </Pair>
 
-An **orthonormal set** is an orthogonal set of unit vectors, such as $\{\yellow{\mathbf v}/\sqrt{13},\ \blue{\mathbf u}/\sqrt{13}\}$. A matrix $U$ has orthonormal columns exactly when $U^TU = I$, because entry $(i, j)$ of $U^TU$ is the dot product of columns $i$ and $j$. Such a matrix keeps lengths and dot products, since $(U\mathbf x)\cdot(U\mathbf y) = \mathbf x^TU^TU\mathbf y = \mathbf x\cdot\mathbf y$. A square matrix with orthonormal columns is called an **orthogonal matrix**, and its inverse is $U^T$.
+An **orthonormal set** is an orthogonal set of unit vectors, such as $\{\yellow{\mathbf v}/\sqrt{13},\ \blue{\mathbf u}/\sqrt{13}\}$. A matrix $U$ has orthonormal columns exactly when $U^TU = I$, because entry $(i, j)$ of $U^TU$ is the dot product of columns $i$ and $j$. Such a matrix keeps lengths and dot products, since $(U\mathbf x)\cdot(U\mathbf y) = \mathbf x^TU^TU\mathbf y = \mathbf x\cdot\mathbf y$. A square matrix with orthonormal columns is called an **orthogonal matrix**, and its inverse is $U^T$. Day 34's matrix $P$ of unit eigenvectors was one, and on Day 40 the singular value decomposition writes every matrix using two of them.
+
+Tomorrow the ratio $\frac{\mathbf y\cdot\mathbf u}{\mathbf u\cdot\mathbf u}$ gets a picture of its own, because it finds the point of a line or plane that sits closest to $\mathbf y$.
 
 ## Practice
 

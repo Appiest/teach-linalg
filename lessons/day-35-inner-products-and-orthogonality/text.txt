@@ -1,2 +1,2 @@
-Day 35 is up! Day 34 borrowed the dot product, and today you see what it really measures: a single number that tells you how much two vectors point the same way, and it's zero exactly when they're perpendicular. In the video, watch the shadow one arrow casts on the other as it spins, and notice what happens to the number when the shadow flips backward.
+Day 35 is up! Adding and scaling vectors never told you how long a vector is or whether two meet at a right angle, and today the dot product measures both. In the video, watch the shadow one arrow casts on the other as it spins, and notice what happens to the number when the shadow flips backward.
 https://appiest.github.io/teach-linalg/day/35/
