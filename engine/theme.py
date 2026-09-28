@@ -415,3 +415,53 @@ def scrim(opacity: float = 0.96):
         fill_opacity=opacity,
         stroke_width=0,
     )
+
+
+def rotation_2d(angle: float) -> np.ndarray:
+    cosine, sine = math.cos(angle), math.sin(angle)
+    return np.array([[cosine, -sine], [sine, cosine]])
+
+
+class LiveTransform:
+    """A 2x2 matrix that changes one move at a time, for grids and arrows drawn with always_redraw.
+
+    Each move left-multiplies the current matrix. A plain move follows (1 - s)I + sE, so undoing A walks the straight
+    path from A back to I. A rotation turns through its angle so the grid never shrinks on the way.
+    """
+
+    def __init__(self, start=None):
+        self.base = np.eye(2) if start is None else np.array(start, dtype=float)
+        self.step = lambda s: np.eye(2)
+        self.progress = ValueTracker(0)
+
+    @property
+    def value(self) -> np.ndarray:
+        return self.step(self.progress.get_value()) @ self.base
+
+    def apply(self, move):
+        self.base = self.value
+        target = np.array(move, dtype=float)
+        self.step = lambda s: (1 - s) * np.eye(2) + s * target
+        self.progress.set_value(0)
+        return self.progress.animate.set_value(1)
+
+    def rotate(self, angle: float):
+        self.base = self.value
+        self.step = lambda s: rotation_2d(s * angle)
+        self.progress.set_value(0)
+        return self.progress.animate.set_value(1)
+
+    def point(self, coords) -> np.ndarray:
+        return self.value @ np.asarray(coords[:2], dtype=float)
+
+    def reach(self, plane: NumberPlane, cap: int = 40) -> int:
+        """How many grid steps the transformed grid needs so it still covers the visible plane."""
+        corners = [(x, y) for x in plane.x_range[:2] for y in plane.y_range[:2]]
+        if abs(np.linalg.det(self.value)) < 1e-3:
+            return cap
+        inverse = np.linalg.inv(self.value)
+        return min(cap, int(max(np.abs(inverse @ np.array(corner)).max() for corner in corners)) + 2)
+
+    def grid(self, plane: NumberPlane, color: str = Palette.grid, opacity: float = 0.85, cap: int = 40) -> VGroup:
+        first, second = self.value[:, 0], self.value[:, 1]
+        return skewed_grid(plane, first, second, reach=self.reach(plane, cap), color=color, opacity=opacity)
