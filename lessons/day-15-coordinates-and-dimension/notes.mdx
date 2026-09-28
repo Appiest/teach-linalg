@@ -1,4 +1,4 @@
-Yesterday a basis gave every vector exactly one way to be written as a combination. Today those weights get a name, the coordinates, and they turn any space with a basis of $n$ vectors into a copy of $\mathbb{R}^n$. That translation also proves that every basis of a space has the same size, which lets us talk about its dimension.
+Yesterday a basis gave every vector exactly one way to be written as a combination. Because those weights are unique, they can stand in for the vector, and today they get a name, the coordinates. Coordinates turn any space with a basis of $n$ vectors into a copy of $\mathbb{R}^n$, so row reduction and every other tool you have for columns now works on polynomials too. That translation also answers the next question a basis raises, whether two bases of one space can have different sizes. They cannot, and their shared size is the dimension of the space.
 
 ## Coordinates
 
@@ -21,10 +21,10 @@ $$
 \mathbf x = P_{\mathcal B}\,[\mathbf x]_{\mathcal B}, \qquad [\mathbf x]_{\mathcal B} = P_{\mathcal B}^{-1}\,\mathbf x .
 $$
 
-$P_{\mathcal B}$ is invertible because its columns form a basis of $\mathbb R^n$.
+$P_{\mathcal B}$ is invertible because its columns form a basis of $\mathbb R^n$. On Day 22 this matrix returns as the change-of-basis matrix from $\mathcal B$ to the standard basis.
 </Pair>
 
-Here is the backward direction worked out. Take $\mathcal B = \left\{\green{\begin{bmatrix} 1 \\ 2 \end{bmatrix}}, \red{\begin{bmatrix} 3 \\ 5 \end{bmatrix}}\right\}$ and $\mathbf x = \yellow{\begin{bmatrix} 4 \\ 9 \end{bmatrix}}$. Row reduce $[\,\mathbf b_1\ \mathbf b_2 \mid \mathbf x\,]$:
+Going backward from $\mathbf x$ to $[\mathbf x]_{\mathcal B}$ means solving $P_{\mathcal B}\,\mathbf c = \mathbf x$ for the weights $\mathbf c$. The row reduction below aims for a reduced form whose last column holds those weights. Take $\mathcal B = \left\{\green{\begin{bmatrix} 1 \\ 2 \end{bmatrix}}, \red{\begin{bmatrix} 3 \\ 5 \end{bmatrix}}\right\}$ and $\mathbf x = \yellow{\begin{bmatrix} 4 \\ 9 \end{bmatrix}}$. Row reduce $[\,\mathbf b_1\ \mathbf b_2 \mid \mathbf x\,]$:
 
 $$
 \begin{aligned}
@@ -42,6 +42,8 @@ The widget uses the basis from the video. The dashed path walks $c_1$ steps alon
 
 ## The coordinate map
 
+Coordinates matter most in spaces whose vectors are not columns, because they let column tools such as row reduction work there.
+
 The standard basis of $\mathbb P_2$ is $\{1, t, t^2\}$, so a polynomial's coordinates are just its coefficients. The **coordinate map** $\mathbf p \mapsto [\mathbf p]_{\mathcal B}$ turns each polynomial into a column in $\mathbb R^3$, and each column turns back into exactly one polynomial.
 
 <Figure src="polynomial-to-column" alt="Left: the curves p(t) = 2 − t + 3t² in yellow, q(t) = 1 + 4t − t² in blue and their sum 3 + 3t + 2t² in teal. An arrow labelled p maps to [p]_B points from the formulas to the columns (2, −1, 3) + (1, 4, −1) = (3, 3, 2). Right: the same three columns drawn as arrows in 3D with axes 1, t and t², with q placed tip to tail on p." wide />
@@ -56,13 +58,15 @@ $$
 A linear transformation from $V$ onto $W$ that is also one-to-one is an **isomorphism**. For any basis $\mathcal B$ of $V$ with $n$ vectors, the coordinate map $\mathbf x \mapsto [\mathbf x]_{\mathcal B}$ is an isomorphism from $V$ onto $\mathbb R^n$.
 </Definition>
 
-An isomorphism copies every vector-space fact across. A set of polynomials is independent exactly when its coordinate columns are, and it spans $\mathbb P_2$ exactly when its columns span $\mathbb R^3$. For example, the columns $(2, -1, 3)$, $(1, 4, -1)$ and $(3, 3, 2)$ are dependent because the third is the sum of the first two, so $\yellow{\mathbf p}$, $\blue{\mathbf q}$ and $\teal{3 + 3t + 2t^2}$ are dependent too.
+An isomorphism copies every vector-space fact across. A set of polynomials is independent exactly when its coordinate columns are, and it spans $\mathbb P_2$ exactly when its columns span $\mathbb R^3$. For example, the columns $(2, -1, 3)$, $(1, 4, -1)$ and $(3, 3, 2)$ are dependent because the third is the sum of the first two, so $\yellow{\mathbf p}$, $\blue{\mathbf q}$ and $\teal{3 + 3t + 2t^2}$ are dependent too. Day 21 uses the same map to turn a linear map on polynomials, such as $d/dt$ on $\mathbb P_2$, into a matrix.
 
 Coordinates in a basis other than the standard one are not the coefficients. The widget uses the basis $\mathcal B = \{1,\ 1 + t,\ (1 + t)^2\}$, and matching the curve means solving for the weights.
 
 <PolynomialCoordinates basis={[[1, 0, 0], [1, 1, 0], [1, 2, 1]]} names={["1", "(1 + t)", "(1 + t)^2"]} target={[2, -1, 3]} />
 
 ## Dimension
+
+The goal of this section is to show that every basis of a space has the same size, so that the size describes the space itself rather than a choice of basis.
 
 <Pair>
 <Figure src="third-vector" alt="The basis grid of b1 in green and b2 in red. The blue vector w = (3, −1) is reached by one step of b1 and one backward step of b2, and the equation w = b1 − b2 is shown at the top right." />
@@ -133,3 +137,5 @@ Find the dimension of $H = \{(a - b + 2c,\ 2a - 2b + 4c,\ b + c) : a, b, c \in \
 $H$ is spanned by $\mathbf v_1 = (1, 2, 0)$, $\mathbf v_2 = (-1, -2, 1)$ and $\mathbf v_3 = (2, 4, 1)$. The third is redundant because $3\mathbf v_1 + \mathbf v_2 = (2, 4, 1) = \mathbf v_3$. The first two are not multiples of each other, so $\{\mathbf v_1, \mathbf v_2\}$ is a basis and $\dim H = 2$. Three parameters gave only two dimensions.
 </Answer>
 </Check>
+
+Tomorrow, on Day 16, you find bases for the column space and row space that every matrix carries, and on Day 18 the dimension of the column space becomes the rank of the matrix.

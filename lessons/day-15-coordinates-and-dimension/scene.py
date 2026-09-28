@@ -330,10 +330,11 @@ class Lesson(LessonScene):
     def basis_in_the_plane(self, plane):
         self.plane = plane
         self.b_arrows, self.b_labels = basis_pair(plane, B1, B2)
-        line = self.say(r"A basis gives every vector in the plane one address.", hold=0.2)
+        line = self.say(r"Yesterday a basis gave every vector one address.", hold=0.2)
         self.play(GrowArrow(self.b_arrows[0]), FadeIn(self.b_labels[0]), run_time=1.0, rate_func=spring_soft)
         self.play(GrowArrow(self.b_arrows[1]), FadeIn(self.b_labels[1]), run_time=1.0, rate_func=spring_soft)
         self.wait(Timing.beat)
+        line = self.say(r"Today we write that address as numbers, then count the basis.", line, hold=Timing.read_short)
         self.grid = basis_grid(plane, B1, B2)
         line = self.say(r"Here $\mathbf b_1$ and $\mathbf b_2$ make a basis $\mathcal B$.", line, hold=0.2)
         self.play(plane.animate.set_opacity(0.35), run_time=0.6)
@@ -371,6 +372,7 @@ class Lesson(LessonScene):
             run_time=1.0,
         )
         self.wait(Timing.read_short)
+        line = self.say(r"Day 22 reuses $P_{\mathcal B}$ to switch between two bases.", line, hold=Timing.read_short)
 
         start = augmented([[2, -1, 3], [1, 2, 4]]).scale(0.82)
         finish = augmented([[1, 0, 2], [0, 1, 1]]).scale(0.82)
@@ -379,7 +381,7 @@ class Lesson(LessonScene):
         row.next_to(product, DOWN, buff=0.35).align_to(np.array([6.9, 0, 0]), RIGHT)
         finish.move_to(row[3])
         reduced = start.copy()
-        line = self.say(r"To find the coordinates, row reduce $[\,\mathbf b_1\ \mathbf b_2 \mid \mathbf x\,]$.", line, hold=0.2)
+        line = self.say(r"Row reduce $[\,\mathbf b_1\ \mathbf b_2 \mid \mathbf x\,]$ until the last column shows the weights.", line, hold=0.2)
         self.play(FadeIn(row.background_rectangle), FadeIn(start), FadeIn(reduce_sign), run_time=0.8)
         self.add(reduced)
         self.play(reduced.animate.move_to(finish), run_time=1.0, rate_func=spring_soft)
@@ -387,6 +389,7 @@ class Lesson(LessonScene):
         last = VGroup(reduced.get_columns()[2])
         self.play(Indicate(last, color=Palette.glow, scale_factor=1.15), run_time=0.9)
         self.wait(Timing.read_short)
+        line = self.say(r"Coordinates let column tools work in any space with a basis.", line, hold=Timing.read_short)
         return line
 
     def polynomial_to_column(self, line):
@@ -497,6 +500,7 @@ class Lesson(LessonScene):
         line = self.say(r"A map like that is called an isomorphism.", line, hold=0.2)
         self.play(FadeIn(word, shift=UP * 0.15), run_time=0.8, rate_func=spring_soft)
         self.wait(Timing.read_short)
+        line = self.say(r"Day 21 uses this map to write $d/dt$ as a matrix.", line, hold=Timing.read_short)
         self.play(FadeOut(VGroup(polynomials, columns, link, name, word)), run_time=0.7)
         return line
 
@@ -583,6 +587,7 @@ class Lesson(LessonScene):
             self.wait(Timing.read_short)
         self.play(rows.animate.set_opacity(1), run_time=0.6)
         self.wait(Timing.beat)
+        line = self.say(r"Next, Day 16 finds bases for a matrix's column and row spaces.", line, hold=Timing.read_short)
         return line
 
 

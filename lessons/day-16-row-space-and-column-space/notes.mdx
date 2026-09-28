@@ -1,4 +1,4 @@
-On Day 4 you saw that $A\mathbf x$ is a combination of the columns of $A$, with the entries of $\mathbf x$ as weights. Today collects every possible output into one set. That set is a subspace, it has a basis you can read straight off a row reduction, and a second subspace built from the rows comes along with it.
+On Day 4 you saw that $A\mathbf x$ is a combination of the columns of $A$, with the entries of $\mathbf x$ as weights. Today collects every possible output into one set, because that set decides which equations $A\mathbf x = \mathbf b$ have a solution. Days 14 and 15 gave you bases and dimension for any subspace, so now you can describe that set exactly. It is a subspace, it has a basis you can read straight off a row reduction, and a second subspace built from the rows comes along with it.
 
 ## Column space
 
@@ -32,7 +32,7 @@ Any set written with free parameters is a column space in disguise. For example,
 
 ## Testing a vector
 
-A vector $\mathbf b$ is in $\operatorname{Col}A$ exactly when some $\mathbf x$ gives $A\mathbf x = \mathbf b$, which means the system with augmented matrix $[\,A \ \ \mathbf b\,]$ is consistent. Row reduce it and look for a row of the form $[\,0 \ \cdots \ 0 \mid \text{nonzero}\,]$.
+This test answers a yes-or-no question about one vector, so the row reduction only needs to reach an echelon form that shows whether the system is consistent. A vector $\mathbf b$ is in $\operatorname{Col}A$ exactly when some $\mathbf x$ gives $A\mathbf x = \mathbf b$, which means the system with augmented matrix $[\,A \ \ \mathbf b\,]$ is consistent. Row reduce it and look for a row of the form $[\,0 \ \cdots \ 0 \mid \text{nonzero}\,]$.
 
 <Pair>
 <Figure src="column-space" alt="The tilted plane Col A with columns a1 in green and a2 in red. The yellow point b = (1, −1, 0) lies on the plane. The yellow point c = (1, 1, 0) lies below it, with an orange dashed line rising from c up to the plane." />
@@ -50,6 +50,8 @@ The first system is consistent with $\mathbf x = (1, -1)$, so $\mathbf b \in \op
 Row reducing $A$ alone answers a different question. If $A$ has a pivot in every row, then $A\mathbf x = \mathbf b$ is consistent for every $\mathbf b$, and $\operatorname{Col}A$ is all of $\mathbb R^m$. The $3 \times 2$ matrix above has only two pivots for three rows, so its column space is a plane and not all of $\mathbb R^3$.
 
 ## Basis for the column space
+
+A matrix can have more columns than its column space needs, the way Day 14's spanning sets could. The goal here is to keep just enough columns of $A$ to span $\operatorname{Col}A$, with none to spare.
 
 <Definition term="Pivot columns form a basis">
 The pivot columns of $A$ form a basis for $\operatorname{Col}A$. Find the pivot positions from any echelon form, then take those columns **from $A$ itself**.
@@ -71,6 +73,8 @@ $$
 The columns of the reduced form all end in $0$, so they lie on the floor $z = 0$ and are not even in $\operatorname{Col}A$. That is why the basis vectors must come from $A$.
 </Pair>
 
+The number of pivot columns is therefore $\dim\operatorname{Col}A$, and Day 18 names that number the rank of $A$.
+
 <PivotPicker matrix={[[1, -2, 1, 0], [2, -4, 3, 1], [-1, 2, 0, 1]]} reduced={[[1, -2, 0, -1], [0, 0, 1, 1], [0, 0, 0, 0]]} pivots={[0, 2]} />
 
 ## Row space
@@ -79,7 +83,7 @@ The columns of the reduced form all end in $0$, so they lie on the floor $z = 0$
 The **row space** of an $m \times n$ matrix $A$, written $\operatorname{Row}A$, is the span of its rows, read as vectors in $\mathbb R^n$. It equals $\operatorname{Col}A^T$. If $A$ row reduces to $B$, then $\operatorname{Row}A = \operatorname{Row}B$, and when $B$ is in echelon form its nonzero rows are a basis for $\operatorname{Row}A$.
 </Definition>
 
-Each row operation replaces a row by a combination of rows, so every new row stays inside the old row space. Every row operation can also be undone by another one, so the old rows are combinations of the new ones, and the span cannot shrink either. In an echelon form, each nonzero row has its leading entry in a column where every row below it has a zero, so no nonzero row is a combination of the others, and they are independent.
+On Day 18 the row space turns out to have the same dimension as the column space. Each row operation replaces a row by a combination of rows, so every new row stays inside the old row space. Every row operation can also be undone by another one, so the old rows are combinations of the new ones, and the span cannot shrink either. In an echelon form, each nonzero row has its leading entry in a column where every row below it has a zero, so no nonzero row is a combination of the others, and they are independent.
 
 <Pair>
 <Figure src="row-space" alt="A tilted teal plane labelled Row B with the green row r1 = (1, 0, 1). A faded red arrow shows the old row r2 = (1, 1, 2), and an orange dashed path inside the plane leads to the bright red arrow r2 − r1 = (0, 1, 1)." />
@@ -144,3 +148,5 @@ The set $W = \{(a + 2b,\ -a,\ 3b) : a, b \in \mathbb R\}$ is $\operatorname{Col}
 The second entry gives $-a = -2$, so $a = 2$. The third gives $3b = 6$, so $b = 2$. Then the first entry is $a + 2b = 6$, which matches, so $(6, -2, 6) \in W$. The same steps show that $(4, -2, 6)$ is not in $W$, because $a = 2$ and $b = 2$ force a first entry of $6$ instead of $4$.
 </Answer>
 </Check>
+
+Tomorrow, on Day 17, you ask which inputs $A$ sends to $\mathbf 0$, and those inputs form a third subspace called the null space.
