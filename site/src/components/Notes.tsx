@@ -18,6 +18,7 @@ import { InverseColumnsHunt, SingularHunt, UndoOrder } from "@/components/intera
 import { CoordinateFinder, PolynomialCoordinates } from "@/components/interactive/coordinates";
 import { QuadrantEscape, ShiftedLineTest } from "@/components/interactive/subspaces";
 import { AddressHunt, StaircaseBasis, TrimToBasis } from "@/components/interactive/basis";
+import { LiftToPlane, LoopAnywhere, RelationFinder } from "@/components/interactive/independence";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
 import { katexMacros } from "@/lib/katex-macros";
 
@@ -117,6 +118,9 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     TrimToBasis,
     AddressHunt,
     StaircaseBasis,
+    RelationFinder,
+    LiftToPlane,
+    LoopAnywhere,
   };
   return (
     <div className="notes">

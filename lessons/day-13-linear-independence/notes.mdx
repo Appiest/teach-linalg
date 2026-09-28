@@ -1,0 +1,120 @@
+Yesterday a vector already in the span added nothing to it. Today gives that redundancy a precise test. A set of vectors is independent when none of them is redundant, and the test asks whether some weights other than zero can combine the vectors into $\mathbf 0$.
+
+## The definition
+
+Day 2's $\pink{\mathbf b} = (5, 6)$ equals $2\yellow{\mathbf v} + \blue{\mathbf w}$. If you walk along $2\yellow{\mathbf v}$, then $\blue{\mathbf w}$, then $-\pink{\mathbf b}$, you end where you started. That closed loop is the equation $2\yellow{\mathbf v} + \blue{\mathbf w} - \pink{\mathbf b} = \mathbf 0$.
+
+<Pair>
+<Figure src="closed-loop" alt="The plane with faded arrows v = (3, 2) and w = (−1, 2). A yellow arrow 2v runs from the origin to (6, 4), a blue arrow w runs from there to (5, 6), and a pink arrow −b runs from (5, 6) back to the origin, closing a triangle." />
+
+<Definition term="Linear independence">
+A set $\{\mathbf v_1, \dots, \mathbf v_p\}$ is **linearly independent** when the equation
+
+$$
+c_1 \mathbf v_1 + c_2 \mathbf v_2 + \cdots + c_p \mathbf v_p = \mathbf 0
+$$
+
+has only the **trivial solution** $c_1 = \cdots = c_p = 0$. The set is **linearly dependent** when some weights, not all zero, satisfy it. Such an equation is a **linear dependence relation**.
+</Definition>
+</Pair>
+
+Every set has the trivial solution, because zero weights always give $\mathbf 0$. So the question is never whether the trivial solution exists. The question is whether it is the *only* one.
+
+<RelationFinder v={[3, 2]} w={[-1, 2]} b={[5, 6]} />
+
+## A redundant vector
+
+A dependence relation can always be solved for a vector whose weight is not zero. From $2\yellow{\mathbf v} + \blue{\mathbf w} - \pink{\mathbf b} = \mathbf 0$ you get $\pink{\mathbf b} = 2\yellow{\mathbf v} + \blue{\mathbf w}$. In the other direction, if one vector is a combination of the others, moving it across the equals sign with weight $-1$ gives a relation. This is Lay's Theorem 7: **a set of two or more vectors is dependent exactly when one of its vectors is a combination of the others.**
+
+The theorem does not say that *every* vector in a dependent set is a combination of the others. In $\{\mathbf e_1, 2\mathbf e_1, \mathbf e_2\}$ the first two vectors are dependent, but $\mathbf e_2$ is not a combination of them.
+
+<Figure src="flat-box" alt="Two 3D views side by side. Left: yellow u = (1, −1, 0) and blue v = (1, 2, 0) lie in a teal floor plane, and pink w = (2, 1, 2) rises above it, building a box with height 2. Right: w has dropped to (2, 1, 0), the box is flat inside the plane, and a copy of v from the tip of u shows that u + v − w = 0." wide />
+
+In space, two independent vectors $\yellow{\mathbf u}$ and $\blue{\mathbf v}$ span a plane. A third vector $\pink{\mathbf w}$ makes the set dependent exactly when it lies in that plane. While $\pink{\mathbf w}$ sticks out, the three arrows build a box with real volume. When $\pink{\mathbf w}$ drops into the plane, the box goes flat.
+
+<LiftToPlane v1={[1, 0, 1]} v2={[0, 1, 2]} v3={[1, 2]} min={-2} max={8} />
+
+## The pivot test
+
+The vector equation $x_1 \mathbf v_1 + \cdots + x_p \mathbf v_p = \mathbf 0$ is the system $A\mathbf x = \mathbf 0$, where $A = [\,\mathbf v_1\ \cdots\ \mathbf v_p\,]$. A nonzero solution exists exactly when the system has a free variable, and a variable is free exactly when its column has no pivot.
+
+$$
+\text{columns of } A \text{ are independent} \iff A \text{ has a pivot in every column}
+$$
+
+Yesterday's test for spanning counted pivots in every *row*. Today's test counts them in every *column*.
+
+<Figure src="pivot-columns" alt="Three reduced matrices with orange boxes on their pivots. Top left, for h = 2, has a pivot in each of its three columns. Top right, for h = 0, has pivots only in columns one and two. Below them, the 2 by 3 matrix of v, w and b has two pivots and a third column without one." />
+
+**Example.** Are $\yellow{\mathbf v_1} = (1, 2, 0)$, $\blue{\mathbf v_2} = (0, 1, 3)$ and $\pink{\mathbf v_3} = (2, 5, 3)$ independent?
+
+$$
+\begin{aligned}
+\begin{bmatrix} 1 & 0 & 2 & 0 \\ 2 & 1 & 5 & 0 \\ 0 & 3 & 3 & 0 \end{bmatrix}
+&\sim \begin{bmatrix} 1 & 0 & 2 & 0 \\ 0 & 1 & 1 & 0 \\ 0 & 3 & 3 & 0 \end{bmatrix}
+\sim \begin{bmatrix} 1 & 0 & 2 & 0 \\ 0 & 1 & 1 & 0 \\ 0 & 0 & 0 & 0 \end{bmatrix}
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+&x_1 = -2x_3, \quad x_2 = -x_3, \quad x_3 \text{ free} \\
+&x_3 = -1: \quad 2\yellow{\mathbf v_1} + \blue{\mathbf v_2} - \pink{\mathbf v_3} = \mathbf 0
+\end{aligned}
+$$
+
+Column three has no pivot, so the set is dependent. Substituting back checks the relation: $2(1, 2, 0) + (0, 1, 3) = (2, 5, 3)$.
+
+## Deciding by inspection
+
+Some sets can be decided without row reducing.
+
+- **Two vectors** are dependent exactly when one is a multiple of the other, which means they lie on one line through the origin. Check every entry, since $(2, 4, 1)$ and $(1, 2, 3)$ agree in ratio for two entries and fail in the third.
+- **A set containing $\mathbf 0$** is dependent, because $1 \cdot \mathbf 0 = \mathbf 0$ is a relation with a nonzero weight.
+- **More vectors than entries** forces dependence. The matrix of $p$ vectors in $\mathbb R^n$ is $n \times p$. It has at most $n$ pivots, one per row, so when $p > n$ some column is free.
+
+The last rule only works in one direction. Three vectors in $\mathbb R^3$ can be dependent or independent, and you have to check.
+
+<LoopAnywhere v={[3, 1]} w={[1, 2]} start={[-2, 3]} goal={[1, -1]} />
+
+The definition never mentions entries, so it works in any vector space. In $\mathbb P_1$, the polynomials $1$, $t$ and $3 + 2t$ are dependent, because $3 \cdot 1 + 2 \cdot t - (3 + 2t) = 0$ for every $t$.
+
+## Practice
+
+<Check>
+Let $\mathbf v_1 = (1, 0, 2)$, $\mathbf v_2 = (0, 1, -1)$ and $\mathbf v_3 = (3, 2, h)$. Find the $h$ that makes the set dependent, then the weights $c_1, c_2$ with $\mathbf v_3 = c_1 \mathbf v_1 + c_2 \mathbf v_2$. (Modeled on Lay §1.7 #11.)
+
+<VectorAnswer answer={[4, 3, 2]} labels={["h", "c₁", "c₂"]} />
+
+<Answer>
+$$
+\begin{aligned}
+\begin{bmatrix} 1 & 0 & 3 \\ 0 & 1 & 2 \\ 2 & -1 & h \end{bmatrix}
+&\sim \begin{bmatrix} 1 & 0 & 3 \\ 0 & 1 & 2 \\ 0 & -1 & h - 6 \end{bmatrix}
+\sim \begin{bmatrix} 1 & 0 & 3 \\ 0 & 1 & 2 \\ 0 & 0 & h - 4 \end{bmatrix}
+\end{aligned}
+$$
+
+The third column has a pivot unless $h - 4 = 0$, so the set is dependent exactly when $h = 4$. The first two rows then give $\mathbf v_3 = 3\mathbf v_1 + 2\mathbf v_2$, and indeed $3(1, 0, 2) + 2(0, 1, -1) = (3, 2, 4)$.
+</Answer>
+</Check>
+
+<Check>
+The columns of $A = \begin{bmatrix} 1 & 3 & 4 \\ 0 & 1 & 1 \\ 2 & 0 & 2 \\ -1 & 2 & 1 \end{bmatrix}$ satisfy $\mathbf a_3 = \mathbf a_1 + \mathbf a_2$. Without row reducing, find a nonzero $\mathbf x$ with $A\mathbf x = \mathbf 0$ whose last entry is $-1$. (Modeled on Lay §1.7 #31.)
+
+<VectorAnswer answer={[1, 1, -1]} />
+
+<Answer>
+Move $\mathbf a_3$ to the left side: $\mathbf a_1 + \mathbf a_2 - \mathbf a_3 = \mathbf 0$. Since $A\mathbf x$ is the combination of the columns with weights from $\mathbf x$, the vector $\mathbf x = (1, 1, -1)$ solves $A\mathbf x = \mathbf 0$. So the columns are dependent even though no column is a multiple of another.
+</Answer>
+</Check>
+
+<Check>
+Decide by inspection. Enter 1 for dependent and 0 for independent: (a) $(1, 2), (3, 4), (5, 6)$; (b) $(2, -1, 3), (0, 0, 0), (4, 1, 1)$; (c) $(2, 4, 1), (1, 2, 3)$. (Modeled on Lay §1.7 #15–20.)
+
+<VectorAnswer answer={[1, 1, 0]} labels={["a", "b", "c"]} />
+
+<Answer>
+(a) is dependent because it has three vectors in $\mathbb R^2$, which is more vectors than entries. (b) is dependent because it contains $\mathbf 0$. (c) is independent: a multiple $c(1, 2, 3)$ that matches $(2, 4, 1)$ needs $c = 2$ from the first entry, but then its last entry is $6$, not $1$.
+</Answer>
+</Check>
