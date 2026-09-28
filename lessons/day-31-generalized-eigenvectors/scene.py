@@ -177,7 +177,8 @@ class Lesson(LessonScene):
         self.patch = live_patch(plane, self.live)
         self.play(plane.animate.set_opacity(0.25), FadeIn(self.patch), run_time=0.9)
         self.bring_to_front(self.s_panel)
-        self.wait(Timing.beat)
+        line = self.say(r"Its eigenvalue repeats, so Day 30 can't promise independent eigenvectors.", line, hold=Timing.beat)
+        line = self.say(r"Does $S$ still have enough eigenvectors for a basis?", line, hold=Timing.read_short)
         return line
 
     def tip_the_fan(self, line):
@@ -231,6 +232,7 @@ class Lesson(LessonScene):
         left = VGroup(poly, algebraic).arrange(DOWN, buff=0.55)
         right = VGroup(VGroup(shifted, null).arrange(RIGHT, buff=0.5), geometric).arrange(DOWN, buff=0.55)
         board = VGroup(left, right).arrange(DOWN, buff=0.7).set_z_index(21)
+        line = self.say(r"To measure the shortfall, count $\lambda = 1$ two ways.", line, hold=Timing.beat)
         line = self.say(r"The characteristic polynomial counts $\lambda = 1$ twice.", line, hold=0.2)
         self.play(FadeIn(veil), run_time=0.6)
         self.play(Write(poly), run_time=1.2)
@@ -259,6 +261,7 @@ class Lesson(LessonScene):
         self.v2_arrow = vector_arrow(V2, Palette.blue, plane)
         self.v2_label = name_label(r"\mathbf v_2", Palette.blue, plane.c2p(*V2), LEFT)
         self.v2_line = line_through_origin(plane, V2, Palette.blue, 2.5, dashed=True, opacity=0.6)
+        line = self.say(r"We still need a second vector to complete a basis.", line, hold=Timing.beat)
         line = self.say(r"Take $\mathbf v_2 = (1, 2)$, which sits off the eigenline.", line, hold=0.2)
         self.play(GrowArrow(self.v2_arrow), FadeIn(self.v2_label), run_time=1.0, rate_func=spring_soft)
         self.play(Create(self.v2_line), run_time=0.9)
@@ -363,6 +366,11 @@ class Lesson(LessonScene):
         basis = tex(r"P = \begin{bmatrix} \mathbf v_1 & \mathbf v_2 \end{bmatrix}", font_size=46)
         right = VGroup(basis, similar).arrange(DOWN, buff=0.5)
         VGroup(equations, right).arrange(RIGHT, buff=1.4).move_to(UP * 0.2).set_z_index(21)
+        centred_chain = chain_label(font_size=72).move_to(UP * 0.5).set_z_index(21)
+        line = self.say(r"In the chain's basis, $A$ becomes almost diagonal.", line, hold=0.2)
+        self.play(TransformFromCopy(self.chain, centred_chain), run_time=1.0, rate_func=spring_soft)
+        self.wait(Timing.beat)
+        self.play(FadeOut(centred_chain), run_time=0.5)
         line = self.say(r"Read the chain as two equations about $A$.", line, hold=0.2)
         self.play(FadeIn(equations[0], shift=UP * 0.1), run_time=0.7)
         self.play(FadeIn(equations[1], shift=UP * 0.1), run_time=0.7)
@@ -389,7 +397,10 @@ class Lesson(LessonScene):
         self.play(FadeIn(framed, shift=UP * 0.1), run_time=0.8, rate_func=spring_soft)
         self.play(Create(blocks[0]), run_time=0.6)
         self.play(Create(blocks[1]), run_time=0.8)
-        self.wait(Timing.read_long)
+        self.wait(Timing.beat)
+        line = self.say(r"Tomorrow's matrices have only size-1 blocks, so $J$ is diagonal.", line, hold=0.2)
+        self.play(Indicate(blocks[0], color=Palette.glow, scale_factor=1.15), run_time=1.0)
+        self.wait(Timing.read_short)
         self.play(FadeOut(VGroup(framed, blocks)), run_time=0.6)
         return line
 
