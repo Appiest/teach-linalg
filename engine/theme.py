@@ -825,7 +825,7 @@ def patch_image(plane: NumberPlane, transform, half: int = 2, color: str = Palet
     return parts
 
 
-def right_angle_mark(to_scene, corner, first, second, size: float = 0.3, color: str = Palette.glow, stroke_width: float = 4):
+def corner_mark(to_scene, corner, first, second, size: float = 0.3, color: str = Palette.glow, stroke_width: float = 4):
     """A small square corner at `corner` between directions `first` and `second`, in any coordinates `to_scene` maps.
 
     `to_scene` takes one point: a projector for an oblique 3D view, or lambda p: plane.c2p(*p) for a flat plane.

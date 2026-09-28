@@ -19,7 +19,7 @@ from engine.theme import (  # noqa: E402
     plate_for,
     projected_arrow,
     projected_patch,
-    right_angle_mark,
+    corner_mark,
     spring,
     spring_soft,
     vector_arrow,
@@ -221,7 +221,7 @@ class Lesson(LessonScene):
 
         z_arrow = arrow_between(plane, YHAT_FLAT, Y_FLAT, Palette.pink)
         z_label = self.flat_label(plane, (YHAT_FLAT + Y_FLAT) / 2, r"\mathbf z", Palette.pink, UR, buff=0.08)
-        mark = right_angle_mark(lambda point: plane.c2p(*point), YHAT_FLAT, Y_FLAT - YHAT_FLAT, -YHAT_FLAT, size=0.4)
+        mark = corner_mark(lambda point: plane.c2p(*point), YHAT_FLAT, Y_FLAT - YHAT_FLAT, -YHAT_FLAT, size=0.4)
         line = self.say(r"The leftover $\mathbf z = \mathbf y - \hat{\mathbf y}$ meets $L$ at a right angle.", line, hold=0.2)
         self.play(FadeOut(drop), GrowArrow(z_arrow), FadeIn(z_label), run_time=1.1, rate_func=spring_soft)
         self.play(Create(mark), run_time=0.6)
@@ -287,7 +287,7 @@ class Lesson(LessonScene):
         self.halo = always_redraw(lambda: Line(self.project(YHAT), self.project(Y), color=Palette.glow, stroke_width=18, stroke_opacity=0.28))
         self.z_space = always_redraw(lambda: projected_arrow(self.project, Y, Palette.pink, start=YHAT))
         self.z_tag = always_redraw(lambda: self.space_tag((Y + YHAT) / 2, r"\mathbf z", Palette.pink, RIGHT, buff=0.18))
-        self.mark = always_redraw(lambda: right_angle_mark(self.project, YHAT, Z, -YHAT, size=0.35))
+        self.mark = always_redraw(lambda: corner_mark(self.project, YHAT, Z, -YHAT, size=0.35))
         line = self.say(r"The error $\mathbf z$ stands at a right angle to all of $W$.", line, hold=0.2)
         self.play(FadeOut(drop), GrowArrow(self.z_space), FadeIn(self.z_tag), run_time=1.1, rate_func=spring_soft)
         self.remove(drop)
@@ -397,7 +397,7 @@ class Lesson(LessonScene):
     def closest_point(self, line):
         v_now = self.v_point()
         leg = always_redraw(lambda: DashedLine(self.project(YHAT), self.project(self.v_point()), color=Palette.teal, stroke_width=3))
-        corner = right_angle_mark(self.project, YHAT, Z, v_now - YHAT, size=0.3)
+        corner = corner_mark(self.project, YHAT, Z, v_now - YHAT, size=0.3)
         law = pythagoras()
         values = pythagoras_numbers(v_now)
         stack = VGroup(law, values).arrange(DOWN, aligned_edge=LEFT, buff=0.3)
@@ -418,7 +418,7 @@ class Lesson(LessonScene):
 
 
 def flat_scene_parts(plane):
-    mark = right_angle_mark(lambda point: plane.c2p(*point), YHAT_FLAT, Y_FLAT - YHAT_FLAT, -YHAT_FLAT, size=0.4)
+    mark = corner_mark(lambda point: plane.c2p(*point), YHAT_FLAT, Y_FLAT - YHAT_FLAT, -YHAT_FLAT, size=0.4)
     labels = VGroup(
         backed(MathTex(r"\mathbf u", color=Palette.i_hat, font_size=42), padding=0.07).next_to(plane.c2p(*U_LINE), DR, buff=0.05),
         backed(MathTex("L", color=Palette.teal, font_size=42), padding=0.07).next_to(plane.c2p(4.6, 4.6), DR, buff=0.1),
@@ -457,7 +457,7 @@ def space_figure_parts(project, tag):
         projected_arrow(project, YHAT, Palette.teal, stroke_width=7),
         projected_arrow(project, Y, Palette.yellow),
         projected_arrow(project, Y, Palette.pink, start=YHAT),
-        right_angle_mark(project, YHAT, Z, -YHAT, size=0.35),
+        corner_mark(project, YHAT, Z, -YHAT, size=0.35),
         tag(Y, r"\mathbf y", Palette.yellow, UP),
         tag(YHAT, r"\hat{\mathbf y}", Palette.teal, DR),
         tag((Y + YHAT) / 2, r"\mathbf z", Palette.pink, RIGHT),
