@@ -1,2 +1,2 @@
-Day 27 is up! Today shows why determinants multiply, det(AB) = det A times det B, and how the same idea solves systems with Cramer's rule. Watch the square get stretched twice and see its area multiply both times.
+Day 27 is up! Yesterday's determinant rules came without reasons, and today shows where they come from, including why det(AB) = det A times det B and how the same idea solves systems with Cramer's rule. Watch the square get stretched twice and see its area multiply both times.
 https://appiest.github.io/teach-linalg/day/27/

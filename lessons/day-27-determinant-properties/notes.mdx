@@ -1,8 +1,8 @@
-Day 25 read $\det A$ as the signed area of the parallelogram built from the columns of $A$, and Day 26 computed determinants by cofactor expansion and listed how each row operation changes them. Today explains where those rules come from. Two properties do all the work, and from them follow the product rule $\det(AB) = \det A\,\det B$, a formula for solving systems, a formula for $A^{-1}$, and volumes in $\mathbb R^3$.
+Day 25 read $\det A$ as the signed area of the parallelogram built from the columns of $A$, and Day 26 computed determinants by cofactor expansion and listed how each row operation changes them. Day 26 stated those rules without saying why they hold, and today supplies the reasons. The reasons matter because the next unit leans on the rules: Day 29 finds eigenvalues by solving $\det(A - \lambda I) = 0$, and Day 30 uses the product rule to show that similar matrices share their eigenvalues. Two properties do all the work, and from them follow the product rule $\det(AB) = \det A\,\det B$, a formula for solving systems, a formula for $A^{-1}$, and volumes in $\mathbb R^3$.
 
 ## The two rules
 
-Hold the first column $\green{\mathbf a_1}$ fixed along the base. The area of the parallelogram is base times height, so $\det[\,\green{\mathbf a_1}\ \ \mathbf x\,]$ depends only on how high $\mathbf x$ sits above the line of $\green{\mathbf a_1}$. Heights scale when $\mathbf x$ scales, and the heights of $\yellow{\mathbf u}$ and $\blue{\mathbf v}$ add when the vectors add. A tip below the base has negative height, which is why the area has to carry a sign.
+This section looks for two properties strong enough to prove every row rule from Day 26, and the picture of area as base times height suggests both. Hold the first column $\green{\mathbf a_1}$ fixed along the base. The area of the parallelogram is base times height, so $\det[\,\green{\mathbf a_1}\ \ \mathbf x\,]$ depends only on how high $\mathbf x$ sits above the line of $\green{\mathbf a_1}$. Heights scale when $\mathbf x$ scales, and the heights of $\yellow{\mathbf u}$ and $\blue{\mathbf v}$ add when the vectors add. A tip below the base has negative height, which is why the area has to carry a sign.
 
 <Figure src="heights" alt="A green base a1 = (3, 0) with three parallelograms on it: a yellow one for u = (1, 1), a blue one for v = (−2, 2) and a teal one for u + v = (−1, 3). Two bars on the right stack a yellow bar of height 1 and a blue bar of height 2 beside a teal bar of height 3, under the equation 9 = 3 + 6." wide />
 
@@ -30,6 +30,8 @@ The other rows are left out of the display because they never change. A function
 
 ## The product rule
 
+Day 26 listed $\det(AB) = \det A\,\det B$ without proof. This section aims to show why the area factor of two maps done in a row is the product of their separate factors.
+
 <Pair>
 <Figure src="product" alt="Three small grids. The yellow unit square of area 1 goes to a yellow parallelogram of area 2 under B, marked times 2, and then to a teal parallelogram of area 6 under A, marked times 3." />
 
@@ -52,6 +54,8 @@ $$
 The same chain with $B = I$ gives the last line. Short consequences follow. From $AA^{-1} = I$ we get $\det A^{-1} = 1/\det A$. Writing $rA = (rI)A$ gives $\det(rA) = r^n\det A$ for an $n \times n$ matrix, so the determinant is not linear in the whole matrix at once.
 
 ## Cramer's rule
+
+Row reduction solves for all the unknowns together. Cramer's rule aims for something different: a formula that gives each unknown on its own as a ratio of two determinants, which shows exactly how the solution depends on $\mathbf b$ and on the entries of $A$.
 
 Write $A_i(\mathbf b)$ for the matrix $A$ with column $i$ replaced by $\mathbf b$. If $\yellow{\mathbf b} = x_1\green{\mathbf a_1} + x_2\red{\mathbf a_2}$, then multilinearity in column 1 gives $\det[\,\yellow{\mathbf b}\ \ \red{\mathbf a_2}\,] = x_1\det[\,\green{\mathbf a_1}\ \ \red{\mathbf a_2}\,] + x_2\det[\,\red{\mathbf a_2}\ \ \red{\mathbf a_2}\,] = x_1 \det A$. In the picture, stretching $\green{\mathbf a_1}$ by $x_1$ multiplies the area by $x_1$, and adding $x_2\red{\mathbf a_2}$ is a shear that keeps it.
 
@@ -94,7 +98,9 @@ Three columns in $\mathbb R^3$ build a slanted box called a **parallelepiped**, 
 
 <Figure src="volume" alt="A teal parallelepiped with a green edge (3, 0, 0), a red edge (1, 2, 0) and a pink edge (1, 1, 2), drawn over the faint outline of the 3 by 2 by 2 box it was sheared from. Beside it, the matrix with those columns and volume = |det A| = 12." wide />
 
-The same reasoning scales every region. If $T(\mathbf x) = A\mathbf x$, then the area (or volume) of $T(S)$ is $|\det A|$ times the area (or volume) of $S$. For example, $\begin{bmatrix} a & 0 \\ 0 & b \end{bmatrix}$ carries the unit disk onto the ellipse $x_1^2/a^2 + x_2^2/b^2 = 1$, so the ellipse has area $ab \cdot \pi$.
+The same reasoning scales every region. If $T(\mathbf x) = A\mathbf x$, then the area (or volume) of $T(S)$ is $|\det A|$ times the area (or volume) of $S$. For example, $\begin{bmatrix} a & 0 \\ 0 & b \end{bmatrix}$ carries the unit disk onto the ellipse $x_1^2/a^2 + x_2^2/b^2 = 1$, so the ellipse has area $ab \cdot \pi$. Day 30 applies this scaling to a box built on eigenvectors to show that $\det A$ is the product of the eigenvalues.
+
+This lesson closes the unit on determinants. Tomorrow, Day 28 asks which directions a matrix only stretches, and Day 29 then uses $\det(A - \lambda I) = 0$ to find how much it stretches them.
 
 ## Practice
 

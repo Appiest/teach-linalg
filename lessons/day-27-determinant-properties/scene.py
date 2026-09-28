@@ -186,14 +186,19 @@ class Lesson(LessonScene):
         self.panel_row(self.readout, 3.45)
         self.value.next_to(self.readout, RIGHT, buff=0.18)
 
-        line = self.say(r"The determinant is the signed area of the columns' parallelogram.", hold=0.2)
+        line = self.say(r"Day 26 listed the determinant's rules without saying why.", hold=0.2)
         self.play(GrowArrow(self.base_arrow), FadeIn(self.base_name), run_time=1.0, rate_func=spring_soft)
         self.play(GrowArrow(vector_arrow(X_START, Palette.yellow, plane)), FadeIn(self.x_name), run_time=1.0, rate_func=spring_soft)
         self.remove(*[m for m in self.mobjects if isinstance(m, Arrow) and m is not self.base_arrow])
         self.add(self.x_arrow)
+        line = self.say(r"The determinant is the signed area of the columns' parallelogram.", line, hold=0.2)
         self.bring_to_back(self.area)
         self.bring_to_back(plane)
         self.play(FadeIn(self.area), Write(self.readout), FadeIn(self.value), run_time=1.0)
+        self.wait(Timing.beat)
+        line = self.say(r"Today we find the two properties behind every rule.", line, hold=Timing.read_short)
+        line = self.say(r"Day 29's search for eigenvalues is built on these rules.", line, hold=0.2)
+        self.play(Indicate(self.readout, color=Palette.glow, scale_factor=1.08), run_time=1.0)
         self.wait(Timing.beat)
 
         self.height = always_redraw(lambda: height_mark(plane, self.x_value()))
@@ -406,7 +411,8 @@ class Lesson(LessonScene):
         result = backed(result, padding=0.2).move_to([4.8, -2.15, 0])
         line = self.say(r"Areas multiply, so determinants multiply.", line, hold=0.2)
         self.play(Write(result), run_time=1.3)
-        self.wait(Timing.read_long)
+        self.wait(Timing.read_short)
+        line = self.say(r"Day 30 uses this rule to show similar matrices share eigenvalues.", line, hold=Timing.read_short)
         counter.clear_updaters()
         return line
 
@@ -442,7 +448,7 @@ class Lesson(LessonScene):
         area_row = VGroup(area_label, counter).arrange(RIGHT, buff=0.2).move_to([4.0, 1.15, 0])
         counter.add_updater(lambda m: m.set_value(abs(np.cross(first_column(), CRAMER_A2))).next_to(area_label, RIGHT, buff=0.2))
 
-        line = self.say(r"Cramer's rule solves $A\mathbf x = \mathbf b$ using determinants.", line, hold=0.2)
+        line = self.say(r"Cramer's rule aims to give each unknown as a ratio of determinants.", line, hold=0.2)
         self.play(FadeIn(plane), FadeIn(system), run_time=1.0)
         self.play(*[GrowArrow(arrow) for arrow in arrows], FadeIn(names), run_time=1.1, rate_func=spring_soft)
         self.add(shape, mover)
@@ -581,7 +587,8 @@ class Lesson(LessonScene):
         rule = MathTex(r"\lvert\det A\rvert = 3 \cdot 2 \cdot 2 = 12", color=Palette.text, font_size=40).next_to(panel, DOWN, buff=0.5)
         line = self.say(r"So the volume of the box is $\lvert\det A\rvert$.", line, hold=0.2)
         self.play(FadeIn(rule, shift=UP * 0.15), view.turn_to(-30.0), run_time=2.0)
-        self.wait(Timing.read_short)
+        self.wait(Timing.beat)
+        line = self.say(r"Day 29 solves $\det(A - \lambda I) = 0$ to find eigenvalues.", line, hold=Timing.read_short)
         return line
 
 
