@@ -1,4 +1,4 @@
-On Day 1 you built linear combinations like $a\,\yellow{\vec v} + b\,\blue{\vec w}$. A matrix is a compact way to write one: stand the vectors side by side as the columns of a matrix $A$, and stack the weights into a vector $\mathbf x$.
+On Day 2, asking whether $\teal{\mathbf b}$ is in the span of some vectors turned into a linear system, and yesterday you learned to solve that system by row reduction. Writing the question out takes a line per equation, so today we write it as one short equation, $A\mathbf x = \teal{\mathbf b}$. Stand the vectors side by side as the columns of a matrix $A$, and stack the weights into a vector $\mathbf x$. The product $A\mathbf x$ is then a linear combination like Day 1's $a\,\yellow{\vec v} + b\,\blue{\vec w}$. This notation also sets up Day 5, where $A\mathbf x$ becomes a rule that moves every point of the plane.
 
 <Definition term="Matrix times vector">
 If $A$ is an $m\times n$ matrix with columns $\mathbf a_1, \dots, \mathbf a_n$ and $\mathbf x$ is in $\mathbb{R}^n$, then the **product** $A\mathbf x$ is the linear combination of the columns of $A$ that uses the entries of $\mathbf x$ as weights:
@@ -25,6 +25,8 @@ The first entry of $\mathbf x$ scales the first column and the second entry scal
 <MatrixVectorExplorer columns={[[3, 2], [-1, 2]]} target={[-1, 2]} success="Right. With $\mathbf x = (0, 1)$ the first column gets no weight, so $A\mathbf x$ is exactly the second column $\mathbf a_2$." />
 
 ## The row rule
+
+Scaling whole columns explains what $A\mathbf x$ means, but it is slow to write out by hand. The goal of this section is a faster way to compute one entry at a time.
 
 Write the column sum out entry by entry and read across one row at a time. The top entry of $A\mathbf x$ only ever uses the top row of $A$, and the bottom entry only uses the bottom row.
 
@@ -83,7 +85,7 @@ Let $A$ be an $m\times n$ matrix. These statements are either all true or all fa
 (d) $A$ has a pivot position in every row.
 </Definition>
 
-Statements (a), (b) and (c) say the same thing in three vocabularies. Statement (d) connects them to row reduction. If every row of $A$ has a pivot, the augmented column can never hold a pivot, so every system is consistent. Count pivots in $A$ itself, not in $\begin{bmatrix} A & \mathbf b \end{bmatrix}$, because a pivot in the last column of the augmented matrix means the system has no solution.
+Statements (a), (b) and (c) say the same thing in three vocabularies. Statement (d) connects them to row reduction, and Day 12 returns to it as the standard test for whether columns span. If every row of $A$ has a pivot, the augmented column can never hold a pivot, so every system is consistent. Count pivots in $A$ itself, not in $\begin{bmatrix} A & \mathbf b \end{bmatrix}$, because a pivot in the last column of the augmented matrix means the system has no solution.
 
 ## Linearity
 
@@ -98,7 +100,7 @@ A(c\,\mathbf u) &= (c\,u_1)\mathbf a_1 + (c\,u_2)\mathbf a_2 \\
 \end{aligned}
 $$
 
-The same argument works for any number of columns. Tomorrow these two rules become the definition of a linear transformation.
+The same argument works for any number of columns. Tomorrow these two rules become the definition of a linear transformation, and $A\mathbf x$ becomes a way to move the whole plane at once.
 
 ## Practice
 

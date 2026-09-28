@@ -93,14 +93,38 @@ def row_rule_equation():
     return VGroup(matrix_a(), weights_column(X), tex("="), wide, tex("="), column(total, color=Palette.teal)).arrange(RIGHT, buff=0.2)
 
 
+def vector_equation(right_side):
+    y, b = Palette.yellow, Palette.blue
+    return VGroup(
+        tex("x_1", colors=(y,)), column(A1, color=y), tex("+"), tex("x_2", colors=(b,)), column(A2, color=b), tex("="), right_side
+    ).arrange(RIGHT, buff=0.18)
+
+
+def matrix_equation(right_side):
+    return VGroup(matrix_a(), weights_column(("x_1", "x_2")), tex("="), right_side).arrange(RIGHT, buff=0.18)
+
+
+def compress_to_matrix_form(vector_form, matrix_form):
+    """Columns slide into A, weights stack into x, and the plus sign disappears."""
+    coefficients, unknowns = matrix_form[0], matrix_form[1]
+    return [
+        ReplacementTransform(vector_form[1].get_entries(), coefficients.get_columns()[0]),
+        ReplacementTransform(vector_form[4].get_entries(), coefficients.get_columns()[1]),
+        FadeOut(VGroup(vector_form[1].get_brackets(), vector_form[4].get_brackets(), vector_form[2])),
+        FadeIn(coefficients.get_brackets()),
+        ReplacementTransform(vector_form[0], unknowns.get_entries()[0]),
+        ReplacementTransform(vector_form[3], unknowns.get_entries()[1]),
+        FadeIn(unknowns.get_brackets()),
+        ReplacementTransform(vector_form[5], matrix_form[2]),
+        ReplacementTransform(vector_form[6], matrix_form[3]),
+    ]
+
+
 def three_forms():
     y, b, t = Palette.yellow, Palette.blue, Palette.teal
     system = tex(r"3x_1", r"-\,x_2", "&=", "7", r"\\", r"2x_1", r"+\,2x_2", "&=", "2", colors=(y, b, None, t, None, y, b, None, t))
-    vector_form = VGroup(
-        tex("x_1", colors=(y,)), column(A1, color=y), tex("+"), tex("x_2", colors=(b,)), column(A2, color=b), tex("="), column(B, color=t)
-    ).arrange(RIGHT, buff=0.18)
-    unknowns = weights_column(("x_1", "x_2"))
-    matrix_form = VGroup(matrix_a(), unknowns, tex("="), column(B, color=t)).arrange(RIGHT, buff=0.18)
+    vector_form = vector_equation(column(B, color=t))
+    matrix_form = matrix_equation(column(B, color=t))
     return VGroup(system, vector_form, matrix_form).arrange(DOWN, buff=0.5, aligned_edge=LEFT)
 
 
@@ -174,25 +198,46 @@ class Lesson(LessonScene):
         plane = plane_at(PLANE_ORIGIN, PLANE_UNIT)
         pulse = self.open_episode(plane)
         self.play(FadeOut(pulse), run_time=0.5)
-        line = self.columns_fly_out(plane)
+        line = self.pose_question()
+        line = self.columns_fly_out(plane, line)
         line = self.scale_and_add(plane, line)
         line = self.name_the_product(line)
         line = self.row_rule(line)
         line = self.solve_for_b(plane, line)
         line = self.three_forms(line)
         line = self.parallel_columns(plane, line)
+        self.point_to_transformations(line)
         self.close_episode(
             r"$A\mathbf x$ is a linear combination of the columns of $A$,\\"
             r"and the entries of $\mathbf x$ are the weights.",
             *self.mobjects,
         )
 
-    def columns_fly_out(self, plane):
+    def pose_question(self):
+        vector_form = vector_equation(tex(r"\mathbf b", colors=(Palette.teal,))).to_corner(UL, buff=0.6)
+        plate = plate_for(vector_form)
+        line = self.say(r"Day 2 asked which weights combine these vectors into $\mathbf b$.", hold=0.2)
+        self.play(FadeIn(plate), Write(vector_form), run_time=1.6)
+        self.wait(Timing.read_short)
+
+        compact = matrix_equation(tex(r"\mathbf b", colors=(Palette.teal,))).to_corner(UL, buff=0.6)
+        line = self.say(r"Today we write that question as one short equation.", line, hold=0.2)
+        self.play(
+            plate.animate.become(plate_for(compact)),
+            *compress_to_matrix_form(vector_form, compact),
+            run_time=1.6,
+            rate_func=spring_soft,
+        )
+        self.wait(Timing.beat + 0.5)
+        self.play(FadeOut(VGroup(plate, compact)), run_time=0.5)
+        return line
+
+    def columns_fly_out(self, plane, line):
         self.a_mat = matrix_a()
         self.x_col = weights_column(X)
         self.product = VGroup(self.a_mat, self.x_col).arrange(RIGHT, buff=0.15).to_corner(UL, buff=0.6)
         self.plate = plate_for(self.product)
-        line = self.say(r"Here is a matrix $A$ and a vector $\mathbf x$.", hold=0.2)
+        line = self.say(r"Here is a matrix $A$ and a vector $\mathbf x$.", line, hold=0.2)
         self.play(FadeIn(self.plate), Write(self.product), run_time=1.4)
         self.wait(Timing.read_short)
 
@@ -277,6 +322,9 @@ class Lesson(LessonScene):
         by_columns = column_sum_equation()
         by_rows = row_rule_equation()
         VGroup(by_columns, by_rows).arrange(DOWN, buff=0.7).move_to(UP * 0.55)
+        line = self.say(r"Next we want a faster way to compute $A\mathbf x$ by hand.", line, hold=0.2)
+        self.play(Indicate(self.general, color=Palette.glow, scale_factor=1.05), run_time=1.0)
+        self.wait(0.5)
         line = self.say(r"Write the sum out entry by entry.", line, hold=0.2)
         self.play(FadeIn(veil), FadeOut(self.general), FadeOut(self.plate), run_time=0.7)
         self.play(Write(by_columns), run_time=2.0)
@@ -401,7 +449,21 @@ class Lesson(LessonScene):
         self.play(FadeIn(reduction[1]), FadeIn(reduction[2], shift=LEFT * 0.3), run_time=1.0, rate_func=spring)
         self.play(Create(last_row), run_time=0.7)
         self.wait(Timing.read_long)
+        self.reduction_panel = (reduction, last_row, span)
         return line
+
+
+    def point_to_transformations(self, line):
+        line = self.say(r"Tomorrow, $A$ becomes a rule that moves every $\mathbf x$ to $A\mathbf x$.", line, hold=0.2)
+        self.play(
+            FadeOut(VGroup(self.plate, *self.reduction_panel, self.target)),
+            *[tip.animate.set_value(value) for tip, value in zip(self.a2_tip, A2)],
+            run_time=1.2,
+            rate_func=spring_soft,
+        )
+        for x1, x2 in [(1.0, 1.0), (2.0, 1.0)]:
+            self.play(self.x1.animate.set_value(x1), self.x2.animate.set_value(x2), run_time=1.1, rate_func=spring)
+        self.wait(0.5)
 
 
 def column_picture(plane):
