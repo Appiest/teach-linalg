@@ -13,6 +13,7 @@ import { ClosureHunt, PolynomialCombiner } from "@/components/interactive/vector
 import { CostCompare, LUBuilder, SubstitutionSolver } from "@/components/interactive/lu";
 import { AdditionExplorer, CombinationTarget, ScaleExplorer, VectorExplorer } from "@/components/interactive/vectors";
 import { CommuteHunt, CompositionExplorer, ProductColumns } from "@/components/interactive/product";
+import { ElementaryMoves, InverseBuilder } from "@/components/interactive/elementary";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
 import { katexMacros } from "@/lib/katex-macros";
 
@@ -100,6 +101,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     LUBuilder,
     SubstitutionSolver,
     CostCompare,
+    ElementaryMoves,
+    InverseBuilder,
   };
   return (
     <div className="notes">
