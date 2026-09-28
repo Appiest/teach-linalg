@@ -168,10 +168,13 @@ class Lesson(LessonScene):
         out_tag = MathTex(r"\mathbb R^3", color=Palette.text_muted, font_size=40).move_to(np.array([5.9, 2.2, 0]))
         mapsto = MathTex(r"\mathbf x \mapsto A\mathbf x", color=Palette.text, font_size=40).move_to(np.array([-1.55, 0.9, 0]))
         self.tags = VGroup(in_tag, out_tag, mapsto)
-        line = self.say(r"This $3\times 2$ matrix sends vectors in $\mathbb R^2$ to $\mathbb R^3$.", hold=0.2)
+        line = self.say(r"On Day 4, $A\mathbf x$ combined the columns of $A$.", hold=0.2)
         self.play(Write(self.a_group), run_time=1.2)
+        self.wait(Timing.beat)
+        line = self.say(r"This $3\times 2$ matrix sends vectors in $\mathbb R^2$ to $\mathbb R^3$.", line, hold=0.2)
         self.play(Create(self.space), FadeIn(self.tags), run_time=1.6)
-        self.wait(Timing.read_short)
+        self.wait(Timing.beat)
+        line = self.say(r"Today we collect every output of $A$ and find a basis.", line, hold=Timing.read_short)
         return line
 
     def columns_land(self, line):
@@ -334,6 +337,7 @@ class Lesson(LessonScene):
         self.play(FadeIn(self.a3_tag), run_time=0.4)
         self.wait(Timing.beat)
         line = self.say(r"The span is the same plane, so one column is redundant.", line, hold=Timing.beat)
+        line = self.say(r"We want the fewest columns that still span the plane.", line, hold=Timing.read_short)
         self.three = three
         return line
 
@@ -376,6 +380,7 @@ class Lesson(LessonScene):
         self.play(Create(stamp), run_time=0.5)
         self.wait(Timing.read_short)
         line = self.say(r"So the pivot columns of $A$ are a basis for $\operatorname{Col}A$.", line, hold=Timing.read_short)
+        line = self.say(r"Day 18 calls the number of pivot columns the rank.", line, hold=Timing.read_short)
         self.play(FadeOut(VGroup(first, second, stamp)), run_time=0.5)
         self.relation = relation
         return line
@@ -436,7 +441,8 @@ class Lesson(LessonScene):
         frames = VGroup(*[SurroundingRectangle(row, color=Palette.glow, buff=0.1, stroke_width=3) for row in self.b_matrix.get_rows()])
         line = self.say(r"So the nonzero rows of an echelon form are a basis.", line, hold=0.2)
         self.play(Create(frames), run_time=0.8)
-        self.wait(Timing.read_long)
+        self.wait(Timing.read_short)
+        line = self.say(r"Tomorrow we ask which inputs $A$ sends to zero.", line, hold=Timing.read_short)
         return line
 
 
