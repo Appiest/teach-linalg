@@ -1,0 +1,2 @@
+Day 12 is up! Today is about why the span is the smallest subspace holding your vectors, and a quick pivot test for when they reach everything. Watch what happens to the plane when the third arrow tips out of it.
+https://appiest.github.io/teach-linalg/day/12/
