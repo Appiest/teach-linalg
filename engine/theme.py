@@ -686,3 +686,32 @@ class LiveTransform:
     def grid(self, plane: NumberPlane, color: str = Palette.grid, opacity: float = 0.85, cap: int = 40) -> VGroup:
         first, second = self.value[:, 0], self.value[:, 1]
         return skewed_grid(plane, first, second, reach=self.reach(plane, cap), color=color, opacity=opacity)
+
+
+class OrbitingView:
+    """An oblique 3D view in a flat scene whose azimuth (degrees) is a ValueTracker, so always_redraw drawings orbit."""
+
+    def __init__(self, origin, unit: float = 1.0, azimuth: float = -30.0, elevation: float = 25.0):
+        self.origin, self.unit, self.elevation = origin, unit, elevation
+        self.azimuth = ValueTracker(azimuth)
+
+    def project(self, point) -> np.ndarray:
+        view = oblique_projector(self.origin, self.unit, math.radians(self.azimuth.get_value()), math.radians(self.elevation))
+        return view(point)
+
+    def turn_to(self, azimuth: float):
+        return self.azimuth.animate.set_value(azimuth)
+
+
+def floor_and_axes(project, reach=((-2, 3), (-2, 3), (-2, 2))) -> VGroup:
+    """Unlabelled x, y and z axes seen through `project`, over a faint grid on the floor z = 0."""
+    parts = VGroup()
+    for x in range(reach[0][0], reach[0][1] + 1):
+        parts.add(Line(project((x, reach[1][0], 0)), project((x, reach[1][1], 0)), color=Palette.grid_faint, stroke_width=1.2))
+    for y in range(reach[1][0], reach[1][1] + 1):
+        parts.add(Line(project((reach[0][0], y, 0)), project((reach[0][1], y, 0)), color=Palette.grid_faint, stroke_width=1.2))
+    for index, (low, high) in enumerate(reach):
+        start, end = np.zeros(3), np.zeros(3)
+        start[index], end[index] = low, high + 0.4
+        parts.add(Line(project(start), project(end), color=Palette.axis, stroke_width=2))
+    return parts
