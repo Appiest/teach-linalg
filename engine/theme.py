@@ -126,11 +126,14 @@ def backed(mobject, padding: float = 0.18, opacity: float = 0.92):
     return mobject
 
 
+CAPTION_Z = 100
+
+
 def caption(text: str, **kwargs) -> Tex:
     """One line of on-screen explanation at the bottom of frame."""
     line = Tex(text, color=Palette.text, font_size=kwargs.pop("font_size", 40), **kwargs)
     line.to_edge(DOWN, buff=0.55)
-    return backed(line, padding=0.22, opacity=0.9)
+    return backed(line, padding=0.22, opacity=0.9).set_z_index(CAPTION_Z)
 
 
 def fit_to_frame(scene: Scene, margin: float = 0.35) -> None:
