@@ -1,2 +1,2 @@
-Day 2 is up! Today is about span: every place you can reach by scaling and adding a few vectors. Watch what happens to the plane when the two arrows line up.
+Day 2 is up! Today asks which places you can reach by scaling and adding a few vectors, and that set is called the span. Checking whether one vector is in it turns into a small system of equations, which is exactly what tomorrow teaches you to solve.
 https://appiest.github.io/teach-linalg/day/2/

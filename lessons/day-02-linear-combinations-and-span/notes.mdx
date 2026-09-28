@@ -1,4 +1,4 @@
-Yesterday's lesson ended with the combinations $a\,\yellow{\vec v} + b\,\blue{\vec w}$ covering the whole plane. Today we give that set a name and learn to test whether a particular vector belongs to it.
+Yesterday's lesson ended with the combinations $a\,\yellow{\vec v} + b\,\blue{\vec w}$ covering the whole plane. That raises today's question: given a few vectors, which targets can their combinations reach? We name that set the span and learn to test whether a particular vector belongs to it. The test turns into a system of equations, and on Day 4 the same question becomes whether $A\mathbf x = \mathbf b$ has a solution.
 
 <Definition term="Span">
 If $\vec v_1, \dots, \vec v_p$ are in $\mathbb{R}^n$, then $\operatorname{Span}\{\vec v_1, \dots, \vec v_p\}$ is the set of all linear combinations
@@ -37,11 +37,11 @@ $$
 x_1 = \frac{w_2 h - w_1 k}{v_1 w_2 - v_2 w_1}, \qquad x_2 = \frac{v_1 k - v_2 h}{v_1 w_2 - v_2 w_1}.
 $$
 
-When $v_1 w_2 - v_2 w_1 \neq 0$, these weights exist for every target $(h, k)$, so the span is all of $\mathbb{R}^2$. For nonzero vectors, that number is zero exactly when $\blue{\vec w}$ is a multiple of $\yellow{\vec v}$. It comes back later in the course as the determinant.
+When $v_1 w_2 - v_2 w_1 \neq 0$, these weights exist for every target $(h, k)$, so the span is all of $\mathbb{R}^2$. For nonzero vectors, that number is zero exactly when $\blue{\vec w}$ is a multiple of $\yellow{\vec v}$. It comes back on Day 7 as the determinant of the matrix with columns $\yellow{\vec v}$ and $\blue{\vec w}$.
 
 ## Membership as an equation
 
-Asking whether $\pink{\vec b}$ is in $\operatorname{Span}\{\vec a_1, \dots, \vec a_n\}$ is the same as asking whether the **vector equation** $x_1 \vec a_1 + \cdots + x_n \vec a_n = \pink{\vec b}$ has a solution. Matching the vectors entry by entry turns it into a linear system with one equation per entry. The **augmented matrix** of that system lists the vectors as its columns, in order: $[\,\vec a_1\ \cdots\ \vec a_n\ \ \pink{\vec b}\,]$.
+The test should give a yes-or-no answer about one target vector and, when the answer is yes, the weights that reach it. Asking whether $\pink{\vec b}$ is in $\operatorname{Span}\{\vec a_1, \dots, \vec a_n\}$ is the same as asking whether the **vector equation** $x_1 \vec a_1 + \cdots + x_n \vec a_n = \pink{\vec b}$ has a solution. Matching the vectors entry by entry turns it into a linear system with one equation per entry. The **augmented matrix** of that system lists the vectors as its columns, in order: $[\,\vec a_1\ \cdots\ \vec a_n\ \ \pink{\vec b}\,]$. It drops the variable names and keeps only the numbers, because on Day 3 this is the form we row reduce to solve the system.
 
 <Pair>
 <Figure src="reach-b" alt="The vectors v = (3, 2) and w = (−1, 2). From the tip of v, the arrow −2w runs down to the point (5, −2), which is the tip of the pink vector b = v − 2w, marked with an orange dot." />
@@ -86,6 +86,8 @@ Adding twice the second row to the first gives $5x_2 = 10$, so the first two row
 The same test works in the plane. Below, $\blue{\vec w} = -2\yellow{\vec v}$, so the span is one line, and only one height $h$ puts $\pink{\vec b}$ on it.
 
 <EntryHunt v={[2, 1]} w={[-4, -2]} x={4} answer={2} min={-3} max={4} />
+
+Each membership test today ended in a small system solved by hand, and larger systems need a method that always works. Tomorrow's lesson teaches that method, which is row reduction on the augmented matrix.
 
 ## Practice
 
