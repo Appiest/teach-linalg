@@ -1,3 +1,5 @@
+Linear algebra answers two kinds of question. The first is how to solve many linear equations at once, which Day 3 does. The second is how a matrix moves every point of space, which starts on Day 5 and leads to Day 28's search for the directions a matrix only stretches. Both are written in the language of vectors, so the course starts with the vector itself.
+
 A vector in $\mathbb{R}^n$ is a column of $n$ real numbers called its **entries**. Drawn as an arrow from the origin, entry $i$ says how far to travel along axis $i$.
 
 $$
@@ -8,7 +10,7 @@ $$
 
 ## Vector addition
 
-To add two vectors, add their entries one position at a time. In the picture, slide $\blue{\vec w}$ so it starts at the tip of $\yellow{\vec v}$. The sum points to where the second arrow ends.
+Everything later in the course is built from adding vectors and scaling them, so we learn those two operations first. To add two vectors, add their entries one position at a time. In the picture, slide $\blue{\vec w}$ so it starts at the tip of $\yellow{\vec v}$. The sum points to where the second arrow ends.
 
 $$
 \yellow{\begin{bmatrix} 3 \\ 2 \end{bmatrix}} + \blue{\begin{bmatrix} -1 \\ 2 \end{bmatrix}}
@@ -40,11 +42,13 @@ $$
 is a **linear combination** of $\vec v_1, \dots, \vec v_p$ with **weights** $c_1, \dots, c_p$.
 </Definition>
 
+Tomorrow you will see that solving a system of equations means finding the right weights for a linear combination. On Day 4, multiplying a matrix by a vector computes exactly this kind of sum.
+
 <CombinationTarget v={[3, 2]} w={[-1, 2]} target={[5, 6]} />
 
 <Figure src="span" alt="The vectors v and w with a lattice of orange dots spread across the whole screen. Each dot is a·v + b·w for a different pair of weights." wide />
 
-Every orange dot above is $a\,\yellow{\vec v} + b\,\blue{\vec w}$ for one choice of $a$ and $b$. Because $\yellow{\vec v}$ and $\blue{\vec w}$ point in different directions, some choice of weights reaches every point of the plane. Tomorrow's lesson names that set: the **span**.
+Every orange dot above is $a\,\yellow{\vec v} + b\,\blue{\vec w}$ for one choice of $a$ and $b$. Because $\yellow{\vec v}$ and $\blue{\vec w}$ point in different directions, some choice of weights reaches every point of the plane. Tomorrow's lesson names that set the **span** and asks which vectors a given set of arrows can reach.
 
 ## Practice
 
