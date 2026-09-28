@@ -1,0 +1,2 @@
+Day 23 is up! Today is about the kernel, which is everything a linear map sends to zero, and why a map is one-to-one exactly when only zero goes there. Watch t² and t land on the same output, then see their difference t² − t land right on zero.
+https://appiest.github.io/teach-linalg/day/23/

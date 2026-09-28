@@ -718,3 +718,21 @@ def floor_and_axes(project, reach=((-2, 3), (-2, 3), (-2, 2))) -> VGroup:
         start[index], end[index] = low, high + 0.4
         parts.add(Line(project(start), project(end), color=Palette.axis, stroke_width=2))
     return parts
+
+
+def clipped_plot(axes, function, x_range, y_range, color: str, stroke_width: float = 5, samples: int = 240) -> VGroup:
+    """The graph of `function` on `axes` over x_range, cut wherever it leaves y_range so it stays inside its panel."""
+    from manim import VMobject
+
+    pieces, run = VGroup(), []
+    for x in np.linspace(x_range[0], x_range[1], samples):
+        y = function(x)
+        if y_range[0] <= y <= y_range[1]:
+            run.append(axes.c2p(x, y))
+            continue
+        if len(run) > 1:
+            pieces.add(VMobject(color=color, stroke_width=stroke_width).set_points_smoothly(run))
+        run = []
+    if len(run) > 1:
+        pieces.add(VMobject(color=color, stroke_width=stroke_width).set_points_smoothly(run))
+    return pieces

@@ -1,0 +1,157 @@
+On Day 17 the null space collected every input a matrix sends to $\mathbf 0$. Day 20 widened "matrix" to any linear map between vector spaces, including the derivative. Today asks Day 17's question of those maps. The answer is again a subspace, and its size decides whether the map can ever send two different inputs to the same place.
+
+## The kernel
+
+<Definition term="Kernel">
+The **kernel** of a linear transformation $T : V \to W$ is the set of all vectors in $V$ that $T$ sends to the zero vector of $W$:
+
+$$
+\ker T = \{\, \mathbf u \in V : T(\mathbf u) = \mathbf 0 \,\}.
+$$
+
+When $T(\mathbf x) = A\mathbf x$ for a matrix $A$, the kernel is exactly $\operatorname{Nul}A$.
+</Definition>
+
+The kernel lives in the domain $V$. For a map from $\mathbb P_2$ to $\mathbb R^2$, the kernel is a set of polynomials, not of columns. It is also a set, so when nothing but zero goes to zero you write $\ker T = \{\mathbf 0\}$, not $\mathbf 0$.
+
+Testing one vector takes one evaluation. Take Day 20's map $T(\mathbf p) = (\green{\mathbf p(0)}, \red{\mathbf p(1)})$ from $\mathbb P_2$ to $\mathbb R^2$. For $\mathbf p = t^2 - t$ you get $T(\mathbf p) = (0 - 0,\ 1 - 1) = (0, 0)$, so $t^2 - t$ is in $\ker T$. For $\mathbf p = t^2 - 1$ you get $(-1, 0)$, so it is not. In pictures, $T$ reads a graph's height at the two pins $t = 0$ and $t = 1$, and a kernel vector is a graph that crosses both pins at height 0.
+
+<EvaluationKernel start={[1, 1, 0]} />
+
+To find the whole kernel, write $\mathbf p = a_0 + a_1 t + a_2 t^2$ and turn $T(\mathbf p) = \mathbf 0$ into equations on the coefficients:
+
+$$
+\begin{aligned}
+\mathbf p(0) &= a_0 = 0 \\
+\mathbf p(1) &= a_0 + a_1 + a_2 = 0 \\
+\Longrightarrow\quad \mathbf p &= a_2 t^2 - a_2 t = a_2(t^2 - t)
+\end{aligned}
+$$
+
+So $\ker T = \operatorname{Span}\{t^2 - t\}$, a line inside the three-dimensional space $\mathbb P_2$.
+
+## Why it is a subspace
+
+<Definition term="Theorem">
+The kernel of a linear transformation $T : V \to W$ is a subspace of $V$.
+</Definition>
+
+Run Day 11's three checks. Suppose $T(\mathbf u) = \mathbf 0$ and $T(\mathbf v) = \mathbf 0$, and let $c$ be any scalar.
+
+$$
+\begin{aligned}
+&\text{(a)} \quad T(\mathbf 0) = \mathbf 0 \\
+&\text{(b)} \quad T(\mathbf u + \mathbf v) = T(\mathbf u) + T(\mathbf v) = \mathbf 0 + \mathbf 0 = \mathbf 0 \\
+&\text{(c)} \quad T(c\,\mathbf u) = c\,T(\mathbf u) = c\,\mathbf 0 = \mathbf 0
+\end{aligned}
+$$
+
+Line (a) is Day 20's fact that every linear map sends zero to zero, and lines (b) and (c) use only the two rules in the definition of linear. Day 17's proof for $\operatorname{Nul}A$ is the special case $T(\mathbf x) = A\mathbf x$. The theorem also explains why the solutions of a homogeneous differential equation such as $y'' + \omega^2 y = 0$ can be added and scaled: they form the kernel of the linear map $y \mapsto y'' + \omega^2 y$ (Lay §4.2, Example 9).
+
+## The derivative
+
+<Pair>
+<Figure src="constants-flatten" alt="Two graph panels joined by an arrow labelled D. The left panel holds four pink horizontal lines, the constant polynomials p = c at heights 2, 1, −1 and −2. The right panel holds one thick teal line along the horizontal axis, the zero polynomial, labelled Dp = 0." />
+
+The derivative $D : \mathbb P_3 \to \mathbb P_3$ sends $a_0 + a_1 t + a_2 t^2 + a_3 t^3$ to $a_1 + 2a_2 t + 3a_3 t^2$. That is the zero polynomial exactly when $a_1 = a_2 = a_3 = 0$, so
+
+$$
+\ker D = \{a_0\} = \operatorname{Span}\{1\}.
+$$
+
+A constant has slope 0 everywhere. This kernel is the reason every antiderivative carries a $+\,C$.
+</Pair>
+
+Day 21's matrix gives the same answer. With $\mathcal B = \{1, t, t^2, t^3\}$, a polynomial is in $\ker D$ exactly when its coordinate vector is in the null space of $[D]_{\mathcal B}$, because $[D\mathbf p]_{\mathcal B} = [D]_{\mathcal B}[\mathbf p]_{\mathcal B}$ and only the zero polynomial has zero coordinates:
+
+$$
+[D]_{\mathcal B} = \begin{bmatrix} 0 & 1 & 0 & 0 \\ 0 & 0 & 2 & 0 \\ 0 & 0 & 0 & 3 \\ 0 & 0 & 0 & 0 \end{bmatrix},
+\qquad
+\operatorname{Nul}[D]_{\mathcal B} = \operatorname{Span}\left\{\begin{bmatrix} 1 \\ 0 \\ 0 \\ 0 \end{bmatrix}\right\}.
+$$
+
+The vector $(1, 0, 0, 0)$ is the coordinate vector of the constant $1$. The integral map is different. $T(\mathbf f) = \int_0^t \mathbf f(s)\,ds$ has $\ker T = \{\mathbf 0\}$, because an antiderivative that is identically zero has derivative $\mathbf f = \mathbf 0$.
+
+## One-to-one maps
+
+<Definition term="Theorem">
+A linear transformation $T : V \to W$ is one-to-one if and only if $\ker T = \{\mathbf 0\}$.
+</Definition>
+
+Both directions come from linearity. If $T(\mathbf u) = T(\mathbf v)$, then
+
+$$
+T(\yellow{\mathbf u} - \blue{\mathbf v}) = T(\yellow{\mathbf u}) - T(\blue{\mathbf v}) = \teal{\mathbf b} - \teal{\mathbf b} = \mathbf 0,
+$$
+
+so $\mathbf u - \mathbf v$ is in the kernel. When the kernel is only $\{\mathbf 0\}$, that forces $\mathbf u = \mathbf v$, and $T$ is one-to-one. In the other direction, a nonzero $\mathbf k$ in the kernel gives $T(\mathbf u + \mathbf k) = T(\mathbf u) + \mathbf 0 = T(\mathbf u)$, so the different inputs $\mathbf u$ and $\mathbf u + \mathbf k$ share one output.
+
+<Pair>
+<Figure src="same-output" alt="Left, a graph panel with dashed pins at t = 0 in green and t = 1 in red. The yellow parabola u = t² and the blue line v = t both pass through the pin points (0, 0) and (1, 1), along with two faint yellow parabolas u + c(t² − t). The pink parabola t² − t crosses both pins at height 0. Right, an arrow T leads to a small plane R² where a teal arrow reaches b = (0, 1), ringed in orange, and a pink dot sits at the origin." />
+
+Here $\yellow{\mathbf u} = t^2$ and $\blue{\mathbf v} = t$ both land on $\teal{\mathbf b} = (0, 1)$. Their difference $\pink{t^2 - t}$ lands on $\mathbf 0$. Adding any multiple of it to $\mathbf u$ keeps the graph pinned at the same two points, so the whole family $\mathbf u + c(t^2 - t)$ lands on $\mathbf b$.
+</Pair>
+
+<DifferenceInKernel matrix={[[1, -2], [-1, 2]]} u={[1, 1]} start={[1, -1]} />
+
+<Pair>
+<Figure src="third-pin" alt="The pink parabola t² − t in a graph panel with three dashed pins. It crosses the green pin t = 0 and the red pin t = 1 at height 0, but at the gray pin t = −1 an orange segment rises to height 2." />
+
+Adding a third pin changes the verdict. The map $S(\mathbf p) = (\mathbf p(-1), \mathbf p(0), \mathbf p(1))$ from $\mathbb P_2$ to $\mathbb R^3$ reads $t^2 - t$ as $(2, 0, 0)$. A nonzero polynomial of degree at most 2 has at most two roots, so only the zero polynomial reads 0 at all three pins. That gives $\ker S = \{\mathbf 0\}$, and $S$ is one-to-one.
+</Pair>
+
+For a matrix map $\mathbf x \mapsto A\mathbf x$, look for free variables. Each free variable in $A\mathbf x = \mathbf 0$ produces a nonzero kernel vector, so the map is one-to-one exactly when every column of $A$ has a pivot. For example,
+
+$$
+\begin{aligned}
+A &= \begin{bmatrix} 1 & 2 & 0 & 1 \\ 0 & 1 & 3 & 0 \\ 0 & 0 & 0 & 2 \end{bmatrix} && \text{pivots in columns 1, 2, 4} \\
+x_4 &= 0, \quad x_2 = -3x_3, \quad x_1 = -2x_2 = 6x_3 && x_3 \text{ free} \\
+\ker T &= \operatorname{Span}\{(6, -3, 1, 0)\}
+\end{aligned}
+$$
+
+so this $T : \mathbb R^4 \to \mathbb R^3$ is not one-to-one. Any map from $\mathbb R^4$ to $\mathbb R^3$ has at least one free variable, since three rows hold at most three pivots. Having fewer columns than rows does not guarantee a pivot in every column, though, so a tall matrix still needs row reduction. The theorem also needs linearity. For $f(x) = x^2$, only $0$ goes to $0$, yet $f(1) = f(-1)$.
+
+## Practice
+
+<Check>
+Let $T(\mathbf x) = A\mathbf x$ with $A = \begin{bmatrix} 1 & 2 & -1 \\ 2 & 4 & 1 \end{bmatrix}$. Find a basis for $\ker T$ and enter the basis vector whose second entry is 1. Then check that $\mathbf u = (3, 0, 1)$ and $\mathbf v = (1, 1, 1)$ have the same image. (Modeled on Lay §1.9, Example 4.)
+
+<VectorAnswer answer={[-2, 1, 0]} labels={["x₁", "x₂", "x₃"]} />
+
+<Answer>
+$$
+\begin{aligned}
+A &\sim \begin{bmatrix} 1 & 2 & -1 \\ 0 & 0 & 3 \end{bmatrix} \sim \begin{bmatrix} 1 & 2 & 0 \\ 0 & 0 & 1 \end{bmatrix} \\[4pt]
+x_3 &= 0, \qquad x_1 = -2x_2 \\[4pt]
+\ker T &= \operatorname{Span}\{(-2, 1, 0)\}
+\end{aligned}
+$$
+
+$A\mathbf u = (3 - 1,\ 6 + 1) = (2, 7)$ and $A\mathbf v = (1 + 2 - 1,\ 2 + 4 + 1) = (2, 7)$. Their difference $\mathbf u - \mathbf v = (2, -1, 0)$ is $-1$ times the basis vector, so it lies in $\ker T$ as the theorem promises.
+</Answer>
+</Check>
+
+<Check>
+Let $T : \mathbb P_3 \to \mathbb P_3$ be $T(\mathbf p) = \mathbf p''$, and let $\mathbf p = 3 - t + 4t^2 + t^3$. Find the polynomial $\mathbf q$ with $T(\mathbf q) = T(\mathbf p)$ whose constant and $t$ coefficients are both 0. (Modeled on Lay §4.2, Example 8.)
+
+<VectorAnswer answer={[0, 0, 4, 1]} labels={["constant", "t", "t²", "t³"]} />
+
+<Answer>
+In general $T(a_0 + a_1 t + a_2 t^2 + a_3 t^3) = 2a_2 + 6a_3 t$, which is zero exactly when $a_2 = a_3 = 0$, so $\ker T = \operatorname{Span}\{1, t\}$. Here $T(\mathbf p) = 8 + 6t$. Two inputs with the same image differ by a kernel vector, so $\mathbf q = \mathbf p - (3 - t) = 4t^2 + t^3$. As a check, $\mathbf q'' = 8 + 6t$.
+</Answer>
+</Check>
+
+<Check>
+Let $T : M_{2\times2} \to M_{2\times2}$ be $T(A) = A + A^T$. Compute $T(M)$ for $M = \begin{bmatrix} 1 & 3 \\ -3 & 0 \end{bmatrix}$, entering the entries row by row. Then describe $\ker T$. (Modeled on Lay §4.2 #33.)
+
+<VectorAnswer answer={[2, 0, 0, 0]} labels={["row 1, column 1", "row 1, column 2", "row 2, column 1", "row 2, column 2"]} />
+
+<Answer>
+$$
+M + M^T = \begin{bmatrix} 1 & 3 \\ -3 & 0 \end{bmatrix} + \begin{bmatrix} 1 & -3 \\ 3 & 0 \end{bmatrix} = \begin{bmatrix} 2 & 0 \\ 0 & 0 \end{bmatrix}
+$$
+
+So $M$ is not in the kernel. For a general $A = \begin{bmatrix} a & b \\ c & d \end{bmatrix}$, $A + A^T = \begin{bmatrix} 2a & b + c \\ b + c & 2d \end{bmatrix}$ is zero exactly when $a = d = 0$ and $c = -b$. The kernel is the set of matrices $\begin{bmatrix} 0 & b \\ -b & 0 \end{bmatrix}$, which is $\operatorname{Span}\left\{\begin{bmatrix} 0 & 1 \\ -1 & 0 \end{bmatrix}\right\}$. Changing $M$'s top-left entry from 1 to 0 would put it in the kernel.
+</Answer>
+</Check>
