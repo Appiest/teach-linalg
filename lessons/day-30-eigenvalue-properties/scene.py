@@ -211,14 +211,16 @@ class Lesson(LessonScene):
         plane = self.plane
         self.a_panel = corner_panel(named("A", basis_matrix(A)))
         self.grid = always_redraw(lambda: self.live.grid(plane, opacity=0.8))
+        line = self.say(r"Day 29 found the eigenvalues, so what do they tell us?", hold=0.2)
         self.play(plane.animate.set_opacity(0.3), FadeIn(self.grid), FadeIn(self.a_panel, shift=DOWN * 0.1), run_time=0.9)
+        self.wait(Timing.read_short)
         self.lines = eigen_lines(plane)
         self.labels = eigen_labels(plane)
         self.riders = VGroup(
             always_redraw(lambda: safe_arrow(plane, self.live.point(V1), Palette.yellow)),
             always_redraw(lambda: safe_arrow(plane, self.live.point(V2), Palette.blue)),
         )
-        line = self.say(r"This $A$ stretches the yellow line by 3 and the blue by 1.", hold=0.2)
+        line = self.say(r"This $A$ stretches the yellow line by 3 and the blue by 1.", line, hold=0.2)
         self.play(Create(self.lines[0]), Create(self.lines[1]), run_time=1.2)
         self.add(self.riders)
         self.play(GrowArrow(self.riders[0]), GrowArrow(self.riders[1]), run_time=0.9, rate_func=spring_soft)
@@ -321,6 +323,7 @@ class Lesson(LessonScene):
         self.play(FadeIn(steps[3], shift=UP * 0.1), run_time=0.8)
         self.wait(Timing.read_short)
         line = self.say(r"So \emph{similar} matrices share eigenvalues, trace and determinant.", line, hold=Timing.read_short)
+        line = self.say(r"Day 33 uses this to pick a map's simplest basis.", line, hold=Timing.read_short)
         self.play(FadeOut(steps), FadeOut(self.veil), FadeOut(self.a_panel), run_time=0.8)
         self.remove(*steps.get_family(), *self.a_panel.get_family())
         return line
@@ -332,7 +335,7 @@ class Lesson(LessonScene):
         self.play(FadeIn(plate), FadeIn(table[0]), FadeIn(table[1]), run_time=0.8)
         line = self.say(r"Back to $A$: it stretches $\mathbf v_1$ by 3 and $\mathbf v_2$ by 1.", line, hold=0.2)
         self.move_grid(A)
-        self.wait(Timing.beat)
+        line = self.say(r"We want $A^k$ without multiplying by $A$ a full $k$ times.", line, hold=Timing.read_short)
         self.move_grid(A_INVERSE, run_time=1.2)
         line = self.show_power(line, table)
         line = self.show_inverse(line, table)
@@ -388,6 +391,7 @@ class Lesson(LessonScene):
         self.pieces = always_redraw(lambda: split_pieces(plane, self.live))
         self.play(Create(self.pieces), run_time=1.2)
         self.wait(Timing.read_short)
+        line = self.say(r"Day 32 turns this eigenvector basis into a diagonal matrix.", line, hold=Timing.read_short)
         self.play(FadeOut(claim), run_time=0.5)
         self.remove(*claim.get_family())
         return line

@@ -1,4 +1,4 @@
-Yesterday's lesson found eigenvalues as the roots of $\det(A - \lambda I) = 0$. Today those roots pay off. Without any row reduction, the eigenvalues of $A$ give its trace and determinant. They also give the eigenvalues of $A^2$, $A^{-1}$ and $A + cI$, and they predict where $A^k\mathbf x$ points once $k$ is large. The video uses $A = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$, which stretches the $\yellow{\text{yellow line}}$ through $(1, 1)$ by $3$ and the $\blue{\text{blue line}}$ through $(1, -1)$ by $1$.
+Yesterday's lesson found eigenvalues as the roots of $\det(A - \lambda I) = 0$. Today asks what those numbers tell you once you have them. Without any row reduction, the eigenvalues of $A$ give its trace and determinant. They also give the eigenvalues of $A^2$, $A^{-1}$ and $A + cI$, and they predict where $A^k\mathbf x$ points once $k$ is large. That last fact is the reason the course studies eigenvalues at all, and Days 32 and 33 build on it to compute powers of a matrix quickly. The video uses $A = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$, which stretches the $\yellow{\text{yellow line}}$ through $(1, 1)$ by $3$ and the $\blue{\text{blue line}}$ through $(1, -1)$ by $1$.
 
 ## Trace and determinant
 
@@ -75,7 +75,7 @@ $$
 \det(B - \lambda I) = \det\bigl(P^{-1}(A - \lambda I)P\bigr) = \det(P^{-1})\det(A - \lambda I)\det P = \det(A - \lambda I).
 $$
 
-The reverse does not hold. The matrices $\begin{bmatrix} 2 & 1 \\ 0 & 2 \end{bmatrix}$ and $2I$ both have characteristic polynomial $(\lambda - 2)^2$, but $P^{-1}(2I)P = 2I$ for every $P$, so the only matrix similar to $2I$ is $2I$ itself. Row reduction does not preserve eigenvalues either, because a row operation multiplies $A$ on one side only.
+The reverse does not hold. The matrices $\begin{bmatrix} 2 & 1 \\ 0 & 2 \end{bmatrix}$ and $2I$ both have characteristic polynomial $(\lambda - 2)^2$, but $P^{-1}(2I)P = 2I$ for every $P$, so the only matrix similar to $2I$ is $2I$ itself. Row reduction does not preserve eigenvalues either, because a row operation multiplies $A$ on one side only. On Day 33 this theorem lets you study a map in whichever basis makes its matrix simplest without changing its eigenvalues.
 
 ## Independent eigenvectors
 
@@ -83,14 +83,14 @@ The reverse does not hold. The matrices $\begin{bmatrix} 2 & 1 \\ 0 & 2 \end{bma
 Eigenvectors $\mathbf v_1, \dots, \mathbf v_r$ that belong to distinct eigenvalues $\lambda_1, \dots, \lambda_r$ are linearly independent.
 </Definition>
 
-For two eigenvectors, suppose $c_1\mathbf v_1 + c_2\mathbf v_2 = \mathbf 0$. Applying $A$ gives $c_1\lambda_1\mathbf v_1 + c_2\lambda_2\mathbf v_2 = \mathbf 0$, and subtracting $\lambda_2$ times the first equation leaves $c_1(\lambda_1 - \lambda_2)\mathbf v_1 = \mathbf 0$. Since $\lambda_1 \ne \lambda_2$ and $\mathbf v_1 \ne \mathbf 0$, $c_1 = 0$, and then $c_2\mathbf v_2 = \mathbf 0$ forces $c_2 = 0$. The general proof repeats this step on the first vector that would depend on the earlier ones. One consequence is that an $n \times n$ matrix has at most $n$ distinct eigenvalues, since $\mathbb R^n$ holds at most $n$ independent vectors.
+For two eigenvectors, suppose $c_1\mathbf v_1 + c_2\mathbf v_2 = \mathbf 0$. Applying $A$ gives $c_1\lambda_1\mathbf v_1 + c_2\lambda_2\mathbf v_2 = \mathbf 0$, and subtracting $\lambda_2$ times the first equation leaves $c_1(\lambda_1 - \lambda_2)\mathbf v_1 = \mathbf 0$. Since $\lambda_1 \ne \lambda_2$ and $\mathbf v_1 \ne \mathbf 0$, $c_1 = 0$, and then $c_2\mathbf v_2 = \mathbf 0$ forces $c_2 = 0$. The general proof repeats this step on the first vector that would depend on the earlier ones. One consequence is that an $n \times n$ matrix has at most $n$ distinct eigenvalues, since $\mathbb R^n$ holds at most $n$ independent vectors. Day 32 uses this theorem to show that an $n \times n$ matrix with $n$ distinct eigenvalues can be diagonalized.
 
 ## Repeated multiplication
 
 <Pair>
 <Figure src="swing" alt="The yellow line through (1, 1) and the blue line through (1, −1). Seven teal arrows of equal length fan out from the origin: x0 points right along the x-axis, x1 and x2 point higher, and the later ones crowd against the yellow line, where the last arrow ends in an orange dot." />
 
-When $\mathbf v_1, \mathbf v_2$ are independent eigenvectors, every start splits as $\mathbf x_0 = c_1\mathbf v_1 + c_2\mathbf v_2$, and each piece picks up its own power:
+The goal here is to find $A^k\mathbf x_0$ without multiplying by $A$ a full $k$ times. When $\mathbf v_1, \mathbf v_2$ are independent eigenvectors, every start splits as $\mathbf x_0 = c_1\mathbf v_1 + c_2\mathbf v_2$, and each piece picks up its own power:
 
 $$
 \mathbf x_k = A^k\mathbf x_0 = c_1\lambda_1^k\yellow{\mathbf v_1} + c_2\lambda_2^k\blue{\mathbf v_2}.
@@ -100,6 +100,8 @@ In the video $\mathbf x_0 = (1, 0) = \tfrac12\yellow{(1, 1)} + \tfrac12\blue{(1,
 </Pair>
 
 <IterateSwing matrix={[[2, 1], [1, 2]]} pairs={[{ vector: [1, 1], value: 3 }, { vector: [1, -1], value: 1 }]} start={[1, 0]} />
+
+This split needs a full basis of eigenvectors. Tomorrow, Day 31 asks what happens when a repeated eigenvalue comes with too few independent eigenvectors, and Day 32 turns a full eigenvector basis into a diagonal matrix.
 
 ## Practice
 
