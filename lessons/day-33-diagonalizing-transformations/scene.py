@@ -235,7 +235,7 @@ class Lesson(LessonScene):
         self.left_static, self.right_static = left.static_grid(), right.static_grid()
         self.left_moving, self.right_moving = left.moving_grid(self.live), right.moving_grid(self.live)
         self.left_basis, self.right_basis = left.moving_basis(self.live), right.moving_basis(self.live)
-        self.a_row = named("A", column_matrix(A, STANDARD_COLORS))
+        self.a_row = named("A", column_matrix(A, STANDARD_COLORS)).set_z_index(10)
         self.left_plate_rows = VGroup(self.a_row)
         top_plate([self.a_row], -6.85)
         self.left_plate = plate_for(self.a_row, padding=0.2).set_z_index(9)
@@ -243,8 +243,10 @@ class Lesson(LessonScene):
         line = self.say(r"Here is Day 22's matrix $A$ on the standard grid.", hold=0.2)
         self.play(*[GrowArrow(a) for a in self.left_basis], FadeIn(self.left_plate), FadeIn(self.a_row), run_time=1.0, rate_func=spring_soft)
         self.wait(Timing.beat)
+        line = self.say(r"Day 22 made it triangular. Which basis makes it simplest?", line)
+        line = self.say(r"Day 32's $A = PDP^{-1}$ points to its eigenvectors.", line)
 
-        self.b_row = named(r"\mathcal B", tex(r"\{", r"\mathbf v_1", ",", r"\mathbf v_2", r"\}", colors=(None, Palette.yellow, None, Palette.blue), font_size=36))
+        self.b_row = named(r"\mathcal B", tex(r"\{", r"\mathbf v_1", ",", r"\mathbf v_2", r"\}", colors=(None, Palette.yellow, None, Palette.blue), font_size=36)).set_z_index(10)
         top_plate([self.b_row], 0.45)
         self.right_plate = plate_for(self.b_row, padding=0.2).set_z_index(9)
         self.v_labels = VGroup(
@@ -321,6 +323,7 @@ class Lesson(LessonScene):
         blank = column_matrix(((2, 0), (0, -1)), EIGEN_COLORS)
         t_row = named(r"[T]_{\mathcal B}", blank).set_z_index(10)
         t_row.move_to(self.b_row, aligned_edge=LEFT)
+        line = self.say(r"Now build $[T]_{\mathcal B}$ to see how simple the map becomes.", line)
         line = self.say(r"Column $j$ of $[T]_{\mathcal B}$ is $[A\mathbf v_j]_{\mathcal B}$, as on Day 21.", line, hold=0.2)
         self.play(FadeOut(self.steps), FadeOut(self.ax_names), FadeIn(av1, shift=UP * 0.1), run_time=0.8, rate_func=spring_soft)
         self.play(FadeIn(av2, shift=UP * 0.1), run_time=0.7, rate_func=spring_soft)
@@ -377,6 +380,7 @@ class Lesson(LessonScene):
         line = self.say(r"Only the eigenbasis makes the matrix diagonal.", line, hold=0.2)
         self.play(Create(outline), run_time=0.8)
         self.wait(Timing.read_short)
+        line = self.say(r"On Day 34, symmetric matrices get an eigenbasis at right angles.", line)
         self.play(FadeOut(VGroup(drawings, names, invariants, outline)), run_time=0.7)
         return line
 
@@ -384,7 +388,7 @@ class Lesson(LessonScene):
         orbit = Orbit()
         panel = orbit.panel()
         self.play(FadeIn(orbit.backdrop), run_time=0.9)
-        line = self.say(r"Powers of $A$ are where the eigenbasis pays off.", line, hold=0.2)
+        line = self.say(r"Can we predict $A^k\mathbf x_0$ without multiplying any matrices?", line, hold=0.2)
         dot, arrow = orbit.dot_at(0), orbit.arrow_to(0)
         self.play(FadeIn(dot), FadeIn(arrow), FadeIn(panel.plate), FadeIn(panel.rows[0]), run_time=0.9)
         line = self.say(r"Each step doubles the $\mathbf v_1$ part and flips the $\mathbf v_2$ part.", line, hold=0.2)

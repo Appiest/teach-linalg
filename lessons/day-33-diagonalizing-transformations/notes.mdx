@@ -1,4 +1,4 @@
-On Day 22 the map $\mathbf x \mapsto A\mathbf x$ with $A = \begin{bmatrix} 1 & 2 \\ 1 & 0 \end{bmatrix}$ got a triangular matrix in the basis $\{(2, 1), (-1, 2)\}$, and Day 32 factored matrices as $A = PDP^{-1}$. Today puts the two ideas together. If you describe a map in a basis made of its own eigenvectors, its matrix is diagonal, because the map only stretches each basis vector.
+Day 21 showed that one linear map has a different matrix in every basis, and on Day 22 the map $\mathbf x \mapsto A\mathbf x$ with $A = \begin{bmatrix} 1 & 2 \\ 1 & 0 \end{bmatrix}$ got a triangular matrix in the basis $\{(2, 1), (-1, 2)\}$. That raises a question: which basis gives a map its simplest possible matrix? Day 32 factored matrices as $A = PDP^{-1}$, and today reads that factorization as the answer. If you describe a map in a basis made of its own eigenvectors, its matrix is diagonal, because the map only stretches each basis vector.
 
 <Figure src="two-grids" alt="Two copies of the same plane after A = [1 2; 1 0] acts. On the left, the standard grid has been carried to slanted lines, green e1 has moved to (1, 1) and red e2 to (2, 0), and the yellow vector x = (1, 2) lands at teal Ax = (5, 1). On the right, the purple-gray grid of v1 = (2, 1) and v2 = (−1, 1) still lines up with itself: yellow v1 has doubled and blue v2 has flipped, and Ax is two yellow steps and one backward blue step. The top plates read x = (1, 2) maps to Ax = (5, 1) on the left, and [x]_B = (1, 1) maps to [Ax]_B = (2, −1) on the right, above [T]_B = [2 0; 0 −1]." wide />
 
@@ -6,7 +6,7 @@ Both halves show the same arrow $\yellow{\mathbf x}$ going to the same arrow $\t
 
 ## The matrix in an eigenvector basis
 
-Recall from Day 21 that the **$\mathcal B$-matrix** $[T]_{\mathcal B}$ has the coordinate vectors $[T(\mathbf b_j)]_{\mathcal B}$ as its columns, so that $[T(\mathbf x)]_{\mathcal B} = [T]_{\mathcal B}[\mathbf x]_{\mathcal B}$. When the basis vectors are eigenvectors, each $T(\mathbf b_j)$ is a multiple of $\mathbf b_j$ alone, so each column has a single nonzero entry, and it sits on the diagonal.
+Recall from Day 21 that the **$\mathcal B$-matrix** $[T]_{\mathcal B}$ has the coordinate vectors $[T(\mathbf b_j)]_{\mathcal B}$ as its columns, so that $[T(\mathbf x)]_{\mathcal B} = [T]_{\mathcal B}[\mathbf x]_{\mathcal B}$. The goal of this section is to build that matrix for an eigenvector basis and see that it is exactly the $D$ from Day 32. When the basis vectors are eigenvectors, each $T(\mathbf b_j)$ is a multiple of $\mathbf b_j$ alone, so each column has a single nonzero entry, and it sits on the diagonal.
 
 <Definition term="Diagonal matrix representation">
 Suppose $A = PDP^{-1}$, where $D$ is a diagonal $n \times n$ matrix. If $\mathcal B$ is the basis of $\mathbb R^n$ formed from the columns of $P$, then $D$ is the $\mathcal B$-matrix of the transformation $\mathbf x \mapsto A\mathbf x$.
@@ -38,7 +38,7 @@ Order matters only for the diagonal. Swapping $\mathbf b_1$ and $\mathbf b_2$ sw
 
 ## Similar matrices
 
-Nothing in the proof above used that $D$ is diagonal. For any invertible $P$, the matrix $C = P^{-1}AP$ is the matrix of $\mathbf x \mapsto A\mathbf x$ in the basis formed by the columns of $P$. Read the other way, every matrix of this map in some basis is similar to $A$.
+Nothing in the proof above used that $D$ is diagonal. For any invertible $P$, the matrix $C = P^{-1}AP$ is the matrix of $\mathbf x \mapsto A\mathbf x$ in the basis formed by the columns of $P$. Read the other way, every matrix of this map in some basis is similar to $A$. Tomorrow's symmetric matrices use this with a basis of perpendicular unit eigenvectors, where $P^{-1}$ is simply $P^T$.
 
 <Pair>
 <Figure src="square" alt="A square diagram. The top edge sends x to Ax by A. The left edge goes up from [x]_B to x by P, the right edge goes down from Ax to [Ax]_B by P inverse, and the bottom edge sends [x]_B to [Ax]_B by D. Below it, one third of [1 1; −1 2] times [1 2; 1 0] times [2 −1; 1 1] equals [2 0; 0 −1]." />
@@ -58,7 +58,7 @@ The two eigenpolynomials are $1$ and $1 + t$, since $T(1) = 1$ and $T(1 + t) = 2
 
 ## Powers and dynamical systems
 
-In eigenvector coordinates, applying $A$ once multiplies coordinate $i$ by $\lambda_i$, so applying it $k$ times multiplies coordinate $i$ by $\lambda_i^k$. If $\mathbf x_0 = c_1\mathbf v_1 + c_2\mathbf v_2$, then
+On Day 30, repeated multiplication swung a vector toward one eigenvector's line. The goal here is to predict that motion exactly without multiplying any matrices. In eigenvector coordinates, applying $A$ once multiplies coordinate $i$ by $\lambda_i$, so applying it $k$ times multiplies coordinate $i$ by $\lambda_i^k$. If $\mathbf x_0 = c_1\mathbf v_1 + c_2\mathbf v_2$, then
 
 $$
 \mathbf x_k = A^k\mathbf x_0 = c_1\lambda_1^k\,\mathbf v_1 + c_2\lambda_2^k\,\mathbf v_2, \qquad A^k = PD^kP^{-1}.
@@ -71,6 +71,8 @@ With the video's matrix and $\mathbf x_0 = \tfrac14\yellow{\mathbf v_1} + \blue{
 </Pair>
 
 In the next widget the two eigenvectors are the same, but the eigenvalues are $1$ and $\tfrac12$. The $\blue{\mathbf v_2}$ part now halves at each step and dies out, so every orbit settles at $c_1\yellow{\mathbf v_1}$.
+
+Tomorrow asks which matrices always have an eigenvector basis at right angles, and Day 39 uses that basis to remove the cross terms from a quadratic form.
 
 <EigenOrbitSettle v1={[2, 1]} v2={[-1, 1]} lambdas={[1, 0.5]} target={[4, 2]} />
 
