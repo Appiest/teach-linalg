@@ -45,8 +45,8 @@ class Lesson(LessonScene):
     def construct(self):
         plane = make_plane()
         pulse = self.open_episode(plane)
-        self.play(FadeOut(pulse), run_time=0.5)
-        v_arrow, line = self.arrow_is_a_list(plane)
+        line = self.why_vectors(plane, pulse)
+        v_arrow, line = self.arrow_is_a_list(plane, line)
         line = self.addition(plane, v_arrow, line)
         line = self.scaling(plane, v_arrow, line)
         line = self.combinations(plane, line)
@@ -56,9 +56,19 @@ class Lesson(LessonScene):
             *self.mobjects,
         )
 
-    def arrow_is_a_list(self, plane):
+    def why_vectors(self, plane, pulse):
+        shear = np.array([[1.0, 0.4], [0.0, 1.0]])
+        origin = plane.c2p(0, 0)
+        line = self.say(r"Linear algebra solves equations and describes how space moves.", hold=0.2)
+        self.play(ApplyMatrix(shear, plane, about_point=origin), run_time=1.6, rate_func=spring_soft)
+        self.play(ApplyMatrix(np.linalg.inv(shear), plane, about_point=origin), run_time=1.2, rate_func=spring_soft)
+        line = self.say(r"Both are built from vectors, so vectors come first.", line, hold=Timing.read_short)
+        self.play(FadeOut(pulse), run_time=0.5)
+        return line
+
+    def arrow_is_a_list(self, plane, line):
         v_arrow = vector_arrow(V, Palette.yellow, plane)
-        line = self.say(r"A vector is an arrow that starts at the origin.", hold=0.2)
+        line = self.say(r"A vector is an arrow that starts at the origin.", line, hold=0.2)
         self.play(GrowArrow(v_arrow), run_time=1.4, rate_func=spring_soft)
         self.wait(Timing.read_short)
 
@@ -85,6 +95,7 @@ class Lesson(LessonScene):
         w_arrow = vector_arrow(W, Palette.blue, plane)
         v_name = backed(MathTex(r"\vec v", color=Palette.yellow)).next_to(plane.c2p(*V), RIGHT, buff=0.15)
         w_name = backed(MathTex(r"\vec w", color=Palette.blue)).next_to(plane.c2p(*W), LEFT, buff=0.15)
+        line = self.say(r"Linear algebra is built on adding vectors and scaling them.", line, hold=Timing.read_short)
         line = self.say(r"Here is a second vector, $\vec w$.", line, hold=0.2)
         self.play(FadeIn(v_name), GrowArrow(w_arrow), FadeIn(w_name), run_time=1.2, rate_func=spring_soft)
         self.wait(Timing.beat)
@@ -181,6 +192,7 @@ class Lesson(LessonScene):
         self.add(b_part)
         self.play(GrowArrow(result), run_time=1.0, rate_func=spring_soft)
         self.wait(Timing.read_short)
+        line = self.say(r"Solving a system will mean finding the right $a$ and $b$.", line, hold=Timing.read_short)
 
         line = self.say(r"Each choice of $a$ and $b$ lands the tip somewhere new.", line, hold=0.2)
         stamps = self.stamp_choices(plane, a, b, [(-0.8, 1.2), (0.6, -1.0), (-0.4, -0.9), (1.2, 0.6)])

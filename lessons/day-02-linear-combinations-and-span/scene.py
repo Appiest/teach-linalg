@@ -121,6 +121,7 @@ class Lesson(LessonScene3D):
         self.remove(grow_w)
         self.add(w_arrow)
         self.wait(Timing.beat)
+        line = self.say(r"Today we ask which places those combinations can reach.", line, hold=Timing.read_short)
 
         grid = always_redraw(lambda: skewed_grid(plane, V, swung_w(w_turn.get_value())))
         line = self.say(r"Every choice of weights $a$ and $b$ lands somewhere.", line, hold=0.2)
@@ -184,6 +185,10 @@ class Lesson(LessonScene3D):
 
         augmented = self.augmented_from(equation, system)
         line = self.say(r"The vectors become the columns of an \emph{augmented matrix}.", line, hold=Timing.read_long)
+        line = self.say(r"Tomorrow we row reduce this matrix to solve systems.", line, hold=0.2)
+        numbers = VGroup(*augmented.get_entries(), *augmented.get_brackets())
+        self.play(Indicate(numbers, color=Palette.glow, scale_factor=1.06), run_time=1.0)
+        self.wait(Timing.beat)
 
         solution = backed(MathTex(r"x_1 = 1,\quad x_2 = -2", color=Palette.text, font_size=44), padding=0.2)
         solution.next_to(augmented, DOWN, buff=0.35, aligned_edge=LEFT)
