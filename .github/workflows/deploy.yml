@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # Rebuild just after midnight in Los Angeles so the day's lesson unlocks. Two times cover PDT and PST.
+  schedule:
+    - cron: "10 7 * * *"
+    - cron: "10 8 * * *"
 
 permissions:
   contents: read

@@ -35,18 +35,22 @@ function lessonFolder(day: CurriculumDay): string {
   return `day-${String(day.day).padStart(2, "0")}-${day.slug}`;
 }
 
-function readPublished(folder: string): LessonMeta | null {
-  const metaPath = path.join(lessonsDir, folder, "meta.json");
-  const hasVideo = fs.existsSync(path.join(lessonsDir, folder, "lesson.mp4"));
-  if (!hasVideo || !fs.existsSync(metaPath)) return null;
-  return readJson<LessonMeta>(metaPath);
+/** Folders unlocked for this build, decided once by scripts/sync-media.mjs from each lesson's published_on date. */
+function releasedFolders(): Set<string> {
+  return new Set(readJson<string[]>(path.join(process.cwd(), "src", "lib", "released.generated.json")));
+}
+
+function readPublished(folder: string, released: Set<string>): LessonMeta | null {
+  if (!released.has(folder)) return null;
+  return readJson<LessonMeta>(path.join(lessonsDir, folder, "meta.json"));
 }
 
 export function getLessons(): Lesson[] {
   const curriculum = readJson<{ days: CurriculumDay[] }>(path.join(repoRoot, "curriculum.json"));
+  const released = releasedFolders();
   return curriculum.days.map((day) => {
     const folder = lessonFolder(day);
-    return { ...day, folder, published: readPublished(folder) };
+    return { ...day, folder, published: readPublished(folder, released) };
   });
 }
 

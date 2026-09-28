@@ -1,0 +1,2 @@
+Day 4 is up! Today is matrix times vector: Ax just means using the entries of x as weights on the columns of A. Watch the columns fly out of the matrix and snap together tip to tail.
+https://appiest.github.io/teach-linalg/day/4/

@@ -5,7 +5,23 @@ const siteRoot = path.resolve(import.meta.dirname, "..");
 const repoRoot = path.resolve(siteRoot, "..");
 const lessonsSource = path.join(repoRoot, "lessons");
 const lessonsTarget = path.join(siteRoot, "public", "lessons");
+const releasedListPath = path.join(siteRoot, "src", "lib", "released.generated.json");
 const publishedFiles = ["lesson.mp4", "poster.jpg"];
+const showAllLessons = process.env.SHOW_ALL_LESSONS === "1";
+
+/** Today's date as YYYY-MM-DD in the course's time zone, so a lesson unlocks at midnight Pacific. */
+function courseToday() {
+  return new Date().toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
+}
+
+function isReleased(folder) {
+  const source = path.join(lessonsSource, folder);
+  if (!fs.existsSync(path.join(source, "lesson.mp4"))) return false;
+  if (showAllLessons) return true;
+  const metaPath = path.join(source, "meta.json");
+  if (!fs.existsSync(metaPath)) return false;
+  return JSON.parse(fs.readFileSync(metaPath, "utf8")).published_on <= courseToday();
+}
 
 function syncLesson(folder) {
   const source = path.join(lessonsSource, folder);
@@ -29,7 +45,8 @@ function writePaletteCss() {
 }
 
 fs.rmSync(lessonsTarget, { recursive: true, force: true });
-for (const folder of fs.readdirSync(lessonsSource)) {
-  if (fs.existsSync(path.join(lessonsSource, folder, "lesson.mp4"))) syncLesson(folder);
-}
+const released = fs.readdirSync(lessonsSource).filter(isReleased).sort();
+released.forEach(syncLesson);
+fs.writeFileSync(releasedListPath, `${JSON.stringify(released, null, 2)}\n`);
+console.log(`Released lessons (${showAllLessons ? "preview, all built" : courseToday()}): ${released.join(", ")}`);
 writePaletteCss();

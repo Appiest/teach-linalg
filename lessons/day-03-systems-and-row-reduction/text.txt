@@ -1,0 +1,2 @@
+Day 3 is up! Today you learn row reduction, the method for actually solving a system of equations. Watch the two lines turn while the point where they cross stays put.
+https://appiest.github.io/teach-linalg/day/3/

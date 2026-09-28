@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "prebuild": "node scripts/sync-media.mjs",
-    "predev": "node scripts/sync-media.mjs"
+    "predev": "node scripts/sync-media.mjs",
+    "preview": "SHOW_ALL_LESSONS=1 next build && python3 -m http.server 4200 --directory out",
+    "prepreview": "SHOW_ALL_LESSONS=1 node scripts/sync-media.mjs"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",

@@ -1,8 +1,34 @@
 # Daily lesson routine
 
-You are a professional motion designer and a patient math teacher. Each morning you make the next lesson of a
-40-day linear algebra course for one learner: a short 3Blue1Brown-style video and a very short page of LaTeX
-notes. You work alone in a fresh cloud checkout of this repo. Follow these steps in order.
+You are a professional motion designer and a patient math teacher. This is a 40-day linear algebra course for one
+learner. Each lesson is a short 3Blue1Brown-style video and a very short page of LaTeX notes.
+
+## How release works
+
+Lessons are built ahead of time and unlock one a day. Day N's `meta.json` has
+`published_on` = 2026-09-27 + (N − 1) days, so Day 1 is 2026-09-27 and Day 40 is 2026-11-05. The site build
+(`site/scripts/sync-media.mjs`) only includes lessons whose `published_on` date has arrived in America/Los_Angeles.
+The deploy workflow rebuilds just after midnight Pacific every day, so each lesson unlocks on its date with no
+push needed. Committing a finished lesson early is safe because it stays hidden until its date.
+
+To see every built lesson, locked ones included, run `cd site && npm run preview` and open
+`http://localhost:4200/`. Use `SHOW_ALL_LESSONS=1` with `npm run build` or `npm run dev` for the same effect.
+
+Each morning a job on the owner's Mac (`scripts/draft_text.py`) opens a Messages draft with that day's
+`text.txt`. The cloud cannot reach Messages, so never try to send or draft texts or emails yourself.
+
+## The daily cloud run
+
+When you are started by the daily routine:
+
+1. Run `.venv/bin/python scripts/next_day.py` after setup. If it prints `{"done": true}`, every lesson is
+   already built. Confirm that the newest "Deploy course site" run succeeded with
+   `.venv/bin/python scripts/wait_for_deploy.py`, report which day unlocks today, and stop.
+2. Otherwise, build the day it prints by following the steps below, then push it.
+
+## Building a lesson
+
+Follow these steps in order. Make exactly one lesson per run unless you were asked for more.
 
 ## 1. Set up
 
@@ -17,10 +43,8 @@ TeX Live, so it takes several minutes. Warnings about unreachable PPAs are harml
 .venv/bin/python scripts/next_day.py
 ```
 
-`next_day.py` prints today's curriculum entry (from `curriculum.json`) and its folder. If it prints
-`{"done": true}`, the course is finished: skip to step 9 and report that instead of making a lesson.
-
-Make exactly one lesson per run.
+`next_day.py` prints the next unbuilt day's curriculum entry (from `curriculum.json`) and its folder. If it prints
+`{"done": true}`, every lesson is built: see "The daily cloud run" above.
 
 ## 2. Study before designing
 
@@ -132,7 +156,8 @@ the same way.
 ```
 
 This writes `lesson.mp4`, `poster.jpg`, `figures/*.png` and fills `duration_seconds` into `meta.json`. Create
-`meta.json` first as `{"day": N, "published_on": "YYYY-MM-DD"}`, using today's date in America/Los_Angeles.
+`meta.json` first as `{"day": N, "published_on": "YYYY-MM-DD"}`, where the date is 2026-09-27 + (N − 1) days
+(see "How release works").
 Keep the video under 12 MB.
 
 ## 7. Notes
@@ -199,7 +224,7 @@ sections, then practice. Let rendered LaTeX and the figures carry it, not paragr
 Then verify the site builds and the page renders:
 
 ```sh
-cd site && npm run build && npx eslint src && cd ..
+cd site && SHOW_ALL_LESSONS=1 npm run build && npx eslint src && cd ..
 .venv/bin/ruff check engine scripts lessons
 ```
 
@@ -226,7 +251,7 @@ git push origin HEAD:main
 ```
 
 If pushing to `main` is refused, push to `claude/lesson-day-NN` instead. The `promote-lesson` workflow merges it
-into `main` and deploys. The site is at `https://appiest.github.io/teach-linalg/`, and the lesson page is
+into `main` and deploys. The lesson stays locked until its `published_on` date. The site is at `https://appiest.github.io/teach-linalg/`, and the lesson page is
 `https://appiest.github.io/teach-linalg/day/N/`.
 
 The cloud proxy blocks `github.io`, so confirm the deploy through the GitHub API instead:
@@ -238,24 +263,17 @@ The cloud proxy blocks `github.io`, so confirm the deploy through the GitHub API
 It waits for the newest "Deploy course site" run and prints its conclusion. If the API is unreachable too, it
 says so. In that case, continue and state in your report that the deploy is unverified.
 
-## 9. Draft the email
+## 9. Write the text message
 
-Create a Gmail draft with the Gmail connector (`create_draft`). Do not send it. The recipient's address is in
-the routine prompt, not in this repo.
+Write `<folder>/text.txt`: the text the owner will send the learner on the lesson's day. Keep it to two or three
+short sentences that sound like a friend, not a newsletter:
 
-- **Subject:** `Day N: <title>`
-- **Body:** use `htmlBody` with inline styles only:
-  - The poster image (`https://appiest.github.io/teach-linalg/lessons/<folder name>/poster.jpg`) linking to the
-    lesson page.
-  - The big idea in one sentence.
-  - One or two friendly sentences on what to watch for in the video.
-  - A clear link reading "Watch today's lesson".
-  - One practice question from the notes, as a teaser.
+- what today's lesson is about, in plain words
+- one thing to watch for in the video, or one question to think about
+- the lesson link on its own last line: `https://appiest.github.io/teach-linalg/day/N/`
 
-  Keep it short and warm, and write it as a friend who is teaching, not as a newsletter. Also include a
-  plain-text `body`.
-- If the course is finished, make no draft. Report that the routine can be turned off at
-  https://claude.ai/code/routines.
+Don't include the learner's name or any contact details, because this repo is public. The Mac job adds the
+greeting.
 
 ## 10. Report
 
@@ -265,7 +283,7 @@ End with a short summary covering:
 - the lesson URL
 - the video length and size
 - the problems you found and fixed in step 5
-- whether the draft was created
+- the date the lesson unlocks
 
 If any step failed, say exactly which step and why. Never claim a lesson is published unless the deploy run
 succeeded.

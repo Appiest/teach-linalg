@@ -1,0 +1,2 @@
+Day 2 is up! Today is about span: every place you can reach by scaling and adding a few vectors. Watch what happens to the plane when the two arrows line up.
+https://appiest.github.io/teach-linalg/day/2/
