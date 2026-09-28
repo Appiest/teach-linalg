@@ -1,0 +1,2 @@
+Day 15 is up! Today a basis turns every vector into a short list of numbers, and that is why every basis of a space has the same size, its dimension. Watch a polynomial turn into a column and back again, and notice that nothing gets lost either way.
+https://appiest.github.io/teach-linalg/day/15/

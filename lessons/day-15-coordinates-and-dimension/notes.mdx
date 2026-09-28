@@ -1,0 +1,135 @@
+Yesterday a basis gave every vector exactly one way to be written as a combination. Today those weights get a name, the coordinates, and they turn any space with a basis of $n$ vectors into a copy of $\mathbb{R}^n$. That translation also proves that every basis of a space has the same size, which lets us talk about its dimension.
+
+## Coordinates
+
+<Definition term="Coordinate vector">
+Let $\mathcal B = \{\mathbf b_1, \dots, \mathbf b_n\}$ be a basis for $V$ and let $\mathbf x$ be in $V$. The **coordinates of $\mathbf x$ relative to $\mathcal B$** are the weights $c_1, \dots, c_n$ with $\mathbf x = c_1\mathbf b_1 + \cdots + c_n\mathbf b_n$. They form the **coordinate vector**
+
+$$
+[\mathbf x]_{\mathcal B} = \begin{bmatrix} c_1 \\ \vdots \\ c_n \end{bmatrix}.
+$$
+</Definition>
+
+The weights exist because $\mathcal B$ spans $V$, and they are unique because $\mathcal B$ is independent. The order of the basis matters, since swapping $\mathbf b_1$ and $\mathbf b_2$ swaps the entries of $[\mathbf x]_{\mathcal B}$.
+
+<Pair>
+<Figure src="coordinates" alt="The basis vectors b1 = (2, 1) in green and b2 = (−1, 2) in red with the grid of their whole-number combinations. Two green steps of b1 and one red step of b2 lead from the origin to the tip of the yellow vector x = (3, 4), and a column shows its coordinate vector (2, 1)." />
+
+In $\mathbb R^n$, put the basis vectors side by side in the **change-of-coordinates matrix** $P_{\mathcal B} = [\,\mathbf b_1\ \cdots\ \mathbf b_n\,]$. Then the combination $c_1\mathbf b_1 + \cdots + c_n\mathbf b_n$ is the product $P_{\mathcal B}\,[\mathbf x]_{\mathcal B}$:
+
+$$
+\mathbf x = P_{\mathcal B}\,[\mathbf x]_{\mathcal B}, \qquad [\mathbf x]_{\mathcal B} = P_{\mathcal B}^{-1}\,\mathbf x .
+$$
+
+$P_{\mathcal B}$ is invertible because its columns form a basis of $\mathbb R^n$.
+</Pair>
+
+Here is the backward direction worked out. Take $\mathcal B = \left\{\green{\begin{bmatrix} 1 \\ 2 \end{bmatrix}}, \red{\begin{bmatrix} 3 \\ 5 \end{bmatrix}}\right\}$ and $\mathbf x = \yellow{\begin{bmatrix} 4 \\ 9 \end{bmatrix}}$. Row reduce $[\,\mathbf b_1\ \mathbf b_2 \mid \mathbf x\,]$:
+
+$$
+\begin{aligned}
+\begin{bmatrix} 1 & 3 & 4 \\ 2 & 5 & 9 \end{bmatrix}
+&\sim \begin{bmatrix} 1 & 3 & 4 \\ 0 & -1 & 1 \end{bmatrix} && R_2 - 2R_1 \\
+&\sim \begin{bmatrix} 1 & 0 & 7 \\ 0 & 1 & -1 \end{bmatrix} && -R_2, \text{ then } R_1 - 3R_2
+\end{aligned}
+$$
+
+So $[\mathbf x]_{\mathcal B} = \begin{bmatrix} \green{7} \\ \red{-1} \end{bmatrix}$. To check, $7\green{\begin{bmatrix} 1 \\ 2 \end{bmatrix}} - \red{\begin{bmatrix} 3 \\ 5 \end{bmatrix}} = \yellow{\begin{bmatrix} 4 \\ 9 \end{bmatrix}}$.
+
+The widget uses the basis from the video. The dashed path walks $c_1$ steps along $\mathbf b_1$ and then $c_2$ steps along $\mathbf b_2$, so you can read the coordinates off the grid.
+
+<CoordinateFinder b1={[2, 1]} b2={[-1, 2]} target={[-1, 2]} start={[3, 4]} />
+
+## The coordinate map
+
+The standard basis of $\mathbb P_2$ is $\{1, t, t^2\}$, so a polynomial's coordinates are just its coefficients. The **coordinate map** $\mathbf p \mapsto [\mathbf p]_{\mathcal B}$ turns each polynomial into a column in $\mathbb R^3$, and each column turns back into exactly one polynomial.
+
+<Figure src="polynomial-to-column" alt="Left: the curves p(t) = 2 − t + 3t² in yellow, q(t) = 1 + 4t − t² in blue and their sum 3 + 3t + 2t² in teal. An arrow labelled p maps to [p]_B points from the formulas to the columns (2, −1, 3) + (1, 4, −1) = (3, 3, 2). Right: the same three columns drawn as arrows in 3D with axes 1, t and t², with q placed tip to tail on p." wide />
+
+The map respects both operations. Adding polynomials adds their coefficient columns, and scaling a polynomial scales its column:
+
+$$
+[\,\yellow{\mathbf p} + \blue{\mathbf q}\,]_{\mathcal B} = [\yellow{\mathbf p}]_{\mathcal B} + [\blue{\mathbf q}]_{\mathcal B}, \qquad [\,c\,\mathbf p\,]_{\mathcal B} = c\,[\mathbf p]_{\mathcal B}.
+$$
+
+<Definition term="Isomorphism">
+A linear transformation from $V$ onto $W$ that is also one-to-one is an **isomorphism**. For any basis $\mathcal B$ of $V$ with $n$ vectors, the coordinate map $\mathbf x \mapsto [\mathbf x]_{\mathcal B}$ is an isomorphism from $V$ onto $\mathbb R^n$.
+</Definition>
+
+An isomorphism copies every vector-space fact across. A set of polynomials is independent exactly when its coordinate columns are, and it spans $\mathbb P_2$ exactly when its columns span $\mathbb R^3$. For example, the columns $(2, -1, 3)$, $(1, 4, -1)$ and $(3, 3, 2)$ are dependent because the third is the sum of the first two, so $\yellow{\mathbf p}$, $\blue{\mathbf q}$ and $\teal{3 + 3t + 2t^2}$ are dependent too.
+
+Coordinates in a basis other than the standard one are not the coefficients. The widget uses the basis $\mathcal B = \{1,\ 1 + t,\ (1 + t)^2\}$, and matching the curve means solving for the weights.
+
+<PolynomialCoordinates basis={[[1, 0, 0], [1, 1, 0], [1, 2, 1]]} names={["1", "(1 + t)", "(1 + t)^2"]} target={[2, -1, 3]} />
+
+## Dimension
+
+<Pair>
+<Figure src="third-vector" alt="The basis grid of b1 in green and b2 in red. The blue vector w = (3, −1) is reached by one step of b1 and one backward step of b2, and the equation w = b1 − b2 is shown at the top right." />
+
+Suppose $V$ has a basis of $n$ vectors. Any $p > n$ vectors in $V$ have $p$ coordinate columns in $\mathbb R^n$, and more than $n$ columns in $\mathbb R^n$ are always dependent. The coordinate map carries that dependence back to $V$. So a second basis of $V$ can't have more than $n$ vectors, and by the same argument with the roles swapped it can't have fewer.
+</Pair>
+
+<Definition term="Dimension">
+If a vector space $V$ is spanned by a finite set, then every basis of $V$ has the same number of vectors. That number is the **dimension** of $V$, written $\dim V$. The zero space $\{\mathbf 0\}$ has dimension 0, and a space that no finite set spans is **infinite-dimensional**.
+</Definition>
+
+The standard bases give $\dim \mathbb R^n = n$ and $\dim \mathbb P_n = n + 1$, because $\{1, t, \dots, t^n\}$ has one vector for each power from $t^0$ to $t^n$. A subspace $H$ of $V$ always has $\dim H \le \dim V$.
+
+<Figure src="subspaces" alt="Four copies of 3D axes. Dimension 0 shows only the origin, dimension 1 a teal line through the origin with one yellow arrow, dimension 2 a teal plane with a yellow and a blue arrow, and dimension 3 a lattice of dots filling space with yellow, blue and pink arrows." wide />
+
+Those are the only subspaces of $\mathbb R^3$: the origin, lines through the origin, planes through the origin, and $\mathbb R^3$ itself. When you know $\dim V = p$, the **Basis Theorem** saves half the work. Any $p$ independent vectors in $V$ automatically span it, and any $p$ vectors that span $V$ are automatically independent.
+
+To find the dimension of a subspace written with parameters, count a basis, not the letters. Take $H = \{(a + 2b,\ 2a + 4b + c,\ c) : a, b, c \in \mathbb R\}$:
+
+$$
+\begin{aligned}
+H &= \operatorname{Span}\left\{\begin{bmatrix} 1 \\ 2 \\ 0 \end{bmatrix}, \begin{bmatrix} 2 \\ 4 \\ 0 \end{bmatrix}, \begin{bmatrix} 0 \\ 1 \\ 1 \end{bmatrix}\right\} \\
+&= \operatorname{Span}\left\{\begin{bmatrix} 1 \\ 2 \\ 0 \end{bmatrix}, \begin{bmatrix} 0 \\ 1 \\ 1 \end{bmatrix}\right\} && \text{the second is twice the first} \\
+\dim H &= 2 && \text{the two left are not multiples}
+\end{aligned}
+$$
+
+## Practice
+
+<Check>
+Let $\mathcal B = \left\{\begin{bmatrix} 2 \\ 1 \end{bmatrix}, \begin{bmatrix} 1 \\ 1 \end{bmatrix}\right\}$ and $\mathbf x = \begin{bmatrix} 5 \\ 4 \end{bmatrix}$. Find $[\mathbf x]_{\mathcal B}$. (Modeled on Lay §4.4, Exercises 5–8.)
+
+<VectorAnswer answer={[1, 3]} labels={["c₁", "c₂"]} />
+
+<Answer>
+Row reduce $[\,\mathbf b_1\ \mathbf b_2 \mid \mathbf x\,]$:
+
+$$
+\begin{bmatrix} 2 & 1 & 5 \\ 1 & 1 & 4 \end{bmatrix} \sim \begin{bmatrix} 1 & 0 & 1 \\ 1 & 1 & 4 \end{bmatrix} \sim \begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & 3 \end{bmatrix}
+$$
+
+The first step is $R_1 - R_2$ and the second is $R_2 - R_1$. So $[\mathbf x]_{\mathcal B} = (1, 3)$, and indeed $1\cdot(2, 1) + 3\cdot(1, 1) = (5, 4)$.
+</Answer>
+</Check>
+
+<Check>
+In $\mathbb P_2$ with the basis $\mathcal B = \{1,\ 1 + t,\ (1 + t)^2\}$, the polynomial $\mathbf q$ has $[\mathbf q]_{\mathcal B} = (2, -1, 1)$. Enter the coefficients of $\mathbf q(t) = a_0 + a_1 t + a_2 t^2$. (Modeled on Lay §4.4, Exercise 32.)
+
+<VectorAnswer answer={[2, 1, 1]} labels={["a₀", "a₁", "a₂"]} />
+
+<Answer>
+$$
+\begin{aligned}
+\mathbf q(t) &= 2\cdot 1 - (1 + t) + (1 + t)^2 \\
+&= 2 - 1 - t + 1 + 2t + t^2 \\
+&= 2 + t + t^2
+\end{aligned}
+$$
+</Answer>
+</Check>
+
+<Check>
+Find the dimension of $H = \{(a - b + 2c,\ 2a - 2b + 4c,\ b + c) : a, b, c \in \mathbb R\}$. (Modeled on Lay §4.5, Exercises 1–8.)
+
+<VectorAnswer answer={[2]} labels={["dimension"]} />
+
+<Answer>
+$H$ is spanned by $\mathbf v_1 = (1, 2, 0)$, $\mathbf v_2 = (-1, -2, 1)$ and $\mathbf v_3 = (2, 4, 1)$. The third is redundant because $3\mathbf v_1 + \mathbf v_2 = (2, 4, 1) = \mathbf v_3$. The first two are not multiples of each other, so $\{\mathbf v_1, \mathbf v_2\}$ is a basis and $\dim H = 2$. Three parameters gave only two dimensions.
+</Answer>
+</Check>

@@ -15,6 +15,7 @@ import { AdditionExplorer, CombinationTarget, ScaleExplorer, VectorExplorer } fr
 import { CommuteHunt, CompositionExplorer, ProductColumns } from "@/components/interactive/product";
 import { ElementaryMoves, InverseBuilder } from "@/components/interactive/elementary";
 import { InverseColumnsHunt, SingularHunt, UndoOrder } from "@/components/interactive/inverse";
+import { CoordinateFinder, PolynomialCoordinates } from "@/components/interactive/coordinates";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
 import { katexMacros } from "@/lib/katex-macros";
 
@@ -107,6 +108,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     InverseColumnsHunt,
     SingularHunt,
     UndoOrder,
+    CoordinateFinder,
+    PolynomialCoordinates,
   };
   return (
     <div className="notes">
