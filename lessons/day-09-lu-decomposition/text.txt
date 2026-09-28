@@ -1,2 +1,2 @@
-Day 9 is LU decomposition: you do elimination once, keep the multipliers in a matrix L, and every new right-hand side after that is two fast triangular solves. Watch the multipliers drop out of A into L one column at a time while U forms above the zeros.
+Day 9 is LU decomposition. When one matrix has to solve Ax = b for lots of different b's, you can do the elimination once, keep the multipliers in a matrix L, and turn every new b into two fast triangular solves. Watch the multipliers drop out of A into L one column at a time.
 https://appiest.github.io/teach-linalg/day/9/

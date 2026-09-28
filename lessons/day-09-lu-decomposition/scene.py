@@ -183,7 +183,8 @@ class Lesson(LessonScene):
         plane = plane_at(PLANE_ORIGIN, PLANE_UNIT)
         pulse = self.open_episode(plane)
         self.play(FadeOut(pulse), run_time=0.5)
-        line = self.two_shears(plane)
+        line = self.why_factor()
+        line = self.two_shears(plane, line)
         line = self.undo_shears(line)
         self.play(FadeOut(VGroup(plane, self.grid, self.panel_group, self.arrow, self.arrow_name)), run_time=1.0)
         line = self.set_up_elimination(line)
@@ -203,13 +204,27 @@ class Lesson(LessonScene):
 
     # The 2 by 2 picture: U and L are two shears.
 
-    def two_shears(self, plane):
+    def why_factor(self):
+        recap = MathTex(r"E_2E_1A = U", color=Palette.text, font_size=46)
+        many = tex(r"A", r"\mathbf x", "=", r"\mathbf b_1,\ \mathbf b_2,\ \mathbf b_3,\ \dots", colors=(None, Palette.yellow, None, Palette.teal), font_size=46)
+        stack = VGroup(recap, many).arrange(DOWN, buff=0.35, aligned_edge=LEFT).to_corner(UL, buff=0.6)
+        plate = plate_for(stack)
+        line = self.say(r"Day 8 wrote each row operation as a matrix.", hold=0.2)
+        self.play(FadeIn(plate), Write(recap), run_time=1.0)
+        self.wait(Timing.beat + 0.5)
+        line = self.say(r"Today we record elimination once and reuse it for every $\mathbf b$.", line, hold=0.2)
+        self.play(FadeIn(many, shift=UP * 0.1), run_time=0.8)
+        self.wait(Timing.read_short)
+        self.play(FadeOut(VGroup(plate, stack)), run_time=0.5)
+        return line
+
+    def two_shears(self, plane, line):
         self.origin = plane.c2p(0, 0)
         self.grid = wide_plane_at(PLANE_ORIGIN, PLANE_UNIT, reach=60)
         self.panel = small_panel().to_corner(UL, buff=0.5)
         self.plate = plate_for(self.panel)
         self.panel_group = VGroup(self.plate, self.panel)
-        line = self.say(r"Here a matrix $A$ is written as a product $LU$.", hold=0.2)
+        line = self.say(r"Here a matrix $A$ is written as a product $LU$.", line, hold=0.2)
         self.play(FadeIn(self.plate), Write(self.panel), run_time=1.6)
         self.arrow = vector_arrow(SMALL_X, Palette.yellow, plane)
         self.arrow_name = name_tag(r"\mathbf x", Palette.yellow, plane.c2p(*SMALL_X), UR)
@@ -278,7 +293,8 @@ class Lesson(LessonScene):
         line = self.say(r"Elimination builds $L$ and $U$ at the same time.", line, hold=0.2)
         self.play(FadeIn(self.work), FadeIn(self.work_name), run_time=0.8)
         self.play(FadeIn(self.lower), FadeIn(self.lower_name), Create(self.slots), run_time=1.0)
-        self.wait(Timing.read_short)
+        self.wait(Timing.beat)
+        line = self.say(r"The goal is an echelon form $U$ that keeps every multiplier.", line, hold=Timing.read_short)
         self.op_label = None
         return line
 
@@ -369,6 +385,7 @@ class Lesson(LessonScene):
         line = self.say(r"$L$ has 1s on its diagonal and zeros above.", line, hold=0.2)
         self.play(Create(above), run_time=1.0)
         self.wait(Timing.read_short)
+        line = self.say(r"Triangular matrices return on Day 26 to make determinants easy.", line, hold=Timing.read_short)
         self.play(FadeOut(below), FadeOut(above), run_time=0.5)
         return line
 
@@ -430,6 +447,7 @@ class Lesson(LessonScene):
         bottom = self.stage(self.work, self.x_col, self.y_copy, -1.35)
         self.top_row, self.bottom_row = top, bottom
 
+        line = self.say(r"Now we find $\mathbf x$ from $\mathbf b$ without redoing elimination.", line, hold=Timing.read_short)
         line = self.say(r"First solve $L\mathbf y = \mathbf b$ from the top row down.", line, hold=0.2)
         self.play(
             MoveToTarget(self.lower),

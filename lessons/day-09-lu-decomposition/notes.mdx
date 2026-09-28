@@ -1,4 +1,4 @@
-Row reducing $A\mathbf x = \mathbf b$ from scratch repeats the same elimination every time $\mathbf b$ changes. An **LU factorization** writes down that elimination once, as a product $A = LU$, so each new $\mathbf b$ costs only two short substitutions.
+Day 8 showed that every step of elimination is a matrix, so row reducing $A$ amounts to multiplying it by elementary matrices. Today's question is how to keep that work. In practice one matrix $A$ often meets many right-hand sides, and row reducing $A\mathbf x = \mathbf b$ from scratch repeats the same elimination every time $\mathbf b$ changes. An **LU factorization** writes down that elimination once, as a product $A = LU$, so each new $\mathbf b$ costs only two short substitutions.
 
 ## Triangular matrices
 
@@ -10,7 +10,7 @@ L = \begin{bmatrix} 1 & 0 & 0 \\ \pink{2} & 1 & 0 \\ \pink{-1} & \pink{3} & 1 \e
 U = \begin{bmatrix} 2 & 1 & -1 \\ 0 & 3 & 2 \\ 0 & 0 & -2 \end{bmatrix}
 $$
 
-A triangular system is easy because one of its rows mentions a single unknown. In $L\mathbf y = \mathbf b$ the top row gives $y_1$ outright, and each row below adds exactly one new unknown. Solving from the top down is **forward substitution**. In $U\mathbf x = \mathbf y$ the bottom row holds the lone unknown, so you solve from the bottom up, which is **back substitution**.
+A triangular system is easy because one of its rows mentions a single unknown. In $L\mathbf y = \mathbf b$ the top row gives $y_1$ outright, and each row below adds exactly one new unknown. Solving from the top down is **forward substitution**. In $U\mathbf x = \mathbf y$ the bottom row holds the lone unknown, so you solve from the bottom up, which is **back substitution**. Triangular matrices come back on Day 26, where the determinant of one is the product of its diagonal, and on Day 28, where its eigenvalues sit on that diagonal.
 
 <Pair>
 <Figure src="shears" alt="Three small grids. On the left, a yellow arrow x = (1, 1) sits on a square grid. An arrow labelled U leads to the middle grid, sheared sideways, where x has become the blue arrow y = (2, 1). An arrow labelled L leads to the right grid, sheared vertically as well, where y has become the teal arrow b = (2, 5)." />
@@ -36,7 +36,7 @@ $$
 where $L$ is an $m \times m$ unit lower triangular matrix and $U$ is that $m \times n$ echelon form. The entry of $L$ in row $i$, column $j$ is the **multiplier** $\ell_{ij}$ used in the step $R_i \leftarrow R_i - \ell_{ij} R_j$.
 </Definition>
 
-To find the multipliers, look at each pivot column of the current matrix. Divide the pivot and every entry below it by the pivot, and write the results into the matching column of $L$. Here is the matrix from the video, a fresh problem modeled on Lay §2.5, Example 2.
+The goal of elimination here is the same echelon form you reached on Day 3, except that this time you keep every multiplier instead of throwing it away. To find the multipliers, look at each pivot column of the current matrix. Divide the pivot and every entry below it by the pivot, and write the results into the matching column of $L$. Here is the matrix from the video, a fresh problem modeled on Lay §2.5, Example 2.
 
 $$
 A = \begin{bmatrix} \glow{2} & 1 & -1 \\ \glow{4} & 5 & 0 \\ \glow{-2} & 8 & 5 \end{bmatrix}
@@ -58,7 +58,7 @@ When $A$ has fewer pivots than rows, fill the remaining columns of $L$ from the 
 
 ## Solving with L and U
 
-If $A = LU$, then $A\mathbf x = L(U\mathbf x)$. Call $U\mathbf x = \blue{\mathbf y}$ and solve two triangular systems in order.
+Once $L$ and $U$ are saved, the goal is to get $\mathbf x$ from any $\mathbf b$ without touching $A$ again. If $A = LU$, then $A\mathbf x = L(U\mathbf x)$. Call $U\mathbf x = \blue{\mathbf y}$ and solve two triangular systems in order.
 
 $$
 L\blue{\mathbf y} = \teal{\mathbf b}, \qquad U\yellow{\mathbf x} = \blue{\mathbf y}
@@ -97,6 +97,8 @@ The factorization costs as much as one row reduction, and after that each new $\
 <Figure src="cost" alt="A line chart of billions of flops against the number of right-hand sides k from 0 to 100, for n = 1000. The purple-gray line for row reducing each time climbs steadily to about 67 at k = 100. The teal line for LU once stays nearly flat along the bottom and ends at about 0.87." wide />
 
 <CostCompare target={50} />
+
+LU is the first of several factorizations in the course. Day 32 splits a matrix as $A = PDP^{-1}$ and Day 37 splits it as $A = QR$, each time into pieces that are easier to work with. Tomorrow the course steps back from computing to ask what a vector is, so that span, combinations and linear maps can work on polynomials and functions too.
 
 ## Practice
 
