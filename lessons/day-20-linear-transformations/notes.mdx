@@ -1,0 +1,149 @@
+On Day 5 a matrix moved the plane and kept sums and multiples. Day 10 showed that polynomials, functions and matrices add and scale just like arrows. Today puts the two together: a linear transformation can go from any vector space to any other, as long as it respects adding and scaling. Differentiation is the first one you will meet that is not a matrix.
+
+## The definition
+
+<Definition term="Linear transformation">
+A **linear transformation** $T$ from a vector space $V$ into a vector space $W$ assigns to each $\mathbf x$ in $V$ exactly one vector $T(\mathbf x)$ in $W$, such that for all $\mathbf u, \mathbf v$ in $V$ and all scalars $c$
+
+$$
+\begin{aligned}
+&\text{(i)} & T(\mathbf u + \mathbf v) &= T(\mathbf u) + T(\mathbf v) \\
+&\text{(ii)} & T(c\,\mathbf u) &= c\,T(\mathbf u) 
+\end{aligned}
+$$
+
+$V$ is the **domain**, $W$ is the **codomain**, $T(\mathbf x)$ is the **image** of $\mathbf x$, and the set of all images is the **range**.
+</Definition>
+
+The plus sign on the left of (i) is addition in $V$, and the one on the right is addition in $W$. They can be completely different operations, such as adding polynomials on one side and adding columns on the other.
+
+Two facts follow straight from the rules. First, every linear map sends zero to zero, because (ii) with $c = 0$ gives $T(\mathbf 0) = T(0\,\mathbf u) = 0\,T(\mathbf u) = \mathbf 0$. Second, (i) and (ii) together are the same as the single test
+
+$$
+T(c\,\mathbf u + d\,\mathbf v) = c\,T(\mathbf u) + d\,T(\mathbf v) \quad \text{for all } \mathbf u, \mathbf v \text{ and all } c, d.
+$$
+
+Setting $c = d = 1$ recovers (i), and setting $d = 0$ recovers (ii). Repeating the test gives **superposition**: $T$ of any linear combination is the same combination of the images.
+
+Here is the test at work on the map $T : \mathbb P_2 \to \mathbb R^2$ that evaluates a polynomial at two points, $T(\mathbf p) = (\mathbf p(0), \mathbf p(1))$ (modeled on Lay §4.2 #31). For any $\mathbf p, \mathbf q$ in $\mathbb P_2$ and scalars $c, d$:
+
+$$
+\begin{aligned}
+T(c\,\mathbf p + d\,\mathbf q) &= \begin{bmatrix} (c\,\mathbf p + d\,\mathbf q)(0) \\ (c\,\mathbf p + d\,\mathbf q)(1) \end{bmatrix} && \text{definition of } T \\
+&= \begin{bmatrix} c\,\mathbf p(0) + d\,\mathbf q(0) \\ c\,\mathbf p(1) + d\,\mathbf q(1) \end{bmatrix} && \text{pointwise} \\
+&= c \begin{bmatrix} \mathbf p(0) \\ \mathbf p(1) \end{bmatrix} + d \begin{bmatrix} \mathbf q(0) \\ \mathbf q(1) \end{bmatrix} && \text{arithmetic in } \mathbb R^2 \\
+&= c\,T(\mathbf p) + d\,T(\mathbf q).
+\end{aligned}
+$$
+
+A proof like this has to use arbitrary $\mathbf p$, $\mathbf q$, $c$ and $d$. Checking one pair of polynomials proves nothing, although one failing pair is enough to prove a map is not linear.
+
+## Differentiation
+
+The derivative $D(\mathbf p) = \mathbf p'$ takes $\mathbb P_3$ to $\mathbb P_3$. The rules $(\mathbf f + \mathbf g)' = \mathbf f' + \mathbf g'$ and $(c\,\mathbf f)' = c\,\mathbf f'$ from calculus are exactly (i) and (ii), so $D$ is linear. The figure checks (i) on two specific polynomials by going around the square both ways.
+
+<Pair>
+<Figure src="derivative-square" alt="Four graph panels in a square. Top left: p = 1 + 2t + t² in yellow and q = t − t³ in blue. Top right: their sum 1 + 3t + t² − t³ in teal. Bottom left: Dp = 2 + 2t in yellow and Dq = 1 − 3t² in blue. Bottom right: D(p + q) = 3 + 2t − 3t² as a solid teal curve with a white dashed curve lying exactly on top of it. Arrows labelled add run across the top and bottom, and arrows labelled D run down both sides." />
+
+$$
+\begin{aligned}
+D(\yellow{\mathbf p} + \blue{\mathbf q}) &= D(1 + 3t + t^2 - t^3) \\
+&= \teal{3 + 2t - 3t^2} \\[4pt]
+D\yellow{\mathbf p} + D\blue{\mathbf q} &= \yellow{(2 + 2t)} + \blue{(1 - 3t^2)} \\
+&= \teal{3 + 2t - 3t^2}
+\end{aligned}
+$$
+
+Both routes reach the same polynomial. Scaling works the same way: $D(3\yellow{\mathbf p}) = D(3 + 6t + 3t^2) = 6 + 6t = 3\,D\yellow{\mathbf p}$.
+</Pair>
+
+Superposition means you can differentiate a combination without expanding it. The widget gives you a target derivative and asks for the weights.
+
+<DerivativeTarget target={[2, 1]} />
+
+The transpose $T(A) = A^T$ on $2 \times 2$ matrices is linear for the same kind of reason. It only moves entries to new positions, so $(A + B)^T = A^T + B^T$ and $(cA)^T = c\,A^T$. Matrix maps $\mathbf x \mapsto A\mathbf x$ are linear because $A(\mathbf u + \mathbf v) = A\mathbf u + A\mathbf v$ and $A(c\,\mathbf u) = c\,A\mathbf u$.
+
+## Maps that are not linear
+
+The quickest test is $T(\mathbf 0)$. A **translation** $T(\mathbf x) = \mathbf x + \mathbf b$ with $\mathbf b \neq \mathbf 0$ moves the origin to $\mathbf b$, so it cannot be linear. The same goes for any affine map $A\mathbf x + \mathbf b$ and for $f(x) = mx + b$ with $b \neq 0$, even though its graph is a straight line.
+
+<Pair>
+<Figure src="translation-misses" alt="A teal parallelogram shifted by b = (1, −1), with a glowing orange dot at its corner T(0) = (1, −1). From the true origin, yellow T(v) = (4, 1) and blue T(w) = (0, 1) are added tip to tail, and the pink sum lands at (4, 2). The teal corner T(v + w) sits at (3, 3), joined to the pink tip by an orange dashed gap." />
+
+$$
+\begin{aligned}
+T(\yellow{\mathbf v}) + T(\blue{\mathbf w}) &= \yellow{\mathbf v} + \blue{\mathbf w} + 2\mathbf b \\
+T(\yellow{\mathbf v} + \blue{\mathbf w}) &= \yellow{\mathbf v} + \blue{\mathbf w} + \mathbf b
+\end{aligned}
+$$
+
+The two sides differ by $\mathbf b$, which is exactly the orange gap. Rule (i) holds only when $\mathbf b = \mathbf 0$.
+</Pair>
+
+<TranslationGap v={[2, 1]} w={[-1, 2]} start={[1, -1]} />
+
+Passing $T(\mathbf 0) = \mathbf 0$ does not prove a map is linear. For $T(x_1, x_2) = (x_1 - x_2,\ 2|x_2|)$ you get $T(\mathbf 0) = \mathbf 0$, but with $\mathbf u = (0, 1)$ and $c = -1$ the rule (ii) fails, since $T(0, -1) = (1, 2)$ while $-T(0, 1) = (1, -2)$.
+
+## Counting preimages
+
+A vector $\mathbf x$ with $T(\mathbf x) = \mathbf b$ is a **preimage** of $\mathbf b$. Two questions ask how many preimages each $\mathbf b$ in $W$ has.
+
+<Definition term="Onto and one-to-one">
+$T : V \to W$ is **onto** $W$ if every $\mathbf b$ in $W$ is the image of **at least one** $\mathbf x$ in $V$. This is an existence question, and it means the range is all of $W$.
+
+$T$ is **one-to-one** if every $\mathbf b$ in $W$ is the image of **at most one** $\mathbf x$ in $V$. This is a uniqueness question, and it means $T(\mathbf u) = T(\mathbf v)$ forces $\mathbf u = \mathbf v$.
+</Definition>
+
+<Pair>
+<Figure src="shared-derivative" alt="Left: the parabolas t² + 1 in blue, t² in yellow and t² − 2 in pink, with parallel orange tangent lines at t = 1. An arrow labelled D points right. Right: the single teal line 2t that all three parabolas differentiate to, and a gray dashed cubic t³ circled in orange, which no polynomial in P3 reaches." />
+
+The derivative $D : \mathbb P_3 \to \mathbb P_3$ fails both tests. It is not one-to-one because $t^2$, $t^2 + 1$ and $t^2 - 2$ all have derivative $2t$. It is not onto because differentiating lowers the degree, so no polynomial in $\mathbb P_3$ has derivative $t^3$.
+
+The codomain matters. With the same rule written as $D : \mathbb P_3 \to \mathbb P_2$, every $a_0 + a_1 t + a_2 t^2$ is the derivative of $a_0 t + \tfrac{a_1}{2}t^2 + \tfrac{a_2}{3}t^3$, so that version is onto.
+</Pair>
+
+<SharedDerivativeHunt p={[1, 2, 1]} />
+
+The transpose on $M_{2\times2}$ passes both tests. If $A^T = B^T$ then transposing again gives $A = B$, and any $B$ is the image of $B^T$.
+
+For a matrix map $\mathbf x \mapsto A\mathbf x$ from $\mathbb R^n$ to $\mathbb R^m$, the pivots of $A$ answer both questions (Lay §1.9, Theorem 12). The map is onto $\mathbb R^m$ exactly when $A$ has a pivot in every row, because then $A\mathbf x = \mathbf b$ is consistent for every $\mathbf b$. It is one-to-one exactly when $A$ has a pivot in every column, because then $A\mathbf x = \mathbf b$ has no free variables. For example, a $3 \times 2$ matrix with independent columns gives a one-to-one map that cannot be onto $\mathbb R^3$, since two pivots cannot fill three rows.
+
+## Practice
+
+<Check>
+Let $D : \mathbb P_3 \to \mathbb P_3$ be differentiation, with $\mathbf p(t) = 2 - t + 4t^3$ and $\mathbf q(t) = 1 + t^2$. Compute $D(2\mathbf p - \mathbf q)$ and enter its coefficients. Then check your answer by computing $2D\mathbf p - D\mathbf q$ instead.
+
+<VectorAnswer answer={[-2, -2, 24]} labels={["constant", "t", "t²"]} />
+
+<Answer>
+$$
+\begin{aligned}
+2\mathbf p - \mathbf q &= 4 - 2t + 8t^3 - 1 - t^2 = 3 - 2t - t^2 + 8t^3 \\
+D(2\mathbf p - \mathbf q) &= -2 - 2t + 24t^2 \\
+2D\mathbf p - D\mathbf q &= 2(-1 + 12t^2) - 2t = -2 - 2t + 24t^2
+\end{aligned}
+$$
+
+The two routes agree, as linearity promises.
+</Answer>
+</Check>
+
+<Check>
+A linear map $T : \mathbb R^2 \to \mathbb R^2$ sends $\mathbf u$ to $(1, 2)$ and $\mathbf v$ to $(-1, 3)$. Find $T(3\mathbf u - 2\mathbf v)$. (Modeled on the superposition property in Lay §1.8, p. 67.)
+
+<VectorAnswer answer={[5, 0]} />
+
+<Answer>
+By superposition, $T(3\mathbf u - 2\mathbf v) = 3\,T(\mathbf u) - 2\,T(\mathbf v) = 3(1, 2) - 2(-1, 3) = (3 + 2,\ 6 - 6) = (5, 0)$. You never need to know $\mathbf u$ or $\mathbf v$ themselves.
+</Answer>
+</Check>
+
+<Check>
+Define $T : \mathbb P_2 \to \mathbb R^2$ by $T(\mathbf p) = (\mathbf p(-1), \mathbf p(2))$. Compute $T(\mathbf p)$ for $\mathbf p(t) = 3 - t + 2t^2$. Is $T$ one-to-one? (Modeled on Lay §4.2 #31.)
+
+<VectorAnswer answer={[6, 9]} labels={["p(−1)", "p(2)"]} />
+
+<Answer>
+$\mathbf p(-1) = 3 + 1 + 2 = 6$ and $\mathbf p(2) = 3 - 2 + 8 = 9$, so $T(\mathbf p) = (6, 9)$. $T$ is not one-to-one. The polynomial $(t + 1)(t - 2) = t^2 - t - 2$ is zero at both points, so $\mathbf p$ and $\mathbf p + (t^2 - t - 2) = 1 - 2t + 3t^2$ are different inputs with the same image $(6, 9)$.
+</Answer>
+</Check>
