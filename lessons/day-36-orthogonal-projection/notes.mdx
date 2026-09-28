@@ -1,6 +1,8 @@
-Yesterday's dot product can tell when two vectors are perpendicular. Today it finds the point of a line or plane that sits closest to a given vector. You get there by dropping a perpendicular, and the dot product tells you where it lands.
+Yesterday's dot product can tell when two vectors are perpendicular. Today it answers a distance question: which point of a line or a plane sits closest to a given vector $\mathbf y$? The question matters because of Day 38. When $A\mathbf x = \mathbf b$ has no solution, the best you can do is find the point of $\operatorname{Col}A$ closest to $\mathbf b$ and solve for that point instead. You find the closest point by dropping a perpendicular, and the dot product tells you where it lands.
 
 ## Projection onto a line
+
+A line is the simplest subspace, so start there. The goal is a multiple of the line's direction whose leftover piece is perpendicular to the line.
 
 <Pair>
 <Figure src="line-projection" alt="A grid with the teal line L through the green vector u = (1, 1). The yellow vector y = (1, 5) ends above the line. A teal arrow runs from the origin to ŷ = (3, 3) on L, and a pink arrow z runs from ŷ up to the tip of y. An orange square marks the right angle between z and L. A panel reads ŷ = (y·u)/(u·u) u = 6/2 u = (3, 3)." />
@@ -22,7 +24,7 @@ In the video, $\mathbf y = (1, 5)$ and $\mathbf u = (1, 1)$ give $\mathbf y\cdot
 
 ## Projection onto a subspace
 
-When $W$ has an orthogonal basis, you project onto each basis line separately and add the pieces.
+For a bigger subspace $W$, the goal is to split $\mathbf y$ into a piece inside $W$ and a piece in Day 35's complement $W^\perp$. When $W$ has an orthogonal basis, you project onto each basis line separately and add the pieces. Each term is the same ratio Day 35 used to find coordinates in an orthogonal basis.
 
 <Definition term="The orthogonal decomposition theorem">
 Let $W$ be a subspace of $\mathbb R^n$. Every $\mathbf y$ in $\mathbb R^n$ can be written in exactly one way as
@@ -60,7 +62,7 @@ The formula needs the basis to be orthogonal. In the widget below, $W$ is the wh
 
 <ShadowSumBasis y={[3, 4]} u1={[2, 1]} start={[1, 2]} />
 
-When a basis is not orthogonal, you first straighten it with Gram–Schmidt, which is tomorrow's lesson.
+When a basis is not orthogonal, you first straighten it with Gram–Schmidt, which is Day 37's lesson.
 
 ## The closest point
 
@@ -73,6 +75,8 @@ $$
 
 The **distance from $\mathbf y$ to $W$** is $\|\mathbf z\| = \|\mathbf y - \hat{\mathbf y}\|$.
 </Definition>
+
+This theorem is the reason the course studies projection. On Day 38 it is applied with $W = \operatorname{Col}A$ to find the best answer to a system with no exact solution.
 
 <Pair>
 <Figure src="closest-point" alt="The same plane W, with y, ŷ and the pink z. A blue point v sits elsewhere in W, joined to y by a blue segment and to ŷ by a dashed teal segment, which makes a right triangle with its right angle at ŷ. The panel reads ‖y − v‖² = ‖z‖² + ‖ŷ − v‖², and below it 11.25 = 6 + 5.25." />
@@ -102,7 +106,9 @@ $$
 U^TU = \begin{bmatrix} 1 \end{bmatrix}, \qquad UU^T = \tfrac12\begin{bmatrix} 1 & 1 \\ 1 & 1 \end{bmatrix},
 $$
 
-and $UU^T$ is exactly Day 17's projection $P$. A tall $U$ with orthonormal columns always has $U^TU = I$, but $UU^T$ is a projection. It equals $I$ only when $U$ is square.
+and $UU^T$ is exactly Day 17's projection $P$. A tall $U$ with orthonormal columns always has $U^TU = I$, but $UU^T$ is a projection. It equals $I$ only when $U$ is square. On Day 37 the same fact $Q^TQ = I$ for a matrix $Q$ with orthonormal columns is what makes the QR factorization easy to compute.
+
+Every formula today needed an orthogonal basis, so tomorrow Gram–Schmidt builds one from any basis, and on Day 38 projection onto $\operatorname{Col}A$ becomes the method of least squares.
 
 ## Practice
 
