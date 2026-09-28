@@ -1,0 +1,2 @@
+Day 24 is up! Yesterday was about everything a map sends to zero, and today is about the other end: every output it can make, called the range. Watch the kernel line shrink into the origin while the floor tilts up onto the range, and see why their dimensions always add up to the dimension of the input space.
+https://appiest.github.io/teach-linalg/day/24/

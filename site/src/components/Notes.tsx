@@ -28,6 +28,7 @@ import { FreeWeights, LandingHunt } from "@/components/interactive/null-space";
 import { DerivativeTarget, SharedDerivativeHunt, TranslationGap } from "@/components/interactive/linear-maps";
 import { PivotHunt, PolynomialRecipe, ThirdVectorHunt } from "@/components/interactive/span-revisited";
 import { DifferenceInKernel, EvaluationKernel } from "@/components/interactive/kernel";
+import { ComplementLanding, RangeCollapse } from "@/components/interactive/image-range";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
 import { katexMacros } from "@/lib/katex-macros";
 
@@ -152,6 +153,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     PolynomialRecipe,
     DifferenceInKernel,
     EvaluationKernel,
+    RangeCollapse,
+    ComplementLanding,
   };
   return (
     <div className="notes">
