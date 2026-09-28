@@ -1,2 +1,2 @@
-Day 5 is up! Today a matrix stops being a grid of numbers and becomes a way to move the whole plane. Watch where the green and red arrows land, because their landing spots are exactly the columns of the matrix.
+Day 5 is up! Yesterday a matrix turned one vector into another, and today we ask what it does to every vector at once, which turns it into a way to move the whole plane. Watch where the green and red arrows land, because their landing spots are exactly the columns of the matrix.
 https://appiest.github.io/teach-linalg/day/5/

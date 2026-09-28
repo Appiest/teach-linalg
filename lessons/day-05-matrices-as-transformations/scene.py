@@ -143,7 +143,7 @@ class Lesson(LessonScene):
         self.product = VGroup(self.a_mat, self.x_col).arrange(RIGHT, buff=0.15).to_corner(UL, buff=0.6)
         self.plate = plate_for(self.product)
         self.x_arrow = vector_arrow(X_SHEAR, Palette.yellow, plane)
-        line = self.say(r"Here is a matrix $A$ and a vector $\mathbf x$.", hold=0.2)
+        line = self.say(r"Yesterday a matrix $A$ met one vector $\mathbf x$.", hold=0.2)
         self.play(FadeIn(self.plate), Write(self.product), run_time=1.2)
         self.play(GrowArrow(self.x_arrow), run_time=1.2, rate_func=spring_soft)
         self.wait(Timing.beat)
@@ -152,7 +152,7 @@ class Lesson(LessonScene):
         self.answer = VGroup(tex("="), column(output, color=Palette.teal)).arrange(RIGHT, buff=0.2)
         self.answer.next_to(self.product, RIGHT, buff=0.2)
         self.ring = Circle(radius=0.2, color=Palette.glow, stroke_width=4).move_to(plane.c2p(*output))
-        line = self.say(r"Yesterday you computed $A\mathbf x$ as a single vector.", line, hold=0.2)
+        line = self.say(r"Their product $A\mathbf x$ was one new vector.", line, hold=0.2)
         self.play(self.plate.animate.become(plate_for(VGroup(self.product, self.answer))), run_time=0.5, rate_func=spring_soft)
         self.play(FadeIn(self.answer, shift=LEFT * 0.2), run_time=0.8, rate_func=spring)
         self.play(GrowFromCenter(self.ring), run_time=0.6, rate_func=spring)
@@ -168,7 +168,7 @@ class Lesson(LessonScene):
         self.grid = always_redraw(lambda: moved_grid(plane, tracker))
         self.basis = basis_arrows(plane, tracker)
         riding_x = always_redraw(lambda: vector_arrow(tracker.apply(X_SHEAR), Palette.yellow, plane))
-        line = self.say(r"Now let $A$ move every point of the plane.", line, hold=0.2)
+        line = self.say(r"Today we ask what $A$ does to every point at once.", line, hold=0.2)
         self.play(plane.animate.set_opacity(0.35), FadeIn(self.grid), run_time=1.0)
         self.remove(self.x_arrow)
         self.add(riding_x)
@@ -222,7 +222,7 @@ class Lesson(LessonScene):
     def quarter_turn(self, line):
         tracker = self.tracker
         question = named(unknown_matrix()).to_corner(UL, buff=0.6)
-        line = self.say(r"Now build the matrix for a quarter turn.", line, hold=0.2)
+        line = self.say(r"Next we find a quarter turn's matrix from its landing spots.", line, hold=0.2)
         self.play(FadeOut(self.labels), *tracker.to(IDENTITY), run_time=1.4, rate_func=spring_soft)
         self.play(
             FadeOut(VGroup(self.product, self.answer), shift=UP * 0.2),
@@ -289,6 +289,7 @@ class Lesson(LessonScene):
         self.play(self.plate.animate.become(plate_for(VGroup(panel, rules))), run_time=0.5, rate_func=spring_soft)
         self.play(FadeIn(rules, shift=DOWN * 0.15), run_time=0.9, rate_func=spring_soft)
         self.wait(Timing.read_long)
+        line = self.say(r"On Day 20 these two rules become the definition of linear.", line, hold=Timing.read_short)
         self.play(FadeOut(VGroup(panel, rules, self.plate, steps, riding_x)), *tracker.to(IDENTITY), run_time=1.4, rate_func=spring_soft)
         return line
 
@@ -341,6 +342,7 @@ class Lesson(LessonScene):
         self.play(Create(true_origin), run_time=0.7)
         self.wait(Timing.beat)
         line = self.say(r"Since $A\mathbf 0 = \mathbf 0$, no matrix can do that.", line, hold=Timing.read_long)
+        line = self.say(r"Tomorrow, two moves in a row become one matrix.", line, hold=Timing.read_short)
         return line
 
 
