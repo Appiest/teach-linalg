@@ -415,3 +415,39 @@ def scrim(opacity: float = 0.96):
         fill_opacity=opacity,
         stroke_width=0,
     )
+
+
+def wide_plane_at(origin, unit: float = 1.0, reach: int = 40) -> NumberPlane:
+    """A grid far larger than the frame, origin at `origin`, so it still fills the frame after a shear or stretch."""
+    plane = make_plane(
+        x_range=(-reach, reach, 1),
+        y_range=(-reach, reach, 1),
+        x_length=2 * reach * unit,
+        y_length=2 * reach * unit,
+    )
+    plane.shift(np.array([origin[0], origin[1], 0.0]) - plane.c2p(0, 0))
+    return plane
+
+
+def cell_outline(mat: Matrix, lower: bool = True, color: str = Palette.text_muted, pad: float = 0.1):
+    """A dashed staircase around the entries strictly below (or above) the main diagonal of a square Matrix."""
+    from manim import DashedVMobject, VMobject
+
+    rows = mat.get_rows()
+    size = len(rows)
+    first = rows[0][0].get_center()
+    step_x = mat.get_columns()[1].get_center()[0] - mat.get_columns()[0].get_center()[0]
+    step_y = rows[0].get_center()[1] - rows[1].get_center()[1]
+    staircase = [point for i in range(1, size) for point in ((i - 0.62, i - 0.5), (i - 0.62, i + 0.5))]
+    staircase += [(-0.5, size - 0.5), (-0.5, 0.5)]
+    if not lower:
+        staircase = [(row, col) for col, row in staircase]
+    cells = VGroup(*[rows[r][c] for r in range(size) for c in range(size) if (r > c if lower else r < c)])
+    x_low, x_high = cells.get_left()[0] - pad, cells.get_right()[0] + pad
+    y_low, y_high = cells.get_bottom()[1] - pad, cells.get_top()[1] + pad
+    corners = [
+        [min(max(first[0] + col * step_x, x_low), x_high), min(max(first[1] - row * step_y, y_low), y_high), 0]
+        for col, row in staircase
+    ]
+    outline = VMobject(color=color, stroke_width=3).set_points_as_corners([*corners, corners[0]])
+    return DashedVMobject(outline, num_dashes=48)
