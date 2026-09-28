@@ -13,3 +13,4 @@ site/next-env.d.ts
 sources/
 site/src/lib/palette.generated.ts
 site/src/lib/released.generated.json
+.claude/worktrees/
