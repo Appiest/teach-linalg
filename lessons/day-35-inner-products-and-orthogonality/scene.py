@@ -169,6 +169,10 @@ class Lesson(LessonScene):
         line = self.say(r"Here are Day 1's vectors $\mathbf v$ and $\mathbf w$ again.", hold=0.2)
         self.play(GrowArrow(self.v_arrow), GrowArrow(self.w_arrow), FadeIn(self.v_name), FadeIn(self.w_name), run_time=1.3, rate_func=spring_soft)
         self.wait(Timing.beat)
+        line = self.say(r"So far we have only added and scaled vectors.", line, hold=Timing.beat)
+        line = self.say(r"Closest answers on Day 38 need lengths and right angles.", line, hold=0.2)
+        self.play(Indicate(self.v_arrow, color=Palette.glow, scale_factor=1.05), Indicate(self.w_arrow, color=Palette.glow, scale_factor=1.05), run_time=1.0)
+        line = self.say(r"Today one number will measure both.", line, hold=Timing.beat)
 
         v_col, w_col = column(V, color=Palette.yellow), column(W, color=Palette.blue)
         terms = tex("=", "(3)(-1)", "+", "(2)(2)", "=", "1", colors=(None, None, None, None, None, Palette.glow))
@@ -379,6 +383,9 @@ class Lesson(LessonScene):
         line = self.say(r"So the null space of $A$ is $W^\perp$, the complement of its row space.", line, hold=0.2)
         self.play(FadeIn(stack[2], shift=UP * 0.1), run_time=0.8, rate_func=spring_soft)
         self.wait(Timing.read_short)
+        line = self.say(r"Day 36 splits vectors into pieces in $W$ and $W^\perp$.", line, hold=0.2)
+        self.play(Indicate(self.v_line, color=Palette.glow, scale_factor=1.0), Indicate(perp_line, color=Palette.glow, scale_factor=1.0), run_time=1.0)
+        self.wait(Timing.beat)
         self.basis_mark = mark
         self.play(FadeOut(VGroup(perp_line, self.v_line, w_label, perp_label, row_panel)), run_time=0.7)
         return line
@@ -398,6 +405,7 @@ class Lesson(LessonScene):
 
         line = self.say(r"Since $\mathbf v\cdot\mathbf u = 0$, the set $\{\mathbf v, \mathbf u\}$ is an \emph{orthogonal} basis.", line, hold=0.2)
         self.wait(Timing.beat)
+        line = self.say(r"We want coordinates in this basis without row reduction.", line, hold=Timing.beat)
         line = self.say(r"To write $\mathbf y$ in it, each weight is one ratio of dot products.", line, hold=0.2)
         self.play(GrowArrow(y_arrow), FadeIn(y_name), run_time=1.0, rate_func=spring_soft)
         self.play(FadeIn(weight_panel[0]), FadeIn(weights[0], shift=UP * 0.1), run_time=0.8, rate_func=spring_soft)
@@ -406,7 +414,10 @@ class Lesson(LessonScene):
         line = self.say(r"So $\mathbf y = \mathbf v - \mathbf u$, and no row reduction was needed.", line, hold=0.2)
         self.play(TransformFromCopy(self.u_arrow, back_step), run_time=1.3, rate_func=spring)
         self.play(FadeIn(back_name), Indicate(y_arrow, color=Palette.glow, scale_factor=1.05), run_time=0.9)
-        self.wait(Timing.read_short)
+        self.wait(Timing.beat)
+        line = self.say(r"Day 36 projects onto subspaces with these same ratios.", line, hold=0.2)
+        self.play(Indicate(weight_panel, color=Palette.glow, scale_factor=1.03), run_time=0.9)
+        self.wait(Timing.beat)
         self.play(FadeOut(VGroup(y_arrow, y_name, back_step, back_name, weight_panel)), run_time=0.6)
         return self.normalize(line)
 
