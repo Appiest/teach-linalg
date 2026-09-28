@@ -32,6 +32,7 @@ import { ComplementLanding, RangeCollapse } from "@/components/interactive/image
 import { DiagonalZeroHunt, EigenDirectionHunt, EigenGapHunt } from "@/components/interactive/eigenvectors";
 import { AreaShearSlide, CornerToOrigin } from "@/components/interactive/determinants-as-area";
 import { CramerAreas, HeightStack, ProductAreaHunt } from "@/components/interactive/determinant-properties";
+import { CofactorLinePicker, MultipleAreaScale, ReplacementShear } from "@/components/interactive/cofactor-expansion";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
 import { katexMacros } from "@/lib/katex-macros";
 
@@ -166,6 +167,9 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     HeightStack,
     ProductAreaHunt,
     CramerAreas,
+    CofactorLinePicker,
+    ReplacementShear,
+    MultipleAreaScale,
   };
   return (
     <div className="notes">

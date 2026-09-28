@@ -1,0 +1,154 @@
+On Day 25 the determinant of a $2 \times 2$ matrix was the factor by which it scales area, and the picture gave the formula $ad - bc$. Today builds every larger determinant out of $2 \times 2$ pieces, then finds a faster route through row reduction.
+
+## Minors and cofactors
+
+For an $n \times n$ matrix $A$, write $A_{ij}$ for the $(n-1) \times (n-1)$ **submatrix** left after deleting row $i$ and column $j$. Its determinant $\det A_{ij}$ is called a **minor**. The cofactor attaches a sign to that minor.
+
+<Definition term="Cofactor">
+The $(i, j)$-**cofactor** of an $n \times n$ matrix $A$ is the number
+
+$$
+C_{ij} = (-1)^{i+j} \det A_{ij}.
+$$
+
+The sign $(-1)^{i+j}$ depends only on the position $(i, j)$, never on the entry itself. It follows a checkerboard that starts with $+$ in the top-left corner:
+
+$$
+\begin{bmatrix} + & - & + & \cdots \\ - & + & - & \\ + & - & + & \\ \vdots & & & \ddots \end{bmatrix}
+$$
+</Definition>
+
+<Figure src="checkerboard" alt="The matrix A with rows (2, 2, 1), (1, 0, 1) and (0, −2, −1). Row 2 and column 3 are dimmed, and a small plus or minus sign sits at the upper left of every entry in a checkerboard pattern, with the minus sign at position (2, 3) in orange. Beside it, A23 is the 2 by 2 matrix with rows (2, 2) and (0, −2), det A23 = 2·(−2) − 2·0 = −4, and C23 = (−1) to the power 2 + 3 times det A23 = 4." wide />
+
+## Cofactor expansion
+
+<Definition term="Cofactor expansion (Lay, Theorem 1)">
+The determinant of an $n \times n$ matrix $A$ can be computed along any row $i$ or down any column $j$:
+
+$$
+\begin{aligned}
+\det A &= a_{i1}C_{i1} + a_{i2}C_{i2} + \cdots + a_{in}C_{in} && \text{along row } i \\
+\det A &= a_{1j}C_{1j} + a_{2j}C_{2j} + \cdots + a_{nj}C_{nj} && \text{down column } j
+\end{aligned}
+$$
+</Definition>
+
+Every line gives the same number. If you unwind any expansion completely, it becomes the same signed sum of products, each taking exactly one entry from every row and every column, and the checkerboard signs are what keep those signs consistent from one line to the next. This is the video's matrix $A = \begin{bmatrix} 2 & 2 & 1 \\ 1 & 0 & 1 \\ 0 & -2 & -1 \end{bmatrix}$, expanded along row 1 and then down column 2:
+
+$$
+\begin{aligned}
+\det A &= \glow{+}\,\yellow{2}\blue{\begin{vmatrix} 0 & 1 \\ -2 & -1 \end{vmatrix}} \glow{-}\,\yellow{2}\blue{\begin{vmatrix} 1 & 1 \\ 0 & -1 \end{vmatrix}} \glow{+}\,\yellow{1}\blue{\begin{vmatrix} 1 & 0 \\ 0 & -2 \end{vmatrix}} \\
+&= 2(2) - 2(-1) + 1(-2) = \teal{4} \\[4pt]
+\det A &= \glow{-}\,\yellow{2}\blue{\begin{vmatrix} 1 & 1 \\ 0 & -1 \end{vmatrix}} \glow{+}\,\yellow{0} \glow{-}\,\yellow{(-2)}\blue{\begin{vmatrix} 2 & 1 \\ 1 & 1 \end{vmatrix}} \\
+&= -2(-1) + 0 + 2(1) = \teal{4}
+\end{aligned}
+$$
+
+<Figure src="expansion" alt="The row 1 expansion of A written out. Row 1 of A is yellow and the signs plus, minus, plus above it are orange. Three lines show +2 times the determinant with rows (0, 1) and (−2, −1), which is +2(2) = 4, then −2 times the determinant with rows (1, 1) and (0, −1), which is −2(−1) = +2, then +1 times the determinant with rows (1, 0) and (0, −2), which is +1(−2) = −2. The sum reads det A = 4 + 2 − 2 = 4." wide />
+
+In the last term of the column expansion, the minus sign of position $(3, 2)$ meets the entry $-2$, and together they give $+2$. A zero entry makes its whole term zero, so you never compute its minor. That is why the best line to expand along is the one with the most zeros.
+
+<CofactorLinePicker matrix={[[3, 1, -2], [4, 0, 5], [1, 0, 2]]} />
+
+## Triangular matrices
+
+<Definition term="Triangular matrices (Lay, Theorem 2)">
+If $A$ is triangular, then $\det A$ is the product of the entries on its main diagonal.
+</Definition>
+
+Expand an upper triangular matrix down column 1. Every entry below the top one is $0$, so only $a_{11}C_{11}$ survives, and the minor $A_{11}$ is triangular again. Repeating the step peels off one diagonal entry at a time:
+
+$$
+\begin{vmatrix} \yellow{3} & 1 & 4 \\ 0 & \yellow{2} & 5 \\ 0 & 0 & \yellow{-1} \end{vmatrix}
+= 3\begin{vmatrix} 2 & 5 \\ 0 & -1 \end{vmatrix}
+= 3 \cdot 2 \cdot (-1) = -6.
+$$
+
+## Row operations
+
+A full cofactor expansion of an $n \times n$ matrix takes roughly $n!$ multiplications, which is already millions for $n = 10$. Row reduction is much cheaper, and each row operation changes the determinant in a way you can predict.
+
+<Definition term="Row operations and the determinant (Lay, Theorem 3)">
+Let $A$ be a square matrix, and let $B$ come from $A$ by one row operation.
+
+- If a multiple of one row is added to another row, then $\det B = \det A$.
+- If two rows are interchanged, then $\det B = -\det A$.
+- If one row is multiplied by $k$, then $\det B = k \det A$.
+</Definition>
+
+<Figure src="row-operations" alt="Four small planes in a row. The first shows the parallelogram of the columns of M = (2, 1; 1, 2) in yellow with det = 3. After R2 ← R2 − R1 the parallelogram is sheared below the axis, still yellow, with det = 3. After R1 ↔ R2 it is flipped over and pink, with det = −3. After R1 ← 2R1 it is stretched sideways and pink, with det = −6." wide />
+
+The pictures come from Day 25. A row operation on $M$ gives $EM$, and the columns of $EM$ are the columns of $M$ moved by the elementary matrix $E$. A replacement is a shear, which keeps area. A swap is a reflection, which flips orientation. Scaling a row by $k$ stretches the plane by $k$ in one direction.
+
+<ReplacementShear matrix={[[1, -1], [1, 2]]} />
+
+To compute a determinant, row reduce to a triangular matrix using replacements and swaps, then multiply the diagonal and flip the sign once for every swap. Here is the reduction from the video. The swap puts a minus sign in front, and the two replacements change nothing:
+
+$$
+\begin{aligned}
+\det B = \begin{vmatrix} 0 & 1 & 2 \\ 1 & 2 & 1 \\ 2 & 3 & 4 \end{vmatrix}
+&= -\begin{vmatrix} 1 & 2 & 1 \\ 0 & 1 & 2 \\ 2 & 3 & 4 \end{vmatrix} && R_1 \leftrightarrow R_2 \\
+&= -\begin{vmatrix} 1 & 2 & 1 \\ 0 & 1 & 2 \\ 0 & -1 & 2 \end{vmatrix} && R_3 \leftarrow R_3 - 2R_1 \\
+&= -\begin{vmatrix} 1 & 2 & 1 \\ 0 & 1 & 2 \\ 0 & 0 & 4 \end{vmatrix} && R_3 \leftarrow R_3 + R_2 \\
+&= -(1 \cdot 1 \cdot 4) = -4
+\end{aligned}
+$$
+
+A triangular matrix is invertible exactly when none of its diagonal entries is zero, and row operations never turn a nonzero determinant into zero. So a square matrix $A$ is invertible if and only if $\det A \neq 0$.
+
+## Transposes and products
+
+Two more rules let you skip the arithmetic entirely. The rows of $A^T$ are the columns of $A$, so expanding $A^T$ along a row is the same computation as expanding $A$ down a column, and $\det A^T = \det A$. As a result, every rule above holds for columns as well as rows. For products, $\det(AB) = (\det A)(\det B)$, because $B$ scales area by $|\det B|$ and then $A$ scales the result by $|\det A|$. Day 27 proves both. Sums have no such rule, and $\det(A + B)$ is usually not $\det A + \det B$.
+
+Scaling the whole matrix scales every row. For an $n \times n$ matrix that is $n$ separate row scalings, so
+
+$$
+\det(kA) = k^n \det A.
+$$
+
+<MultipleAreaScale matrix={[[1, -1], [1, 1]]} factor={4} />
+
+## Practice
+
+<Check>
+Compute $\det \begin{bmatrix} 2 & 0 & 1 \\ 3 & -1 & 4 \\ 1 & 5 & 0 \end{bmatrix}$ by expanding along row 1, then check it by expanding down column 2. (Modeled on Lay §3.1, Exercise 1.)
+
+<VectorAnswer answer={[-24]} labels={["the determinant"]} prefix="det =" />
+
+<Answer>
+Along row 1 the middle entry is $0$, so only two minors are needed:
+
+$$
+\begin{aligned}
+\det &= +2\begin{vmatrix} -1 & 4 \\ 5 & 0 \end{vmatrix} - 0 + 1\begin{vmatrix} 3 & -1 \\ 1 & 5 \end{vmatrix} = 2(-20) + 1(16) = -24 \\
+\det &= -0 + (-1)\begin{vmatrix} 2 & 1 \\ 1 & 0 \end{vmatrix} - 5\begin{vmatrix} 2 & 1 \\ 3 & 4 \end{vmatrix} = (-1)(-1) - 5(5) = -24
+\end{aligned}
+$$
+
+In the column expansion, position $(2, 2)$ carries $+$ and position $(3, 2)$ carries $-$.
+</Answer>
+</Check>
+
+<Check>
+Compute $\det \begin{bmatrix} 1 & 0 & 2 & 0 \\ 3 & -1 & 4 & 2 \\ 0 & 0 & 5 & 0 \\ 2 & 0 & 1 & 3 \end{bmatrix}$, choosing the line with the most zeros at each step. (Modeled on Lay §3.1, Exercise 9.)
+
+<VectorAnswer answer={[-15]} labels={["the determinant"]} prefix="det =" />
+
+<Answer>
+Row 3 has a single nonzero entry, $5$, at position $(3, 3)$, whose sign is $+$. In the $3 \times 3$ minor, column 2 has a single nonzero entry, $-1$, at position $(2, 2)$, whose sign is also $+$:
+
+$$
+\det = 5\begin{vmatrix} 1 & 0 & 0 \\ 3 & -1 & 2 \\ 2 & 0 & 3 \end{vmatrix} = 5 \cdot (-1)\begin{vmatrix} 1 & 0 \\ 2 & 3 \end{vmatrix} = 5 \cdot (-1) \cdot 3 = -15.
+$$
+</Answer>
+</Check>
+
+<Check>
+Let $A$ and $B$ be $3 \times 3$ matrices with $\det A = 2$ and $\det B = -3$. Find $\det(3A)$, $\det(AB^T)$ and $\det(A^TB^2)$. (Modeled on Lay §3.2, Exercise 39.)
+
+<VectorAnswer answer={[54, -6, 18]} labels={["det(3A)", "det(AB^T)", "det(A^T B^2)"]} />
+
+<Answer>
+Scaling a $3 \times 3$ matrix by $3$ scales three rows, so $\det(3A) = 3^3 \cdot 2 = 54$. The transpose keeps the determinant, so $\det(AB^T) = (\det A)(\det B) = 2(-3) = -6$. Finally, $\det(A^TB^2) = (\det A)(\det B)^2 = 2 \cdot 9 = 18$.
+</Answer>
+</Check>
