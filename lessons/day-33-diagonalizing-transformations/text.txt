@@ -1,0 +1,2 @@
+Day 33 is up! If you describe a map using its own eigenvectors as the basis, its matrix turns diagonal and the map just stretches each axis. In the video, watch the same map act on two grids side by side and see which grid stays lined up with itself.
+https://appiest.github.io/teach-linalg/day/33/
