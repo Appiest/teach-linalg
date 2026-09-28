@@ -123,7 +123,7 @@ function RowStatus({ holds, tex, target }: { holds: boolean; tex: string; target
       ) : (
         <Circle className="size-5 shrink-0 text-text-muted" aria-label="This row does not hold yet" />
       )}
-      <span className="min-w-0 flex-1 overflow-x-auto">
+      <span className="min-w-0 flex-1 overflow-x-auto whitespace-nowrap [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <Tex>{tex}</Tex>
       </span>
       <span className="shrink-0 text-meta text-text-muted">
@@ -156,7 +156,7 @@ export function SubstitutionSolver({ matrix, rhs, kind, name, hue }: { matrix: M
         success={<>Solved with <Tex>{solution}</Tex>. Each row brought in one new unknown, so the {start} row was the only place to begin.</>}
       />
       <div className="space-y-5">
-        <div className="grid items-center gap-5 md:grid-cols-2">
+        <div className="grid items-start gap-5 md:grid-cols-2">
           <Readout tex={system} />
           <div className="space-y-4">
             {ORDER[kind].map((index) => (

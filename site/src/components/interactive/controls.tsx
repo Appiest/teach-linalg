@@ -3,7 +3,7 @@
 import { CheckCircle, Crosshair } from "@phosphor-icons/react";
 import katex from "katex";
 import { useMemo } from "react";
-import { GestureProvider, useGesture } from "./gesture";
+import { GestureProvider, useGesture, useHeldWhileDragging } from "./gesture";
 import { formatNumber, texNumber, type Vec } from "./math";
 
 export function Tex({ children, display = false }: { children: string; display?: boolean }) {
@@ -25,14 +25,14 @@ export function columnTex(entries: number[], color?: string): string {
   return color ? `\\textcolor{${color}}{${body}}` : body;
 }
 
-export function Panel({ children, gesture }: { children: React.ReactNode; gesture?: { begin: () => void } }) {
+export function Panel({ children, gesture }: { children: React.ReactNode; gesture?: { begin: () => void; dragging: boolean } }) {
   const panel = <div className="not-prose my-8 rounded-card bg-surface-raised p-4 shadow-lift sm:p-6 lg:-mx-12">{children}</div>;
   return gesture ? <GestureProvider value={gesture}>{panel}</GestureProvider> : panel;
 }
 
 export function Workbench({ plane, readout }: { plane: React.ReactNode; readout: React.ReactNode }) {
   return (
-    <div className="grid items-center gap-5 md:grid-cols-[1.35fr_1fr]">
+    <div className="grid items-start gap-5 md:grid-cols-[1.35fr_1fr]">
       <div className="min-w-0">{plane}</div>
       <div className="min-w-0 space-y-4">{readout}</div>
     </div>
@@ -48,7 +48,8 @@ function Swap({ shown, className = "", children }: { shown: boolean; className?:
   );
 }
 
-export function Goal({ solved, prompt, success }: { solved: boolean; prompt: React.ReactNode; success: React.ReactNode }) {
+export function Goal({ solved, prompt: livePrompt, success: liveSuccess }: { solved: boolean; prompt: React.ReactNode; success: React.ReactNode }) {
+  const { prompt, success } = useHeldWhileDragging({ prompt: livePrompt, success: liveSuccess });
   return (
     <div
       aria-live="polite"
@@ -105,7 +106,7 @@ export function Slider({ label, value, onChange, min, max, step, color }: {
 
 export function Readout({ tex }: { tex: string }) {
   return (
-    <div className="overflow-x-auto rounded-lg bg-surface-sunken px-4 py-3 text-center">
+    <div className="overflow-x-auto rounded-lg bg-surface-sunken px-4 py-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&_.katex-display>.katex]:text-left">
       <Tex display>{tex}</Tex>
     </div>
   );

@@ -100,7 +100,7 @@ export function CofactorLinePicker({ matrix }: { matrix: Matrix3 }) {
         prompt={<>Every row and column gives the same determinant. Pick the line that needs the fewest <Tex>{"2 \\times 2"}</Tex> determinants.</>}
         success={<>{lineName(line)} needs only {fewest === 1 ? "one" : fewest} <Tex>{"2 \\times 2"}</Tex> determinant, because its zero entries wipe out their whole terms.</>}
       />
-      <div className="grid items-center gap-5 md:grid-cols-[auto_1fr]">
+      <div className="grid items-start gap-5 md:grid-cols-[auto_1fr]">
         <MatrixCells matrix={matrix} line={line} solved={solved} />
         <div className="min-w-0 space-y-4">
           <div role="group" aria-label="Line to expand along" className="flex flex-wrap gap-2">

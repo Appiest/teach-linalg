@@ -208,6 +208,11 @@ sections, then practice. Let rendered LaTeX and the figures carry it, not paragr
       in one grid cell so the box keeps the same height and crossfades between them. Any other text that swaps
       on success must reserve its space the same way, using the `swap-shown` and `swap-hidden` utilities in
       `globals.css`.
+    - nothing moves or resizes under the learner's pointer while they drag. `Goal` holds its text during a drag
+      automatically, but also keep success text static (use the known answer, never live values), give every
+      `Plane` fixed bounds that don't depend on state, reserve space for anything that can appear or grow (an
+      extra row, a wider number), and keep readouts on one line (`Readout` already hides its scrollbar and
+      left-aligns)
     - no function exceeds complexity 10
 - **Textbook problems.** Never copy Lay's exercises or examples verbatim into the public notes; this repo is
   public. Use the guide's "Suggested fresh problems", or write new ones in the same style, and cite the
@@ -244,6 +249,8 @@ Then test the widgets for real:
   that the goal box has not changed yet. Release, then confirm that it shows success and that its height is
   the same as before.
 - Type a wrong answer, then the right one, into each `VectorAnswer`.
+- Run `node site/scripts/drag-stability.mjs <N> <N> 1280` and again with `390` for phone width. It drags every
+  slider and handle with the mouse held and exits non-zero if any control, plane or goal box moves. Fix every hit.
 - Screenshot each widget before and after, and read the screenshots.
 - If Chromium can't be installed, say so in your report.
 

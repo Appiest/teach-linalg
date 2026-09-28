@@ -13,19 +13,33 @@ const isZero = (v: Vec) => v[0] === 0 && v[1] === 0;
 
 function Line({ through, direction, color, width, opacity }: { through: Vec; direction: Vec; color: Hue; width: number; opacity: number }) {
   const { toSvg, bounds } = usePlane();
-  const reach = (bounds.xMax - bounds.xMin + bounds.yMax - bounds.yMin) / Math.max(Math.hypot(...direction), 1e-9);
+  const span = bounds.xMax - bounds.xMin + bounds.yMax - bounds.yMin + Math.hypot(...through);
+  const reach = span / Math.max(Math.hypot(...direction), 1e-9);
   const [x1, y1] = toSvg(add(through, scale(-reach, direction)));
   const [x2, y2] = toSvg(add(through, scale(reach, direction)));
   return <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={hue(color)} strokeWidth={width} strokeOpacity={opacity} strokeLinecap="round" />;
 }
 
-/** Lines of a·v + t·w and t·v + b·w for whole-number weights: the plane as v and w carve it up. */
-function SkewedGrid({ v, w, reach = 12 }: { v: Vec; w: Vec; reach?: number }) {
-  const weights = Array.from({ length: 2 * reach + 1 }, (_, i) => i - reach);
+const MAX_LINES_PER_FAMILY = 200;
+
+/** The whole-number weights k whose line k·offset + t·direction crosses the visible plane. */
+function weightsCovering(offset: Vec, direction: Vec, corners: Vec[]): number[] {
+  const denominator = cross(direction, offset);
+  if (denominator === 0) return [0];
+  const reached = corners.map((corner) => cross(direction, corner) / denominator);
+  const low = Math.max(Math.floor(Math.min(...reached)), -MAX_LINES_PER_FAMILY / 2);
+  const high = Math.min(Math.ceil(Math.max(...reached)), MAX_LINES_PER_FAMILY / 2);
+  return Array.from({ length: high - low + 1 }, (_, i) => low + i);
+}
+
+/** Lines of a·v + t·w and t·v + b·w for whole-number weights, enough of them to reach every corner of the plane. */
+function SkewedGrid({ v, w }: { v: Vec; w: Vec }) {
+  const { bounds } = usePlane();
+  const corners: Vec[] = [[bounds.xMin, bounds.yMin], [bounds.xMin, bounds.yMax], [bounds.xMax, bounds.yMin], [bounds.xMax, bounds.yMax]];
   return (
     <g aria-hidden>
-      {isZero(w) ? null : weights.map((k) => <Line key={`v${k}`} through={scale(k, v)} direction={w} color="teal" width={1.2} opacity={0.45} />)}
-      {isZero(v) ? null : weights.map((k) => <Line key={`w${k}`} through={scale(k, w)} direction={v} color="teal" width={1.2} opacity={0.45} />)}
+      {isZero(w) ? null : weightsCovering(v, w, corners).map((k) => <Line key={`v${k}`} through={scale(k, v)} direction={w} color="teal" width={1.2} opacity={0.45} />)}
+      {isZero(v) ? null : weightsCovering(w, v, corners).map((k) => <Line key={`w${k}`} through={scale(k, w)} direction={v} color="teal" width={1.2} opacity={0.45} />)}
     </g>
   );
 }
@@ -63,7 +77,7 @@ export function SpanPainter({ v: startV = [3, 2], w: startW = [-1, 2] }: { v?: V
         }
         readout={
           <>
-            <Readout tex={`\\operatorname{Span}\\{${columnTex(v, palette.yellow)}, ${columnTex(w, palette.blue)}\\} = ${spanName(v, w)}`} />
+            <Readout tex={`\\begin{aligned} &\\operatorname{Span}\\{${columnTex(v, palette.yellow)}, ${columnTex(w, palette.blue)}\\} \\\\ &= ${spanName(v, w)} \\end{aligned}`} />
             <Readout tex={`v_1 w_2 - v_2 w_1 = ${texNumber(determinant)}`} />
           </>
         }

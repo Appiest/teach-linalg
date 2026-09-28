@@ -156,7 +156,7 @@ export function FreeWeights({ u, v, target, freeRows = [1, 3] }: { u: Vec4; v: V
         prompt={<>Build <Tex>{`\\mathbf x = ${plainColumn(target, palette.pink)}`}</Tex> from the basis. Look at rows {freeRows[0] + 1} and {freeRows[1] + 1} first.</>}
         success={<>Rows {freeRows[0] + 1} and {freeRows[1] + 1} of <Tex>{"\\mathbf x"}</Tex> are the weights themselves, so <Tex>{`x_${freeRows[0] + 1} = ${texNumber(s)}`}</Tex> and <Tex>{`x_${freeRows[1] + 1} = ${texNumber(t)}`}</Tex> is the only way to build it.</>}
       />
-      <div className="grid items-center gap-5 md:grid-cols-[1fr_1.35fr]">
+      <div className="grid items-start gap-5 md:grid-cols-[1fr_1.35fr]">
         <div className="space-y-4">
           <Slider label={`x_${freeRows[0] + 1}`} value={s} onChange={setS} min={-3} max={3} step={1} color={palette.yellow} />
           <Slider label={`x_${freeRows[1] + 1}`} value={t} onChange={setT} min={-3} max={3} step={1} color={palette.blue} />

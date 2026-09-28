@@ -138,13 +138,6 @@ function dropToPlane(point: Vec3, normal: Vec3): Vec3 {
   return [point[0], point[1], -(normal[0] * point[0] + normal[1] * point[1]) / normal[2]];
 }
 
-/** Weights (a, b) with a·u + b·v = w, assuming w lies in their span and u, v are independent. */
-function weightsFor(u: Vec3, v: Vec3, w: Vec3): [number, number] {
-  const n = cross3(u, v);
-  const nn = dot3(n, n);
-  return [dot3(cross3(w, v), n) / nn, dot3(cross3(u, w), n) / nn];
-}
-
 function signPrefix(value: number, first: boolean): string {
   if (first) return value < 0 ? "-" : "";
   return value < 0 ? " - " : " + ";
@@ -156,11 +149,6 @@ const signed = (value: number, first: boolean) => `${signPrefix(value, first)}${
 function weightedTerm(weight: number, name: string, first: boolean): string {
   if (Math.abs(weight) === 1) return `${signPrefix(weight, first)}${name}`;
   return `${signed(weight, first)}\\,${name}`;
-}
-
-function recipeTex(a: number, b: number): string {
-  const parts = [a !== 0 ? weightedTerm(a, "\\mathbf u", true) : "", b !== 0 ? weightedTerm(b, "\\mathbf v", a === 0) : ""];
-  return parts.join(" ");
 }
 
 const U: Vec3 = [2, -1, 1];
@@ -176,7 +164,6 @@ export function ThirdVectorHunt({ start = [0, 0, 2] }: { start?: Vec3 }) {
   const inPlane = offset === 0;
   const redundant = inPlane && !isZero3(w) && !parallel(w, u) && !parallel(w, v);
   const { settled: solved, gesture } = useSettled(redundant);
-  const [a, b] = weightsFor(u, v, w);
   const setEntry = (index: number) => (value: number) => setW((old) => old.map((entry, i) => (i === index ? value : entry)) as Vec3);
   const lastColor = inPlane ? palette.teal : palette.glow;
   const echelon = `\\begin{bmatrix} 2 & 1 & ${texNumber(w[0])} \\\\ 0 & 5 & ${texNumber(w[0] + 2 * w[1])} \\\\ 0 & 0 & \\textcolor{${lastColor}}{${texNumber(2 * offset)}} \\end{bmatrix}`;
@@ -186,7 +173,7 @@ export function ThirdVectorHunt({ start = [0, 0, 2] }: { start?: Vec3 }) {
       <Goal
         solved={solved}
         prompt={<>Build a third vector <Tex>{"\\mathbf w"}</Tex> that leaves the span a plane. Skip <Tex>{"\\mathbf 0"}</Tex> and plain multiples of <Tex>{"\\mathbf u"}</Tex> or <Tex>{"\\mathbf v"}</Tex>.</>}
-        success={<>That <Tex>{"\\mathbf w"}</Tex> is redundant. It equals <Tex>{recipeTex(a, b)}</Tex>, so adding it to the set leaves the span the same plane.</>}
+        success={<>That <Tex>{"\\mathbf w"}</Tex> is redundant. It is a combination of <Tex>{"\\mathbf u"}</Tex> and <Tex>{"\\mathbf v"}</Tex>, so adding it to the set leaves the span the same plane.</>}
       />
       <Workbench
         plane={
@@ -270,7 +257,7 @@ export function PivotHunt({ a1 = [1, 2, 0], a2 = [0, 1, 1], a3 = [2, 1], start =
       <Goal
         solved={solved}
         prompt={<>Slide <Tex>h</Tex> until the matrix loses a pivot, so its columns no longer span <Tex>{"\\mathbb R^3"}</Tex>.</>}
-        success={<>Right, <Tex>{`h = ${texNumber(h)}`}</Tex>. Row three is all zeros and <Tex>{"\\mathbf a_3"}</Tex> drops into the plane of <Tex>{"\\mathbf a_1"}</Tex> and <Tex>{"\\mathbf a_2"}</Tex>, so the span is only that plane.</>}
+        success={<>Right, <Tex>{`h = ${texNumber(-(a3[0] * normal[0] + a3[1] * normal[1]) / normal[2])}`}</Tex>. Row three is all zeros and <Tex>{"\\mathbf a_3"}</Tex> drops into the plane of <Tex>{"\\mathbf a_1"}</Tex> and <Tex>{"\\mathbf a_2"}</Tex>, so the span is only that plane.</>}
       />
       <Workbench
         plane={
@@ -377,7 +364,7 @@ export function PolynomialRecipe({ basis, target }: { basis: [Coefficients, Coef
       <Goal
         solved={solved}
         prompt={<>Use the recipe <Tex>{"c_1\\mathbf p_1 + c_2\\mathbf p_2 + c_3\\mathbf p_3"}</Tex> to rebuild the dashed target <Tex>{polynomialTex(target)}</Tex>.</>}
-        success={<>That&rsquo;s the recipe. The coefficient columns match entry by entry, so <Tex>{`${recipe} = ${polynomialTex(target)}`}</Tex>.</>}
+        success={<>That&rsquo;s the recipe. The coefficient columns match entry by entry, so these weights rebuild <Tex>{polynomialTex(target)}</Tex> exactly.</>}
       />
       <Workbench
         plane={

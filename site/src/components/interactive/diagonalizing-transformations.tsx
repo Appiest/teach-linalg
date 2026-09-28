@@ -82,7 +82,7 @@ function isDiagonalBasis(matrix: Matrix2, b1: Vec, b2: Vec): boolean {
 }
 
 function basisReadout(matrix: Matrix2, b1: Vec, b2: Vec): string {
-  if (nearZero(cross(b1, b2))) return `\\mathbf b_1, \\mathbf b_2 \\text{ lie on one line}`;
+  if (nearZero(cross(b1, b2))) return `\\vphantom{\\begin{bmatrix} 0 \\\\ 0 \\end{bmatrix}}\\mathbf b_1, \\mathbf b_2 \\text{ lie on one line}`;
   return `[T]_{\\mathcal B} = ${matrixTex(basisMatrix(matrix, b1, b2), palette.glow)}`;
 }
 
@@ -258,15 +258,13 @@ export function EigenPolynomialHunt({ matrix }: { matrix: Matrix2 }) {
   const solved = found.length >= 2;
   const image = apply(matrix, p);
   const stretch = pointKey(p) === settled ? stretchOf(image, p) : null;
-  const basisTex = found.map((entry) => polynomialTex(entry.coefficients)).join(",\\ ");
-  const diagonalTex = found.map((entry) => texNumber(entry.stretch)).join(",\\ ");
 
   return (
     <Panel gesture={gesture}>
       <Goal
         solved={solved}
         prompt={<>Set the coefficients so that <Tex>{"T(p)"}</Tex> is a multiple of <Tex>{"p"}</Tex>. Find two polynomials like that that are not multiples of each other.</>}
-        success={<>In the basis <Tex>{`\\{${basisTex}\\}`}</Tex>, the matrix of <Tex>{"T"}</Tex> is <Tex>{`\\operatorname{diag}(${diagonalTex})`}</Tex>.</>}
+        success={<>Both polynomials only get rescaled, so in the basis they form, the matrix of <Tex>{"T"}</Tex> is diagonal.</>}
       />
       <Workbench
         plane={

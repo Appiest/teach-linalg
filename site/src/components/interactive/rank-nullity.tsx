@@ -108,7 +108,8 @@ function pivotCell(column: number, rows: number) {
 function StaircaseGrid({ rows, columns, rank }: { rows: number; columns: number; rank: number }) {
   const overflow = Math.max(0, rank - rows);
   const width = columns * (CELL + GAP) + GAP;
-  const height = (rows + (overflow > 0 ? 1 : 0)) * (CELL + GAP) + GAP + (overflow > 0 ? 8 : 0);
+  const reserveOverflowRow = columns > rows;
+  const height = (rows + (reserveOverflowRow ? 1 : 0)) * (CELL + GAP) + GAP + (reserveOverflowRow ? 8 : 0);
   const cellX = (column: number) => GAP + column * (CELL + GAP);
   const cellY = (row: number) => GAP + row * (CELL + GAP);
   return (
@@ -169,7 +170,7 @@ export function PivotBudget({ rows, columns }: { rows: number; columns: number }
         prompt={<>Slide the rank <Tex>{"r"}</Tex> as high as a <Tex>{`${rows}\\times ${columns}`}</Tex> matrix allows. That gives its smallest possible nullity.</>}
         success={<>Each pivot needs its own row, so <Tex>{`\\operatorname{rank}A \\le ${rows}`}</Tex> and <Tex>{`\\operatorname{nullity}A \\ge ${columns} - ${rows} = ${columns - best}`}</Tex>.</>}
       />
-      <div className="grid items-center gap-5 md:grid-cols-[1.35fr_1fr]">
+      <div className="grid items-start gap-5 md:grid-cols-[1.35fr_1fr]">
         <div className="min-w-0 rounded-media bg-surface-sunken p-3">
           <StaircaseGrid rows={rows} columns={columns} rank={rank} />
         </div>

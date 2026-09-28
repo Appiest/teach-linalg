@@ -209,7 +209,8 @@ export function Handle({ at, onMove, color, label, step = 1 }: { at: Vec; onMove
         event.currentTarget.setPointerCapture(event.pointerId);
         setDragging(true);
         gesture.begin();
-        moveTo(event.clientX, event.clientY);
+        const { clientX, clientY } = event;
+        requestAnimationFrame(() => moveTo(clientX, clientY));
       }}
       onPointerMove={(event) => dragging && moveTo(event.clientX, event.clientY)}
       onPointerUp={() => setDragging(false)}

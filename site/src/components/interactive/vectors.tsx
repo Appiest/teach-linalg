@@ -112,12 +112,15 @@ export function CombinationTarget({ v = [3, 2], w = [-1, 2], target }: { v?: Vec
   const av = scale(a, v);
   const result = add(av, scale(b, w));
   const { settled: solved, gesture } = useSettled(nearlyEqual(result, target));
+  const determinant = v[0] * w[1] - v[1] * w[0];
+  const answerA = (target[0] * w[1] - target[1] * w[0]) / determinant;
+  const answerB = (v[0] * target[1] - v[1] * target[0]) / determinant;
   return (
     <Panel gesture={gesture}>
       <Goal
         solved={solved}
         prompt={<>Choose weights <Tex>a</Tex> and <Tex>b</Tex> so that <Tex>{"a\\,\\vec v + b\\,\\vec w"}</Tex> lands on the ringed point <Tex>{columnTex(target)}</Tex>.</>}
-        success={<>You found it: <Tex>{`${texNumber(a)}\\,\\vec v ${b < 0 ? "-" : "+"} ${texNumber(Math.abs(b))}\\,\\vec w = ${columnTex(target)}`}</Tex>. Those weights are the only pair that works.</>}
+        success={<>You found it: <Tex>{`${texNumber(answerA)}\\,\\vec v ${answerB < 0 ? "-" : "+"} ${texNumber(Math.abs(answerB))}\\,\\vec w = ${columnTex(target)}`}</Tex>. Those weights are the only pair that works.</>}
       />
       <Workbench
         plane={

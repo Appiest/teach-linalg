@@ -12,8 +12,6 @@ const SET_COLOR = "var(--palette-purple-gray)";
 
 const vecTex = (v: Vec) => `(${texNumber(v[0])}, ${texNumber(v[1])})`;
 
-const scalarTex = (c: number) => (c < 0 ? `(${texNumber(c)})` : texNumber(c));
-
 function SetLine({ slope, shift, dashed = false, color = SET_COLOR }: { slope: number; shift: number; dashed?: boolean; color?: string }) {
   const { bounds, toSvg } = usePlane();
   const [x1, y1] = toSvg([bounds.xMin, slope * bounds.xMin + shift]);
@@ -157,7 +155,7 @@ export function QuadrantEscape({ u: startU = [2, 1], c: startC = 2 }: { u?: Vec;
       <Goal
         solved={solved}
         prompt={<>Keep <Tex>{"\\mathbf u"}</Tex> in the shaded quadrant <Tex>Q</Tex>, and choose <Tex>c</Tex> so that <Tex>{"c\\,\\mathbf u"}</Tex> lands outside it.</>}
-        success={<>Found one. <Tex>Q</Tex> contains <Tex>{"\\mathbf 0"}</Tex> and is closed under addition, but <Tex>{`${scalarTex(c)}\\,${vecTex(u)} = ${vecTex(multiple)}`}</Tex> leaves it, so check (c) fails and <Tex>Q</Tex> is not a subspace.</>}
+        success={<>Found one. <Tex>Q</Tex> contains <Tex>{"\\mathbf 0"}</Tex> and is closed under addition, but this multiple of <Tex>{"\\mathbf u"}</Tex> leaves it, so check (c) fails and <Tex>Q</Tex> is not a subspace.</>}
       />
       <Workbench
         plane={

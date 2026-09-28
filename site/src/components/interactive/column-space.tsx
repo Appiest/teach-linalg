@@ -201,7 +201,7 @@ export function PivotPicker({ matrix, reduced, pivots }: { matrix: Matrix34; red
         prompt={<>Tap the columns of <Tex>{"A"}</Tex> that form a basis for <Tex>{"\\operatorname{Col}A"}</Tex>. The reduced form shows where the pivots are.</>}
         success={<>That is the basis <Tex>{`\\{${names}\\}`}</Tex>. Each other column is a combination of these, with the same weights you can read off the reduced form.</>}
       />
-      <div className="grid items-center gap-5 md:grid-cols-[1.35fr_1fr]">
+      <div className="grid items-start gap-5 md:grid-cols-[1.35fr_1fr]">
         <div role="group" aria-label="Columns of A" className="grid grid-cols-4 gap-2">
           {matrix[0].map((_, index) => (
             <ColumnButton key={index} index={index} column={columnOf(matrix, index)} picked={picked.includes(index)} onToggle={() => toggle(index)} />

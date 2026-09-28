@@ -43,6 +43,14 @@ function CarriedGrid({ matrix }: { matrix: Matrix2 }) {
   );
 }
 
+/** A fixed window that holds the start, the target, and both trips through the first matrix, so the plane never resizes mid-drag. */
+function tripBounds(first: Matrix2, second: Matrix2, start: Vec, target: Vec): Bounds {
+  const product = multiply(second, first);
+  const det = product[0][0] * product[1][1] - product[0][1] * product[1][0];
+  const solution: Vec = [(product[1][1] * target[0] - product[0][1] * target[1]) / det, (product[0][0] * target[1] - product[1][0] * target[0]) / det];
+  return boundsAround([start, apply(first, start), apply(product, start), target, solution, apply(first, solution)]);
+}
+
 type CompositionProps = { first: Matrix2; second: Matrix2; firstName?: string; secondName?: string; start: Vec; target: Vec };
 
 /** x is carried by the first matrix and then the second; the learner drags x so the two-step trip lands on a target. */
@@ -53,6 +61,7 @@ export function CompositionExplorer({ first, second, firstName = "S", secondName
   const product = multiply(second, first);
   const { settled: solved, gesture } = useSettled(nearlyEqual(landing, target));
   const names = `${secondName}${firstName}`;
+  const [bounds] = useState(() => tripBounds(first, second, start, target));
 
   return (
     <Panel gesture={gesture}>
@@ -63,7 +72,7 @@ export function CompositionExplorer({ first, second, firstName = "S", secondName
       />
       <Workbench
         plane={
-          <Plane bounds={boundsAround([target, x, halfway, landing])} label={`The vector x, its image after ${firstName}, and its image after ${secondName}. Drag the tip of x or use the arrow keys.`}>
+          <Plane bounds={bounds} label={`The vector x, its image after ${firstName}, and its image after ${secondName}. Drag the tip of x or use the arrow keys.`}>
             {!solved ? <Marker at={target} ring /> : null}
             <Arrow to={halfway} color="yellow" width={1.5} dashed />
             <Arrow from={x} to={halfway} color="text" width={1.5} dashed />

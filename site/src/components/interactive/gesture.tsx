@@ -2,9 +2,9 @@
 
 import { createContext, useContext, useMemo, useState } from "react";
 
-type Gesture = { begin: () => void };
+type Gesture = { begin: () => void; dragging: boolean };
 
-const GestureContext = createContext<Gesture>({ begin: () => {} });
+const GestureContext = createContext<Gesture>({ begin: () => {}, dragging: false });
 
 export const GestureProvider = GestureContext.Provider;
 
@@ -20,6 +20,7 @@ export function useSettled<T>(value: T): { settled: T; gesture: Gesture } {
 
   const gesture = useMemo<Gesture>(
     () => ({
+      dragging,
       begin: () => {
         setDragging(true);
         const end = () => {
@@ -31,8 +32,16 @@ export function useSettled<T>(value: T): { settled: T; gesture: Gesture } {
         window.addEventListener("pointercancel", end);
       },
     }),
-    [],
+    [dragging],
   );
 
   return { settled, gesture };
+}
+
+/** The value from just before the current drag began, held until the drag ends, so layout can't shift under the pointer. */
+export function useHeldWhileDragging<T>(value: T): T {
+  const { dragging } = useGesture();
+  const [held, setHeld] = useState({ value, dragging });
+  if (held.dragging !== dragging) setHeld({ value, dragging });
+  return dragging ? held.value : value;
 }
