@@ -1,2 +1,2 @@
-Day 10 is up! Today is about vector spaces: anything you can add and scale by the usual rules counts, even polynomials and functions. Watch a curve and an arrow add and stretch in lockstep side by side.
+Day 10 is up! Everything so far (span, combinations, linear maps) only ever used adding and scaling, so today asks what else can be added and scaled, and polynomials and functions both qualify. Watch a curve and an arrow add and stretch in lockstep side by side.
 https://appiest.github.io/teach-linalg/day/10/

@@ -1,4 +1,4 @@
-Since Day 1 you have added and scaled arrows in $\mathbb{R}^n$. Many other objects can be added and scaled by the same rules: polynomials, functions and matrices are three of them. A vector space is the name for any set where those two operations behave the way they do for arrows, and every theorem you prove from the rules then holds for all of these sets at once.
+Since Day 1 you have added and scaled arrows in $\mathbb{R}^n$. Span, linear combinations and linear maps never used anything else, so they should work for any objects that add and scale by the same rules. Polynomials, functions and matrices are three such objects. Today's question is what exactly counts as a vector, and it comes now because the next unit builds on the answer. A vector space is the name for any set where those two operations behave the way they do for arrows, and every theorem you prove from the rules then holds for all of these sets at once. Days 11 to 19 rebuild subspaces, span, independence, basis and dimension on this definition.
 
 ## The definition
 
@@ -33,7 +33,7 @@ When the operations are built from ordinary arithmetic on numbers, rules 2, 3 an
 
 ## Polynomials
 
-The set $\mathbb{P}_2$ holds every polynomial $a_0 + a_1 t + a_2 t^2$ with real coefficients and degree at most 2. You add two polynomials by adding their values at every $t$, which is the same as adding matching coefficients. You scale one by multiplying every coefficient.
+The set $\mathbb{P}_2$ holds every polynomial $a_0 + a_1 t + a_2 t^2$ with real coefficients and degree at most 2. You add two polynomials by adding their values at every $t$, which is the same as adding matching coefficients. You scale one by multiplying every coefficient. On Days 12 to 15 these coefficient lists turn questions about polynomials into row reduction in $\mathbb R^3$.
 
 <Pair>
 <Figure src="polynomials-as-arrows" alt="Left: the curves p(t) = 1 + 2t − t² in yellow, q(t) = 2 − t + t² in blue and their sum 3 + t as a straight teal line. Right: the coefficient arrows (1, 2, −1) and (2, −1, 1) in 3D, placed tip to tail, with the teal sum arrow ending at (3, 1, 0)." />
@@ -97,6 +97,8 @@ Let $W$ be the points $(x, y)$ with $xy \geq 0$, which are the first and third q
 <Figure src="closure-fails" alt="The first and third quadrants shaded. The yellow vector u = (2, 1) and the blue vector v = (−1, −3) both lie in the shaded region, but their teal sum (1, −2), ringed in orange, lands in the unshaded fourth quadrant." />
 
 Here $\yellow{\mathbf u} = (2, 1)$ and $\blue{\mathbf v} = (-1, -3)$ are in $W$, since $2 \cdot 1 = 2$ and $(-1)(-3) = 3$. Their sum $\teal{(1, -2)}$ has $1 \cdot (-2) = -2 < 0$, so rule 1 fails and $W$ is not a vector space.
+
+A set can also sit inside a vector space and be a vector space itself, like a line through the origin in $\mathbb R^2$. Tomorrow's lesson calls such a set a subspace and tests for one with three quick checks instead of all ten rules.
 
 ## Practice
 

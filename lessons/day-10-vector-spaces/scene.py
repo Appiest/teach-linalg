@@ -299,6 +299,8 @@ class Lesson(LessonScene):
         sum_arrow = vector_arrow(total, Palette.teal, plane)
         self.play(GrowArrow(sum_arrow), run_time=1.0, rate_func=spring_soft)
         self.wait(Timing.read_short)
+        line = self.say(r"Span and linear maps used nothing but adding and scaling.", line, hold=Timing.read_short)
+        line = self.say(r"So they work for anything else that adds and scales.", line, hold=Timing.read_short)
         line = self.say(r"Today curves will do the same two things.", line, hold=0.2)
         self.play(FadeOut(VGroup(plane, v_arrow, w_arrow, moved, sum_arrow)), run_time=0.8)
         return line
@@ -454,7 +456,8 @@ class Lesson(LessonScene):
         self.wait(Timing.read_short)
         line = self.say(r"The others give a zero, negatives and ordinary algebra.", line, hold=0.2)
         self.play(FadeIn(labels[1], shift=RIGHT * 0.15), FadeIn(labels[2], shift=RIGHT * 0.15), run_time=0.8)
-        self.wait(Timing.read_long)
+        self.wait(Timing.read_short)
+        line = self.say(r"Days 11 to 19 rebuild span and independence on these rules.", line, hold=Timing.read_short)
         self.play(FadeOut(VGroup(*items.values(), labels)), run_time=0.7)
         return line
 
@@ -513,6 +516,7 @@ class Lesson(LessonScene):
         line = self.say(r"Now keep only the points with $xy \geq 0$.", line, hold=0.2)
         self.play(FadeIn(shading), FadeIn(name), run_time=1.0)
         self.wait(Timing.beat)
+        line = self.say(r"To rule $W$ out, we need one rule it breaks.", line, hold=Timing.read_short)
 
         u_arrow = vector_arrow(U_SET, Palette.yellow, plane)
         line = self.say(r"Scaling never leaves the shaded set.", line, hold=0.2)
