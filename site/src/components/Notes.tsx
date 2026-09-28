@@ -25,6 +25,7 @@ import { ColumnBuilder, DerivativeRoutes } from "@/components/interactive/matrix
 import { InvertibilityCalls, StatementBoard } from "@/components/interactive/invertible-matrix-theorem";
 import { ColumnBuilder, SimilarityHunt, TwoAddresses } from "@/components/interactive/change-of-basis";
 import { FreeWeights, LandingHunt } from "@/components/interactive/null-space";
+import { DerivativeTarget, SharedDerivativeHunt, TranslationGap } from "@/components/interactive/linear-maps";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
 import { katexMacros } from "@/lib/katex-macros";
 
@@ -141,6 +142,9 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     SimilarityHunt,
     LandingHunt,
     FreeWeights,
+    TranslationGap,
+    DerivativeTarget,
+    SharedDerivativeHunt,
   };
   return (
     <div className="notes">
