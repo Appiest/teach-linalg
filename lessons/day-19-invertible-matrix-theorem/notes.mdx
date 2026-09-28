@@ -1,0 +1,160 @@
+Day 7 found that an inverse exists exactly when a matrix does not flatten the plane. Days 13 to 18 then gave you a pile of new words for square matrices: independent columns, spanning columns, pivots, $\operatorname{Nul}A$, $\operatorname{Col}A$, rank and nullity. Today shows that for a square matrix all of those words describe one single fact, so checking any one of them tells you all the others.
+
+## The theorem
+
+<Definition term="The invertible matrix theorem">
+Let $A$ be a **square** $n \times n$ matrix. The following statements are **equivalent**, which means that for a given $A$ they are either all true or all false.
+
+Five statements say that nothing is crushed:
+
+- (d) $A\mathbf x = \mathbf 0$ has only the solution $\mathbf x = \mathbf 0$
+- (e) the columns of $A$ are linearly independent
+- (f) $\mathbf x \mapsto A\mathbf x$ is one-to-one
+- (q) $\operatorname{Nul}A = \{\mathbf 0\}$
+- (r) $\dim \operatorname{Nul}A = 0$
+
+Five say that every target is reached:
+
+- (g) $A\mathbf x = \mathbf b$ has a solution for every $\mathbf b$ in $\mathbb R^n$
+- (h) the columns of $A$ span $\mathbb R^n$
+- (i) $\mathbf x \mapsto A\mathbf x$ maps $\mathbb R^n$ onto $\mathbb R^n$
+- (n) $\operatorname{Col}A = \mathbb R^n$
+- (o) $\dim \operatorname{Col}A = n$
+
+The rest say that an undo exists, that the pivots are full, or that the columns are a basis:
+
+- (a) $A$ is invertible
+- (j) $CA = I$ for some $n\times n$ matrix $C$
+- (k) $AD = I$ for some $n\times n$ matrix $D$
+- (l) $A^T$ is invertible
+- (b) $A$ is row equivalent to $I_n$
+- (c) $A$ has $n$ pivot positions
+- (p) $\operatorname{rank}A = n$
+- (m) the columns of $A$ form a basis of $\mathbb R^n$
+</Definition>
+
+The letters follow Lay §2.3 and §4.6, so you can cite a statement by its letter. The theorem says nothing about a matrix that is not square.
+
+<Figure src="web" wide alt="Eighteen statements drawn as boxes with arrows between them. The left block, labelled Nothing is crushed, stacks columns are independent, x maps to Ax is one-to-one, Ax = 0 only for x = 0, Nul A = {0} and dim Nul A = 0. The right block, labelled Every target is reached, stacks columns span R^n, the map is onto, every Ax = b has a solution, Col A = R^n and dim Col A = n. The middle column holds columns form a basis at the top, then A^T is invertible, A is invertible, CA = I and AD = I, then A ~ I_n, n pivot positions and rank A = n. Arrows run from A is invertible to CA = I and AD = I, from CA = I to Ax = 0, from Ax = 0 to n pivot positions, up through A ~ I_n back to A is invertible, and from AD = I to every Ax = b has a solution and on to n pivot positions." />
+
+Each arrow in the figure is one short argument. For example, if $CA = I$ and $A\mathbf x = \mathbf 0$, then $\mathbf x = I\mathbf x = CA\mathbf x = C\mathbf 0 = \mathbf 0$, which gives (j) ⇒ (d). Following the arrows you can get from any statement to any other, and that is exactly what "equivalent" means.
+
+## Why square matters
+
+The two big blocks sound different. "Nothing is crushed" is about inputs, while "every target is reached" is about outputs. The rank theorem joins them: an $n\times n$ matrix has $n$ columns, so
+
+$$
+\operatorname{rank}A + \dim\operatorname{Nul}A = n.
+$$
+
+If nothing is crushed, then $\dim\operatorname{Nul}A = 0$ and the rank is $n$. The column space then has dimension $n$ inside $\mathbb R^n$, so it is all of $\mathbb R^n$ and every target is reached. The step "dimension $n$ inside $\mathbb R^n$" needs the outputs to live in $\mathbb R^n$, which is why the matrix must be square. A $3\times 2$ matrix with independent columns crushes nothing, yet its column space is only a plane in $\mathbb R^3$.
+
+<Pair>
+<Figure src="squash" alt="Left: the matrix A with rows (2, 1) and (1, 1) moves the grid into a slanted grid that still covers the plane, and the pink arrow Ax lands inside the teal ring at b = (3, 1). Right: the matrix M with rows (1, 2) and (2, 4) collapses the grid onto one line through (1, 2); the orange dot at the origin marks Mx = 0, and a dashed orange segment shows that the ring at b sits off the line." />
+
+$$
+\begin{aligned}
+A\begin{bmatrix} 2 \\ -1 \end{bmatrix} &= \teal{\begin{bmatrix} 3 \\ 1 \end{bmatrix}} &&\operatorname{rank}A = 2 \\[4pt]
+M\begin{bmatrix} 2 \\ -1 \end{bmatrix} &= \glow{\begin{bmatrix} 0 \\ 0 \end{bmatrix}} &&\operatorname{rank}M = 1
+\end{aligned}
+$$
+
+$M$ crushes the direction $(2, -1)$, so it has nullity $1$ and rank $1$. Its outputs fill only a line, and $\mathbf b = (3, 1)$ is not on it.
+</Pair>
+
+<StatementBoard matrix={[[2, 1], [1, 1]]} />
+
+## Deciding fast
+
+You never need $A^{-1}$ itself to know that it exists. Pick whichever statement is cheapest to check.
+
+- Two columns that are multiples of each other, or a zero column, make the columns dependent, so (e) fails.
+- A triangular matrix with no zero on its diagonal has $n$ pivots, so (c) holds. A zero on the diagonal leaves fewer than $n$ pivots.
+- Otherwise, row reduce until you can count the pivots.
+
+<Pair>
+<Figure src="decide" alt="Top: B with rows (2, 1, 0), (1, 3, 1), (0, 1, 2) is row equivalent to the echelon form with rows (2, 1, 0), (0, 5, 2), (0, 0, 8); orange boxes mark the pivots 2, 5 and 8. Bottom: C with rows (1, 2, −1), (2, 4, 0), (3, 6, 1) with its first two columns boxed in orange, beside the relation c2 = 2 c1." />
+
+$$
+\begin{aligned}
+B &= \begin{bmatrix} 2 & 1 & 0 \\ 1 & 3 & 1 \\ 0 & 1 & 2 \end{bmatrix} \\
+&\sim \begin{bmatrix} 2 & 1 & 0 \\ 0 & 5 & 2 \\ 0 & 1 & 2 \end{bmatrix} && R_2 \leftarrow 2R_2 - R_1 \\
+&\sim \begin{bmatrix} \glow{2} & 1 & 0 \\ 0 & \glow{5} & 2 \\ 0 & 0 & \glow{8} \end{bmatrix} && R_3 \leftarrow 5R_3 - R_2
+\end{aligned}
+$$
+
+Three pivots means (c) holds, so $B$ is invertible. The theorem now hands you the rest: $\operatorname{Nul}B = \{\mathbf 0\}$, the columns of $B$ are a basis of $\mathbb R^3$, and every $B\mathbf x = \mathbf b$ has exactly one solution. The matrix $C$ needs no work at all, because $\mathbf c_2 = 2\mathbf c_1$ breaks (e).
+</Pair>
+
+<InvertibilityCalls
+  calls={[
+    { rows: [[3, 6], [1, 2]], invertible: false, reason: "Column 2 is twice column 1, so the columns are dependent and (e) fails." },
+    { rows: [[2, 0, 0], [5, -1, 0], [7, 4, 3]], invertible: true, reason: "It is triangular with 2, −1 and 3 on the diagonal, so it has 3 pivots and (c) holds." },
+    { rows: [[4, 0, 7], [-2, 0, 1], [3, 0, 5]], invertible: false, reason: "The middle column is zero, so the columns are dependent and (e) fails." },
+    { rows: [[1, 2], [3, 4]], invertible: true, reason: "Neither column is a multiple of the other, so the two columns are independent and (e) holds." },
+  ]}
+/>
+
+The same logic runs backwards. If one statement fails, they all fail: a singular $A$ has dependent columns, a nonzero vector in $\operatorname{Nul}A$, rank below $n$, and some $\mathbf b$ for which $A\mathbf x = \mathbf b$ has no solution.
+
+## Invertible transformations
+
+<Definition term="Invertible linear transformation">
+A linear transformation $T:\mathbb R^n \to \mathbb R^n$ is **invertible** if some function $S$ satisfies $S(T(\mathbf x)) = \mathbf x$ and $T(S(\mathbf x)) = \mathbf x$ for every $\mathbf x$. If $A$ is the standard matrix of $T$, then $T$ is invertible exactly when $A$ is, and then $T^{-1}(\mathbf x) = A^{-1}\mathbf x$ (Lay §2.3, Theorem 9).
+</Definition>
+
+Because (f) and (i) are on the list, a linear map from $\mathbb R^n$ to itself that is one-to-one is automatically onto, and the other way round. For $2\times 2$ matrices you also know from Day 7 that $A$ is invertible exactly when $ad - bc \ne 0$. The determinant unit will extend "$\det A \ne 0$" to every $n\times n$ matrix and add it to the list.
+
+## Practice
+
+<Check>
+For which value of $k$ is $\begin{bmatrix} 1 & 0 & 2 \\ 0 & 1 & -1 \\ 2 & 1 & k \end{bmatrix}$ singular? (Modeled on Lay §2.3, Exercises 1 to 8.)
+
+<VectorAnswer answer={[3]} labels={["k"]} />
+
+<Answer>
+$$
+\begin{bmatrix} 1 & 0 & 2 \\ 0 & 1 & -1 \\ 2 & 1 & k \end{bmatrix}
+\sim \begin{bmatrix} 1 & 0 & 2 \\ 0 & 1 & -1 \\ 0 & 1 & k - 4 \end{bmatrix}
+\sim \begin{bmatrix} 1 & 0 & 2 \\ 0 & 1 & -1 \\ 0 & 0 & k - 3 \end{bmatrix}
+$$
+
+The matrix has three pivots exactly when $k - 3 \ne 0$. At $k = 3$ the last row is zero, so (c) fails and the matrix is singular. For every other $k$ it is invertible.
+</Answer>
+</Check>
+
+<Check>
+The matrix $\begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{bmatrix}$ is singular. Prove it by finding a nonzero vector in its null space whose first entry is $1$. (Modeled on Lay §2.3, Exercise 22.)
+
+<VectorAnswer answer={[1, -2, 1]} labels={["x₁", "x₂", "x₃"]} />
+
+<Answer>
+Row reduction gives $x_1 = x_3$ and $x_2 = -2x_3$, so $\mathbf x = (1, -2, 1)$ works:
+
+$$
+\begin{aligned}
+1 - 4 + 3 &= 0 \\
+4 - 10 + 6 &= 0 \\
+7 - 16 + 9 &= 0
+\end{aligned}
+$$
+
+Statement (d) fails, so every statement fails. In particular the rank is $2$, the columns are dependent, and some $\mathbf b$ in $\mathbb R^3$ is not an output.
+</Answer>
+</Check>
+
+<Check>
+Let $T(x_1, x_2) = (3x_1 + 5x_2,\ x_1 + 2x_2)$. Explain why $T$ is invertible, then find $T^{-1}(4, 1)$. (Modeled on Lay §2.3, Exercise 33.)
+
+<VectorAnswer answer={[3, -1]} labels={["first entry", "second entry"]} />
+
+<Answer>
+The standard matrix is $A = \begin{bmatrix} 3 & 5 \\ 1 & 2 \end{bmatrix}$ with $ad - bc = 6 - 5 = 1 \ne 0$, so $A$ is invertible and so is $T$. Then
+
+$$
+T^{-1}(4, 1) = A^{-1}\begin{bmatrix} 4 \\ 1 \end{bmatrix} = \begin{bmatrix} 2 & -5 \\ -1 & 3 \end{bmatrix}\begin{bmatrix} 4 \\ 1 \end{bmatrix} = \begin{bmatrix} 3 \\ -1 \end{bmatrix}.
+$$
+
+As a check, $T(3, -1) = (9 - 5,\ 3 - 2) = (4, 1)$.
+</Answer>
+</Check>
