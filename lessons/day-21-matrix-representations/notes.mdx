@@ -1,0 +1,149 @@
+On Day 5 the columns of a matrix turned out to be the landing spots of $\mathbf e_1$ and $\mathbf e_2$, and on Day 15 a basis turned every vector, polynomials included, into a column of coordinates. Today puts the two together. Once you pick a basis for the input space and one for the output space, any linear map can be written as a matrix, even a map like differentiation that never mentions arrows.
+
+## The standard matrix
+
+<Pair>
+<Figure src="standard-matrix" alt="The plane after the map T. The moved blue grid is skewed, the green arrow T(e1) ends at (2, 1) and the red arrow T(e2) at (−1, 1), each with its landing column. One green step and two red steps lead tip to tail to the teal arrow T(x) = (0, 3). A panel shows A with columns (2, 1) and (−1, 1), and the product A times (1, 2) equal to (0, 3)." />
+
+Every $\mathbf x$ in $\mathbb R^n$ is the combination $x_1\mathbf e_1 + \cdots + x_n\mathbf e_n$. A linear $T$ keeps combinations, so
+
+$$
+T(\mathbf x) = x_1\,T(\mathbf e_1) + \cdots + x_n\,T(\mathbf e_n).
+$$
+
+The right side is a combination of the vectors $T(\mathbf e_j)$ with weights $x_j$, which is exactly a matrix times $\mathbf x$.
+</Pair>
+
+<Definition term="Standard matrix">
+Let $T:\mathbb R^n \to \mathbb R^m$ be linear. There is exactly one matrix $A$ with $T(\mathbf x) = A\mathbf x$ for every $\mathbf x$, and it is the $m \times n$ matrix whose $j$th column is the image of $\mathbf e_j$:
+
+$$
+A = \big[\,T(\mathbf e_1)\ \ T(\mathbf e_2)\ \ \cdots\ \ T(\mathbf e_n)\,\big].
+$$
+
+It is called the **standard matrix** of $T$.
+</Definition>
+
+A matrix built this way needs only a picture. For a map described in words, follow $\mathbf e_1$ and $\mathbf e_2$ through each step and write down where they end up. For a map given by a formula, such as $T(x_1, x_2) = (3x_1 - x_2,\ x_2,\ x_1 + 4x_2)$, row $i$ of $A$ holds the coefficients of output entry $i$, so $A = \begin{bmatrix} 3 & -1 \\ 0 & 1 \\ 1 & 4 \end{bmatrix}$. The matrix has one column per input entry and one row per output entry.
+
+In the widget, $T$ first shears the plane so that $\mathbf e_2$ moves to $\mathbf e_2 + \mathbf e_1$ and $\mathbf e_1$ stays put, and then reflects everything across the horizontal axis.
+
+<TransformExplorer matrix={[[1, 0], [0, 1]]} goal={{ matrix: [[1, 1], [0, -1]], prompt: "Drag the green and red tips to where $\\mathbf e_1$ and $\\mathbf e_2$ end up after the shear and then the reflection.", success: "That is the standard matrix. The shear and the flip both leave $\\mathbf e_1$ at $(1, 0)$, while $\\mathbf e_2$ moves to $(1, 1)$ and then flips to $(1, -1)$." }} />
+
+## Matrices for any bases
+
+A polynomial is not a column, so $d/dt$ on $\mathbb P_2$ has no standard matrix of its own. Coordinates fix that. Write the input in coordinates, apply the map, and write the output in coordinates, and every step in between is a matrix.
+
+<Definition term="Matrix of T relative to two bases">
+Let $T: V \to W$ be linear, let $\mathcal B = \{\mathbf b_1, \dots, \mathbf b_n\}$ be a basis for $V$, and let $\mathcal C$ be a basis for $W$ with $m$ vectors. The **matrix of $T$ relative to $\mathcal B$ and $\mathcal C$** is the $m \times n$ matrix
+
+$$
+[T]_{\mathcal C \leftarrow \mathcal B} = \big[\,[T(\mathbf b_1)]_{\mathcal C}\ \ [T(\mathbf b_2)]_{\mathcal C}\ \ \cdots\ \ [T(\mathbf b_n)]_{\mathcal C}\,\big],
+$$
+
+and it satisfies $[T(\mathbf x)]_{\mathcal C} = [T]_{\mathcal C \leftarrow \mathcal B}\,[\mathbf x]_{\mathcal B}$ for every $\mathbf x$ in $V$. When $W = V$ and $\mathcal C = \mathcal B$, it is written $[T]_{\mathcal B}$.
+</Definition>
+
+The input basis sits on the right of the arrow and the output basis on the left, in the same order as the product $[T]_{\mathcal C \leftarrow \mathcal B}[\mathbf x]_{\mathcal B}$. The formula works for the same reason the standard matrix does. If $[\mathbf x]_{\mathcal B} = (r_1, \dots, r_n)$, then $T(\mathbf x) = r_1 T(\mathbf b_1) + \cdots + r_n T(\mathbf b_n)$, and taking $\mathcal C$-coordinates keeps that combination, because the coordinate map is linear.
+
+<Figure src="derivative-matrix" alt="The basis polynomial t squared, drawn as a blue parabola, passes through a d/dt arrow and becomes the blue line 2t. A second arrow labelled with the B-coordinate brackets turns 2t into the blue column (0, 2, 0). On the right, the matrix of T relative to B has green first column (0, 0, 0), red second column (1, 0, 0) and blue third column (0, 2, 0), with column labels 1, t, t squared and the same row labels. Below, a log reads T(1) = 0, T(t) = 1 and T(t squared) = 2t." wide />
+
+Here is the matrix of $T = d/dt$ on $\mathbb P_2$ with $\mathcal B = \{\green{1}, \red{t}, \blue{t^2}\}$, built one column at a time:
+
+$$
+\begin{aligned}
+T(\green{1}) &= 0 = 0\cdot 1 + 0\cdot t + 0\cdot t^2 && \Rightarrow\ [T(\green{1})]_{\mathcal B} = (0, 0, 0) \\
+T(\red{t}) &= 1 = 1\cdot 1 + 0\cdot t + 0\cdot t^2 && \Rightarrow\ [T(\red{t})]_{\mathcal B} = (1, 0, 0) \\
+T(\blue{t^2}) &= 2t = 0\cdot 1 + 2\cdot t + 0\cdot t^2 && \Rightarrow\ [T(\blue{t^2})]_{\mathcal B} = (0, 2, 0) \\
+[T]_{\mathcal B} &= \begin{bmatrix} \green{0} & \red{1} & \blue{0} \\ \green{0} & \red{0} & \blue{2} \\ \green{0} & \red{0} & \blue{0} \end{bmatrix}
+\end{aligned}
+$$
+
+The whole first column is zero because $T(1) = 0$. Leaving out that column, or writing the images as rows, would give a different and wrong matrix.
+
+The widget uses a different map on $\mathbb P_2$, the shift $T(\mathbf p)(t) = \mathbf p(t + 1)$. Its dashed curve shows $T(\mathbf b_j)$, and your column is right when the curve it describes lands on it.
+
+<ColumnBuilder images={[[1, 0, 0], [1, 1, 0], [1, 2, 1]]} mapTex="T(\mathbf p)(t) = \mathbf p(t + 1)" />
+
+## Two routes to the same column
+
+<Pair>
+<Figure src="two-routes" alt="A square diagram. Top left, p(t) = 3 + 5t − 2t² in yellow; top right, p′(t) = 5 − 4t in teal, joined by a d/dt arrow. Arrows labelled with B-coordinate brackets point down to the yellow column (3, 5, −2) and the teal column (5, −4, 0). The bottom arrow carries the matrix of T relative to B, and the teal column has an orange frame." />
+
+For a general $\mathbf p = a_0 + a_1 t + a_2 t^2$, both routes around the square give the same column:
+
+$$
+\begin{aligned}
+[T(\mathbf p)]_{\mathcal B} &= [a_1 + 2a_2 t]_{\mathcal B} = \begin{bmatrix} a_1 \\ 2a_2 \\ 0 \end{bmatrix} \\
+[T]_{\mathcal B}[\mathbf p]_{\mathcal B} &= \begin{bmatrix} 0 & 1 & 0 \\ 0 & 0 & 2 \\ 0 & 0 & 0 \end{bmatrix} \begin{bmatrix} a_0 \\ a_1 \\ a_2 \end{bmatrix} = \begin{bmatrix} a_1 \\ 2a_2 \\ 0 \end{bmatrix}
+\end{aligned}
+$$
+</Pair>
+
+So you can differentiate a polynomial by multiplying its coefficient column by $[T]_{\mathcal B}$. The entry $a_0$ never reaches the output, which is the matrix's way of saying that constants have derivative zero.
+
+<DerivativeRoutes target={[4, -6, 0]} />
+
+Every derivative of a quadratic lies in $\mathbb P_1$. With the output basis $\mathcal C = \{1, t\}$, the zero row disappears and the matrix becomes $2 \times 3$:
+
+$$
+[T]_{\mathcal C \leftarrow \mathcal B} = \begin{bmatrix} 0 & 1 & 0 \\ 0 & 0 & 2 \end{bmatrix}.
+$$
+
+The size always reads (dimension of the output) by (dimension of the input). When $V = \mathbb R^n$ and $W = \mathbb R^m$ with their standard bases, coordinates are just the entries, and $[T]_{\mathcal C \leftarrow \mathcal B}$ is the standard matrix from the first section. Tomorrow you take $T$ to be the identity map, so that the matrix only translates coordinates from one basis to another.
+
+## Practice
+
+<Check>
+A linear map $T:\mathbb R^2 \to \mathbb R^3$ sends $\mathbf e_1$ to $(2, -1, 4)$ and $\mathbf e_2$ to $(0, 3, 1)$. Find $T(5, -2)$. (Modeled on Lay §1.9, Exercise 1.)
+
+<VectorAnswer answer={[10, -11, 18]} labels={["first", "second", "third"]} />
+
+<Answer>
+The standard matrix has the two images as its columns:
+
+$$
+\begin{aligned}
+T(5, -2) &= \begin{bmatrix} 2 & 0 \\ -1 & 3 \\ 4 & 1 \end{bmatrix} \begin{bmatrix} 5 \\ -2 \end{bmatrix} = 5\begin{bmatrix} 2 \\ -1 \\ 4 \end{bmatrix} - 2\begin{bmatrix} 0 \\ 3 \\ 1 \end{bmatrix} \\
+&= \begin{bmatrix} 10 \\ -11 \\ 18 \end{bmatrix}
+\end{aligned}
+$$
+</Answer>
+</Check>
+
+<Check>
+Let $D:\mathbb P_3 \to \mathbb P_2$ be $D(\mathbf p) = \mathbf p'$, with $\mathcal B = \{1, t, t^2, t^3\}$ and $\mathcal C = \{1, t, t^2\}$. Use $[D]_{\mathcal C \leftarrow \mathcal B}$ to find the $\mathcal C$-coordinates of the derivative of $\mathbf p(t) = 4 - t + 2t^2 + 5t^3$. (Modeled on Lay §5.4, Example 2.)
+
+<VectorAnswer answer={[-1, 4, 15]} labels={["1", "t", "t²"]} />
+
+<Answer>
+The columns are the coordinates of $D(1) = 0$, $D(t) = 1$, $D(t^2) = 2t$ and $D(t^3) = 3t^2$:
+
+$$
+\begin{aligned}
+[D]_{\mathcal C \leftarrow \mathcal B}[\mathbf p]_{\mathcal B} &= \begin{bmatrix} 0 & 1 & 0 & 0 \\ 0 & 0 & 2 & 0 \\ 0 & 0 & 0 & 3 \end{bmatrix} \begin{bmatrix} 4 \\ -1 \\ 2 \\ 5 \end{bmatrix} = \begin{bmatrix} -1 \\ 4 \\ 15 \end{bmatrix}
+\end{aligned}
+$$
+
+So $\mathbf p'(t) = -1 + 4t + 15t^2$. The matrix is $3 \times 4$ because the output space has dimension 3 and the input space has dimension 4.
+</Answer>
+</Check>
+
+<Check>
+Let $T:\mathbb P_1 \to \mathbb R^2$ be $T(\mathbf p) = (\mathbf p(0),\ \mathbf p(2))$, with $\mathcal B = \{1, t\}$ and $\mathcal C = \left\{\begin{bmatrix} 1 \\ 1 \end{bmatrix}, \begin{bmatrix} 1 \\ -1 \end{bmatrix}\right\}$. Find $[T(\mathbf p)]_{\mathcal C}$ for $\mathbf p(t) = 3 - 2t$. (Modeled on Lay §5.4, Exercise 9.)
+
+<VectorAnswer answer={[1, 2]} labels={["c₁", "c₂"]} />
+
+<Answer>
+First build the matrix. $T(1) = (1, 1) = 1\cdot(1, 1) + 0\cdot(1, -1)$ and $T(t) = (0, 2) = 1\cdot(1, 1) - 1\cdot(1, -1)$, so
+
+$$
+\begin{aligned}
+[T]_{\mathcal C \leftarrow \mathcal B} &= \begin{bmatrix} 1 & 1 \\ 0 & -1 \end{bmatrix} \\
+[T(\mathbf p)]_{\mathcal C} &= \begin{bmatrix} 1 & 1 \\ 0 & -1 \end{bmatrix} \begin{bmatrix} 3 \\ -2 \end{bmatrix} = \begin{bmatrix} 1 \\ 2 \end{bmatrix}
+\end{aligned}
+$$
+
+To check, $T(\mathbf p) = (3, -1)$, and $1\cdot(1, 1) + 2\cdot(1, -1) = (3, -1)$. The columns are $\mathcal C$-coordinates, not the raw outputs $(1, 1)$ and $(0, 2)$.
+</Answer>
+</Check>
