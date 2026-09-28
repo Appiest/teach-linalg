@@ -1,0 +1,2 @@
+Day 37 is Gram–Schmidt: you take any basis and straighten it into one where every pair meets at a right angle, one vector at a time. In the video, watch each new arrow lose its shadow on the earlier ones and swing upright, then see how the leftover weights turn into the R in A = QR.
+https://appiest.github.io/teach-linalg/day/37/

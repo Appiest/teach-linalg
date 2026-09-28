@@ -867,3 +867,13 @@ def projected_patch(project, first, second, s_range=(-1, 1), t_range=(-1, 1), co
     first, second = np.asarray(first, dtype=float), np.asarray(second, dtype=float)
     corners = [s * first + t * second for s, t in ((s_range[0], t_range[0]), (s_range[1], t_range[0]), (s_range[1], t_range[1]), (s_range[0], t_range[1]))]
     return Polygon(*[project(corner) for corner in corners], stroke_color=color, stroke_width=stroke_width, stroke_opacity=0.8, fill_color=color, fill_opacity=opacity)
+
+
+def projected_right_angle(project, first, second, size: float = 0.16, color: str = Palette.glow, corner=(0, 0, 0)):
+    """A small square corner between directions `first` and `second` at `corner`, seen through `project`."""
+    from manim import VMobject
+
+    corner = np.asarray(corner, dtype=float)
+    along = [size * np.asarray(direction, dtype=float) / np.linalg.norm(direction) for direction in (first, second)]
+    points = [project(corner + along[0]), project(corner + along[0] + along[1]), project(corner + along[1])]
+    return VMobject(color=color, stroke_width=3.5).set_points_as_corners(points)
