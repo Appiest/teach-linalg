@@ -768,3 +768,25 @@ def orientation_arc(plane: NumberPlane, first, second, radius: float = 0.8, colo
         return VMobject()
     arc = Arc(radius=radius, start_angle=start, angle=turn, arc_center=plane.c2p(0, 0), color=color, stroke_width=4)
     return arc.add_tip(tip_length=0.18, tip_width=0.18)
+def column_parallelogram(plane: NumberPlane, first, second, color: str | None = None, opacity: float = 0.3, stroke_width: float = 0):
+    """The parallelogram of two columns: yellow when their orientation is positive, pink when it flips."""
+    from manim import Polygon
+
+    first, second = np.asarray(first[:2], dtype=float), np.asarray(second[:2], dtype=float)
+    signed_area = first[0] * second[1] - first[1] * second[0]
+    fill = color or (Palette.yellow if signed_area >= 0 else Palette.pink)
+    corners = (np.zeros(2), first, first + second, second)
+    return Polygon(*[plane.c2p(*corner) for corner in corners], color=fill, fill_opacity=opacity, stroke_width=stroke_width)
+
+
+def parallelepiped(project, first, second, third, color: str = Palette.teal, opacity: float = 0.1, stroke_width: float = 2) -> VGroup:
+    """The six faces of the box spanned by three columns, seen through `project`."""
+    from manim import Polygon
+
+    edges = [np.asarray(edge, dtype=float) for edge in (first, second, third)]
+    faces = VGroup()
+    for i, j, k in ((0, 1, 2), (0, 2, 1), (1, 2, 0)):
+        for base in (np.zeros(3), edges[k]):
+            corners = (base, base + edges[i], base + edges[i] + edges[j], base + edges[j])
+            faces.add(Polygon(*[project(corner) for corner in corners], color=color, fill_opacity=opacity, stroke_width=stroke_width, stroke_opacity=0.7))
+    return faces

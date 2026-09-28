@@ -1,0 +1,152 @@
+Day 25 read $\det A$ as the signed area of the parallelogram built from the columns of $A$, and Day 26 computed determinants by cofactor expansion and listed how each row operation changes them. Today explains where those rules come from. Two properties do all the work, and from them follow the product rule $\det(AB) = \det A\,\det B$, a formula for solving systems, a formula for $A^{-1}$, and volumes in $\mathbb R^3$.
+
+## The two rules
+
+Hold the first column $\green{\mathbf a_1}$ fixed along the base. The area of the parallelogram is base times height, so $\det[\,\green{\mathbf a_1}\ \ \mathbf x\,]$ depends only on how high $\mathbf x$ sits above the line of $\green{\mathbf a_1}$. Heights scale when $\mathbf x$ scales, and the heights of $\yellow{\mathbf u}$ and $\blue{\mathbf v}$ add when the vectors add. A tip below the base has negative height, which is why the area has to carry a sign.
+
+<Figure src="heights" alt="A green base a1 = (3, 0) with three parallelograms on it: a yellow one for u = (1, 1), a blue one for v = (−2, 2) and a teal one for u + v = (−1, 3). Two bars on the right stack a yellow bar of height 1 and a blue bar of height 2 beside a teal bar of height 3, under the equation 9 = 3 + 6." wide />
+
+<HeightStack base={3} u={[1, 1]} v={[-2, 2]} start={[2, 1]} />
+
+<Definition term="Multilinear and alternating">
+The determinant of an $n \times n$ matrix is **multilinear**: if every column except column $j$ is held fixed, then $T(\mathbf x) = \det[\,\mathbf a_1\ \cdots\ \mathbf x\ \cdots\ \mathbf a_n\,]$ is a linear function of $\mathbf x$, so
+
+$$
+T(c\,\mathbf x) = c\,T(\mathbf x), \qquad T(\mathbf u + \mathbf v) = T(\mathbf u) + T(\mathbf v).
+$$
+
+It is also **alternating**: swapping two columns multiplies the determinant by $-1$. Because $\det A^T = \det A$, both rules hold for rows as well.
+</Definition>
+
+Linearity comes straight from cofactor expansion. Expanding down column $j$ gives $\det A = x_1C_{1j} + \cdots + x_nC_{nj}$, and none of the cofactors $C_{ij}$ involve column $j$. Two consequences explain Day 26's row rules. If two rows are equal, swapping them leaves $A$ unchanged but flips the sign, so $\det A = -\det A$ and $\det A = 0$. Row replacement then costs nothing, because linearity in row $i$ splits off a matrix with two equal rows:
+
+$$
+\det\begin{bmatrix} \mathbf r_i + c\,\mathbf r_k \\ \mathbf r_k \end{bmatrix}
+= \det\begin{bmatrix} \mathbf r_i \\ \mathbf r_k \end{bmatrix} + c\,\det\begin{bmatrix} \mathbf r_k \\ \mathbf r_k \end{bmatrix}
+= \det\begin{bmatrix} \mathbf r_i \\ \mathbf r_k \end{bmatrix} + 0.
+$$
+
+The other rows are left out of the display because they never change. A function with these two rules and value 1 at $I$ has to be $\det$, since row reducing any matrix computes it by exactly the same bookkeeping.
+
+## The product rule
+
+<Pair>
+<Figure src="product" alt="Three small grids. The yellow unit square of area 1 goes to a yellow parallelogram of area 2 under B, marked times 2, and then to a teal parallelogram of area 6 under A, marked times 3." />
+
+The map $\mathbf x \mapsto B\mathbf x$ scales every area by $|\det B|$, and $A$ then scales every area by $|\det A|$, including the parallelogram $B$ just made. The single map $AB$ does both at once, so $|\det AB| = |\det A|\,|\det B|$. Orientation flips combine the same way signs multiply, since two flips cancel.
+</Pair>
+
+<ProductAreaHunt a={[[2, 1], [-1, 1]]} target={-6} />
+
+The picture gives the reason, and elementary matrices give the proof. Day 26's row rules say $\det(EA) = (\det E)(\det A)$ for every elementary matrix $E$. If $A$ is not invertible, neither is $AB$, and both sides are 0. Otherwise Day 8 writes $A = E_p \cdots E_1$, and
+
+$$
+\begin{aligned}
+\det(AB) &= \det(E_p E_{p-1} \cdots E_1 B) \\
+&= (\det E_p)\,\det(E_{p-1} \cdots E_1 B) \\
+&= (\det E_p)(\det E_{p-1}) \cdots (\det E_1)\,\det B \\
+&= \det(E_p \cdots E_1)\,\det B = \det A\,\det B.
+\end{aligned}
+$$
+
+The same chain with $B = I$ gives the last line. Short consequences follow. From $AA^{-1} = I$ we get $\det A^{-1} = 1/\det A$. Writing $rA = (rI)A$ gives $\det(rA) = r^n\det A$ for an $n \times n$ matrix, so the determinant is not linear in the whole matrix at once.
+
+## Cramer's rule
+
+Write $A_i(\mathbf b)$ for the matrix $A$ with column $i$ replaced by $\mathbf b$. If $\yellow{\mathbf b} = x_1\green{\mathbf a_1} + x_2\red{\mathbf a_2}$, then multilinearity in column 1 gives $\det[\,\yellow{\mathbf b}\ \ \red{\mathbf a_2}\,] = x_1\det[\,\green{\mathbf a_1}\ \ \red{\mathbf a_2}\,] + x_2\det[\,\red{\mathbf a_2}\ \ \red{\mathbf a_2}\,] = x_1 \det A$. In the picture, stretching $\green{\mathbf a_1}$ by $x_1$ multiplies the area by $x_1$, and adding $x_2\red{\mathbf a_2}$ is a shear that keeps it.
+
+<Pair>
+<Figure src="cramer" alt="Green a1 = (2, 1), red a2 = (−1, 2) and yellow b = (3, 4). A green parallelogram of a1 and a2 has area 5, and a larger yellow parallelogram of b and a2 has area 10. An orange dashed line runs from 2a1 to b parallel to a2, showing the shear." />
+
+<Definition term="Cramer's rule">
+Let $A$ be an invertible $n \times n$ matrix. For any $\mathbf b$ in $\mathbb R^n$, the unique solution of $A\mathbf x = \mathbf b$ has entries
+
+$$
+x_i = \frac{\det A_i(\mathbf b)}{\det A}, \qquad i = 1, \dots, n.
+$$
+</Definition>
+</Pair>
+
+Here is the system from the video, $2x_1 - x_2 = 3$ and $x_1 + 2x_2 = 4$:
+
+$$
+\begin{aligned}
+\det A &= \det\begin{bmatrix} 2 & -1 \\ 1 & 2 \end{bmatrix} = 4 + 1 = 5 \\
+x_1 &= \frac{1}{5}\det\begin{bmatrix} \yellow{3} & -1 \\ \yellow{4} & 2 \end{bmatrix} = \frac{6 + 4}{5} = 2 \\
+x_2 &= \frac{1}{5}\det\begin{bmatrix} 2 & \yellow{3} \\ 1 & \yellow{4} \end{bmatrix} = \frac{8 - 3}{5} = 1
+\end{aligned}
+$$
+
+<CramerAreas a1={[2, 1]} a2={[-1, 2]} target={[-1, 2]} start={[3, 4]} />
+
+Column $j$ of $A^{-1}$ solves $A\mathbf x = \mathbf e_j$, so Cramer's rule also gives a formula for the inverse. Expanding $\det A_i(\mathbf e_j)$ down column $i$ leaves just the cofactor $C_{ji}$. The **adjugate** $\operatorname{adj} A$ is the matrix of cofactors, transposed, so its $(i, j)$ entry is $C_{ji}$, and
+
+$$
+A^{-1} = \frac{1}{\det A}\operatorname{adj} A, \qquad
+\operatorname{adj}\begin{bmatrix} a & b \\ c & d \end{bmatrix} = \begin{bmatrix} d & -b \\ -c & a \end{bmatrix}.
+$$
+
+For $2 \times 2$ matrices this is Day 7's formula. A good self-check for larger matrices is $(\operatorname{adj} A)A = (\det A)I$, which fails if you forget the transpose. Both formulas are for understanding and small cases. For a large system, each determinant costs about as much as solving the system by row reduction.
+
+## Volume
+
+Three columns in $\mathbb R^3$ build a slanted box called a **parallelepiped**, and its volume is $|\det A|$. For a diagonal matrix the solid is an ordinary box with volume $|abc|$. Column replacement slides one face within its own plane, which keeps the height and the volume, just as the shear kept the area in the plane. Those moves reduce any $A$ to a diagonal matrix without changing $|\det A|$.
+
+<Figure src="volume" alt="A teal parallelepiped with a green edge (3, 0, 0), a red edge (1, 2, 0) and a pink edge (1, 1, 2), drawn over the faint outline of the 3 by 2 by 2 box it was sheared from. Beside it, the matrix with those columns and volume = |det A| = 12." wide />
+
+The same reasoning scales every region. If $T(\mathbf x) = A\mathbf x$, then the area (or volume) of $T(S)$ is $|\det A|$ times the area (or volume) of $S$. For example, $\begin{bmatrix} a & 0 \\ 0 & b \end{bmatrix}$ carries the unit disk onto the ellipse $x_1^2/a^2 + x_2^2/b^2 = 1$, so the ellipse has area $ab \cdot \pi$.
+
+## Practice
+
+<Check>
+Use Cramer's rule to solve $2x_1 + 5x_2 = 1$ and $x_1 + 3x_2 = 4$. (Modeled on Lay §3.3, Exercises 1–6.)
+
+<VectorAnswer answer={[-17, 7]} labels={["x₁", "x₂"]} />
+
+<Answer>
+$$
+\begin{aligned}
+\det A &= \det\begin{bmatrix} 2 & 5 \\ 1 & 3 \end{bmatrix} = 6 - 5 = 1 \\
+x_1 &= \det\begin{bmatrix} 1 & 5 \\ 4 & 3 \end{bmatrix} = 3 - 20 = -17 \\
+x_2 &= \det\begin{bmatrix} 2 & 1 \\ 1 & 4 \end{bmatrix} = 8 - 1 = 7
+\end{aligned}
+$$
+
+Check: $2(-17) + 5(7) = 1$ and $-17 + 3(7) = 4$.
+</Answer>
+</Check>
+
+<Check>
+Let $A = \begin{bmatrix} 1 & 2 & 0 \\ 0 & 1 & 3 \\ 2 & 0 & 1 \end{bmatrix}$. Find $\det A$ and the top-right entry of $A^{-1}$ using the adjugate. (Modeled on Lay §3.3, Exercises 11–16.)
+
+<VectorAnswer answer={[13, 0.46153846153846156]} labels={["det A", "top right"]} />
+
+<Answer>
+The nine cofactors are $C_{11} = 1$, $C_{12} = 6$, $C_{13} = -2$, $C_{21} = -2$, $C_{22} = 1$, $C_{23} = 4$, $C_{31} = 6$, $C_{32} = -3$ and $C_{33} = 1$. Expanding across row 1 gives $\det A = 1(1) + 2(6) + 0(-2) = 13$. Transposing the cofactors gives
+
+$$
+\operatorname{adj} A = \begin{bmatrix} 1 & -2 & 6 \\ 6 & 1 & -3 \\ -2 & 4 & 1 \end{bmatrix},
+\qquad A^{-1} = \frac{1}{13}\operatorname{adj} A.
+$$
+
+The top-right entry is $C_{31}/13 = 6/13$. As a check, $(\operatorname{adj} A)A = 13I$. The parallelepiped with edges $(1, 0, 2)$, $(2, 1, 0)$ and $(0, 3, 1)$ uses the rows of $A$ as edges, so its volume is $|\det A^T| = 13$.
+</Answer>
+</Check>
+
+<Check>
+Let $A$ and $B$ be $3 \times 3$ matrices with $\det A = 2$ and $\det B = -3$. Find $\det(2A)$, $\det(A^{-1}B)$ and $\det(B^TA)$. (Modeled on Lay §3.2, Exercises 31–36.)
+
+<VectorAnswer answer={[16, -1.5, -6]} labels={["det(2A)", "det(A⁻¹B)", "det(BᵀA)"]} />
+
+<Answer>
+$$
+\begin{aligned}
+\det(2A) &= 2^3 \det A = 8 \cdot 2 = 16 \\
+\det(A^{-1}B) &= \frac{1}{\det A}\,\det B = \frac{-3}{2} \\
+\det(B^TA) &= \det B^T\,\det A = (-3)(2) = -6
+\end{aligned}
+$$
+
+The first uses $\det(rA) = r^n\det A$ with $n = 3$, and the last two use the product rule together with $\det A^{-1} = 1/\det A$ and $\det B^T = \det B$.
+</Answer>
+</Check>
