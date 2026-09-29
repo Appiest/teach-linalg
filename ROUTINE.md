@@ -19,12 +19,15 @@ Each morning a job on the owner's Mac (`scripts/draft_text.py`) opens a Messages
 
 ## The daily cloud run
 
-When you are started by the daily routine:
+The daily routine is a release check, and all 40 lessons are already built, so it never builds or re-renders
+a lesson and needs no setup. When you are started by it:
 
-1. Run `.venv/bin/python scripts/next_day.py` after setup. If it prints `{"done": true}`, every lesson is
-   already built. Confirm that the newest "Deploy course site" run succeeded with
-   `.venv/bin/python scripts/wait_for_deploy.py`, report which day unlocks today, and stop.
-2. Otherwise, build the day it prints by following the steps below, then push it.
+1. Find today's lesson, the one whose `meta.json` `published_on` is today in America/Los_Angeles. Outside
+   2026-09-27 to 2026-11-05 there is nothing to release, so say so and stop.
+2. With `curl`, check that `https://appiest.github.io/teach-linalg/day/N/` returns 200 for today and every
+   earlier day, that today's video URL returns 200, and that day N + 1 still returns 404.
+3. If something is wrong, fix the cause with the smallest change, confirm with `cd site && npm ci && npm run build`,
+   commit, and push so the deploy runs again. Never unlock a lesson before its date.
 
 ## Building a lesson
 
@@ -44,7 +47,7 @@ TeX Live, so it takes several minutes. Warnings about unreachable PPAs are harml
 ```
 
 `next_day.py` prints the next unbuilt day's curriculum entry (from `curriculum.json`) and its folder. If it prints
-`{"done": true}`, every lesson is built: see "The daily cloud run" above.
+`{"done": true}`, every lesson is built.
 
 ## 2. Study before designing
 
