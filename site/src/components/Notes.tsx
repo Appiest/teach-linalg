@@ -26,7 +26,7 @@ import { ColumnBuilder, DerivativeRoutes } from "@/components/interactive/matrix
 import { CrushAndMiss, InvertibilityCalls, StatementBoard, ThirdPivotSlider } from "@/components/interactive/invertible-matrix-theorem";
 import { ChangeMatrixBuilder, SimilarityHunt, TwoAddresses } from "@/components/interactive/change-of-basis";
 import { FreeWeights, LandingHunt, NullSumCheck, RightSideShift } from "@/components/interactive/null-space";
-import { DerivativeTarget, SharedDerivativeHunt, TranslationGap } from "@/components/interactive/linear-maps";
+import { AdditivityHunt, DerivativeTarget, EvaluationZeros, SharedDerivativeHunt, TranslationGap } from "@/components/interactive/linear-maps";
 import { PivotHunt, PolynomialRecipe, ThirdVectorHunt } from "@/components/interactive/span-revisited";
 import { DifferenceInKernel, EvaluationKernel } from "@/components/interactive/kernel";
 import { ComplementLanding, RangeCollapse } from "@/components/interactive/image-range";
@@ -157,6 +157,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     TranslationGap,
     DerivativeTarget,
     SharedDerivativeHunt,
+    AdditivityHunt,
+    EvaluationZeros,
     ThirdVectorHunt,
     PivotHunt,
     PolynomialRecipe,

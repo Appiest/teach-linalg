@@ -97,7 +97,20 @@ function curvePath(f: Poly, window: Window): string {
 
 type CurveSpec = { f: Poly; color: Hue; width?: number; dashed?: boolean; faint?: boolean };
 
-function Graph({ window, curves, label }: { window: Window; curves: CurveSpec[]; label: string }) {
+type DotSpec = { t: number; y: number; color: Hue };
+
+function GraphDots({ dots, window }: { dots: DotSpec[]; window: Window }) {
+  return (
+    <g aria-hidden>
+      {dots.map(({ t, y, color }) => {
+        const [x, top] = toGraph(t, y, window);
+        return <circle key={t} cx={x} cy={top} r={6.5} fill={hue(color)} stroke="var(--color-surface-sunken)" strokeWidth={2} className="transition-[fill] duration-300" />;
+      })}
+    </g>
+  );
+}
+
+function Graph({ window, curves, label, dots = [] }: { window: Window; curves: CurveSpec[]; label: string; dots?: DotSpec[] }) {
   const clipId = `${useId().replaceAll(":", "")}-clip`;
   const [originX, originY] = toGraph(0, 0, window);
   return (
@@ -125,6 +138,7 @@ function Graph({ window, curves, label }: { window: Window; curves: CurveSpec[];
           />
         ))}
       </g>
+      <GraphDots dots={dots} window={window} />
     </svg>
   );
 }
@@ -245,6 +259,97 @@ export function SharedDerivativeHunt({ p: base = [1, 2, 1] }: { p?: Quadratic })
             <Readout tex={`\\textcolor{${palette.teal}}{\\mathbf r = ${polyTex(r)}}`} />
             <Readout tex={`\\textcolor{${palette.teal}}{D\\mathbf r = ${polyTex(rDerivative)}}`} />
             <Readout tex={`\\textcolor{${palette.yellow}}{D\\mathbf p = ${polyTex(baseDerivative)}}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+const fold = (x: Vec): Vec => [x[0], Math.abs(x[1])];
+const INPUT_BOUNDS: Bounds = { xMin: -3, xMax: 3, yMin: -3, yMax: 3 };
+const OUTPUT_BOUNDS: Bounds = { xMin: -6, xMax: 6, yMin: -1, yMax: 7 };
+
+/** The fold T(x1, x2) = (x1, |x2|) keeps zero fixed; drag u and v until T(u + v) and T(u) + T(v) split apart. */
+export function AdditivityHunt({ u: startU = [1, 1], v: startV = [2, 1] }: { u?: Vec; v?: Vec }) {
+  const [u, setU] = useState<Vec>(startU);
+  const [v, setV] = useState<Vec>(startV);
+  const sum = add(u, v);
+  const imageOfSum = fold(sum);
+  const sumOfImages = add(fold(u), fold(v));
+  const { settled: solved, gesture } = useSettled(!nearlyEqual(imageOfSum, sumOfImages));
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>The fold <Tex>{"T(x_1, x_2) = (x_1, |x_2|)"}</Tex> sends <Tex>{"\\mathbf 0"}</Tex> to <Tex>{"\\mathbf 0"}</Tex>. Drag <Tex>{"\\mathbf u"}</Tex> and <Tex>{"\\mathbf v"}</Tex> until the teal dot <Tex>{"T(\\mathbf u + \\mathbf v)"}</Tex> and the pink tip <Tex>{"T(\\mathbf u) + T(\\mathbf v)"}</Tex> come apart.</>}
+        success={<>One failing pair is enough, so the fold is not linear even though <Tex>{"T(\\mathbf 0) = \\mathbf 0"}</Tex>. It fails whenever the second entries of <Tex>{"\\mathbf u"}</Tex> and <Tex>{"\\mathbf v"}</Tex> have opposite signs.</>}
+      />
+      <div className="grid gap-4 sm:grid-cols-[1fr_1.4fr]">
+        <figure className="min-w-0">
+          <Plane bounds={INPUT_BOUNDS} label={`Inputs u at ${describeVector(u)} and v at ${describeVector(v)}`}>
+            <Arrow to={u} color="yellow" />
+            <Arrow to={v} color="blue" />
+            <Label at={u} color="yellow">u</Label>
+            <Label at={v} color="blue">v</Label>
+            <Handle at={u} onMove={setU} color="yellow" label={`Input u, at ${describeVector(u)}`} />
+            <Handle at={v} onMove={setV} color="blue" label={`Input v, at ${describeVector(v)}`} />
+          </Plane>
+          <figcaption className="mt-2 text-center text-meta text-text-muted">Inputs</figcaption>
+        </figure>
+        <figure className="min-w-0">
+          <Plane bounds={OUTPUT_BOUNDS} label={`Outputs: T(u) + T(v) at ${describeVector(sumOfImages)} and T(u + v) at ${describeVector(imageOfSum)}`}>
+            <Arrow to={fold(u)} color="yellow" width={2.5} />
+            <Arrow from={fold(u)} to={sumOfImages} color="blue" width={2.5} />
+            <Arrow to={sumOfImages} color="pink" />
+            {solved ? <GapSegment from={sumOfImages} to={imageOfSum} /> : null}
+            <Marker at={imageOfSum} color="teal" ring={!solved} />
+          </Plane>
+          <figcaption className="mt-2 text-center text-meta text-text-muted">Outputs</figcaption>
+        </figure>
+      </div>
+      <div className="mt-4 grid gap-3 md:grid-cols-2">
+        <Readout tex={`\\textcolor{${palette.teal}}{T(\\mathbf u + \\mathbf v)} = ${vecTex(imageOfSum)}`} />
+        <Readout tex={`\\textcolor{${palette.pink}}{T(\\mathbf u) + T(\\mathbf v)} = ${vecTex(sumOfImages)}`} />
+      </div>
+    </Panel>
+  );
+}
+
+/** Sliders build p in P2; the dots show T(p) = (p(0), p(1)). A nonzero p with both dots at zero shows T is not one-to-one. */
+export function EvaluationZeros() {
+  const [c, setC] = useState<Quadratic>([1, 0, 0]);
+  const setEntry = (index: number) => (value: number) => setC((old) => old.map((entry, i) => (i === index ? value : entry)) as Quadratic);
+  const f = quadratic(c);
+  const image: Vec = [f(0), f(1)];
+  const nonzero = c.some((entry) => entry !== 0);
+  const { settled: solved, gesture } = useSettled(nonzero && image[0] === 0 && image[1] === 0);
+  const dotColor = (value: number): Hue => (value === 0 ? "teal" : "glow");
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>The map <Tex>{"T(\\mathbf p) = (\\mathbf p(0), \\mathbf p(1))"}</Tex> reads off the two dots. Build a nonzero <Tex>{"\\mathbf p"}</Tex> that <Tex>T</Tex> sends to <Tex>{"(0, 0)"}</Tex>.</>}
+        success={<>Every multiple of <Tex>{"t - t^2"}</Tex> passes through both dots at height zero. It has the same image as the zero polynomial, so <Tex>T</Tex> is not one-to-one.</>}
+      />
+      <Workbench
+        plane={
+          <Graph
+            window={{ yMin: -6, yMax: 6 }}
+            label={`Graph of p = ${polyTex(c)}, with p(0) = ${image[0]} and p(1) = ${image[1]}`}
+            curves={[{ f, color: "yellow" }]}
+            dots={[{ t: 0, y: image[0], color: dotColor(image[0]) }, { t: 1, y: image[1], color: dotColor(image[1]) }]}
+          />
+        }
+        readout={
+          <>
+            <Slider label="a_0" value={c[0]} onChange={setEntry(0)} min={-3} max={3} step={1} color={palette.yellow} />
+            <Slider label="a_1" value={c[1]} onChange={setEntry(1)} min={-3} max={3} step={1} color={palette.yellow} />
+            <Slider label="a_2" value={c[2]} onChange={setEntry(2)} min={-3} max={3} step={1} color={palette.yellow} />
+            <Readout tex={`\\textcolor{${palette.yellow}}{\\mathbf p = ${polyTex(c)}}`} />
+            <Readout tex={`T(\\mathbf p) = ${vecTex(image)}`} />
           </>
         }
       />
