@@ -21,7 +21,7 @@ import { QuadrantEscape, ShiftedLineTest } from "@/components/interactive/subspa
 import { AddressHunt, StaircaseBasis, TrimToBasis } from "@/components/interactive/basis";
 import { LiftToPlane, LoopAnywhere, RelationFinder } from "@/components/interactive/independence";
 import { ConsistencyLine, OutputReach, PivotPicker, RelationTwins, RowSlide } from "@/components/interactive/column-space";
-import { PivotBudget, RankTally } from "@/components/interactive/rank-nullity";
+import { CollapseSlider, PivotBudget, RankTally, RowColumnDrop } from "@/components/interactive/rank-nullity";
 import { ColumnBuilder, DerivativeRoutes } from "@/components/interactive/matrix-representations";
 import { InvertibilityCalls, StatementBoard } from "@/components/interactive/invertible-matrix-theorem";
 import { ChangeMatrixBuilder, SimilarityHunt, TwoAddresses } from "@/components/interactive/change-of-basis";
@@ -139,6 +139,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     RelationTwins,
     RankTally,
     PivotBudget,
+    CollapseSlider,
+    RowColumnDrop,
     ColumnBuilder,
     DerivativeRoutes,
     StatementBoard,

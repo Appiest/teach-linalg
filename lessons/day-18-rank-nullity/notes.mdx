@@ -1,6 +1,20 @@
 Day 16 found a basis for the column space from the pivot columns, and Day 17 found a basis for the null space from the free variables. Those two spaces answer the two questions about $A\mathbf x = \mathbf b$: which right sides have a solution, and how many solutions each one has. Today asks how their sizes are related, and the answer is a count. Every column of a matrix is either a pivot column or a free column, so the two counts always add up to the number of columns. That lets you learn about one space from the other, often without solving anything.
 
+Each section opens with a problem. Try it before you open the walkthrough, even if you only get partway.
+
 ## Rank and nullity
+
+<Problem>
+Day 16's matrix $A = \begin{bmatrix} \green{1} & \red{0} & \pink{-1} \\ \green{0} & \red{1} & \pink{1} \\ \green{1} & \red{1} & \pink{0} \end{bmatrix}$ reduces to $\begin{bmatrix} 1 & 0 & -1 \\ 0 & 1 & 1 \\ 0 & 0 & 0 \end{bmatrix}$. How many vectors are in a basis for $\operatorname{Col}A$? How many are in a basis for $\operatorname{Nul}A$?
+
+<Solution>
+For the column space, Day 16 says to keep the pivot columns. The pivots are in columns 1 and 2, so the basis is $\{\green{\mathbf a_1}, \red{\mathbf a_2}\}$, which has **2** vectors. Geometrically the outputs fill a plane.
+
+For the null space, Day 17 says to write one vector per free variable. Column 3 has no pivot, so $x_3$ is the only free variable. Solving gives $x_1 = x_3$ and $x_2 = -x_3$, so $\mathbf x = x_3(1, -1, 1)$, and the basis has **1** vector.
+
+Those counts are $2$ and $1$, and $A$ has $3$ columns. Two input directions survive into the output and one is crushed to $\mathbf 0$.
+</Solution>
+</Problem>
 
 <Definition term="Rank and nullity">
 The **rank** of a matrix $A$ is the dimension of its column space, and the **nullity** of $A$ is the dimension of its null space:
@@ -9,20 +23,34 @@ $$
 \operatorname{rank}A = \dim\operatorname{Col}A, \qquad \operatorname{nullity}A = \dim\operatorname{Nul}A.
 $$
 
-The pivot columns of $A$ are a basis for $\operatorname{Col}A$, so the rank is the number of pivot columns. The null space has one basis vector per free variable, so the nullity is the number of free columns.
+The rank is the number of pivot columns, and the nullity is the number of free columns.
 </Definition>
 
 <Pair>
 <Figure src="squash" alt="A tilted teal hexagon, the plane Col A, holds the flattened image of a cube of blue grid lines, with the faint original cube still visible behind it. A pink dashed line labelled Nul A runs through the origin, which glows orange." />
 
-$$
-A = \begin{bmatrix} \green{1} & \red{0} & \pink{-1} \\ \green{0} & \red{1} & \pink{1} \\ \green{1} & \red{1} & \pink{0} \end{bmatrix}
-$$
-
-This is Day 16's matrix, which sends $\mathbb R^3$ to $\mathbb R^3$. Every output lands on the plane $\operatorname{Col}A$, so $\operatorname{rank}A = \teal{2}$. The whole line through $(1, -1, 1)$ lands on $\mathbf 0$, so $\operatorname{nullity}A = \pink{1}$. Two input dimensions survive, one is crushed, and $2 + 1 = 3$.
+The cube of inputs flattens onto the teal plane $\operatorname{Col}A$, so $\operatorname{rank}A = \teal{2}$. The pink line through $(1, -1, 1)$ lands on $\mathbf 0$, so $\operatorname{nullity}A = \pink{1}$.
 </Pair>
 
+The same trade happens in the plane. The matrix below has one adjustable entry $k$. Watch the output space and the crushed inputs change together.
+
+<CollapseSlider />
+
 ## The column tally
+
+<Problem>
+A $4 \times 5$ matrix $A$ has echelon form $\begin{bmatrix} 1 & 0 & 2 & 0 & 1 \\ 0 & 1 & -1 & 0 & 2 \\ 0 & 0 & 0 & 1 & -1 \\ 0 & 0 & 0 & 0 & 0 \end{bmatrix}$. Find $\operatorname{rank}A$ and $\operatorname{nullity}A$ without computing either basis.
+
+<Solution>
+We only need to count, so we go through the columns one at a time and ask whether each has a pivot.
+
+Columns 1, 2 and 4 have pivots, which are the leading $1$s in rows 1, 2 and 3. Each pivot column gives one vector of the basis for $\operatorname{Col}A$, so $\operatorname{rank}A = 3$.
+
+Columns 3 and 5 have no pivot, so $x_3$ and $x_5$ are free. Each free variable gives one vector of the basis for $\operatorname{Nul}A$, so $\operatorname{nullity}A = 2$.
+
+Every column landed in exactly one of the two piles, so $3 + 2 = 5$, the number of columns. That will happen for every matrix.
+</Solution>
+</Problem>
 
 <Definition term="The Rank Theorem">
 If $A$ has $n$ columns, then
@@ -32,27 +60,47 @@ $$
 $$
 </Definition>
 
-The proof is a count, and row reduction is only there to make the pivots visible, so an echelon form is enough and the reduced form is not needed. Row reduce $A$ to an echelon form. A column with a pivot adds one vector to the basis of $\operatorname{Col}A$. A column without a pivot gives a free variable, and each free variable adds one vector to the basis of $\operatorname{Nul}A$. No column can be both or neither, so the two counts add up to $n$. Only the number of free columns matters for the null space, not the entries in those columns.
+The proof is the count you just did. Row reduce $A$ to any echelon form, since only the pivot positions matter. A column with a pivot adds one vector to the basis of $\operatorname{Col}A$. A column without a pivot gives a free variable, which adds one vector to the basis of $\operatorname{Nul}A$. No column can be both or neither, so the two counts add up to $n$.
 
 <Pair>
 <Figure src="tally" alt="The echelon form with rows (1, 0, 2, 0, 1), (0, 1, −1, 0, 2), (0, 0, 0, 1, −1) and a zero row. Columns 1, 2 and 4 are teal with orange boxes on their pivots, columns 3 and 5 are pink, and x3 and x5 above them are pink. A bar of three teal cells and two pink cells is braced as 3 and 2 above and n = 5 below." />
 
-$$
-\begin{aligned}
-A &= \begin{bmatrix} 1 & 0 & 2 & 0 & 1 \\ 1 & 1 & 1 & 0 & 3 \\ 2 & 1 & 3 & 1 & 3 \\ 3 & 1 & 5 & 1 & 4 \end{bmatrix} \\[4pt]
-&\sim \begin{bmatrix} \teal{1} & \teal{0} & \pink{2} & \teal{0} & \pink{1} \\ \teal{0} & \teal{1} & \pink{-1} & \teal{0} & \pink{2} \\ \teal{0} & \teal{0} & \pink{0} & \teal{1} & \pink{-1} \\ \teal{0} & \teal{0} & \pink{0} & \teal{0} & \pink{0} \end{bmatrix} \\[4pt]
-\operatorname{rank}A + \operatorname{nullity}A &= \teal{3} + \pink{2} = 5
-\end{aligned}
-$$
+The teal columns are the pivot columns and the pink columns are free. The bar underneath stacks three teal cells and two pink cells into the five columns.
 </Pair>
 
 <RankTally rows={[[2, 1, -1, 0, 3, 1], [0, 0, 3, 1, -2, 0], [0, 0, 0, 0, 4, 2]]} pivots={[0, 2, 4]} />
 
-The theorem also answers questions about a matrix you never see. A $7 \times 9$ matrix with a two-dimensional null space has rank $9 - 2 = 7$. Be careful to subtract from the number of **columns**, not rows. Day 19 uses this equation for square matrices to show that crushing nothing and reaching every output are the same condition, and Day 24 restates it for any linear map.
+<Concept title="Size questions without a matrix">
+The theorem answers questions about a matrix you never see. A $7 \times 9$ matrix with a two-dimensional null space has rank $9 - 2 = 7$, because it has $9$ columns. Day 19 uses this equation for square matrices to show that crushing nothing and reaching every output are the same condition, and Day 24 restates it for any linear map.
+</Concept>
+
+<Warning>
+Subtract from the number of **columns**, not the number of rows. The nullity counts free input variables, and there is one input variable per column.
+</Warning>
+
+<Choice
+  question="A $6 \times 10$ matrix has rank $4$. What is its nullity?"
+  options={["$2$", "$6$", "$4$"]}
+  answer={1}
+>
+The matrix has $10$ columns, so $\operatorname{nullity} = 10 - 4 = 6$. The answer $2$ comes from subtracting from the $6$ rows by mistake.
+</Choice>
 
 ## Row rank equals column rank
 
-Each pivot sits in its own column and also in its own row. The nonzero rows of an echelon form are a basis for $\operatorname{Row}A$, and there is exactly one nonzero row per pivot. So the row space and the column space have the same dimension, even though the rows of a $4 \times 5$ matrix live in $\mathbb R^5$ and its columns live in $\mathbb R^4$.
+Day 16 also gave a basis for the row space. Its size turns out to be the same number again.
+
+<Problem>
+Let $A = \begin{bmatrix} 1 & 2 & 0 & 3 \\ 2 & 4 & 1 & 4 \\ 3 & 6 & 1 & 7 \end{bmatrix}$, which reduces to $\begin{bmatrix} 1 & 2 & 0 & 3 \\ 0 & 0 & 1 & -2 \\ 0 & 0 & 0 & 0 \end{bmatrix}$. Find $\dim\operatorname{Row}A$ and $\dim\operatorname{Col}A$.
+
+<Solution>
+For the row space, Day 16 says the nonzero rows of an echelon form are a basis. There are two nonzero rows, so $\dim\operatorname{Row}A = 2$.
+
+For the column space, the pivots are in columns 1 and 3, so $\dim\operatorname{Col}A = 2$.
+
+Both answers came from the same two pivots. Each pivot sits in its own row, which makes that row nonzero, and in its own column, which makes that a pivot column. So the two counts are always equal, even though the rows here live in $\mathbb R^4$ and the columns live in $\mathbb R^3$.
+</Solution>
+</Problem>
 
 <Pair>
 <Figure src="rows-and-columns" alt="The same echelon form with teal pivot columns and pink free columns. Orange boxes surround the three nonzero rows. Below it, dim Row A = 3 = dim Col A." />
@@ -61,22 +109,48 @@ $$
 \dim\operatorname{Row}A = \dim\operatorname{Col}A = \operatorname{rank}A
 $$
 
-The rows of $A$ are the columns of $A^T$, so this also says $\operatorname{rank}A^T = \operatorname{rank}A$.
+The figure shows the $4 \times 5$ matrix from the column tally, where three nonzero rows match three pivot columns. The rows of $A$ are the columns of $A^T$, so this also says $\operatorname{rank}A^T = \operatorname{rank}A$.
 </Pair>
+
+In a $2 \times 2$ matrix you can watch both counts fall at once. The first row is fixed at $(2, 1)$ and you move the second.
+
+<RowColumnDrop />
 
 ## Limits from the shape
 
-An $m \times n$ matrix has at most one pivot in each row and at most one in each column, so $\operatorname{rank}A \le \min(m, n)$. The Rank Theorem then turns that bound into a floor for the nullity: $\operatorname{nullity}A \ge n - m$. A wide matrix, with more columns than rows, always crushes something.
+The shape of a matrix already limits its rank, and through the Rank Theorem it limits the nullity too.
+
+<Problem>
+Can a $4 \times 6$ matrix have a one-dimensional null space? Can a $6 \times 4$ matrix have a null space that is just $\{\mathbf 0\}$?
+
+<Solution>
+For the $4 \times 6$ matrix, nullity $1$ would force $\operatorname{rank}A = 6 - 1 = 5$. But each pivot needs its own row, and there are only $4$ rows, so the rank is at most $4$. So the nullity is at least $6 - 4 = 2$, and the answer is no.
+
+For the $6 \times 4$ matrix, nullity $0$ needs $\operatorname{rank}A = 4 - 0 = 4$. Four pivots fit easily in six rows, one per column. The $4 \times 4$ identity with two zero rows added underneath is an example, so the answer is yes.
+</Solution>
+</Problem>
+
+<Concept title="Rank is at most the smaller side">
+An $m \times n$ matrix has at most one pivot in each row and at most one in each column, so $\operatorname{rank}A \le \min(m, n)$. The Rank Theorem turns that bound into a floor for the nullity, $\operatorname{nullity}A \ge n - m$. A wide matrix, with more columns than rows, always crushes something.
+</Concept>
 
 <Figure src="shapes" alt="Left: a 3 by 3 echelon matrix with pivots on the diagonal, three teal cells below it, and 3 + 0 = 3. Right: a 2 by 4 echelon matrix with pivots in columns 1 and 3, cells teal, pink, teal, pink, and 2 + 2 = 4." />
 
 <PivotBudget rows={4} columns={6} />
 
-This is why a $6 \times 9$ matrix cannot have a two-dimensional null space. Its rank would have to be $9 - 2 = 7$, but six rows allow only six pivots.
+<Choice
+  question="Can a $6 \times 9$ matrix have a two-dimensional null space?"
+  options={["Yes", "No"]}
+  answer={1}
+>
+Nullity $2$ would need rank $9 - 2 = 7$, but six rows allow at most six pivots. The smallest possible nullity is $9 - 6 = 3$.
+</Choice>
 
-Day 31 uses the same count to measure eigenspaces, since the dimension of $\operatorname{Nul}(A - \lambda I)$ is $n - \operatorname{rank}(A - \lambda I)$. Tomorrow, on Day 19, this count helps show that a long list of tests for square matrices all decide whether $A$ is invertible.
+Day 31 uses the same count to measure eigenspaces, since the dimension of $\operatorname{Nul}(A - \lambda I)$ is $n - \operatorname{rank}(A - \lambda I)$.
 
 ## Practice
+
+### Warm-up
 
 <Check>
 A $5 \times 8$ matrix $A$ has rank 3. Find $\operatorname{nullity}A$ and $\dim\operatorname{Row}A$. (Modeled on Lay §4.6, Exercise 5.)
@@ -96,16 +170,78 @@ The equation $A\mathbf x = \mathbf b$ is not solvable for every $\mathbf b$ in $
 </Check>
 
 <Check>
+An echelon form of $A$ is $\begin{bmatrix} 2 & 1 & 0 & 5 \\ 0 & 3 & 0 & 1 \\ 0 & 0 & 0 & 4 \end{bmatrix}$. Find $\operatorname{rank}A$ and $\operatorname{nullity}A$.
+
+<VectorAnswer answer={[3, 1]} labels={["rank A", "nullity A"]} />
+
+<Answer>
+The leading entries $2$, $3$ and $4$ sit in columns 1, 2 and 4, so there are three pivots and $\operatorname{rank}A = 3$. Column 3 has no pivot, so $\operatorname{nullity}A = 1$. Check: $3 + 1 = 4$ columns.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="A $7 \times 9$ matrix has a two-dimensional null space. What is its rank?"
+  options={["$5$", "$7$", "$9$"]}
+  answer={1}
+>
+$\operatorname{rank}A = 9 - 2 = 7$. That is also the most a $7 \times 9$ matrix can have, so every row has a pivot and $\operatorname{Col}A = \mathbb R^7$.
+</Choice>
+</Check>
+
+### Core
+
+<Check>
 Let $A = \begin{bmatrix} 1 & -2 & 1 & 0 & 3 \\ 2 & -4 & 3 & 1 & 5 \\ -1 & 2 & 0 & 1 & -4 \end{bmatrix}$. Find its rank and its nullity. (Modeled on Lay §2.9, Exercise 12.)
 
 <VectorAnswer answer={[2, 3]} labels={["rank A", "nullity A"]} />
+
+<Hint>
+Clear column 1 below the first pivot. Rows 2 and 3 then turn out to be equal.
+</Hint>
 
 <Answer>
 $$
 A \sim \begin{bmatrix} 1 & -2 & 1 & 0 & 3 \\ 0 & 0 & 1 & 1 & -1 \\ 0 & 0 & 1 & 1 & -1 \end{bmatrix} \sim \begin{bmatrix} \teal{1} & \pink{-2} & \teal{0} & \pink{-1} & \pink{4} \\ \teal{0} & \pink{0} & \teal{1} & \pink{1} & \pink{-1} \\ \teal{0} & \pink{0} & \teal{0} & \pink{0} & \pink{0} \end{bmatrix}
 $$
 
-The pivots sit in columns 1 and 3, so $\operatorname{rank}A = 2$. Columns 2, 4 and 5 are free, so $\operatorname{nullity}A = 3$. A basis for $\operatorname{Nul}A$ is $\{(2, 1, 0, 0, 0),\ (1, 0, -1, 1, 0),\ (-4, 0, 1, 0, 1)\}$, one vector per free variable, and $2 + 3 = 5$ columns.
+The first step is $R_2 \leftarrow R_2 - 2R_1$ and $R_3 \leftarrow R_3 + R_1$. The pivots sit in columns 1 and 3, so $\operatorname{rank}A = 2$. Columns 2, 4 and 5 are free, so $\operatorname{nullity}A = 3$. Check: $2 + 3 = 5$ columns. A basis for $\operatorname{Nul}A$ has one vector per free variable:
+
+$$
+\{(2, 1, 0, 0, 0),\ (1, 0, -1, 1, 0),\ (-4, 0, 1, 0, 1)\}
+$$
+</Answer>
+</Check>
+
+<Check>
+Let $A = \begin{bmatrix} 1 & 2 & 1 \\ 2 & 4 & 3 \\ 3 & 6 & 4 \end{bmatrix}$. Enter $\dim\operatorname{Col}A$, $\dim\operatorname{Row}A$ and $\dim\operatorname{Nul}A$. (Modeled on Lay §4.6, Exercise 1.)
+
+<VectorAnswer answer={[2, 2, 1]} labels={["dim Col A", "dim Row A", "dim Nul A"]} />
+
+<Hint>
+One row reduction answers all three. Count pivots for the first two and free columns for the third.
+</Hint>
+
+<Answer>
+$$
+A \sim \begin{bmatrix} 1 & 2 & 1 \\ 0 & 0 & 1 \\ 0 & 0 & 1 \end{bmatrix} \sim \begin{bmatrix} 1 & 2 & 0 \\ 0 & 0 & 1 \\ 0 & 0 & 0 \end{bmatrix}
+$$
+
+The pivots are in columns 1 and 3, so $\dim\operatorname{Col}A = \dim\operatorname{Row}A = 2$. Column 2 is free, so $\dim\operatorname{Nul}A = 1$, with basis $(-2, 1, 0)$.
+</Answer>
+</Check>
+
+<Check>
+Find the value of $h$ that makes $\operatorname{nullity}\begin{bmatrix} 1 & 2 & 3 \\ 2 & 4 & h \\ 1 & 2 & 3 \end{bmatrix} = 2$.
+
+<VectorAnswer answer={[6]} labels={["h"]} prefix="h =" />
+
+<Hint>
+Nullity $2$ in a matrix with $3$ columns means rank $1$. Which $h$ makes every row a multiple of row 1?
+</Hint>
+
+<Answer>
+The Rank Theorem says nullity $2$ means $\operatorname{rank}A = 3 - 2 = 1$. Row 3 already equals row 1. The move $R_2 \leftarrow R_2 - 2R_1$ turns row 2 into $(0, 0, h - 6)$, which is zero only when $h = 6$. For any other $h$ it would hold a second pivot, and the rank would be $2$.
 </Answer>
 </Check>
 
@@ -113,6 +249,10 @@ The pivots sit in columns 1 and 3, so $\operatorname{rank}A = 2$. Columns 2, 4 a
 A homogeneous system of 8 equations in 10 unknowns has two solutions that are not multiples of each other, and every solution is a combination of those two. What is the rank of the coefficient matrix? (Modeled on Lay §4.6, Example 5.)
 
 <VectorAnswer answer={[8]} labels={["rank"]} />
+
+<Hint>
+The two solutions form a basis for the null space. How many columns does the coefficient matrix have?
+</Hint>
 
 <Answer>
 The coefficient matrix is $8 \times 10$ and its null space has dimension 2, so
@@ -124,3 +264,71 @@ $$
 That means $\operatorname{Col}A$ is an 8-dimensional subspace of $\mathbb R^8$, which is all of $\mathbb R^8$. So every system with these coefficients has a solution, whatever the right-hand side.
 </Answer>
 </Check>
+
+<Check>
+A $5 \times 8$ matrix $A$ has rank 3. Find $\dim\operatorname{Nul}A^T$.
+
+<VectorAnswer answer={[2]} labels={["dim Nul Aᵀ"]} />
+
+<Hint>
+$A^T$ is $8 \times 5$ and has the same rank as $A$.
+</Hint>
+
+<Answer>
+The transpose $A^T$ has $5$ columns and $\operatorname{rank}A^T = \operatorname{rank}A = 3$. The Rank Theorem for $A^T$ gives
+
+$$
+\dim\operatorname{Nul}A^T = 5 - 3 = 2.
+$$
+</Answer>
+</Check>
+
+### Challenge
+
+<Check>
+What is the smallest possible nullity of a $5 \times 9$ matrix, and the largest possible rank of a $9 \times 5$ matrix?
+
+<VectorAnswer answer={[4, 5]} labels={["smallest nullity", "largest rank"]} />
+
+<Hint>
+Rank is at most the smaller of the two sides. Then use the Rank Theorem for the nullity.
+</Hint>
+
+<Answer>
+A $5 \times 9$ matrix has rank at most $5$, so its nullity is at least $9 - 5 = 4$. A $9 \times 5$ matrix has rank at most $\min(9, 5) = 5$, which happens when every column has a pivot.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="A $3 \times 3$ matrix $A$ has $\operatorname{Nul}A = \{\mathbf 0\}$. Which statement must be true?"
+  options={["$\\operatorname{Col}A = \\mathbb R^3$", "$\\operatorname{Col}A$ is a plane", "Nothing follows about $\\operatorname{Col}A$"]}
+  answer={0}
+>
+Nullity $0$ gives $\operatorname{rank}A = 3 - 0 = 3$. A 3-dimensional subspace of $\mathbb R^3$ is all of $\mathbb R^3$, so every $\mathbf b$ is an output. Tomorrow's lesson builds a whole list of equivalent statements from this one.
+</Choice>
+
+<Hint>
+Use the Rank Theorem to turn the nullity into a rank.
+</Hint>
+</Check>
+
+<Check>
+Explain why a $6 \times 4$ matrix $A$ always has $\dim\operatorname{Nul}A^T \ge 2$.
+
+<Hint>
+Write down the shape of $A^T$ and bound its rank.
+</Hint>
+
+<Answer>
+$A^T$ is $4 \times 6$, so it has $6$ columns and at most $4$ pivots. Therefore $\operatorname{rank}A^T \le 4$, and the Rank Theorem for $A^T$ gives
+
+$$
+\dim\operatorname{Nul}A^T = 6 - \operatorname{rank}A^T \ge 6 - 4 = 2.
+$$
+
+In words, a system with more unknowns than equations always has free variables, and $A^T$ has $6$ unknowns and $4$ equations.
+</Answer>
+</Check>
+
+Tomorrow, on Day 19, this count helps show that a long list of tests for square matrices all decide whether $A$ is invertible.

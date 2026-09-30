@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import { palette } from "@/lib/palette.generated";
-import { Goal, Panel, Readout, Slider, Tex } from "./controls";
+import { describeVector, Goal, Panel, Readout, Slider, Tex } from "./controls";
+import { hue, type Hue } from "./colors";
 import { useSettled } from "./gesture";
-import { texNumber } from "./math";
+import { det, texNumber, type Matrix2, type Vec } from "./math";
+import { Arrow, Handle, Plane, usePlane, type Bounds } from "./plane";
 
 type Mark = "unmarked" | "pivot" | "free";
 
@@ -184,6 +186,113 @@ export function PivotBudget({ rows, columns }: { rows: number; columns: number }
             }
           />
         </div>
+      </div>
+    </Panel>
+  );
+}
+
+function FullLine({ direction, color, width = 3, dashed = false }: { direction: Vec; color: Hue; width?: number; dashed?: boolean }) {
+  const { toSvg } = usePlane();
+  const [x1, y1] = toSvg([-30 * direction[0], -30 * direction[1]]);
+  const [x2, y2] = toSvg([30 * direction[0], 30 * direction[1]]);
+  return <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={hue(color)} strokeWidth={width} strokeDasharray={dashed ? "7 6" : undefined} strokeLinecap="round" />;
+}
+
+function PlaneWash({ lit }: { lit: boolean }) {
+  const { bounds, toSvg } = usePlane();
+  const [x, y] = toSvg([bounds.xMin, bounds.yMax]);
+  const [x2, y2] = toSvg([bounds.xMax, bounds.yMin]);
+  return <rect x={x} y={y} width={x2 - x} height={y2 - y} fill="var(--palette-teal)" fillOpacity={lit ? 0.14 : 0} className="transition-[fill-opacity] duration-300" />;
+}
+
+const matrix2Tex = (m: Matrix2) => `\\begin{bmatrix} ${texNumber(m[0][0])} & ${texNumber(m[0][1])} \\\\ ${texNumber(m[1][0])} & ${texNumber(m[1][1])} \\end{bmatrix}`;
+const COLLAPSE_BOUNDS: Bounds = { xMin: -4, xMax: 6, yMin: -3, yMax: 8 };
+
+/** Slide one entry of a 2x2 matrix; at the singular value the outputs collapse from the whole plane to a line and a null line appears. */
+export function CollapseSlider({ start = 1 }: { start?: number }) {
+  const [k, setK] = useState(start);
+  const matrix: Matrix2 = [[1, 2], [2, k]];
+  const singular = det(matrix) === 0;
+  const { settled: solved, gesture } = useSettled(singular);
+  const rank = singular ? 1 : 2;
+  const first: Vec = [matrix[0][0], matrix[1][0]];
+  const second: Vec = [matrix[0][1], matrix[1][1]];
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>The teal wash is <Tex>{"\\operatorname{Col}A"}</Tex>. Slide <Tex>{"k"}</Tex> until the outputs collapse from the whole plane onto one line.</>}
+        success={<>At <Tex>{"k = 4"}</Tex> the columns line up, so the rank drops to <Tex>{"1"}</Tex>. The pink line of crushed inputs appears at the same moment, and <Tex>{"1 + 1 = 2"}</Tex>.</>}
+      />
+      <div className="grid items-start gap-5 md:grid-cols-[1.35fr_1fr]">
+        <Plane bounds={COLLAPSE_BOUNDS} label={`Column space of A with k = ${k}: ${singular ? "a line, with the null space drawn as a pink line" : "the whole plane"}`}>
+          <PlaneWash lit={!singular} />
+          {singular ? <FullLine direction={first} color="teal" width={5} /> : null}
+          {singular ? <FullLine direction={[-matrix[0][1], matrix[0][0]]} color="pink" dashed /> : null}
+          <Arrow to={first} color="green" />
+          <Arrow to={second} color="red" />
+        </Plane>
+        <div className="min-w-0 space-y-4">
+          <Slider label="k" value={k} onChange={setK} min={1} max={6} step={1} color={palette.j_hat} />
+          <Readout tex={`A = ${matrix2Tex(matrix)}`} />
+          <Readout tex={`\\textcolor{${palette.teal}}{\\operatorname{rank} = ${rank}} \\quad \\textcolor{${palette.pink}}{\\operatorname{nullity} = ${2 - rank}}`} />
+        </div>
+      </div>
+    </Panel>
+  );
+}
+
+const TWIN_BOUNDS: Bounds = { xMin: -5, xMax: 5, yMin: -5, yMax: 5 };
+
+function rankOf(matrix: Matrix2): number {
+  if (det(matrix) !== 0) return 2;
+  return matrix.flat().some((entry) => entry !== 0) ? 1 : 0;
+}
+
+function SpanOf({ vectors, rank }: { vectors: [Vec, Vec]; rank: number }) {
+  if (rank === 2) return <PlaneWash lit />;
+  const direction = vectors.find((v) => v[0] !== 0 || v[1] !== 0);
+  return rank === 1 && direction ? <FullLine direction={direction} color="teal" width={4} /> : null;
+}
+
+/** Drag row 2 of a 2x2 matrix; the moment the rows become dependent, the columns do too. */
+export function RowColumnDrop({ firstRow = [2, 1], start = [1, 3] }: { firstRow?: Vec; start?: Vec }) {
+  const [secondRow, setSecondRow] = useState<Vec>(start);
+  const matrix: Matrix2 = [firstRow, secondRow];
+  const rank = rankOf(matrix);
+  const nonzero = secondRow[0] !== 0 || secondRow[1] !== 0;
+  const { settled: solved, gesture } = useSettled(rank === 1 && nonzero);
+  const columns: [Vec, Vec] = [[firstRow[0], secondRow[0]], [firstRow[1], secondRow[1]]];
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Drag row 2 to a nonzero spot where the two rows span only a line. Watch the columns on the right.</>}
+        success={<>The rows fell onto one line, and the columns fell onto a different line at the same moment. Row rank and column rank both dropped to <Tex>{"1"}</Tex>.</>}
+      />
+      <div className="grid gap-4 sm:grid-cols-2">
+        <figure className="min-w-0">
+          <Plane bounds={TWIN_BOUNDS} label={`Rows of A: row 1 at ${describeVector(firstRow)} and row 2 at ${describeVector(secondRow)}`}>
+            <SpanOf vectors={[firstRow, secondRow]} rank={rank} />
+            <Arrow to={firstRow} color="yellow" />
+            <Arrow to={secondRow} color="blue" />
+            <Handle at={secondRow} onMove={setSecondRow} color="blue" label={`Row 2 of A, at ${describeVector(secondRow)}`} />
+          </Plane>
+          <figcaption className="mt-2 text-center text-meta text-text-muted">Rows</figcaption>
+        </figure>
+        <figure className="min-w-0">
+          <Plane bounds={TWIN_BOUNDS} label={`Columns of A: ${describeVector(columns[0])} and ${describeVector(columns[1])}`}>
+            <SpanOf vectors={columns} rank={rank} />
+            <Arrow to={columns[0]} color="green" />
+            <Arrow to={columns[1]} color="red" />
+          </Plane>
+          <figcaption className="mt-2 text-center text-meta text-text-muted">Columns</figcaption>
+        </figure>
+      </div>
+      <div className="mt-4">
+        <Readout tex={`A = \\begin{bmatrix} \\textcolor{${palette.yellow}}{${firstRow[0]}} & \\textcolor{${palette.yellow}}{${firstRow[1]}} \\\\ \\textcolor{${palette.blue}}{${secondRow[0]}} & \\textcolor{${palette.blue}}{${secondRow[1]}} \\end{bmatrix}, \\quad \\dim\\operatorname{Row}A = \\dim\\operatorname{Col}A = ${rank}`} />
       </div>
     </Panel>
   );
