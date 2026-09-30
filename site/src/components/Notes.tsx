@@ -34,7 +34,7 @@ import { DiagonalZeroHunt, EigenCandidatePicker, EigenDirectionHunt, EigenGapHun
 import { AreaShearSlide, CornerToOrigin } from "@/components/interactive/determinants-as-area";
 import { CramerAreas, CramerParameterLines, EllipseAreaStretch, HeightStack, ProductAreaHunt } from "@/components/interactive/determinant-properties";
 import { CofactorHunt, CofactorLinePicker, ColumnClearExpand, MultipleAreaScale, ReplacementShear } from "@/components/interactive/cofactor-expansion";
-import { IterateSwing, ShiftToSingular, TraceCurveMatch } from "@/components/interactive/eigenvalue-properties";
+import { EigenWeightSplit, IterateSwing, PowerLineStretch, ShiftToSingular, TraceCurveMatch } from "@/components/interactive/eigenvalue-properties";
 import { JordanChainBuilder, MultiplicityGapSlider, NullPowerClimb } from "@/components/interactive/generalized-eigenvectors";
 import { DiagonalBasisHunt, EigenOrbitSettle, EigenPolynomialHunt } from "@/components/interactive/diagonalizing-transformations";
 import { DiagonalFactorSteps, EigenCoordinateTarget } from "@/components/interactive/diagonalization";
@@ -176,6 +176,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     TraceCurveMatch,
     ShiftToSingular,
     IterateSwing,
+    PowerLineStretch,
+    EigenWeightSplit,
     MultiplicityGapSlider,
     JordanChainBuilder,
     NullPowerClimb,
