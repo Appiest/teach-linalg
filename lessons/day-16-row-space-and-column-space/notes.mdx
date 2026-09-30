@@ -1,6 +1,34 @@
-On Day 4 you saw that $A\mathbf x$ is a combination of the columns of $A$, with the entries of $\mathbf x$ as weights. Today collects every possible output into one set, because that set decides which equations $A\mathbf x = \mathbf b$ have a solution. Days 14 and 15 gave you bases and dimension for any subspace, so now you can describe that set exactly. It is a subspace, it has a basis you can read straight off a row reduction, and a second subspace built from the rows comes along with it.
+On Day 4 you saw that $A\mathbf x$ is a combination of the columns of $A$, with the entries of $\mathbf x$ as weights. Today we collect every possible output into one set, because that set decides which equations $A\mathbf x = \mathbf b$ have a solution. Days 14 and 15 gave you bases and dimension for any subspace, so now you can describe that set exactly. It turns out to be a subspace with a basis you can read straight off a row reduction, and a second subspace built from the rows comes along with it.
+
+Each section opens with a problem. Try it before you open the walkthrough, even if you only get partway.
 
 ## Column space
+
+<Problem>
+Let $A = \begin{bmatrix} \green{1} & \red{0} \\ \green{0} & \red{1} \\ \green{1} & \red{1} \end{bmatrix}$. Compute $A\begin{bmatrix} 2 \\ 3 \end{bmatrix}$ and $A\begin{bmatrix} -1 \\ 4 \end{bmatrix}$. What do the outputs have in common? Could $(1, 1, 5)$ ever be an output?
+
+<Solution>
+Day 4 says $A\mathbf x$ is $x_1$ times the first column plus $x_2$ times the second, so we compute each output that way.
+
+$$
+A\begin{bmatrix} 2 \\ 3 \end{bmatrix} = 2\green{\begin{bmatrix} 1 \\ 0 \\ 1 \end{bmatrix}} + 3\red{\begin{bmatrix} 0 \\ 1 \\ 1 \end{bmatrix}} = \begin{bmatrix} 2 \\ 3 \\ 2 + 3 \end{bmatrix} = \teal{\begin{bmatrix} 2 \\ 3 \\ 5 \end{bmatrix}}
+$$
+
+$$
+A\begin{bmatrix} -1 \\ 4 \end{bmatrix} = -1\green{\begin{bmatrix} 1 \\ 0 \\ 1 \end{bmatrix}} + 4\red{\begin{bmatrix} 0 \\ 1 \\ 1 \end{bmatrix}} = \begin{bmatrix} -1 \\ 4 \\ -1 + 4 \end{bmatrix} = \teal{\begin{bmatrix} -1 \\ 4 \\ 3 \end{bmatrix}}
+$$
+
+In both outputs the third entry is the sum of the first two. That happens for every input, because $A\mathbf x = (x_1,\ x_2,\ x_1 + x_2)$. The vector $(1, 1, 5)$ has $1 + 1 = 2$, which is not $5$, so no input produces it.
+
+The outputs of $A$ fill only part of $\mathbb R^3$. They fill the plane $z = x + y$, and everything off that plane is out of reach.
+</Solution>
+</Problem>
+
+<Concept title="The column space collects every output">
+The outputs of $A$ are exactly the combinations of its columns, since $A\mathbf x = x_1\mathbf a_1 + x_2\mathbf a_2 + \cdots$. We give that set a name.
+
+The outputs live in $\mathbb R^m$, where $m$ is the number of **rows**, because each column has $m$ entries. The inputs live in $\mathbb R^n$, where $n$ is the number of columns. The $3 \times 2$ matrix above takes the plane $\mathbb R^2$ into space $\mathbb R^3$.
+</Concept>
 
 <Definition term="Column space">
 The **column space** of an $m \times n$ matrix $A = [\,\mathbf a_1 \ \cdots \ \mathbf a_n\,]$ is the set of all linear combinations of its columns:
@@ -9,144 +37,453 @@ $$
 \operatorname{Col}A = \operatorname{Span}\{\mathbf a_1, \dots, \mathbf a_n\} = \{\, A\mathbf x : \mathbf x \in \mathbb R^n \,\}.
 $$
 
-It is the **range** of the map $\mathbf x \mapsto A\mathbf x$, and it is a subspace of $\mathbb R^m$, because every span is a subspace.
+It is the **range** of the map $\mathbf x \mapsto A\mathbf x$. It is a subspace of $\mathbb R^m$, because Day 11 showed that every span is a subspace.
 </Definition>
-
-The column space lives in $\mathbb R^m$, where $m$ is the number of rows, because each column has $m$ entries. The inputs $\mathbf x$ live in $\mathbb R^n$ instead, so a $3 \times 2$ matrix takes the plane to space.
 
 <Pair>
 <Figure src="input-to-output" alt="Left: the input plane with a teal square of grid lines and the basis arrows e1 in green and e2 in red. Right: a 3D view where the same grid lines have landed on a tilted teal plane through the origin, with the columns a1 = (1, 0, 1) in green and a2 = (0, 1, 1) in red. The matrix A with rows (1, 0), (0, 1), (1, 1) sits above the input plane." />
 
-$$
-A = \begin{bmatrix} \green{1} & \red{0} \\ \green{0} & \red{1} \\ \green{1} & \red{1} \end{bmatrix},
-\qquad
-A\mathbf x = x_1 \green{\begin{bmatrix} 1 \\ 0 \\ 1 \end{bmatrix}} + x_2 \red{\begin{bmatrix} 0 \\ 1 \\ 1 \end{bmatrix}} = \teal{\begin{bmatrix} x_1 \\ x_2 \\ x_1 + x_2 \end{bmatrix}}
-$$
-
-Every output has third entry equal to the sum of the first two, so $\operatorname{Col}A$ is the plane $z = x + y$ in $\mathbb R^3$.
+Each grid square of inputs on the left lands on the tilted teal plane on the right. The green arrow $\mathbf e_1$ lands on the first column and the red arrow $\mathbf e_2$ lands on the second. The plane they span is $\operatorname{Col}A$.
 </Pair>
+
+Drag the input $\mathbf x$ on the left and watch $A\mathbf x$ slide across the plane on the right. It never leaves the plane.
 
 <OutputReach columns={[[1, 0, 1], [0, 1, 1]]} target={[-1, 2, 1]} />
 
-Any set written with free parameters is a column space in disguise. For example, $\{(a + 2b,\ -a,\ 3b) : a, b \in \mathbb R\}$ splits as $a(1, -1, 0) + b(2, 0, 3)$, so it equals $\operatorname{Col}\begin{bmatrix} 1 & 2 \\ -1 & 0 \\ 0 & 3 \end{bmatrix}$ and is automatically a subspace.
+<Warning>
+The column space is a set of **outputs** $\mathbf b$, not a set of solutions $\mathbf x$. For a $3 \times 2$ matrix the column space sits in $\mathbb R^3$ while the inputs sit in $\mathbb R^2$. A quick size check catches many mix-ups.
+</Warning>
+
+## Sets written with parameters
+
+Column spaces also give a fast way to recognize subspaces. Any set described by free parameters turns out to be a column space in disguise.
+
+<Problem>
+Let $W = \{(a + 2b,\ -a,\ 3b) : a, b \in \mathbb R\}$. Find a matrix $A$ with $W = \operatorname{Col}A$.
+
+<Solution>
+We want to see $W$ as all combinations of some fixed vectors, because a span is the column space of the matrix with those vectors as columns. So we separate the part that $a$ controls from the part that $b$ controls.
+
+$$
+\begin{bmatrix} a + 2b \\ -a \\ 3b \end{bmatrix} = \begin{bmatrix} a \\ -a \\ 0 \end{bmatrix} + \begin{bmatrix} 2b \\ 0 \\ 3b \end{bmatrix} = a\green{\begin{bmatrix} 1 \\ -1 \\ 0 \end{bmatrix}} + b\red{\begin{bmatrix} 2 \\ 0 \\ 3 \end{bmatrix}}
+$$
+
+Every vector in $W$ is a combination of $(1, -1, 0)$ and $(2, 0, 3)$, and every such combination is in $W$. Putting those two vectors in as columns gives
+
+$$
+A = \begin{bmatrix} \green{1} & \red{2} \\ \green{-1} & \red{0} \\ \green{0} & \red{3} \end{bmatrix}, \qquad W = \operatorname{Col}A.
+$$
+
+Since a column space is always a subspace, $W$ is a subspace, and we never had to check closure by hand.
+</Solution>
+</Problem>
+
+<Concept title="Parameters make a column space">
+When every entry of a vector is a sum of parameters times constants, pull out one vector per parameter. Those vectors are the columns of $A$, and the set is $\operatorname{Col}A$. For example, $\{(3s - t,\ s,\ 2t)\} = \operatorname{Col}\begin{bmatrix} 3 & -1 \\ 1 & 0 \\ 0 & 2 \end{bmatrix}$.
+</Concept>
+
+<Choice
+  question="Which of these sets is a column space?"
+  options={["$\\{(a,\\ a + 1) : a \\in \\mathbb R\\}$", "$\\{(a,\\ 2a,\\ -a) : a \\in \\mathbb R\\}$", "$\\{(a,\\ a^2) : a \\in \\mathbb R\\}$"]}
+  answer={1}
+>
+The set $\{(a, 2a, -a)\}$ is $a(1, 2, -1)$, which is $\operatorname{Col}$ of the $3 \times 1$ matrix with that one column. The first set has a constant $+1$, so it misses the zero vector. The second entry of the last set is $a^2$, which is not a constant times $a$.
+</Choice>
 
 ## Testing a vector
 
-This test answers a yes-or-no question about one vector, so the row reduction only needs to reach an echelon form that shows whether the system is consistent. A vector $\mathbf b$ is in $\operatorname{Col}A$ exactly when some $\mathbf x$ gives $A\mathbf x = \mathbf b$, which means the system with augmented matrix $[\,A \ \ \mathbf b\,]$ is consistent. Row reduce it and look for a row of the form $[\,0 \ \cdots \ 0 \mid \text{nonzero}\,]$.
+In the first problem we spotted a pattern that ruled out $(1, 1, 5)$. Most matrices have no pattern that obvious, so we need a test that always works.
+
+<Problem>
+Using the same $A = \begin{bmatrix} 1 & 0 \\ 0 & 1 \\ 1 & 1 \end{bmatrix}$, decide whether $\mathbf b = (1, -1, 0)$ is in $\operatorname{Col}A$ and whether $\mathbf c = (1, 1, 0)$ is, by row reduction.
+
+<Solution>
+Asking whether $\mathbf b$ is an output means asking whether some $\mathbf x$ solves $A\mathbf x = \mathbf b$. Day 3 answers that question for any system: row reduce the augmented matrix and look for a row that says $0 = \text{nonzero}$.
+
+<Steps>
+<Step>
+Write the augmented matrix $[\,A \ \ \mathbf b\,]$ and clear the entry below the first pivot with $R_3 \leftarrow R_3 - R_1$.
+
+$$
+\begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & -1 \\ 1 & 1 & 0 \end{bmatrix} \sim \begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & -1 \\ 0 & 1 & -1 \end{bmatrix}
+$$
+</Step>
+<Step>
+Clear the entry below the second pivot with $R_3 \leftarrow R_3 - R_2$.
+
+$$
+\begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & -1 \\ 0 & 0 & 0 \end{bmatrix}
+$$
+
+The last row says $0 = 0$, so the system is consistent. It gives $x_1 = 1$ and $x_2 = -1$, and indeed $1\cdot(1, 0, 1) - 1\cdot(0, 1, 1) = (1, -1, 0)$. So $\mathbf b$ is in $\operatorname{Col}A$.
+</Step>
+<Step>
+Do the same two moves on $[\,A \ \ \mathbf c\,]$.
+
+$$
+\begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & 1 \\ 1 & 1 & 0 \end{bmatrix} \sim \begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & 1 \\ 0 & 1 & -1 \end{bmatrix} \sim \begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & 1 \\ 0 & 0 & \glow{-2} \end{bmatrix}
+$$
+
+The last row says $0 = -2$, which is impossible. No input reaches $\mathbf c$, so $\mathbf c$ is not in $\operatorname{Col}A$.
+</Step>
+</Steps>
+</Solution>
+</Problem>
 
 <Pair>
 <Figure src="column-space" alt="The tilted plane Col A with columns a1 in green and a2 in red. The yellow point b = (1, −1, 0) lies on the plane. The yellow point c = (1, 1, 0) lies below it, with an orange dashed line rising from c up to the plane." />
 
-$$
-\begin{aligned}
-[\,A \ \ \mathbf b\,] &= \begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & -1 \\ 1 & 1 & 0 \end{bmatrix} \sim \begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & -1 \\ 0 & 0 & 0 \end{bmatrix} \\[4pt]
-[\,A \ \ \mathbf c\,] &= \begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & 1 \\ 1 & 1 & 0 \end{bmatrix} \sim \begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & 1 \\ 0 & 0 & \glow{-2} \end{bmatrix}
-\end{aligned}
-$$
-
-The first system is consistent with $\mathbf x = (1, -1)$, so $\mathbf b \in \operatorname{Col}A$. The second ends in $0 = -2$, so no input reaches $\mathbf c$.
+The point $\mathbf b$ lies on the plane, and its test ended in $0 = 0$. The point $\mathbf c$ floats below the plane, and its test ended in $0 = -2$. The orange dash shows how far $\mathbf c$ is from being reachable.
 </Pair>
 
-Row reducing $A$ alone answers a different question. If $A$ has a pivot in every row, then $A\mathbf x = \mathbf b$ is consistent for every $\mathbf b$, and $\operatorname{Col}A$ is all of $\mathbb R^m$. The $3 \times 2$ matrix above has only two pivots for three rows, so its column space is a plane and not all of $\mathbb R^3$.
+<Concept title="Membership is consistency">
+A vector $\mathbf b$ is in $\operatorname{Col}A$ exactly when $A\mathbf x = \mathbf b$ is consistent. To test it, row reduce $[\,A \ \ \mathbf b\,]$ until you reach an echelon form. If some row reads $[\,0 \ \cdots \ 0 \mid \text{nonzero}\,]$, then $\mathbf b$ is not in $\operatorname{Col}A$. Otherwise it is.
+</Concept>
+
+Here is the same test in the plane. The matrix $A = \begin{bmatrix} \green{1} & \red{-2} \\ \green{2} & \red{-4} \end{bmatrix}$ has both columns on one line, and $R_2 \leftarrow R_2 - 2R_1$ leaves $b_2 - 2b_1$ in the last row. Drag $\mathbf b$ and watch that last entry.
+
+<ConsistencyLine columns={[[1, 2], [-2, -4]]} />
+
+<Warning>
+Row reducing $A$ by itself cannot tell you whether one particular $\mathbf b$ is an output. You need the augmented matrix $[\,A \ \ \mathbf b\,]$, because the answer depends on $\mathbf b$.
+</Warning>
+
+## Every vector is an output
+
+Sometimes the answer is yes for every $\mathbf b$ at once, and you can tell from $A$ alone.
+
+<Problem>
+Row reduce $A = \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}$. Explain why $A\mathbf x = \mathbf b$ has a solution for every $\mathbf b$ in $\mathbb R^2$.
+
+<Solution>
+We row reduce $A$ to see where its pivots are. The move $R_2 \leftarrow R_2 - 3R_1$ gives
+
+$$
+\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \sim \begin{bmatrix} 1 & 2 \\ 0 & -2 \end{bmatrix}.
+$$
+
+Both rows have a pivot. If we had carried a column $\mathbf b$ along, the same moves would change it into some new column, but no row could ever read $[\,0 \ \ 0 \mid \text{nonzero}\,]$, because no row of the left side is all zeros. So every system $A\mathbf x = \mathbf b$ is consistent, and $\operatorname{Col}A = \mathbb R^2$.
+</Solution>
+</Problem>
+
+<Concept title="A pivot in every row fills the space">
+$\operatorname{Col}A = \mathbb R^m$ exactly when $A$ has a pivot in every row. The $3 \times 2$ matrix from the first problem has only two columns, so it has at most two pivots for three rows, and its column space is a plane instead of all of $\mathbb R^3$.
+</Concept>
+
+<Choice
+  question="Which matrix has $\operatorname{Col}A = \mathbb R^2$?"
+  options={["$\\begin{bmatrix} 1 & -2 \\\\ 2 & -4 \\end{bmatrix}$", "$\\begin{bmatrix} 2 & 0 & 1 \\\\ 0 & 0 & 3 \\end{bmatrix}$", "$\\begin{bmatrix} 0 & 0 \\\\ 1 & 5 \\end{bmatrix}$"]}
+  answer={1}
+>
+The middle matrix has a pivot in row 1 (column 1) and a pivot in row 2 (column 3), so every row has a pivot. The first matrix reduces to a zero second row, and the last has a zero row once you swap its rows.
+</Choice>
 
 ## Basis for the column space
 
 A matrix can have more columns than its column space needs, the way Day 14's spanning sets could. The goal here is to keep just enough columns of $A$ to span $\operatorname{Col}A$, with none to spare.
 
-<Definition term="Pivot columns form a basis">
-The pivot columns of $A$ form a basis for $\operatorname{Col}A$. Find the pivot positions from any echelon form, then take those columns **from $A$ itself**.
-</Definition>
+<Problem>
+The matrix $A = \begin{bmatrix} \green{1} & \red{0} & \pink{-1} \\ \green{0} & \red{1} & \pink{1} \\ \green{1} & \red{1} & \pink{0} \end{bmatrix}$ reduces to $B = \begin{bmatrix} 1 & 0 & -1 \\ 0 & 1 & 1 \\ 0 & 0 & 0 \end{bmatrix}$. Write the third column of $B$ as a combination of its first two columns. Do the same weights work for the columns of $A$?
 
-The reason is that $A\mathbf x = \mathbf 0$ and $B\mathbf x = \mathbf 0$ have the same solutions whenever $A$ row reduces to $B$. A solution $\mathbf x$ is a list of weights that combine the columns to zero, so the columns of $A$ satisfy exactly the same dependence relations as the columns of $B$. In the reduced form each non-pivot column visibly equals a combination of the pivot columns, and the pivot columns are independent, so the same is true in $A$.
+<Solution>
+In $B$ the first two columns are $(1, 0, 0)$ and $(0, 1, 0)$, so any column of $B$ can be read off directly. The third column is $(-1, 1, 0)$, which is $-1$ times the first column plus $1$ times the second:
+
+$$
+\mathbf b_3 = -\mathbf b_1 + \mathbf b_2.
+$$
+
+Now try the weights $-1$ and $1$ on the columns of $A$:
+
+$$
+-\green{\begin{bmatrix} 1 \\ 0 \\ 1 \end{bmatrix}} + \red{\begin{bmatrix} 0 \\ 1 \\ 1 \end{bmatrix}} = \begin{bmatrix} -1 + 0 \\ 0 + 1 \\ -1 + 1 \end{bmatrix} = \pink{\begin{bmatrix} -1 \\ 1 \\ 0 \end{bmatrix}} = \pink{\mathbf a_3}.
+$$
+
+The same weights work. The reason is that the relation $\mathbf b_3 = -\mathbf b_1 + \mathbf b_2$ says $(-1, 1, -1)$ solves $B\mathbf x = \mathbf 0$. Row operations never change the solutions of a system, so $(-1, 1, -1)$ also solves $A\mathbf x = \mathbf 0$, which says $-\mathbf a_1 + \mathbf a_2 - \mathbf a_3 = \mathbf 0$.
+
+So $\mathbf a_3$ adds nothing new to the span, and $\{\mathbf a_1, \mathbf a_2\}$ already spans $\operatorname{Col}A$. Those two are not multiples of each other, so they are independent, and they form a basis.
+</Solution>
+</Problem>
+
+Try it with a smaller matrix. The sliders set one pair of weights, and both pictures use it. The left picture combines the columns of $A = \begin{bmatrix} 1 & 1 & 3 \\ 1 & 2 & 4 \end{bmatrix}$, and the right picture combines the columns of its reduced form $B = \begin{bmatrix} 1 & 0 & 2 \\ 0 & 1 & 1 \end{bmatrix}$.
+
+<RelationTwins matrix={[[1, 1], [1, 2], [3, 4]]} reduced={[[1, 0], [0, 1], [2, 1]]} answer={[2, 1]} />
+
+<Definition term="Pivot columns form a basis">
+The pivot columns of $A$ form a basis for $\operatorname{Col}A$. Find the pivot positions from any echelon form, then take those columns **from $A$ itself**. Each non-pivot column of $A$ is a combination of the pivot columns, with the weights you read off the reduced echelon form.
+</Definition>
 
 <Pair>
 <Figure src="pivot-columns" alt="The matrix A with columns (1, 0, 1), (0, 1, 1) and (−1, 1, 0) beside its reduced form with columns (1, 0, 0), (0, 1, 0) and (−1, 1, 0). Orange frames mark columns 1 and 2 of A; dashed frames mark the same columns of the reduced form. Below, the relation a3 = −a1 + a2." />
 
-$$
-\begin{aligned}
-\text{reduced: } \ \mathbf b_3 &= -\mathbf b_1 + \mathbf b_2 \\
-\text{so in } A\text{: } \ \pink{\mathbf a_3} &= -\green{\mathbf a_1} + \red{\mathbf a_2} \\
-&= -\green{\begin{bmatrix} 1 \\ 0 \\ 1 \end{bmatrix}} + \red{\begin{bmatrix} 0 \\ 1 \\ 1 \end{bmatrix}} = \pink{\begin{bmatrix} -1 \\ 1 \\ 0 \end{bmatrix}}
-\end{aligned}
-$$
-
-The columns of the reduced form all end in $0$, so they lie on the floor $z = 0$ and are not even in $\operatorname{Col}A$. That is why the basis vectors must come from $A$.
+The orange frames mark the pivot columns of $A$ and the dashed frames mark the same positions in the reduced form. The reduced form tells you **which** columns to keep, and $A$ supplies the vectors.
 </Pair>
 
-The number of pivot columns is therefore $\dim\operatorname{Col}A$, and Day 18 names that number the rank of $A$.
+<Warning>
+Never take the basis vectors from the echelon form. Every column of $B$ above ends in $0$, so they lie on the floor $z = 0$, while $\operatorname{Col}A$ is a tilted plane. Most of $B$'s columns are not even in $\operatorname{Col}A$.
+</Warning>
+
+The number of pivot columns is therefore $\dim\operatorname{Col}A$, and Day 18 names that number the rank of $A$. Try the recipe on a wider matrix.
 
 <PivotPicker matrix={[[1, -2, 1, 0], [2, -4, 3, 1], [-1, 2, 0, 1]]} reduced={[[1, -2, 0, -1], [0, 0, 1, 1], [0, 0, 0, 0]]} pivots={[0, 2]} />
 
+<Problem>
+The matrix in the picker has reduced form $\begin{bmatrix} 1 & -2 & 0 & -1 \\ 0 & 0 & 1 & 1 \\ 0 & 0 & 0 & 0 \end{bmatrix}$. Find weights $c_1, c_3$ with $\mathbf a_4 = c_1\mathbf a_1 + c_3\mathbf a_3$.
+
+<VectorAnswer answer={[-1, 1]} labels={["c₁", "c₃"]} />
+
+<Solution>
+Read the fourth column of the reduced form. Its pivot-row entries are $-1$ in the row of the first pivot and $1$ in the row of the second pivot, so $\mathbf b_4 = -\mathbf b_1 + \mathbf b_3$. The same weights hold in $A$:
+
+$$
+-\begin{bmatrix} 1 \\ 2 \\ -1 \end{bmatrix} + \begin{bmatrix} 1 \\ 3 \\ 0 \end{bmatrix} = \begin{bmatrix} 0 \\ 1 \\ 1 \end{bmatrix} = \mathbf a_4.
+$$
+
+So $c_1 = -1$ and $c_3 = 1$.
+</Solution>
+</Problem>
+
 ## Row space
+
+The rows of a matrix span a subspace too. It lives in $\mathbb R^n$, because each row has $n$ entries, and row reduction treats it very differently from the column space.
+
+<Problem>
+Let $B = \begin{bmatrix} \green{1} & \green{0} & \green{1} \\ \red{1} & \red{1} & \red{2} \end{bmatrix}$ with rows $\mathbf r_1 = (1, 0, 1)$ and $\mathbf r_2 = (1, 1, 2)$. The move $R_2 \leftarrow R_2 - R_1$ turns the second row into $\mathbf r_2' = (0, 1, 1)$. Show that the old rows and the new rows span the same set.
+
+<Solution>
+Two spans are equal when each set of vectors can be built from the other, so we check both directions.
+
+The new row is built from old rows: $\mathbf r_2' = \mathbf r_2 - \mathbf r_1$. So everything the new rows span, the old rows span too.
+
+The old row is built from new rows: $\mathbf r_2 = \mathbf r_2' + \mathbf r_1 = (0, 1, 1) + (1, 0, 1) = (1, 1, 2)$. So everything the old rows span, the new rows span too.
+
+Both directions hold, so the span did not change. The same argument works for any row operation, because each one makes new rows from old ones and can be undone by another row operation.
+</Solution>
+</Problem>
+
+<Pair>
+<Figure src="row-space" alt="A tilted teal plane labelled Row B with the green row r1 = (1, 0, 1). A faded red arrow shows the old row r2 = (1, 1, 2), and an orange dashed path inside the plane leads to the bright red arrow r2 − r1 = (0, 1, 1)." />
+
+The red row moves, but it slides within the same plane, so the plane spanned by the two rows stays put.
+</Pair>
 
 <Definition term="Row space">
 The **row space** of an $m \times n$ matrix $A$, written $\operatorname{Row}A$, is the span of its rows, read as vectors in $\mathbb R^n$. It equals $\operatorname{Col}A^T$. If $A$ row reduces to $B$, then $\operatorname{Row}A = \operatorname{Row}B$, and when $B$ is in echelon form its nonzero rows are a basis for $\operatorname{Row}A$.
 </Definition>
 
-On Day 18 the row space turns out to have the same dimension as the column space. Each row operation replaces a row by a combination of rows, so every new row stays inside the old row space. Every row operation can also be undone by another one, so the old rows are combinations of the new ones, and the span cannot shrink either. In an echelon form, each nonzero row has its leading entry in a column where every row below it has a zero, so no nonzero row is a combination of the others, and they are independent.
-
-<Pair>
-<Figure src="row-space" alt="A tilted teal plane labelled Row B with the green row r1 = (1, 0, 1). A faded red arrow shows the old row r2 = (1, 1, 2), and an orange dashed path inside the plane leads to the bright red arrow r2 − r1 = (0, 1, 1)." />
-
-$$
-B = \begin{bmatrix} \green{1} & \green{0} & \green{1} \\ \red{1} & \red{1} & \red{2} \end{bmatrix}
-\ \xrightarrow{\ R_2 \leftarrow R_2 - R_1\ } \
-\begin{bmatrix} \green{1} & \green{0} & \green{1} \\ \red{0} & \red{1} & \red{1} \end{bmatrix}
-$$
-
-The red row moves, but it slides within the same plane, so $\operatorname{Row}B$ does not change.
-</Pair>
+The nonzero rows of an echelon form are independent because each one has its leading entry in a column where every row below it has a zero. No combination of the lower rows can produce that leading entry. On Day 18 the row space turns out to have the same dimension as the column space.
 
 <RowSlide rows={[[1, 0, 1], [2, 1, 3]]} />
 
-Row operations keep the dependence relations among the columns, but they change the relations among the rows. That is why the rows of the basis come from the echelon form, while the columns come from $A$. For example,
+<Problem>
+Let $A = \begin{bmatrix} 1 & 0 & 1 \\ 2 & 0 & 2 \\ 0 & 1 & 1 \end{bmatrix}$. An echelon form of $A$ is $\begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & 1 \\ 0 & 0 & 0 \end{bmatrix}$, with two nonzero rows. Are the first two rows of $A$ a basis for $\operatorname{Row}A$?
 
-$$
-A = \begin{bmatrix} 1 & 0 & 1 \\ 2 & 0 & 2 \\ 0 & 1 & 1 \end{bmatrix} \sim \begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & 1 \\ 0 & 0 & 0 \end{bmatrix}
-$$
+<Solution>
+The echelon form has two nonzero rows, so $\operatorname{Row}A$ has a basis of two vectors, namely $(1, 0, 1)$ and $(0, 1, 1)$. It is tempting to take the first two rows of $A$ instead.
 
-has an echelon form with two nonzero rows, yet the first two rows of $A$ are dependent because row 2 is twice row 1.
+But row 2 of $A$ is $(2, 0, 2) = 2(1, 0, 1)$, which is twice row 1. Two vectors that are multiples of each other span only a line, so the first two rows of $A$ are not a basis. The row that carries the second direction is row 3 of $A$, and the echelon form hid that by swapping it upward.
+</Solution>
+</Problem>
+
+<Warning>
+Row operations keep the dependence relations among the **columns**, and they change the relations among the **rows**. That is why the two recipes run in opposite directions. Column-space basis vectors come from $A$, and row-space basis vectors come from the echelon form.
+</Warning>
 
 ## Practice
 
-<Check>
-Let $A = \begin{bmatrix} 1 & 2 \\ 0 & 1 \\ 2 & 3 \end{bmatrix}$ and $\mathbf b = (3, 1, 5)$. Find $\mathbf x$ with $A\mathbf x = \mathbf b$, which shows that $\mathbf b$ is in $\operatorname{Col}A$. (Modeled on Lay §2.8, Example 4.)
+### Warm-up
 
-<VectorAnswer answer={[1, 1]} labels={["x₁", "x₂"]} />
+<Check>
+Let $A = \begin{bmatrix} 2 & 1 \\ 0 & 1 \\ 1 & -1 \end{bmatrix}$. Compute the output $A\begin{bmatrix} 1 \\ 2 \end{bmatrix}$, which is one vector in $\operatorname{Col}A$.
+
+<VectorAnswer answer={[4, 2, -1]} />
 
 <Answer>
 $$
-\begin{bmatrix} 1 & 2 & 3 \\ 0 & 1 & 1 \\ 2 & 3 & 5 \end{bmatrix}
-\sim \begin{bmatrix} 1 & 2 & 3 \\ 0 & 1 & 1 \\ 0 & -1 & -1 \end{bmatrix}
-\sim \begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & 1 \\ 0 & 0 & 0 \end{bmatrix}
+1\begin{bmatrix} 2 \\ 0 \\ 1 \end{bmatrix} + 2\begin{bmatrix} 1 \\ 1 \\ -1 \end{bmatrix} = \begin{bmatrix} 2 + 2 \\ 0 + 2 \\ 1 - 2 \end{bmatrix} = \begin{bmatrix} 4 \\ 2 \\ -1 \end{bmatrix}
 $$
-
-The system is consistent with $x_1 = 1$ and $x_2 = 1$, so $\mathbf b = \mathbf a_1 + \mathbf a_2$. By contrast, $[\,A \ \ (0, 0, 1)\,]$ reduces to a last row $[\,0 \ \ 0 \mid 1\,]$, so $(0, 0, 1)$ is not in $\operatorname{Col}A$.
 </Answer>
 </Check>
 
 <Check>
-Let $A = \begin{bmatrix} 1 & 2 & 0 & 3 \\ 2 & 4 & 1 & 4 \\ 3 & 6 & 1 & 7 \end{bmatrix}$. Which two columns of $A$ are its pivot columns? Enter their positions. (Modeled on Lay §4.6, Exercise 1.)
+<Choice
+  question="A matrix $A$ is $5 \times 3$. Where does $\operatorname{Col}A$ live?"
+  options={["In $\\mathbb R^3$", "In $\\mathbb R^5$", "In $\\mathbb R^{15}$"]}
+  answer={1}
+>
+Each column has one entry per row, so each column has $5$ entries. Combinations of the columns are therefore vectors in $\mathbb R^5$. The inputs $\mathbf x$ are the ones in $\mathbb R^3$.
+</Choice>
+</Check>
 
-<VectorAnswer answer={[1, 3]} labels={["first pivot column", "second pivot column"]} />
+<Check>
+Find a matrix $A$ with $\operatorname{Col}A = \{(3s - t,\ s,\ 2t) : s, t \in \mathbb R\}$. Put the $s$ vector in column 1 and enter $A$ row by row. (Modeled on Lay §4.2, Exercise 15.)
+
+<VectorAnswer answer={[3, -1, 1, 0, 0, 2]} columns={2} />
+
+<Answer>
+Split by parameter: $(3s - t,\ s,\ 2t) = s(3, 1, 0) + t(-1, 0, 2)$. So
+
+$$
+A = \begin{bmatrix} 3 & -1 \\ 1 & 0 \\ 0 & 2 \end{bmatrix}.
+$$
+</Answer>
+</Check>
+
+### Core
+
+<Check>
+Let $A = \begin{bmatrix} 1 & 2 \\ 1 & 3 \\ 2 & 5 \end{bmatrix}$ and $\mathbf b = (4, 5, 9)$. Find $\mathbf x$ with $A\mathbf x = \mathbf b$, which shows that $\mathbf b$ is in $\operatorname{Col}A$. (Modeled on Lay §2.8, Example 4.)
+
+<VectorAnswer answer={[2, 1]} labels={["x₁", "x₂"]} />
+
+<Hint>
+Row reduce $[\,A \ \ \mathbf b\,]$. Start with $R_2 \leftarrow R_2 - R_1$ and $R_3 \leftarrow R_3 - 2R_1$.
+</Hint>
 
 <Answer>
 $$
-A \sim \begin{bmatrix} 1 & 2 & 0 & 3 \\ 0 & 0 & 1 & -2 \\ 0 & 0 & 1 & -2 \end{bmatrix} \sim \begin{bmatrix} 1 & 2 & 0 & 3 \\ 0 & 0 & 1 & -2 \\ 0 & 0 & 0 & 0 \end{bmatrix}
+\begin{bmatrix} 1 & 2 & 4 \\ 1 & 3 & 5 \\ 2 & 5 & 9 \end{bmatrix}
+\sim \begin{bmatrix} 1 & 2 & 4 \\ 0 & 1 & 1 \\ 0 & 1 & 1 \end{bmatrix}
+\sim \begin{bmatrix} 1 & 0 & 2 \\ 0 & 1 & 1 \\ 0 & 0 & 0 \end{bmatrix}
 $$
 
-The pivots sit in columns 1 and 3. A basis for $\operatorname{Col}A$ is $\{(1, 2, 3),\ (0, 1, 1)\}$, taken from $A$. A basis for $\operatorname{Row}A$ is $\{(1, 2, 0, 3),\ (0, 0, 1, -2)\}$, taken from the echelon form. Here row 3 of $A$ equals row 1 plus row 2, so rows 1 and 2 of $A$ would also work, but that is luck rather than a rule.
+The second step is $R_3 \leftarrow R_3 - R_2$ followed by $R_1 \leftarrow R_1 - 2R_2$. The last row reads $0 = 0$, so the system is consistent with $x_1 = 2$ and $x_2 = 1$. Check: $2(1, 1, 2) + 1(2, 3, 5) = (4, 5, 9)$.
 </Answer>
 </Check>
 
 <Check>
-The set $W = \{(a + 2b,\ -a,\ 3b) : a, b \in \mathbb R\}$ is $\operatorname{Col}A$ for $A = \begin{bmatrix} 1 & 2 \\ -1 & 0 \\ 0 & 3 \end{bmatrix}$. Find $a$ and $b$ that produce $(6, -2, 6)$. (Modeled on Lay §4.2, Example 4.)
+Let $A = \begin{bmatrix} 1 & 1 \\ 0 & 1 \\ 2 & 3 \end{bmatrix}$. Find the number $h$ that puts $(1, 2, h)$ in $\operatorname{Col}A$. (Modeled on Lay §2.8, Exercise 7.)
 
-<VectorAnswer answer={[2, 2]} labels={["a", "b"]} />
+<VectorAnswer answer={[4]} labels={["h"]} prefix="h =" />
+
+<Hint>
+The first two rows of $A\mathbf x = (1, 2, h)$ already pin down $x_1$ and $x_2$. The third row then tells you what $h$ must be.
+</Hint>
 
 <Answer>
-The second entry gives $-a = -2$, so $a = 2$. The third gives $3b = 6$, so $b = 2$. Then the first entry is $a + 2b = 6$, which matches, so $(6, -2, 6) \in W$. The same steps show that $(4, -2, 6)$ is not in $W$, because $a = 2$ and $b = 2$ force a first entry of $6$ instead of $4$.
+Row 2 says $x_2 = 2$. Row 1 says $x_1 + x_2 = 1$, so $x_1 = -1$. Row 3 says $2x_1 + 3x_2 = h$, so
+
+$$
+h = 2(-1) + 3(2) = -2 + 6 = 4.
+$$
+
+Any other $h$ leaves the last row of the reduced augmented matrix reading $0 = h - 4 \neq 0$.
 </Answer>
 </Check>
 
-Tomorrow, on Day 17, you ask which inputs $A$ sends to $\mathbf 0$, and those inputs form a third subspace called the null space.
+<Check>
+Let $A = \begin{bmatrix} 1 & 2 & -1 & 3 \\ 2 & 4 & 1 & 0 \\ -1 & -2 & 2 & -5 \end{bmatrix}$, which reduces to $\begin{bmatrix} 1 & 2 & 0 & 1 \\ 0 & 0 & 1 & -2 \\ 0 & 0 & 0 & 0 \end{bmatrix}$. Enter a basis for $\operatorname{Col}A$ as the two columns of a $3 \times 2$ matrix, listed row by row, with the earlier column first. (Modeled on Lay §2.8, Exercise 24.)
+
+<VectorAnswer answer={[1, -1, 2, 1, -1, 2]} columns={2} />
+
+<Hint>
+Find the pivot columns in the reduced form. Then copy those columns out of $A$, not out of the reduced form.
+</Hint>
+
+<Answer>
+The pivots are in columns 1 and 3. The basis is those columns of $A$:
+
+$$
+\left\{\begin{bmatrix} 1 \\ 2 \\ -1 \end{bmatrix},\ \begin{bmatrix} -1 \\ 1 \\ 2 \end{bmatrix}\right\}, \qquad \text{entered as } \begin{bmatrix} 1 & -1 \\ 2 & 1 \\ -1 & 2 \end{bmatrix}.
+$$
+
+Column 2 of $A$ is $2\mathbf a_1$, which is why it is not a pivot column.
+</Answer>
+</Check>
+
+<Check>
+Let $A = \begin{bmatrix} 1 & -1 & 2 \\ 2 & 1 & 1 \\ 3 & 0 & 3 \end{bmatrix}$, which reduces to $\begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & -1 \\ 0 & 0 & 0 \end{bmatrix}$. Find the weights with $\mathbf a_3 = c_1\mathbf a_1 + c_2\mathbf a_2$. (Modeled on Lay §2.8, Example 8.)
+
+<VectorAnswer answer={[1, -1]} labels={["c₁", "c₂"]} />
+
+<Hint>
+Read the third column of the reduced form. Its entries in the two pivot rows are the weights.
+</Hint>
+
+<Answer>
+The third column of the reduced form is $(1, -1, 0)$, so $\mathbf b_3 = \mathbf b_1 - \mathbf b_2$. Row operations keep that relation, so $\mathbf a_3 = \mathbf a_1 - \mathbf a_2$. Check:
+
+$$
+\begin{bmatrix} 1 \\ 2 \\ 3 \end{bmatrix} - \begin{bmatrix} -1 \\ 1 \\ 0 \end{bmatrix} = \begin{bmatrix} 2 \\ 1 \\ 3 \end{bmatrix} = \mathbf a_3.
+$$
+</Answer>
+</Check>
+
+<Check>
+Let $A = \begin{bmatrix} 1 & 2 & 1 & -1 \\ 2 & 4 & 3 & 0 \\ 3 & 6 & 4 & -1 \end{bmatrix}$. Its reduced echelon form has two nonzero rows, which are a basis for $\operatorname{Row}A$. Enter the first nonzero row, then the second, each written as a column. (Modeled on Lay §4.6, Exercise 1.)
+
+<VectorAnswer answer={[1, 2, 0, -3]} />
+
+<VectorAnswer answer={[0, 0, 1, 2]} />
+
+<Hint>
+Clear column 1 below the first pivot, then clear the rest of the pivot column in column 3. The last row will vanish.
+</Hint>
+
+<Answer>
+$$
+\begin{bmatrix} 1 & 2 & 1 & -1 \\ 2 & 4 & 3 & 0 \\ 3 & 6 & 4 & -1 \end{bmatrix}
+\sim \begin{bmatrix} 1 & 2 & 1 & -1 \\ 0 & 0 & 1 & 2 \\ 0 & 0 & 1 & 2 \end{bmatrix}
+\sim \begin{bmatrix} 1 & 2 & 0 & -3 \\ 0 & 0 & 1 & 2 \\ 0 & 0 & 0 & 0 \end{bmatrix}
+$$
+
+The first step is $R_2 \leftarrow R_2 - 2R_1$ and $R_3 \leftarrow R_3 - 3R_1$. The second is $R_3 \leftarrow R_3 - R_2$ and $R_1 \leftarrow R_1 - R_2$. So $\operatorname{Row}A$ has basis $\{(1, 2, 0, -3),\ (0, 0, 1, 2)\}$, which lives in $\mathbb R^4$.
+</Answer>
+</Check>
+
+### Challenge
+
+<Check>
+<Choice
+  question="Let $D = \begin{bmatrix} 1 & 3 & 2 \\ 2 & 6 & 4 \\ 1 & 4 & 3 \end{bmatrix}$. Its echelon form has two nonzero rows. Which pair of rows of $D$ is a basis for $\operatorname{Row}D$?"
+  options={["Rows 1 and 2", "Rows 1 and 3", "Any two rows work"]}
+  answer={1}
+>
+Row 2 is $(2, 6, 4) = 2(1, 3, 2)$, so rows 1 and 2 span only a line. Rows 1 and 3 are not multiples of each other, and since the row space has dimension 2, any two independent rows in it form a basis. The echelon form tells you how many rows you need, not which rows of $D$ to pick.
+</Choice>
+
+<Hint>
+Look for a row of $D$ that is a multiple of another.
+</Hint>
+</Check>
+
+<Check>
+Find the value of $h$ for which $\operatorname{Col}\begin{bmatrix} 1 & 0 & 2 \\ 0 & 1 & 3 \\ 1 & 1 & h \end{bmatrix}$ is a plane instead of all of $\mathbb R^3$.
+
+<VectorAnswer answer={[5]} labels={["h"]} prefix="h =" />
+
+<Hint>
+The column space is all of $\mathbb R^3$ exactly when there is a pivot in every row. Row reduce and see which value of $h$ kills the third pivot.
+</Hint>
+
+<Answer>
+Clear the third row with $R_3 \leftarrow R_3 - R_1$ and then $R_3 \leftarrow R_3 - R_2$:
+
+$$
+\begin{bmatrix} 1 & 0 & 2 \\ 0 & 1 & 3 \\ 1 & 1 & h \end{bmatrix}
+\sim \begin{bmatrix} 1 & 0 & 2 \\ 0 & 1 & 3 \\ 0 & 1 & h - 2 \end{bmatrix}
+\sim \begin{bmatrix} 1 & 0 & 2 \\ 0 & 1 & 3 \\ 0 & 0 & h - 5 \end{bmatrix}
+$$
+
+When $h \neq 5$ there are three pivots and $\operatorname{Col}A = \mathbb R^3$. When $h = 5$ the third row is zero, so there are only two pivots and the column space is the plane spanned by the first two columns.
+</Answer>
+</Check>
+
+<Check>
+Show that every vector in $\operatorname{Col}(AB)$ is also in $\operatorname{Col}A$, whenever the product $AB$ is defined.
+
+<Hint>
+A vector in $\operatorname{Col}(AB)$ has the form $(AB)\mathbf x$. Group the product differently.
+</Hint>
+
+<Answer>
+Take any $\mathbf y$ in $\operatorname{Col}(AB)$. Then $\mathbf y = (AB)\mathbf x$ for some $\mathbf x$. Matrix multiplication is associative, so
+
+$$
+\mathbf y = A(B\mathbf x).
+$$
+
+The vector $B\mathbf x$ is just some input to $A$, so $\mathbf y$ is an output of $A$ and lies in $\operatorname{Col}A$. In words, whatever $AB$ can produce, $A$ can produce by being fed $B\mathbf x$.
+</Answer>
+</Check>
+
+Tomorrow, on Day 17, you ask which inputs $A$ sends to $\mathbf 0$. The weights $(-1, 1, -1)$ from the basis problem were one such input, and all of them together form a third subspace called the null space.

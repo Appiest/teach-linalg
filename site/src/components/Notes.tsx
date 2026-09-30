@@ -20,7 +20,7 @@ import { CoordinateFinder, PolynomialCoordinates } from "@/components/interactiv
 import { QuadrantEscape, ShiftedLineTest } from "@/components/interactive/subspaces";
 import { AddressHunt, StaircaseBasis, TrimToBasis } from "@/components/interactive/basis";
 import { LiftToPlane, LoopAnywhere, RelationFinder } from "@/components/interactive/independence";
-import { OutputReach, PivotPicker, RowSlide } from "@/components/interactive/column-space";
+import { ConsistencyLine, OutputReach, PivotPicker, RelationTwins, RowSlide } from "@/components/interactive/column-space";
 import { PivotBudget, RankTally } from "@/components/interactive/rank-nullity";
 import { ColumnBuilder, DerivativeRoutes } from "@/components/interactive/matrix-representations";
 import { InvertibilityCalls, StatementBoard } from "@/components/interactive/invertible-matrix-theorem";
@@ -135,6 +135,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     OutputReach,
     PivotPicker,
     RowSlide,
+    ConsistencyLine,
+    RelationTwins,
     RankTally,
     PivotBudget,
     ColumnBuilder,
