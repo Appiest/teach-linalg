@@ -17,7 +17,7 @@ import { CommuteHunt, CompositionExplorer, ProductColumns } from "@/components/i
 import { ElementaryMoves, InverseBuilder } from "@/components/interactive/elementary";
 import { InverseColumnsHunt, SingularHunt, UndoOrder } from "@/components/interactive/inverse";
 import { CoordinateFinder, PolynomialCoordinates } from "@/components/interactive/coordinates";
-import { QuadrantEscape, ShiftedLineTest } from "@/components/interactive/subspaces";
+import { CounterexampleHunt, PolynomialSetTest, QuadrantEscape, ShiftedLineTest } from "@/components/interactive/subspaces";
 import { AddressHunt, StaircaseBasis, TrimToBasis } from "@/components/interactive/basis";
 import { LiftToPlane, LoopAnywhere, RelationFinder } from "@/components/interactive/independence";
 import { OutputReach, PivotPicker, RowSlide } from "@/components/interactive/column-space";
@@ -126,6 +126,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     PolynomialCoordinates,
     ShiftedLineTest,
     QuadrantEscape,
+    CounterexampleHunt,
+    PolynomialSetTest,
     TrimToBasis,
     AddressHunt,
     StaircaseBasis,
