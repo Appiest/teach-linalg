@@ -228,6 +228,8 @@ before they have done an example of it.
   - `<Check>` with `<VectorAnswer>`, optional `<Hint>`, and `<Answer>`. `VectorAnswer` takes `columns={n}` for
     a matrix answer listed row by row, for example `<VectorAnswer answer={[1, 2, 3, 4]} columns={2} />`.
     A `<Choice>` may sit inside a `<Check>`. A proof question may have only a `<Hint>` and an `<Answer>`.
+    `labels` are plain text, not TeX, so write `β₀` or `x̂₁` rather than `\\beta_0`. Keep matrix answers to three
+    columns or fewer so they fit a phone.
 - **Practice** is the last `##` section, split into `### Warm-up` (2–3 one-step checks), `### Core` (4–5
   checks at the level of the lesson), and `### Challenge` (2–3 that combine ideas or ask why). Every check has a
   full worked answer, and the core and challenge checks have a `<Hint>`. Aim for at least 9 checks.

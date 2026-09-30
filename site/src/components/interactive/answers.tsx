@@ -114,7 +114,7 @@ export function VectorAnswer({ answer, labels, prefix, columns = 1 }: { answer: 
               placeholder={labels ? labels[index] : undefined}
               value={values[index]}
               onChange={(event) => update(index, event.target.value)}
-              className={`w-20 rounded-md border bg-surface-sunken px-2 py-1.5 text-center text-base tabular-nums outline-none focus-visible:border-accent ${
+              className={`${columns > 2 ? "w-14 sm:w-20" : "w-20"} rounded-md border bg-surface-sunken px-2 py-1.5 text-center text-base tabular-nums outline-none focus-visible:border-accent ${
                 status === "wrong" && wrong.includes(index) ? "border-wrong" : "border-line"
               } ${status === "correct" ? "border-correct" : ""}`}
             />
