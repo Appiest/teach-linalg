@@ -3,10 +3,10 @@
 import { CheckCircle, XCircle } from "@phosphor-icons/react";
 import { useState } from "react";
 import { palette } from "@/lib/palette.generated";
-import { describeVector, Goal, Panel, Readout, RichText, Tex, Workbench } from "./controls";
+import { describeVector, Goal, Panel, Readout, RichText, Slider, Tex, Workbench } from "./controls";
 import { useSettled } from "./gesture";
 import { apply, det, nearlyEqual, texNumber, type Matrix2, type Vec } from "./math";
-import { Arrow, DEFAULT_BOUNDS, Handle, Label, Plane, usePlane } from "./plane";
+import { Arrow, DEFAULT_BOUNDS, Handle, Label, Marker, Plane, usePlane, type Bounds } from "./plane";
 
 const ORIGIN: Vec = [0, 0];
 const FAR = 40;
@@ -200,6 +200,121 @@ export function InvertibilityCalls({ calls }: { calls: Call[] }) {
           <CallCard key={index} call={call} index={index} chosen={chosen[index]} onChoose={(verdict) => setChosen((current) => ({ ...current, [index]: verdict }))} />
         ))}
       </ul>
+    </Panel>
+  );
+}
+
+type SolutionCount = "one" | "none" | "many";
+
+const SOLUTION_TEXT: Record<SolutionCount, string> = {
+  one: "\\text{exactly one solution}",
+  none: "\\text{no solution}",
+  many: "\\text{infinitely many solutions}",
+};
+
+function countSolutions(matrix: Matrix2, b: Vec): SolutionCount {
+  if (rankOf(matrix) === 2) return "one";
+  const reached = columnOf(matrix, 0);
+  return Math.abs(reached[0] * b[1] - reached[1] * b[0]) < 1e-9 ? "many" : "none";
+}
+
+function solveInvertible(matrix: Matrix2, b: Vec): Vec {
+  const [[a, c], [d, e]] = matrix;
+  const determinant = det(matrix);
+  return [(e * b[0] - c * b[1]) / determinant, (-d * b[0] + a * b[1]) / determinant];
+}
+
+function SolidLine({ through, direction }: { through: Vec; direction: Vec }) {
+  const { toSvg } = usePlane();
+  const [x1, y1] = toSvg([through[0] - FAR * direction[0], through[1] - FAR * direction[1]]);
+  const [x2, y2] = toSvg([through[0] + FAR * direction[0], through[1] + FAR * direction[1]]);
+  return <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="var(--palette-yellow)" strokeWidth={3.5} strokeLinecap="round" />;
+}
+
+function SolutionMarks({ matrix, b, count }: { matrix: Matrix2; b: Vec; count: SolutionCount }) {
+  if (count === "one") return <Arrow to={solveInvertible(matrix, b)} color="yellow" />;
+  const crushed = crushedDirection(matrix);
+  if (!crushed) return null;
+  return (
+    <>
+      <ThroughOrigin direction={crushed} color="var(--palette-pink)" />
+      <ThroughOrigin direction={columnOf(matrix, 0)} color="var(--palette-teal)" />
+      {count === "many" ? <SolidLine through={[b[0] / matrix[0][0], 0]} direction={crushed} /> : null}
+    </>
+  );
+}
+
+const CRUSH_BOUNDS: Bounds = { xMin: -5, xMax: 5, yMin: -5, yMax: 5 };
+const SPOKEN_COUNT: Record<SolutionCount, string> = { one: "exactly one solution", none: "no solution", many: "infinitely many solutions" };
+
+/** Slide k and drag b: a square matrix either solves every b exactly once, or crushes a line and misses most targets. */
+export function CrushAndMiss({ start = 1 }: { start?: number }) {
+  const [k, setK] = useState(start);
+  const [b, setB] = useState<Vec>([3, 1]);
+  const matrix: Matrix2 = [[1, 2], [2, k]];
+  const count = countSolutions(matrix, b);
+  const { settled: solved, gesture } = useSettled(count === "many" && !isZero(b));
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Find a nonzero target <Tex>{"\\mathbf b"}</Tex> that <Tex>{"A\\mathbf x = \\mathbf b"}</Tex> reaches in infinitely many ways. You will need to change <Tex>{"k"}</Tex> too.</>}
+        success={<>At <Tex>{"k = 4"}</Tex> the matrix crushes the pink line, so each reachable target is hit along a whole yellow line. The same <Tex>{"k"}</Tex> leaves every target off the teal line unreachable.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={CRUSH_BOUNDS} label={`Target b at ${describeVector(b)} for k = ${k}. A x = b has ${SPOKEN_COUNT[count]}.`}>
+            <SolutionMarks matrix={matrix} b={b} count={count} />
+            <Marker at={b} color="teal" ring={count === "none"} />
+            <Label at={b} color="teal">b</Label>
+            <Handle at={b} onMove={setB} color="teal" label={`Target b, at ${describeVector(b)}`} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Slider label="k" value={k} onChange={setK} min={1} max={6} step={1} color={palette.j_hat} />
+            <Readout tex={`A = ${matrixTex(matrix)}`} />
+            <Readout tex={SOLUTION_TEXT[count]} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+function echelonTex(k: number): string {
+  const last = k - 3;
+  const lastColor = last === 0 ? palette.glow : palette.teal;
+  return `\\begin{bmatrix} \\textcolor{${palette.teal}}{1} & 0 & 2 \\\\ 0 & \\textcolor{${palette.teal}}{1} & -1 \\\\ 0 & 0 & \\textcolor{${lastColor}}{${texNumber(last)}} \\end{bmatrix}`;
+}
+
+/** Slide the corner entry of a 3x3 matrix and watch the third pivot of its echelon form appear and vanish. */
+export function ThirdPivotSlider() {
+  const [k, setK] = useState(0);
+  const { settled: solved, gesture } = useSettled(k === 3);
+  const singular = k === 3;
+  const matrix = `\\begin{bmatrix} 1 & 0 & 2 \\\\ 0 & 1 & -1 \\\\ 2 & 1 & \\textcolor{${palette.j_hat}}{${texNumber(k)}} \\end{bmatrix}`;
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Slide <Tex>{"k"}</Tex> until the echelon form loses its third pivot.</>}
+        success={<>At <Tex>{"k = 3"}</Tex> only two pivots remain, so every statement of the theorem fails together. For example, <Tex>{"(-2, 1, 1)"}</Tex> is a nonzero vector in the null space.</>}
+      />
+      <div className="grid items-start gap-5 md:grid-cols-2">
+        <div className="min-w-0 space-y-4">
+          <Slider label="k" value={k} onChange={setK} min={0} max={6} step={1} color={palette.j_hat} />
+          <Readout tex={`A = ${matrix}`} />
+        </div>
+        <div className="min-w-0 space-y-4">
+          <Readout tex={`A \\sim ${echelonTex(k)}`} />
+          <div className={`rounded-lg px-4 py-3 transition-colors duration-300 ${singular ? "bg-[color-mix(in_oklab,var(--palette-glow)_14%,transparent)]" : "bg-surface-sunken"}`}>
+            <Tex>{singular ? "2 \\text{ pivots, so } A \\text{ is singular}" : "3 \\text{ pivots, so } A \\text{ is invertible}"}</Tex>
+          </div>
+        </div>
+      </div>
     </Panel>
   );
 }

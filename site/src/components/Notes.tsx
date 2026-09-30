@@ -23,7 +23,7 @@ import { LiftToPlane, LoopAnywhere, RelationFinder } from "@/components/interact
 import { ConsistencyLine, OutputReach, PivotPicker, RelationTwins, RowSlide } from "@/components/interactive/column-space";
 import { CollapseSlider, PivotBudget, RankTally, RowColumnDrop } from "@/components/interactive/rank-nullity";
 import { ColumnBuilder, DerivativeRoutes } from "@/components/interactive/matrix-representations";
-import { InvertibilityCalls, StatementBoard } from "@/components/interactive/invertible-matrix-theorem";
+import { CrushAndMiss, InvertibilityCalls, StatementBoard, ThirdPivotSlider } from "@/components/interactive/invertible-matrix-theorem";
 import { ChangeMatrixBuilder, SimilarityHunt, TwoAddresses } from "@/components/interactive/change-of-basis";
 import { FreeWeights, LandingHunt, NullSumCheck, RightSideShift } from "@/components/interactive/null-space";
 import { DerivativeTarget, SharedDerivativeHunt, TranslationGap } from "@/components/interactive/linear-maps";
@@ -145,6 +145,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     DerivativeRoutes,
     StatementBoard,
     InvertibilityCalls,
+    CrushAndMiss,
+    ThirdPivotSlider,
     TwoAddresses,
     ChangeMatrixBuilder,
     SimilarityHunt,
