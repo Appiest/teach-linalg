@@ -1,6 +1,30 @@
-Yesterday you met vector spaces, which are sets where adding and scaling follow ten rules. Many interesting vector spaces live inside bigger ones: a line through the origin sits inside $\mathbb{R}^2$, and the polynomials of degree at most 2 sit inside all polynomials. Most of the spaces in the rest of this unit are pieces like these. They include the span of a few vectors (Day 12) and the column space and null space of a matrix (Days 16 and 17). Today's question is when a piece of a vector space is a vector space in its own right. The answer takes three checks instead of all ten rules, so it is quick to run every time a new set shows up.
+Yesterday you met vector spaces, which are sets where adding and scaling follow ten rules. Many useful vector spaces live inside bigger ones: a line through the origin sits inside $\mathbb{R}^2$, and the polynomials of degree at most 2 sit inside all polynomials. Most of the spaces in the rest of this unit are pieces like these, including the span of a few vectors (Day 12) and the column space and null space of a matrix (Days 16 and 17). Today's question is when a piece of a vector space is a vector space in its own right. The answer takes three checks instead of all ten rules, so you can run it every time a new set shows up.
+
+Each section opens with a problem. Try it before you open the walkthrough, even if you only get partway.
 
 ## The subspace test
+
+<Problem>
+Let $L$ be the line $y = \tfrac12 x$ in $\mathbb{R}^2$. The points $\yellow{\mathbf u} = (2, 1)$ and $\blue{\mathbf v} = (4, 2)$ are on $L$.
+
+Is $\yellow{\mathbf u} + \blue{\mathbf v}$ on $L$? Is $-3\yellow{\mathbf u}$ on $L$? Is the origin?
+
+Now let $L'$ be the line $y = \tfrac12 x + 1$, with the points $\yellow{\mathbf u} = (2, 2)$ and $\blue{\mathbf v} = (-4, -1)$ on it. Ask the same three questions.
+
+<Solution>
+A point $(x, y)$ is on $L$ when its height $y$ equals half of $x$. So for each new point we halve the first entry and compare.
+
+For $L$: the sum is $(2 + 4,\ 1 + 2) = (6, 3)$, and half of $6$ is $3$, so the sum is on $L$. The multiple is $-3(2, 1) = (-6, -3)$, and half of $-6$ is $-3$, so it is on $L$ too. The origin has $y = 0 = \tfrac12 \cdot 0$, so it is on $L$.
+
+For $L'$ the height must be half of $x$ plus $1$. First confirm the two given points: $\tfrac12 \cdot 2 + 1 = 2$ and $\tfrac12 \cdot (-4) + 1 = -1$. The sum is $(2 + (-4),\ 2 + (-1)) = (-2, 1)$, but the line's height at $x = -2$ is $-1 + 1 = 0$, so the sum is off $L'$. Scaling fails too, since $2\yellow{\mathbf u} = (4, 4)$ while the height at $x = 4$ is $3$. The origin has height $0$, but $L'$ has height $1$ at $x = 0$, so the origin is missing.
+
+The line through the origin keeps every sum and multiple on it. The shifted line loses them because each point carries its own $+1$, so a sum of two points carries $+2$.
+</Solution>
+</Problem>
+
+<Concept title="A subspace is a set you cannot leave">
+Adding two vectors of $L$ or scaling one never takes you off $L$, and $L$ contains $\mathbf 0$. A set with those properties is a vector space in its own right, using the addition and scaling it inherits from the bigger space.
+</Concept>
 
 <Definition term="Subspace">
 A **subspace** of a vector space $V$ is a subset $H$ of $V$ with three properties.
@@ -10,43 +34,95 @@ A **subspace** of a vector space $V$ is a subset $H$ of $V$ with three propertie
 - (c) $H$ is **closed under scaling**: for each $\mathbf u$ in $H$ and each scalar $c$, the vector $c\,\mathbf u$ is in $H$.
 </Definition>
 
-Three checks are enough because $H$ borrows its addition and scaling from $V$. Rules like $\mathbf u + \mathbf v = \mathbf v + \mathbf u$ already hold for every vector of $V$, so they hold for the vectors of $H$ too. Checks (a), (b) and (c) are rules 4, 1 and 6 from yesterday. The last rule, that negatives exist, follows from (c), because $-\mathbf u = (-1)\,\mathbf u$.
-
-Always test (a) first. Scaling any vector by $0$ gives $\mathbf 0$, so a set that is closed under scaling must contain $\mathbf 0$. If $\mathbf 0$ is missing, you can stop there. Day 17 runs these same three checks on the solutions of $A\mathbf x = \mathbf 0$.
-
-## Lines through the origin
+Three checks are enough because $H$ borrows its operations from $V$. For example, $(2, 1) + (4, 2) = (4, 2) + (2, 1)$ holds on $L$ because it holds for every pair of vectors in $\mathbb{R}^2$. Rules 2, 3 and 7 to 10 from yesterday carry over the same way. Checks (a), (b) and (c) are rules 4, 1 and 6, and rule 5 follows from (c) because $-\mathbf u = (-1)\,\mathbf u$.
 
 <Pair>
 <Figure src="shifted-line" alt="Two panels. Left: the purple line y = x/2 through the origin, with yellow u = (2, 1) and blue v = (4, 2) placed tip to tail along it, so the teal dot u + v = (6, 3) lands on the line. Right: the purple line y = x/2 + 1, with yellow u = (2, 2) and blue v = (−4, −1) on it; the teal sum (−2, 1) is ringed in orange a dashed unit above the line, and a dashed orange gap shows the line passing one unit above the origin." />
 
-On the line $y = \tfrac12 x$, every point is $(2t, t)$ for some $t$. Adding $(2s, s)$ and $(2t, t)$ gives $(2(s + t),\ s + t)$, and scaling $(2t, t)$ by $c$ gives $(2ct,\ ct)$. Both results have the same form, and $t = 0$ gives the origin, so the line passes all three checks.
-
-On $y = \tfrac12 x + 1$, the points $\yellow{\mathbf u} = (2, 2)$ and $\blue{\mathbf v} = (-4, -1)$ both lie on the line, but $\teal{\mathbf u + \mathbf v} = (-2, 1)$ does not, since the line has height $0$ at $x = -2$.
+On the left, sums stay on the line through the origin. On the right, the sum $\teal{(-2, 1)}$ of two points on the shifted line lands one unit above it, because it carries the $+1$ twice. Every such sum lies on the parallel line $y = \tfrac12 x + 2$.
 </Pair>
 
-Every sum of two points on the shifted line lands on $y = \tfrac12 x + 2$, because each point carries its own $+1$ and the sum carries both. In the widget, that landing line is drawn dashed in teal.
+Slide the line with $b$ and drag $\yellow{\mathbf u}$ and $\blue{\mathbf v}$ along it. The dashed teal line shows where sums land when the line is shifted.
 
 <ShiftedLineTest shift={1} u={2} v={-4} c={1.5} />
 
-The same reasoning holds in $\mathbb{R}^3$. A plane through the origin is a subspace, and a plane shifted off the origin is not.
+<Warning>
+Test (a) first. Scaling any vector by $0$ gives $\mathbf 0$, so a set closed under scaling must contain $\mathbf 0$, and a set without $\mathbf 0$ fails at once. The reverse is false: containing $\mathbf 0$ does not make a set a subspace, as the next section shows.
+</Warning>
+
+The same reasoning holds in $\mathbb{R}^3$. A plane through the origin is a subspace, and a plane shifted off the origin is not. Day 17 runs these same three checks on the solutions of $A\mathbf x = \mathbf 0$.
 
 ## Counterexamples
 
-To prove a set is **not** a subspace, give one specific failure: a vector and a scalar, or two vectors, whose result leaves the set. To prove a set **is** a subspace, the argument has to work for arbitrary vectors, so a single example is not enough.
+<Problem>
+Let $Q$ be the closed first quadrant, the points $(x, y)$ with $x \geq 0$ and $y \geq 0$. Does $Q$ contain $\mathbf 0$? Is it closed under addition? Find one vector in $Q$ and one scalar that together show $Q$ is not a subspace.
 
-The closed first quadrant $Q = \{(x, y) : x \geq 0,\ y \geq 0\}$ contains $\mathbf 0$, and adding two vectors with nonnegative entries gives nonnegative entries again. Checks (a) and (b) both pass, which is why students often call $Q$ a subspace. Try a negative scalar before you believe that.
+<Solution>
+The origin has $x = 0$ and $y = 0$, and both are at least $0$, so $\mathbf 0$ is in $Q$.
+
+For addition, take any two points of $Q$. Their first entries are both at least $0$, so the sum of the first entries is at least $0$, and the same holds for the second entries. The sum stays in $Q$, so check (b) passes.
+
+That leaves scaling. A positive scalar keeps both entries nonnegative, so try a negative one. Take $\mathbf u = (2, 1)$ in $Q$ and $c = -1$. Then $c\,\mathbf u = (-2, -1)$ has negative entries, so it is outside $Q$. One vector and one scalar are enough to prove check (c) fails, so $Q$ is not a subspace.
+</Solution>
+</Problem>
 
 <QuadrantEscape u={[2, 1]} c={2} />
 
-Here is one answer: $\mathbf u = (2, 1)$ is in $Q$, but $(-1)\,\mathbf u = (-2, -1)$ is not. The same habit catches sets of polynomials. The polynomials of degree exactly 2 miss the zero polynomial, and $(t^2 + t) + (-t^2) = t$ drops out of the set.
+<Concept title="One failure proves no">
+To prove a set is **not** a subspace, give one specific failure: a vector and a scalar, or two vectors, whose result leaves the set. To prove a set **is** a subspace, the argument has to work for every vector in the set, so checking a few examples proves nothing.
+</Concept>
+
+<Problem>
+Let $X$ be the union of the two axes in $\mathbb{R}^2$, the points with $x = 0$ or $y = 0$. Which of the three checks does $X$ pass?
+
+<Solution>
+The origin lies on both axes, so check (a) passes.
+
+For scaling, take a point on the $x$-axis, say $(3, 0)$. Any multiple $c(3, 0) = (3c, 0)$ still has second entry $0$, so it stays on the $x$-axis. Points on the $y$-axis stay there the same way, so check (c) passes.
+
+For addition, take one point from each axis: $(3, 0) + (0, 2) = (3, 2)$. Neither entry is $0$, so the sum is off both axes and check (b) fails. The set $X$ is not a subspace.
+</Solution>
+</Problem>
+
+Now find a counterexample for a new set on your own. The purple disk is every point within distance $3$ of the origin.
+
+<CounterexampleHunt region="disk" u={[1, 2]} v={[-2, 0]} c={1} success="That is a counterexample. The disk contains $\mathbf 0$, but a vector near its edge can be scaled or added out of it, so the disk is not a subspace. Any set that stays inside a bounded region fails the same way, since a big enough multiple escapes." />
+
+<Warning>
+The mistake to avoid is testing only positive scalars. The first quadrant survives $c = 2$ and $c = \tfrac12$ and fails only for negative $c$. Try $c = -1$ and a large $c$ every time.
+</Warning>
 
 ## Spans
+
+Sets that are hard to picture need an argument instead of a drawing. The most common subspace in this course is the span of a few vectors, so we test one with numbers first.
+
+<Problem>
+Let $\yellow{\mathbf v_1} = (1, 2, 0)$ and $\blue{\mathbf v_2} = (0, 1, 1)$, and let $\mathbf u = 2\yellow{\mathbf v_1} + 3\blue{\mathbf v_2}$ and $\mathbf w = -\yellow{\mathbf v_1} + 4\blue{\mathbf v_2}$. Show that $\mathbf u + \mathbf w$ and $5\mathbf u$ are again combinations of $\yellow{\mathbf v_1}$ and $\blue{\mathbf v_2}$, and find their weights.
+
+<Solution>
+We could compute the vectors and then hunt for weights, but there is a shortcut: keep everything written in terms of $\yellow{\mathbf v_1}$ and $\blue{\mathbf v_2}$ and collect like terms.
+
+<Steps>
+<Step>
+Add the two combinations and group the $\yellow{\mathbf v_1}$ terms and the $\blue{\mathbf v_2}$ terms: $\;\mathbf u + \mathbf w = (2 - 1)\yellow{\mathbf v_1} + (3 + 4)\blue{\mathbf v_2} = 1\yellow{\mathbf v_1} + 7\blue{\mathbf v_2}$. The weights added.
+</Step>
+<Step>
+Check with numbers. We have $\mathbf u = (2, 7, 3)$ and $\mathbf w = (-1, 2, 4)$, so $\mathbf u + \mathbf w = (1, 9, 7)$. On the other side, $1(1, 2, 0) + 7(0, 1, 1) = (1, 9, 7)$. They match.
+</Step>
+<Step>
+Scale by $5$ and distribute: $\;5\mathbf u = 5(2\yellow{\mathbf v_1} + 3\blue{\mathbf v_2}) = 10\yellow{\mathbf v_1} + 15\blue{\mathbf v_2}$. The weights were multiplied by $5$.
+</Step>
+</Steps>
+
+Nothing here depended on the particular weights $2, 3, -1, 4$. Sums of combinations add their weights, and multiples scale their weights, so we never leave the set of combinations.
+</Solution>
+</Problem>
 
 <Definition term="Theorem">
 If $\mathbf v_1, \dots, \mathbf v_p$ are in a vector space $V$, then $\operatorname{Span}\{\mathbf v_1, \dots, \mathbf v_p\}$ is a subspace of $V$.
 </Definition>
 
-This theorem is the reason Day 12 returns to span, and Day 16 uses it to show that the outputs of a matrix form a subspace. For two vectors the proof is three lines, one for each check. Take any two vectors of the span, $\mathbf u = s_1\yellow{\mathbf v_1} + s_2\blue{\mathbf v_2}$ and $\mathbf w = t_1\yellow{\mathbf v_1} + t_2\blue{\mathbf v_2}$. Adding them adds their weights, and scaling $\mathbf u$ scales its weights, so each result is another combination of $\yellow{\mathbf v_1}$ and $\blue{\mathbf v_2}$.
+For two vectors the proof repeats the problem with letters in place of numbers. Take any two vectors of the span, $\mathbf u = s_1\yellow{\mathbf v_1} + s_2\blue{\mathbf v_2}$ and $\mathbf w = t_1\yellow{\mathbf v_1} + t_2\blue{\mathbf v_2}$, and any scalar $c$.
 
 $$
 \begin{aligned}
@@ -56,25 +132,127 @@ $$
 \end{aligned}
 $$
 
+Each right side is a combination of $\yellow{\mathbf v_1}$ and $\blue{\mathbf v_2}$, so each result is in the span. This theorem is the reason Day 12 returns to span, and Day 16 uses it to show that the outputs of a matrix form a subspace.
+
 <Figure src="plane-through-origin" alt="Three-dimensional axes x1, x2, x3 with a purple plane through the origin. The yellow arrow v1, the blue arrow v2 and their teal sum v1 + v2 all lie in the plane." />
 
-This theorem is the fastest way to prove that a set is a subspace: write it as a span. Take the plane $H = \{(x_1, x_2, x_3) : x_1 + 2x_2 - x_3 = 0\}$. Solving for $x_1$ lets $x_2$ and $x_3$ be anything.
+## Sets written as spans
+
+The theorem gives the fastest proof that a set is a subspace: rewrite the set as a span.
+
+<Problem>
+Let $H$ be the plane of points $(x_1, x_2, x_3)$ with $x_1 + 2x_2 - x_3 = 0$. Check that $(1, 1, 3)$ is in $H$. Then find two vectors whose span is $H$.
+
+<Solution>
+For the first part, substitute: $1 + 2(1) - 3 = 0$, so $(1, 1, 3)$ is in $H$.
+
+For the second part we want to describe every point of $H$ with free parameters, and then split by parameter.
+
+<Steps>
+<Step>
+Solve the equation for one variable. Solving for $x_1$ gives $x_1 = -2x_2 + x_3$, and $x_2$ and $x_3$ can be anything.
+</Step>
+<Step>
+Write a general point of $H$ using only the free variables: $\;(x_1, x_2, x_3) = (-2x_2 + x_3,\ x_2,\ x_3)$.
+</Step>
+<Step>
+Split the vector into the part with $x_2$ and the part with $x_3$:
 
 $$
-\begin{aligned}
-x_1 &= -2x_2 + x_3 \\
-\begin{bmatrix} x_1 \\ x_2 \\ x_3 \end{bmatrix} &= \begin{bmatrix} -2x_2 + x_3 \\ x_2 \\ x_3 \end{bmatrix} = x_2 \yellow{\begin{bmatrix} -2 \\ 1 \\ 0 \end{bmatrix}} + x_3 \blue{\begin{bmatrix} 1 \\ 0 \\ 1 \end{bmatrix}}
-\end{aligned}
+\begin{bmatrix} -2x_2 + x_3 \\ x_2 \\ x_3 \end{bmatrix} = x_2 \yellow{\begin{bmatrix} -2 \\ 1 \\ 0 \end{bmatrix}} + x_3 \blue{\begin{bmatrix} 1 \\ 0 \\ 1 \end{bmatrix}}
 $$
+</Step>
+<Step>
+Check with the point from the first part, which has $x_2 = 1$ and $x_3 = 3$: $\;1(-2, 1, 0) + 3(1, 0, 1) = (1, 1, 3)$.
+</Step>
+</Steps>
 
-So $H = \operatorname{Span}\{(-2, 1, 0),\ (1, 0, 1)\}$, and $H$ is a subspace of $\mathbb{R}^3$ by the theorem. The same idea explains why $\{(s, t, 0)\}$ is a subspace of $\mathbb{R}^3$ while $\mathbb{R}^2$ is not. The vectors of $\mathbb{R}^2$ have two entries, so $\mathbb{R}^2$ is not even a subset of $\mathbb{R}^3$.
+So $H = \operatorname{Span}\{(-2, 1, 0),\ (1, 0, 1)\}$, and $H$ is a subspace of $\mathbb{R}^3$ by the theorem.
+</Solution>
+</Problem>
 
-Tomorrow turns this around: instead of testing a set someone hands you, you build a subspace as a span and ask which of its vectors you actually need.
+<Concept title="Split by parameter">
+When a set is given by free parameters, write its general vector as one column per parameter. If every entry is a parameter times a number, with no constant left over, the set is the span of those columns and therefore a subspace. For example, $\{(a - 2b,\ b,\ a + b)\} = \operatorname{Span}\{(1, 0, 1),\ (-2, 1, 1)\}$.
+</Concept>
+
+<Problem>
+Let $W$ be the set of vectors $(a + 1,\ a - b,\ b)$ for real $a$ and $b$. Is $W$ a subspace of $\mathbb{R}^3$?
+
+<Solution>
+The constant $+1$ in the first entry means we cannot split $W$ into a span directly, so check whether $\mathbf 0$ is in $W$.
+
+We need $a$ and $b$ that make all three entries $0$ at once. The first entry forces $a = -1$ and the third forces $b = 0$. With those values the second entry is $a - b = -1$, not $0$. No choice of $a$ and $b$ gives $\mathbf 0$, so check (a) fails and $W$ is not a subspace.
+</Solution>
+</Problem>
+
+<Warning>
+A constant term alone does not prove a set is not a subspace. The set $\{(a + 1,\ b)\}$ has a constant, yet $a + 1$ takes every real value, so the set is all of $\mathbb{R}^2$. Always solve for the parameters that would give $\mathbf 0$, and make every entry $0$ with the same $a$ and $b$.
+</Warning>
+
+<Choice
+  question="Is $\mathbb{R}^2$ a subspace of $\mathbb{R}^3$?"
+  options={["Yes, because it is a plane through the origin", "No, because its vectors have two entries, so it is not a subset of $\\mathbb{R}^3$"]}
+  answer={1}
+>
+A vector of $\mathbb{R}^2$ such as $(3, 4)$ has two entries, and every vector of $\mathbb{R}^3$ has three, so $\mathbb{R}^2$ is not even inside $\mathbb{R}^3$. The set $\{(s, t, 0)\}$ is a different set. It lies in $\mathbb{R}^3$, it equals $\operatorname{Span}\{(1, 0, 0), (0, 1, 0)\}$, and so it is a subspace that behaves like a copy of $\mathbb{R}^2$.
+</Choice>
+
+## Polynomials and matrices
+
+The test works in any vector space, including the ones from yesterday.
+
+<Problem>
+In $\mathbb{P}_2$, let $H$ be the polynomials with $\mathbf p(1) = 0$. Check that $\yellow{\mathbf p} = 2 + t - 3t^2$ and $\blue{\mathbf q} = t^2 - 1$ are in $H$. Are $\yellow{\mathbf p} + \blue{\mathbf q}$ and $4\yellow{\mathbf p}$ in $H$? Then explain why $H$ is a subspace.
+
+<Solution>
+Evaluate each polynomial at $t = 1$. We get $\yellow{\mathbf p}(1) = 2 + 1 - 3 = 0$ and $\blue{\mathbf q}(1) = 1 - 1 = 0$, so both are in $H$.
+
+The sum is $\yellow{\mathbf p} + \blue{\mathbf q} = 1 + t - 2t^2$, and at $t = 1$ it gives $1 + 1 - 2 = 0$. The multiple is $4\yellow{\mathbf p} = 8 + 4t - 12t^2$, and at $t = 1$ it gives $8 + 4 - 12 = 0$. Both are in $H$.
+
+The reason is that evaluating at $1$ respects adding and scaling. For any $\mathbf p$ and $\mathbf q$ in $H$ and any $c$, we have $(\mathbf p + \mathbf q)(1) = \mathbf p(1) + \mathbf q(1) = 0 + 0 = 0$ and $(c\,\mathbf p)(1) = c \cdot 0 = 0$. The zero polynomial is $0$ at every $t$, including $t = 1$. All three checks pass for arbitrary members, so $H$ is a subspace.
+</Solution>
+</Problem>
+
+Drag the yellow handles to reshape $\yellow{\mathbf p}$ until its graph passes through the ringed point.
+
+<PolynomialSetTest at={1} value={0} q={[1, 0, -1]} start={[2, 1, 2]} success="Now $\mathbf p$ is in $H$, and the teal sum passes through $(1, 0)$ as well, because $(\mathbf p + \mathbf q)(1) = 0 + 0 = 0$. Every member of $H$ has a graph through that point." />
+
+Change the condition to $\mathbf p(0) = 1$ and the result flips. Try it below before reading the next paragraph.
+
+<PolynomialSetTest at={0} value={1} q={[1, 1, -1]} start={[0, -1, 2]} success="Both graphs pass through $(0, 1)$, but the sum passes through $(0, 2)$, since $(\mathbf p + \mathbf q)(0) = 1 + 1 = 2$. So this set is not closed under addition. It also misses the zero polynomial." />
+
+A condition of the form "equals $0$" survives adding and scaling, and a condition of the form "equals $1$" does not. The same happens with degree. The polynomials of degree exactly $2$ miss the zero polynomial, and $(t^2 + t) + (-t^2) = t$ drops out of the set.
+
+<Problem>
+Call a $2 \times 2$ matrix **symmetric** when its top-right and bottom-left entries are equal. Is the sum of the symmetric matrices $A = \begin{bmatrix} 1 & 2 \\ 2 & 3 \end{bmatrix}$ and $B = \begin{bmatrix} 0 & -1 \\ -1 & 4 \end{bmatrix}$ symmetric? Is the set of all symmetric $2 \times 2$ matrices a subspace of $M_{2\times 2}$?
+
+<Solution>
+Add entry by entry: $A + B = \begin{bmatrix} 1 & 1 \\ 1 & 7 \end{bmatrix}$. The off-diagonal entries are both $1$, so the sum is symmetric.
+
+Now argue in general. A symmetric matrix looks like $\begin{bmatrix} a & b \\ b & d \end{bmatrix}$. Adding two of them adds matching entries, so the two off-diagonal entries of the sum are both $b + b'$ and stay equal. Scaling by $c$ turns both into $cb$. The zero matrix has both off-diagonal entries $0$. All three checks pass, so the symmetric matrices form a subspace. Splitting by parameter gives the same answer:
+
+$$
+\begin{bmatrix} a & b \\ b & d \end{bmatrix} = a\begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix} + b\begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix} + d\begin{bmatrix} 0 & 0 \\ 0 & 1 \end{bmatrix}
+$$
+</Solution>
+</Problem>
+
+<Choice
+  question="Which of these sets of $2 \times 2$ matrices is a subspace of $M_{2\times 2}$?"
+  options={["The invertible matrices", "The matrices with determinant $0$", "The matrices whose top-left entry is $0$"]}
+  answer={2}
+>
+The zero matrix is not invertible, so the invertible matrices fail check (a). The matrices with determinant $0$ contain $\begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix}$ and $\begin{bmatrix} 0 & 0 \\ 0 & 1 \end{bmatrix}$, but their sum is the identity, which has determinant $1$, so check (b) fails. A top-left entry of $0$ stays $0$ under adding and scaling, and the zero matrix has it, so that set is a subspace.
+</Choice>
+
+Tomorrow turns the test around. Instead of checking a set someone hands you, you build a subspace as a span and ask which of its vectors you actually need.
 
 ## Practice
 
+### Warm-up
+
 <Check>
-Let $W$ be the points $(s,\ 3s - 2)$ for real $s$. The vector $\mathbf u = (1, 1)$ is in $W$. Compute $3\,\mathbf u$. (Modeled on Lay §4.1, Practice Problem 1.)
+Let $W$ be the points $(s,\ 3s - 2)$ for real $s$. The vector $\mathbf u = (1, 1)$ is in $W$. Compute $3\,\mathbf u$, and then decide whether it is in $W$. (Modeled on Lay §4.1, Practice Problem 1.)
 
 <VectorAnswer answer={[3, 3]} />
 
@@ -84,9 +262,35 @@ $3\,\mathbf u = (3, 3)$. The point of $W$ with first entry $3$ has $s = 3$, so i
 </Check>
 
 <Check>
-Let $H$ be the set of all vectors $(a - 2b,\ b,\ a + b)$ with $a$ and $b$ real. Find $\mathbf v_1$ and $\mathbf v_2$ with $H = \operatorname{Span}\{\mathbf v_1, \mathbf v_2\}$, where $\mathbf v_1$ holds the coefficients of $a$ and $\mathbf v_2$ the coefficients of $b$. (Modeled on Lay §4.1 #11.)
+The plane $H$ is the set of $(x_1, x_2, x_3)$ with $x_1 + 2x_2 - x_3 = 0$. Find the value of $x_3$ that puts $(3, -1, x_3)$ in $H$.
 
-<VectorAnswer answer={[1, 0, 1, -2, 1, 1]} labels={["first entry of v1", "second entry of v1", "third entry of v1", "first entry of v2", "second entry of v2", "third entry of v2"]} />
+<VectorAnswer answer={[1]} labels={["x₃"]} prefix="x_3 =" />
+
+<Answer>
+Substitute: $3 + 2(-1) - x_3 = 0$, so $1 - x_3 = 0$ and $x_3 = 1$.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="Let $R$ be the right half-plane, the points $(x, y)$ with $x \geq 0$. Which check fails?"
+  options={["(a) $R$ is missing $\\mathbf 0$", "(b) a sum leaves $R$", "(c) a multiple leaves $R$"]}
+  answer={2}
+>
+The origin has $x = 0$, so (a) passes. Adding two points with $x \geq 0$ gives $x \geq 0$, so (b) passes. But $(1, 0)$ is in $R$ and $(-1)(1, 0) = (-1, 0)$ is not, so (c) fails. (Modeled on Lay §2.8 #1.)
+</Choice>
+</Check>
+
+### Core
+
+<Check>
+Let $H$ be the set of all vectors $(a - 2b,\ b,\ a + b)$ with $a$ and $b$ real. Find $\mathbf v_1$ and $\mathbf v_2$ with $H = \operatorname{Span}\{\mathbf v_1, \mathbf v_2\}$, where $\mathbf v_1$ holds the coefficients of $a$ and $\mathbf v_2$ the coefficients of $b$. Enter them as the two columns of a matrix, row by row. (Modeled on Lay §4.1 #11.)
+
+<VectorAnswer answer={[1, -2, 0, 1, 1, 1]} columns={2} />
+
+<Hint>
+Split the vector into a part that contains only $a$ and a part that contains only $b$.
+</Hint>
 
 <Answer>
 $$
@@ -98,22 +302,121 @@ So $H = \operatorname{Span}\{(1, 0, 1),\ (-2, 1, 1)\}$, which is a subspace of $
 </Check>
 
 <Check>
-In $\mathbb{P}_2$, the set $H$ of polynomials with $\mathbf p(1) = 0$ equals $\operatorname{Span}\{t - 1,\ t^2 - 1\}$. Write $\mathbf p(t) = 3 - t - 2t^2$ as $a_1(t - 1) + a_2(t^2 - 1)$ and enter $a_1$ and $a_2$. (Modeled on Lay §4.1 #8.)
+Let $H$ be the set of all vectors $(2a + b,\ a - b,\ a,\ b)$ in $\mathbb{R}^4$. Find the two vectors that span $H$ and enter them as the columns of a $4 \times 2$ matrix, row by row. (Modeled on Lay §4.1, Example 11.)
 
-<VectorAnswer answer={[-1, -2]} labels={["a1", "a2"]} />
+<VectorAnswer answer={[2, 1, 1, -1, 1, 0, 0, 1]} columns={2} />
+
+<Hint>
+The first column holds the coefficient of $a$ in each of the four entries, and the second holds the coefficient of $b$.
+</Hint>
 
 <Answer>
-First check that $\mathbf p$ is in $H$: $\mathbf p(1) = 3 - 1 - 2 = 0$. Then match coefficients.
+$$
+\begin{bmatrix} 2a + b \\ a - b \\ a \\ b \end{bmatrix} = a\begin{bmatrix} 2 \\ 1 \\ 1 \\ 0 \end{bmatrix} + b\begin{bmatrix} 1 \\ -1 \\ 0 \\ 1 \end{bmatrix}
+$$
+
+Check with $a = 3$ and $b = 2$: the left side is $(8, 1, 3, 2)$, and $3(2, 1, 1, 0) + 2(1, -1, 0, 1) = (8, 1, 3, 2)$.
+</Answer>
+</Check>
+
+<Check>
+In $\mathbb{P}_2$, the polynomials with $\mathbf p(1) = 0$ form the span of $t - 1$ and $t^2 - 1$. Write $\mathbf p(t) = 4 + 2t - 6t^2$ as $a_1(t - 1) + a_2(t^2 - 1)$ and enter $a_1$ and $a_2$. (Modeled on Lay §4.1 #8.)
+
+<VectorAnswer answer={[2, -6]} labels={["a₁", "a₂"]} />
+
+<Hint>
+Expand $a_1(t - 1) + a_2(t^2 - 1)$ and match the coefficient of $t$, then the coefficient of $t^2$.
+</Hint>
+
+<Answer>
+First check that $\mathbf p$ is in the set: $\mathbf p(1) = 4 + 2 - 6 = 0$. Then match coefficients.
 
 $$
 \begin{aligned}
 a_1(t - 1) + a_2(t^2 - 1) &= (-a_1 - a_2) + a_1 t + a_2 t^2 \\
-t^2:\quad a_2 &= -2 \\
-t:\quad a_1 &= -1 \\
-1:\quad -a_1 - a_2 &= 1 + 2 = 3 \;\checkmark
+t:\quad a_1 &= 2 \\
+t^2:\quad a_2 &= -6 \\
+1:\quad -a_1 - a_2 &= -2 + 6 = 4 \;\checkmark
 \end{aligned}
 $$
 
-So $\mathbf p = -(t - 1) - 2(t^2 - 1)$.
+So $\mathbf p = 2(t - 1) - 6(t^2 - 1)$.
+</Answer>
+</Check>
+
+<Check>
+Let $W$ be the set of vectors $(a - 2,\ a + b,\ 3b - a)$. To test whether $\mathbf 0$ is in $W$, find the $a$ and $b$ that make the first two entries $0$, and then the third entry those values give. (Modeled on Lay §4.1 #16.)
+
+<VectorAnswer answer={[2, -2, -8]} labels={["a", "b", "entry 3"]} />
+
+<Hint>
+The first entry pins down $a$. The second then pins down $b$.
+</Hint>
+
+<Answer>
+The first entry is $0$ only when $a = 2$. The second is then $0$ only when $b = -2$. With those values the third entry is $3(-2) - 2 = -8$, not $0$. No choice of $a$ and $b$ makes all three entries $0$, so $\mathbf 0$ is not in $W$ and $W$ is not a subspace.
+</Answer>
+</Check>
+
+<Check>
+The symmetric $2 \times 2$ matrices are the combinations $a\begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix} + b\begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix} + d\begin{bmatrix} 0 & 0 \\ 0 & 1 \end{bmatrix}$. Find the weights that give $\begin{bmatrix} 3 & -1 \\ -1 & 5 \end{bmatrix}$. (Modeled on Lay §4.1, Practice Problem 3.)
+
+<VectorAnswer answer={[3, -1, 5]} labels={["a", "b", "d"]} />
+
+<Hint>
+Write out the combination as one matrix and compare it with the target entry by entry.
+</Hint>
+
+<Answer>
+The combination equals $\begin{bmatrix} a & b \\ b & d \end{bmatrix}$. Matching entries gives $a = 3$, $b = -1$ and $d = 5$.
+</Answer>
+</Check>
+
+### Challenge
+
+<Check>
+For which value of $h$ is the set of vectors $(a + 2,\ 2a + h,\ b)$ a subspace of $\mathbb{R}^3$?
+
+<VectorAnswer answer={[4]} labels={["h"]} prefix="h =" />
+
+<Hint>
+First find the only $h$ that lets the set contain $\mathbf 0$. Then check that for that $h$ the set really is a span.
+</Hint>
+
+<Answer>
+For $\mathbf 0$ to be in the set, the first entry forces $a = -2$, and then the second entry is $-4 + h$, which is $0$ only when $h = 4$. For any other $h$, check (a) fails.
+
+With $h = 4$, substitute $s = a + 2$. Then $2a + 4 = 2s$, so the set is $\{(s,\ 2s,\ b)\} = \operatorname{Span}\{(1, 2, 0),\ (0, 0, 1)\}$. As $a$ runs over every real number, so does $s$. The set is a span, so it is a subspace exactly when $h = 4$.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="Let $H$ be the polynomials in $\mathbb{P}_2$ whose coefficients are all integers. Which check fails?"
+  options={["(a)", "(b)", "(c)", "None of them, so $H$ is a subspace"]}
+  answer={2}
+>
+The zero polynomial has integer coefficients, and adding integers gives integers, so (a) and (b) pass. But $1 + t$ is in $H$ while $\tfrac12(1 + t) = \tfrac12 + \tfrac12 t$ is not, so (c) fails. Scalars can be any real number, not only whole ones. (Modeled on Lay §4.1 #7.)
+</Choice>
+</Check>
+
+<Check>
+Show that the polynomials $\mathbf p$ in $\mathbb{P}_2$ with $\mathbf p(0) = \mathbf p(1)$ form a subspace, and find two polynomials that span it.
+
+<Hint>
+For the checks, use $(\mathbf p + \mathbf q)(t) = \mathbf p(t) + \mathbf q(t)$. For the spanning set, write $\mathbf p = a_0 + a_1 t + a_2 t^2$ and turn the condition into an equation on the coefficients.
+</Hint>
+
+<Answer>
+The zero polynomial gives $0 = 0$, so (a) passes. If $\mathbf p(0) = \mathbf p(1)$ and $\mathbf q(0) = \mathbf q(1)$, then
+
+$$
+\begin{aligned}
+(\mathbf p + \mathbf q)(0) &= \mathbf p(0) + \mathbf q(0) = \mathbf p(1) + \mathbf q(1) = (\mathbf p + \mathbf q)(1) \\
+(c\,\mathbf p)(0) &= c\,\mathbf p(0) = c\,\mathbf p(1) = (c\,\mathbf p)(1)
+\end{aligned}
+$$
+
+so (b) and (c) pass. For a spanning set, $\mathbf p(0) = a_0$ and $\mathbf p(1) = a_0 + a_1 + a_2$, so the condition says $a_1 + a_2 = 0$, which means $a_1 = -a_2$. Then $\mathbf p = a_0 + a_2(t^2 - t)$, and the set is $\operatorname{Span}\{1,\ t^2 - t\}$.
 </Answer>
 </Check>

@@ -4,7 +4,7 @@ import { CheckCircle, Circle } from "@phosphor-icons/react";
 import { useId, useState } from "react";
 import { palette } from "@/lib/palette.generated";
 import { hue, type Hue } from "./colors";
-import { describeVector, Goal, Panel, Readout, Slider, Tex, Workbench } from "./controls";
+import { columnTex, describeVector, Goal, Panel, Readout, Slider, Tex, Workbench } from "./controls";
 import { useSettled } from "./gesture";
 import { add, scale, texNumber, type Vec } from "./math";
 import { Arrow, boundsAround, Handle, Label, Marker, Plane, usePlane } from "./plane";
@@ -303,6 +303,109 @@ export function StaircaseBasis({ target = [2, 3, 1] }: { target?: Coefficients }
             <Readout tex={combinationTex(weights, result)} />
           </>
         }
+      />
+    </Panel>
+  );
+}
+
+const RECIPE_BOUNDS = { xMin: -5, xMax: 5, yMin: -3, yMax: 7 };
+
+/**
+ * A basis b1, b2 plus a spare vector u = b1 + b2. The learner finds a recipe for x that uses u, which shows that a
+ * spanning set with a spare vector gives more than one list of weights.
+ */
+export function SpareRecipe({ b1, b2, x }: { b1: Vec; b2: Vec; x: Vec }) {
+  const [weights, setWeights] = useState([0, 0, 0]);
+  const spare = add(b1, b2);
+  const vectors = [b1, b2, spare];
+  const tips = vectors.reduce<Vec[]>((list, vector, index) => [...list, add(list[index], scale(weights[index], vector))], [[0, 0]]);
+  const end = tips[3];
+  const reached = end[0] === x[0] && end[1] === x[1] && weights[2] !== 0;
+  const { settled: solved, gesture } = useSettled(reached);
+  const setWeight = (index: number) => (value: number) => setWeights((current) => current.map((old, i) => (i === index ? value : old)));
+  const hues: Hue[] = ["yellow", "blue", "pink"];
+  const colors = [palette.yellow, palette.blue, palette.pink];
+  const names = ["\\mathbf b_1", "\\mathbf b_2", "\\mathbf u"];
+  const sum = weights.map((weight, index) => `${index === 0 ? "" : "+"} ${texNumber(weight)}\\,\\textcolor{${colors[index]}}{${names[index]}}`).join(" ");
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>The spare vector <Tex>{`\\textcolor{${palette.pink}}{\\mathbf u} = \\mathbf b_1 + \\mathbf b_2`}</Tex> joins the basis. Reach the ringed point <Tex>{"\\mathbf x"}</Tex> with a recipe that gives <Tex>{"\\mathbf u"}</Tex> a weight other than <Tex>0</Tex>.</>}
+        success={<>That is a second recipe for the same point, next to <Tex>{"2\\,\\mathbf b_1 + 3\\,\\mathbf b_2"}</Tex>. With a spare vector the weights stop being unique, which is why a basis leaves spare vectors out.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={RECIPE_BOUNDS} label="The skewed grid of b1 and b2, the spare vector u, a ringed point x and the chain of weighted vectors.">
+            <BasisGrid u={b1} v={b2} opacity={0.3} />
+            <Marker at={x} color={solved ? "teal" : "glow"} ring />
+            {tips.slice(1).map((tip, index) => (
+              <Arrow key={index} from={tips[index]} to={tip} color={hues[index]} />
+            ))}
+            <Arrow to={spare} color="pink" width={2} dashed />
+            <Label at={spare} color="pink">u</Label>
+            <Label at={x} color="teal" dx={16}>x</Label>
+          </Plane>
+        }
+        readout={
+          <>
+            {[0, 1, 2].map((index) => (
+              <Slider key={index} label={`c_${index + 1}`} value={weights[index]} onChange={setWeight(index)} min={-3} max={4} step={1} color={colors[index]} />
+            ))}
+            <Readout tex={`${sum} = ${columnTex(end)}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+
+const ADDRESS_BOUNDS = { xMin: -4, xMax: 5, yMin: -3, yMax: 6 };
+
+function addressOf(x: Vec, b1: Vec, b2: Vec): Vec | null {
+  const determinant = cross(b1, b2);
+  if (determinant === 0) return null;
+  return [cross(x, b2) / determinant, cross(b1, x) / determinant];
+}
+
+function addressTex(address: Vec | null): string {
+  if (!address) return "\\text{no basis, so no address}";
+  return `[\\mathbf x]_{\\mathcal B} = \\begin{bmatrix} ${texNumber(address[0])} \\\\ ${texNumber(address[1])} \\end{bmatrix}`;
+}
+
+/** The point x stays fixed while the learner drags b2. The address of x changes with the basis, and vanishes when b2 lines up with b1. */
+export function BasisForAddress({ b1, start, x, target }: { b1: Vec; start: Vec; x: Vec; target: Vec }) {
+  const [b2, setB2] = useState<Vec>(start);
+  const address = addressOf(x, b1, b2);
+  const matches = address !== null && Math.abs(address[0] - target[0]) < 1e-9 && Math.abs(address[1] - target[1]) < 1e-9;
+  const { settled: solved, gesture } = useSettled(matches);
+  const corner = address ? scale(address[0], b1) : ([0, 0] as Vec);
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>The point <Tex>{"\\mathbf x"}</Tex> never moves. Drag <Tex>{"\\mathbf b_2"}</Tex> until the address of <Tex>{"\\mathbf x"}</Tex> in the basis <Tex>{"\\{\\mathbf b_1, \\mathbf b_2\\}"}</Tex> is <Tex>{`(${texNumber(target[0])}, ${texNumber(target[1])})`}</Tex>.</>}
+        success={<>Now <Tex>{`\\mathbf x = ${texNumber(target[0])}\\,\\mathbf b_1 + ${texNumber(target[1])}\\,\\mathbf b_2`}</Tex>. The same point has a different address in every basis, and no address at all when <Tex>{"\\mathbf b_2"}</Tex> lies on the line of <Tex>{"\\mathbf b_1"}</Tex>.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={ADDRESS_BOUNDS} label={`Fixed point x, fixed vector b1 and draggable vector b2 at ${describeVector(b2)}, with the grid they draw. Drag b2 or use the arrow keys.`}>
+            {address ? <BasisGrid u={b1} v={b2} opacity={0.35} /> : <FullLine direction={b1} color="glow" width={3} opacity={0.6} />}
+            {address ? <Arrow to={corner} color="yellow" width={2} dashed /> : null}
+            {address ? <Arrow from={corner} to={x} color="blue" width={2} dashed /> : null}
+            <Arrow to={b1} color="yellow" />
+            <Arrow to={b2} color="blue" />
+            <Marker at={x} color="teal" ring={solved} />
+            <Label at={x} color="teal">x</Label>
+            <Label at={b1} color="yellow" dy={20}>b₁</Label>
+            <Label at={b2} color="blue">b₂</Label>
+            <Handle at={b2} onMove={setB2} color="blue" label={`Tip of basis vector b2, at ${describeVector(b2)}`} />
+          </Plane>
+        }
+        readout={<Readout tex={addressTex(address)} />}
       />
     </Panel>
   );

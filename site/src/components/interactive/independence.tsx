@@ -6,7 +6,9 @@ import { hue, type Hue } from "./colors";
 import { columnTex, describeVector, Goal, Panel, Readout, Slider, Tex, Workbench } from "./controls";
 import { useSettled } from "./gesture";
 import { add, nearlyEqual, scale, texNumber, type Vec } from "./math";
-import { Arrow, boundsAround, Handle, Label, Marker, Plane } from "./plane";
+import { Arrow, boundsAround, Handle, Label, Marker, Plane, Segment } from "./plane";
+import { GraphCurve } from "./subspaces";
+import { polynomialTex } from "./vector-spaces";
 
 type Vec3 = [number, number, number];
 
@@ -52,7 +54,7 @@ export function RelationFinder({ v = [3, 2], w = [-1, 2], b = [5, 6] }: { v?: Ve
       <Goal
         solved={solved}
         prompt={<>Choose weights, not all zero, so that the chain <Tex>{"c_1\\mathbf v + c_2\\mathbf w + c_3\\mathbf b"}</Tex> ends back at the origin.</>}
-        success={<>The chain is a closed loop, so <Tex>{`${sum} = \\mathbf 0`}</Tex> is a dependence relation and the set is dependent.</>}
+        success={<>The chain is a closed loop, so the weights on the sliders give a dependence relation and the set is dependent.</>}
       />
       <Workbench
         plane={
@@ -259,6 +261,113 @@ export function LiftToPlane({ v1 = [1, 0, 1], v2 = [0, 1, 2], v3 = [1, 2], min =
             <Slider label="h" value={h} onChange={setH} min={min} max={max} step={1} color={palette.pink} />
             <Readout tex={`[\\,\\textcolor{${palette.yellow}}{\\mathbf v_1}\\ \\textcolor{${palette.blue}}{\\mathbf v_2}\\ \\textcolor{${palette.pink}}{\\mathbf v_3}\\,] = ${matrixTex}`} />
             <Readout tex={`\\sim \\begin{bmatrix} 1 & 0 & ${texNumber(s)} \\\\ 0 & 1 & ${texNumber(t)} \\\\ 0 & 0 & \\textcolor{${solved ? palette.teal : palette.glow}}{${texNumber(gap)}} \\end{bmatrix}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+const PAIR_BOUNDS = { xMin: -5, xMax: 5, yMin: -4, yMax: 4 };
+
+function LineThrough({ direction, lit }: { direction: Vec; lit: boolean }) {
+  return (
+    <g opacity={lit ? 0.8 : 0.35} aria-hidden>
+      <Segment from={scale(-20, direction)} to={scale(20, direction)} color={lit ? "teal" : "text"} dashed={!lit} />
+    </g>
+  );
+}
+
+function pairRelationTex(v: Vec, w: Vec): string {
+  const cross = v[0] * w[1] - v[1] * w[0];
+  if (cross !== 0) return "c_1\\mathbf v + c_2\\mathbf w = \\mathbf 0 \\text{ only for } c_1 = c_2 = 0";
+  const ratio = v[0] !== 0 ? w[0] / v[0] : w[1] / v[1];
+  return `${signedTerm(ratio, `\\textcolor{${palette.yellow}}{\\mathbf v}`, true)} - \\textcolor{${palette.blue}}{\\mathbf w} = \\mathbf 0`;
+}
+
+/** Two vectors are dependent exactly when they lie on one line through the origin. The learner drags w onto the line of v. */
+export function CollinearHunt({ v, start }: { v: Vec; start: Vec }) {
+  const [w, setW] = useState<Vec>(start);
+  const onLine = v[0] * w[1] - v[1] * w[0] === 0;
+  const isZero = w[0] === 0 && w[1] === 0;
+  const { settled: solved, gesture } = useSettled(onLine && !isZero);
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Drag <Tex>{"\\mathbf w"}</Tex> so that <Tex>{"\\{\\mathbf v, \\mathbf w\\}"}</Tex> is dependent, without parking it at <Tex>{"\\mathbf 0"}</Tex>. Watch the relation below change.</>}
+        success={<>Dependent. Now <Tex>{"\\mathbf w"}</Tex> is a multiple of <Tex>{"\\mathbf v"}</Tex>, the two arrows share one line through the origin, and a relation with nonzero weights appears.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={PAIR_BOUNDS} label={`Vector v is fixed and vector w is at ${describeVector(w)}. ${onLine ? "They lie on one line." : "They point in different directions."} Drag w or use the arrow keys.`}>
+            <LineThrough direction={v} lit={onLine} />
+            <Arrow to={v} color="yellow" />
+            <Arrow to={w} color="blue" />
+            {solved ? <Marker at={w} color="teal" ring /> : null}
+            <Label at={v} color="yellow" dy={22}>v</Label>
+            <Label at={w} color="blue">w</Label>
+            <Handle at={w} onMove={setW} color="blue" label={`Tip of vector w, at ${describeVector(w)}`} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Readout tex={`\\textcolor{${palette.yellow}}{\\mathbf v} = ${columnTex(v, palette.yellow)}, \\quad \\textcolor{${palette.blue}}{\\mathbf w} = ${columnTex(w, palette.blue)}`} />
+            <Readout tex={pairRelationTex(v, w)} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+type Coefficients = [number, number, number];
+
+const FUNCTION_BOUNDS = { xMin: -3, xMax: 3, yMin: -4, yMax: 5 };
+const CURVE_HUES: Hue[] = ["yellow", "blue", "pink"];
+const CURVE_COLORS = [palette.yellow, palette.blue, palette.pink];
+
+function weightedCoefficients(weights: number[], polys: Coefficients[]): Coefficients {
+  return [0, 1, 2].map((power) => polys.reduce((total, poly, index) => total + weights[index] * poly[power], 0)) as Coefficients;
+}
+
+/**
+ * Three polynomials drawn as graphs. The learner picks weights, not all zero, that flatten the combined graph onto
+ * the t-axis, which is the zero vector of the function space.
+ */
+export function ZeroFunctionHunt({ polys }: { polys: [Coefficients, Coefficients, Coefficients] }) {
+  const [weights, setWeights] = useState([1, 1, 1]);
+  const combined = weightedCoefficients(weights, polys);
+  const flat = combined.every((value) => Math.abs(value) < 1e-9) && weights.some((weight) => weight !== 0);
+  const { settled: solved, gesture } = useSettled(flat);
+  const setWeight = (index: number) => (value: number) => setWeights((current) => current.map((old, i) => (i === index ? value : old)));
+  const names = polys.map((poly, index) => `\\textcolor{${CURVE_COLORS[index]}}{(${polynomialTex(poly)})}`);
+  const sum = weights.map((weight, index) => signedTerm(weight, names[index], index === 0)).join(" ");
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Choose weights, not all zero, that flatten the orange graph of <Tex>{"c_1\\mathbf p_1 + c_2\\mathbf p_2 + c_3\\mathbf p_3"}</Tex> onto the <Tex>t</Tex>-axis at every <Tex>t</Tex>.</>}
+        success={<>The combination is the zero polynomial, equal to <Tex>0</Tex> for every <Tex>t</Tex>. That is a dependence relation, so the three polynomials are dependent.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={FUNCTION_BOUNDS} label="Graphs of three polynomials, dashed, and their weighted sum as a solid curve. The goal is a sum that lies flat on the t-axis.">
+            {polys.map((poly, index) => (
+              <GraphCurve key={index} coeffs={poly} color={CURVE_HUES[index]} dashed width={2} />
+            ))}
+            <GraphCurve coeffs={combined} color={solved ? "teal" : "glow"} width={4} />
+          </Plane>
+        }
+        readout={
+          <>
+            {[0, 1, 2].map((index) => (
+              <Slider key={index} label={`c_${index + 1}`} value={weights[index]} onChange={setWeight(index)} min={-3} max={3} step={1} color={CURVE_COLORS[index]} />
+            ))}
+            <Readout tex={sum} />
+            <Readout tex={`= \\textcolor{${solved ? palette.teal : palette.glow}}{${polynomialTex(combined)}}`} />
           </>
         }
       />

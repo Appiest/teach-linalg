@@ -3,10 +3,12 @@
 import { CheckCircle, XCircle } from "@phosphor-icons/react";
 import { useState } from "react";
 import { palette } from "@/lib/palette.generated";
-import { describeVector, Goal, Panel, Slider, Tex, Workbench } from "./controls";
+import { hue, type Hue } from "./colors";
+import { describeVector, Goal, Panel, Readout, RichText, Slider, Tex, Workbench } from "./controls";
 import { useSettled } from "./gesture";
 import { add, scale, texNumber, type Vec } from "./math";
 import { Arrow, Handle, Label, Marker, Plane, usePlane, type Bounds } from "./plane";
+import { polynomialTex } from "./vector-spaces";
 
 const SET_COLOR = "var(--palette-purple-gray)";
 
@@ -177,6 +179,171 @@ export function QuadrantEscape({ u: startU = [2, 1], c: startC = 2 }: { u?: Vec;
             </p>
             <CheckRow passed={inQuadrant(u)} tex={`\\textcolor{${palette.yellow}}{\\mathbf u} = ${vecTex(u)} ${membership(inQuadrant(u))} Q`} />
             <CheckRow passed={inQuadrant(multiple)} tex={`\\textcolor{${palette.teal}}{c\\,\\mathbf u} = ${vecTex(multiple)} ${membership(inQuadrant(multiple))} Q`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+type RegionName = "axes" | "disk";
+
+type Region = { contains: (v: Vec) => boolean; rule: string; Shape: () => React.ReactElement };
+
+const REGION_BOUNDS: Bounds = { xMin: -5, xMax: 5, yMin: -5, yMax: 5 };
+const DISK_RADIUS = 3;
+
+function AxesShape() {
+  const { toSvg } = usePlane();
+  const [left, middleY] = toSvg([REGION_BOUNDS.xMin, 0]);
+  const [right] = toSvg([REGION_BOUNDS.xMax, 0]);
+  const [middleX, top] = toSvg([0, REGION_BOUNDS.yMax]);
+  const [, bottom] = toSvg([0, REGION_BOUNDS.yMin]);
+  return (
+    <g stroke={SET_COLOR} strokeWidth={8} strokeOpacity={0.5} aria-hidden>
+      <line x1={left} y1={middleY} x2={right} y2={middleY} />
+      <line x1={middleX} y1={top} x2={middleX} y2={bottom} />
+    </g>
+  );
+}
+
+function DiskShape() {
+  const { toSvg, unit } = usePlane();
+  const [x, y] = toSvg([0, 0]);
+  return <circle cx={x} cy={y} r={DISK_RADIUS * unit} fill={SET_COLOR} fillOpacity={0.2} stroke={SET_COLOR} strokeWidth={2} aria-hidden />;
+}
+
+const REGIONS: Record<RegionName, Region> = {
+  axes: { contains: (v) => v[0] === 0 || v[1] === 0, rule: "x = 0 \\text{ or } y = 0", Shape: AxesShape },
+  disk: { contains: (v) => v[0] ** 2 + v[1] ** 2 <= DISK_RADIUS ** 2 + 1e-9, rule: `x^2 + y^2 \\le ${DISK_RADIUS ** 2}`, Shape: DiskShape },
+};
+
+function regionChecks(region: Region, u: Vec, v: Vec, c: number) {
+  const sum = add(u, v);
+  const multiple = scale(c, u);
+  const inputsInside = region.contains(u) && region.contains(v);
+  const sumInside = region.contains(sum);
+  const multipleInside = region.contains(multiple);
+  return { sum, multiple, sumInside, multipleInside, escaped: inputsInside && !(sumInside && multipleInside) };
+}
+
+/** A shaded set H in the plane. The learner keeps u and v inside H and hunts for a sum or multiple that lands outside. */
+export function CounterexampleHunt({ region: regionName, u: startU, v: startV, c: startC = 1, success }: { region: RegionName; u: Vec; v: Vec; c?: number; success: string }) {
+  const region = REGIONS[regionName];
+  const [u, setU] = useState<Vec>(startU);
+  const [v, setV] = useState<Vec>(startV);
+  const [c, setC] = useState(startC);
+  const checks = regionChecks(region, u, v, c);
+  const { settled: solved, gesture } = useSettled(checks.escaped);
+  const { Shape, contains } = region;
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Keep <Tex>{"\\mathbf u"}</Tex> and <Tex>{"\\mathbf v"}</Tex> inside the purple set <Tex>H</Tex>. Then find a sum <Tex>{"\\mathbf u + \\mathbf v"}</Tex> or a multiple <Tex>{"c\\,\\mathbf u"}</Tex> that lands outside it.</>}
+        success={<RichText>{success}</RichText>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={REGION_BOUNDS} label={`The set H drawn in purple. Vector u is at ${describeVector(u)} and v is at ${describeVector(v)}. Drag either tip or use the arrow keys.`}>
+            <Shape />
+            <Arrow from={u} to={checks.sum} color="blue" width={2} dashed />
+            <Arrow from={v} to={checks.sum} color="yellow" width={2} dashed />
+            <Arrow to={checks.sum} color="teal" />
+            <Arrow to={checks.multiple} color="pink" width={2.5} />
+            <Arrow to={v} color="blue" />
+            <Arrow to={u} color="yellow" />
+            {solved && !checks.sumInside ? <Marker at={checks.sum} color="glow" ring /> : null}
+            {solved && !checks.multipleInside ? <Marker at={checks.multiple} color="glow" ring /> : null}
+            <Label at={u} color="yellow">u</Label>
+            <Label at={v} color="blue" dx={-18}>v</Label>
+            <Label at={checks.sum} color="teal" dy={22}>u + v</Label>
+            <Label at={checks.multiple} color="pink" dx={12} dy={20}>cu</Label>
+            <Handle at={v} onMove={setV} color="blue" label={`Tip of vector v, at ${describeVector(v)}`} />
+            <Handle at={u} onMove={setU} color="yellow" label={`Tip of vector u, at ${describeVector(u)}`} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Slider label="c" value={c} onChange={setC} min={-2} max={3} step={0.5} color={palette.pink} />
+            <p className="text-meta text-text-muted">
+              <Tex>{`H: ${region.rule}`}</Tex>
+            </p>
+            <CheckRow passed={contains(u)} tex={`\\textcolor{${palette.yellow}}{\\mathbf u} = ${vecTex(u)} ${membership(contains(u))} H`} />
+            <CheckRow passed={contains(v)} tex={`\\textcolor{${palette.blue}}{\\mathbf v} = ${vecTex(v)} ${membership(contains(v))} H`} />
+            <CheckRow passed={checks.sumInside} tex={`\\textcolor{${palette.teal}}{\\mathbf u + \\mathbf v} = ${vecTex(checks.sum)} ${membership(checks.sumInside)} H`} />
+            <CheckRow passed={checks.multipleInside} tex={`\\textcolor{${palette.pink}}{c\\,\\mathbf u} = ${vecTex(checks.multiple)} ${membership(checks.multipleInside)} H`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+type Samples = [number, number, number];
+
+const SAMPLE_TS: Samples = [-1, 0, 1];
+const GRAPH_BOUNDS: Bounds = { xMin: -3, xMax: 3, yMin: -4, yMax: 5 };
+
+/** Coefficients (a0, a1, a2) of the parabola through the given values at t = -1, 0, 1. */
+function parabolaThrough([left, middle, right]: Samples): Samples {
+  return [middle, (right - left) / 2, (left + right) / 2 - middle];
+}
+
+export const valueAt = (coeffs: Samples, t: number) => coeffs[0] + coeffs[1] * t + coeffs[2] * t * t;
+
+/** The graph of a0 + a1 t + a2 t^2 across the whole width of the surrounding Plane, with t on the horizontal axis. */
+export function GraphCurve({ coeffs, color, dashed = false, width }: { coeffs: Samples; color: Hue; dashed?: boolean; width?: number }) {
+  const { toSvg, bounds } = usePlane();
+  const steps = 80;
+  const path = Array.from({ length: steps + 1 }, (_, i) => {
+    const t = bounds.xMin + ((bounds.xMax - bounds.xMin) * i) / steps;
+    const [x, y] = toSvg([t, valueAt(coeffs, t)]);
+    return `${i === 0 ? "M" : "L"}${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(" ");
+  return <path d={path} fill="none" stroke={hue(color)} strokeWidth={width ?? (dashed ? 2.5 : 3.5)} strokeDasharray={dashed ? "7 7" : undefined} strokeLinecap="round" />;
+}
+
+/**
+ * A set of polynomials in P2 defined by one condition p(at) = value. The learner drags the values of p at t = -1, 0, 1
+ * until p meets the condition, then reads off whether p + q meets it too.
+ */
+export function PolynomialSetTest({ at, value, q, start, success }: { at: number; value: number; q: Samples; start: Samples; success: string }) {
+  const [samples, setSamples] = useState<Samples>(start);
+  const p = parabolaThrough(samples);
+  const sum: Samples = [p[0] + q[0], p[1] + q[1], p[2] + q[2]];
+  const pInside = Math.abs(valueAt(p, at) - value) < 1e-9;
+  const sumInside = Math.abs(valueAt(sum, at) - value) < 1e-9;
+  const { settled: solved, gesture } = useSettled(pInside);
+  const moveSample = (index: number) => (point: Vec) => setSamples((current) => current.map((old, i) => (i === index ? point[1] : old)) as Samples);
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>The set <Tex>H</Tex> holds the polynomials with <Tex>{`\\mathbf p(${at}) = ${value}`}</Tex>, so their graphs pass through the ringed point. The blue <Tex>{"\\mathbf q"}</Tex> is already in <Tex>H</Tex>. Drag the yellow handles until <Tex>{"\\mathbf p"}</Tex> is in <Tex>H</Tex> too, then look at the dashed teal sum.</>}
+        success={<RichText>{success}</RichText>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={GRAPH_BOUNDS} label={`Graphs of p in yellow, q in blue and p + q in dashed teal, with the point (${at}, ${value}) ringed. Each yellow handle sets the value of p at one t and moves with the up and down arrow keys.`}>
+            <GraphCurve coeffs={q} color="blue" />
+            <GraphCurve coeffs={sum} color="teal" dashed />
+            <GraphCurve coeffs={p} color="yellow" />
+            <Marker at={[at, value]} color={pInside ? "teal" : "glow"} ring />
+            <Marker at={[at, valueAt(sum, at)]} color={sumInside ? "teal" : "glow"} />
+            {SAMPLE_TS.map((t, index) => (
+              <Handle key={t} at={[t, samples[index]]} onMove={moveSample(index)} color="yellow" label={`Value of p at t = ${t}, now ${samples[index]}`} />
+            ))}
+          </Plane>
+        }
+        readout={
+          <>
+            <Readout tex={`\\textcolor{${palette.yellow}}{\\mathbf p(t)} = ${polynomialTex(p)}`} />
+            <CheckRow passed={pInside} tex={`\\textcolor{${palette.yellow}}{\\mathbf p(${at})} = ${texNumber(valueAt(p, at))}`} />
+            <CheckRow passed tex={`\\textcolor{${palette.blue}}{\\mathbf q(${at})} = ${texNumber(valueAt(q, at))}`} />
+            <CheckRow passed={sumInside} tex={`\\textcolor{${palette.teal}}{(\\mathbf p + \\mathbf q)(${at})} = ${texNumber(valueAt(sum, at))}`} />
           </>
         }
       />

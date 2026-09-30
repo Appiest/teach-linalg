@@ -1,12 +1,98 @@
-On Day 2 you met the span as the set of every combination $c_1\mathbf v_1 + \cdots + c_p\mathbf v_p$, and Day 11 showed that every span is a subspace. That makes span the main way to build a subspace: pick a few vectors and take every combination of them. The rest of this unit builds subspaces that way, so today comes back to span with two questions. How does the span compare with the other subspaces that hold the same vectors, and which of the vectors does it actually need? You'll also learn a quick row-reduction test for whether a set of vectors spans all of $\mathbb R^m$.
+On Day 2 you met the span as the set of every combination $c_1\mathbf v_1 + \cdots + c_p\mathbf v_p$, and Day 11 showed that every span is a subspace. That makes span the main way to build a subspace: pick a few vectors and take every combination of them. The rest of this unit builds subspaces that way, so today comes back to span with three questions. How do you tell whether a given vector is in a span, which of the vectors does the span actually need, and when do the vectors reach every vector of $\mathbb R^m$?
+
+Each section opens with a problem. Try it before you open the walkthrough, even if you only get partway.
+
+## Membership in a span
+
+<Problem>
+Let $\yellow{\mathbf v_1} = (1, 2, 1)$ and $\blue{\mathbf v_2} = (2, 1, -1)$. Is $\mathbf b = (1, 5, 4)$ in $\operatorname{Span}\{\yellow{\mathbf v_1}, \blue{\mathbf v_2}\}$? If it is, find the weights.
+
+<Solution>
+We want numbers $x_1$ and $x_2$ with $x_1\yellow{\mathbf v_1} + x_2\blue{\mathbf v_2} = \mathbf b$. Matching the three entries gives three equations in two unknowns, and Day 3 taught us to solve those by row reducing the augmented matrix. Its columns are $\yellow{\mathbf v_1}$, $\blue{\mathbf v_2}$ and then $\mathbf b$.
+
+<Steps>
+<Step>
+Write the augmented matrix with the vectors as columns:
+
+$$
+\left[\begin{array}{cc|c} \yellow{1} & \blue{2} & 1 \\ \yellow{2} & \blue{1} & 5 \\ \yellow{1} & \blue{-1} & 4 \end{array}\right]
+$$
+</Step>
+<Step>
+Clear the first column below the pivot with $R_2 - 2R_1$ and $R_3 - R_1$:
+
+$$
+\left[\begin{array}{cc|c} 1 & 2 & 1 \\ 0 & -3 & 3 \\ 0 & -3 & 3 \end{array}\right]
+$$
+</Step>
+<Step>
+Clear the second column below its pivot with $R_3 - R_2$. The last row becomes $[\,0\ \ 0 \mid 0\,]$, which says $0 = 0$, so the system is consistent:
+
+$$
+\left[\begin{array}{cc|c} 1 & 2 & 1 \\ 0 & -3 & 3 \\ 0 & 0 & 0 \end{array}\right]
+$$
+</Step>
+<Step>
+Back-substitute. Row 2 says $-3x_2 = 3$, so $x_2 = -1$. Row 1 says $x_1 + 2(-1) = 1$, so $x_1 = 3$.
+</Step>
+<Step>
+Check: $3(1, 2, 1) - (2, 1, -1) = (3 - 2,\ 6 - 1,\ 3 + 1) = (1, 5, 4)$.
+</Step>
+</Steps>
+
+So $\mathbf b = 3\yellow{\mathbf v_1} - \blue{\mathbf v_2}$ is in the span. If we try $(1, 7, 5)$ instead, the same row operations end with the row $[\,0\ \ 0 \mid -1\,]$, which says $0 = -1$. That system has no solution, so $(1, 7, 5)$ is not in the span.
+</Solution>
+</Problem>
+
+<Concept title="Membership is a system of equations">
+A vector $\mathbf b$ is in $\operatorname{Span}\{\mathbf v_1, \dots, \mathbf v_p\}$ exactly when the augmented matrix $[\,\mathbf v_1\ \cdots\ \mathbf v_p \mid \mathbf b\,]$ is consistent. A row $[\,0\ \cdots\ 0 \mid \text{nonzero}\,]$ means $\mathbf b$ is out of reach. Otherwise the solution gives the weights.
+</Concept>
+
+<Warning>
+The vectors go in the **columns**, one column per vector, with $\mathbf b$ last. Putting them in the rows sets up a different system with a different answer.
+</Warning>
+
+<Problem>
+For what value of $h$ is $(h, 1, 3)$ in $\operatorname{Span}\{(1, 1, 0),\ (0, 1, 1)\}$?
+
+<Solution>
+We need $a$ and $b$ with $a(1, 1, 0) + b(0, 1, 1) = (h, 1, 3)$. Write out the three entries and start with the ones that involve a single unknown.
+
+$$
+\begin{aligned}
+\text{third entry:}\quad b &= 3 \\
+\text{second entry:}\quad a + b &= 1, \text{ so } a = 1 - 3 = -2 \\
+\text{first entry:}\quad a &= h, \text{ so } h = -2
+\end{aligned}
+$$
+
+The last two entries already fix $a$ and $b$, and the first entry then fixes $h$. For any other $h$ the three equations disagree, so $(h, 1, 3)$ is in the span only when $h = -2$.
+</Solution>
+</Problem>
+
+In the picture, the span is a plane, and the points $(h, 1, 3)$ form a vertical line of possible targets. The line pierces the plane at exactly one point, which is the one with $h = -2$.
 
 ## The smallest subspace
+
+<Problem>
+A subspace $H$ of $\mathbb R^2$ contains $(1, 2)$ and $(3, 1)$. Explain why $H$ must also contain $(5, 5)$ and $(-1, 3)$.
+
+<Solution>
+We only know two facts about $H$: it is closed under scaling and closed under addition. So try to build each target from the two given vectors by scaling and adding.
+
+For $(5, 5)$, notice $2(1, 2) + (3, 1) = (2 + 3,\ 4 + 1) = (5, 5)$. Closure under scaling puts $2(1, 2)$ in $H$, and closure under addition then puts the sum in $H$.
+
+For $(-1, 3)$, solve $a(1, 2) + b(3, 1) = (-1, 3)$. The equations are $a + 3b = -1$ and $2a + b = 3$. Doubling the first and subtracting the second gives $5b = -5$, so $b = -1$ and $a = 2$. Check: $2(1, 2) - (3, 1) = (-1, 3)$. The same two closure steps put it in $H$.
+
+The argument works for any combination, so $H$ contains the whole span of $(1, 2)$ and $(3, 1)$.
+</Solution>
+</Problem>
 
 <Definition term="Smallest subspace">
 If $H$ is any subspace of $V$ that contains $\mathbf v_1, \dots, \mathbf v_p$, then $H$ contains all of $\operatorname{Span}\{\mathbf v_1, \dots, \mathbf v_p\}$. Since the span is a subspace itself, it is the smallest subspace of $V$ that contains $\mathbf v_1, \dots, \mathbf v_p$.
 </Definition>
 
-The proof uses only the two closure rules. Pick any weights $c_1, \dots, c_p$.
+The proof is the problem above with arbitrary weights $c_1, \dots, c_p$.
 
 $$
 \begin{aligned}
@@ -15,25 +101,33 @@ $$
 \end{aligned}
 $$
 
-Every combination lands in $H$, so the whole span sits inside $H$. A subspace can be bigger than the span, but it can never be smaller.
-
-A set $\{\mathbf v_1, \dots, \mathbf v_p\}$ is a **spanning set** for a subspace $H$ when $H = \operatorname{Span}\{\mathbf v_1, \dots, \mathbf v_p\}$. Think of it as a recipe for $H$. A few vectors describe infinitely many, because every element of $H$ is some choice of weights on them. On Day 14 you'll trim a spanning set until none of its vectors is spare, and what is left is called a basis.
+A subspace can be bigger than the span, but it can never be smaller. A set $\{\mathbf v_1, \dots, \mathbf v_p\}$ is a **spanning set** for a subspace $H$ when $H = \operatorname{Span}\{\mathbf v_1, \dots, \mathbf v_p\}$. Think of it as a recipe for $H$: a few vectors describe infinitely many, because every element of $H$ is some choice of weights on them. On Day 14 you'll trim a spanning set until none of its vectors is spare, and what is left is called a basis.
 
 ## Redundant vectors
+
+<Problem>
+Take $\yellow{\mathbf u} = (2, -1, 1)$ and $\blue{\mathbf v} = (1, 2, 1)$, whose span is a plane. Show that $\pink{\mathbf w} = (4, 3, 3)$ is already in that plane. Then rewrite the combination $c_1\yellow{\mathbf u} + c_2\blue{\mathbf v} + c_3\pink{\mathbf w}$ using only $\yellow{\mathbf u}$ and $\blue{\mathbf v}$.
+
+<Solution>
+First look for weights with $a\yellow{\mathbf u} + b\blue{\mathbf v} = \pink{\mathbf w}$. The entries give $2a + b = 4$, $-a + 2b = 3$ and $a + b = 3$. Subtracting the third equation from the first gives $a = 1$, and then $b = 2$. The middle equation checks: $-1 + 4 = 3$. So $\pink{\mathbf w} = \yellow{\mathbf u} + 2\blue{\mathbf v}$.
+
+Now substitute that into the three-vector combination and collect terms:
+
+$$
+\begin{aligned}
+c_1\yellow{\mathbf u} + c_2\blue{\mathbf v} + c_3\pink{\mathbf w} &= c_1\yellow{\mathbf u} + c_2\blue{\mathbf v} + c_3(\yellow{\mathbf u} + 2\blue{\mathbf v}) \\
+&= (c_1 + c_3)\,\yellow{\mathbf u} + (c_2 + 2c_3)\,\blue{\mathbf v}
+\end{aligned}
+$$
+
+Every combination of all three vectors is already a combination of $\yellow{\mathbf u}$ and $\blue{\mathbf v}$, so adding $\pink{\mathbf w}$ reaches nothing new.
+</Solution>
+</Problem>
 
 <Pair>
 <Figure src="redundant-vector" alt="Three-dimensional axes with the teal plane spanned by the yellow vector u = (2, −1, 1) and the blue vector v = (1, 2, 1). A blue arrow 2v runs from the tip of u to the tip of the pink vector w = u + 2v, which ends on the plane at an orange dot." />
 
-Take Day 2's plane $\operatorname{Span}\{\yellow{\mathbf u}, \blue{\mathbf v}\}$ with $\yellow{\mathbf u} = (2, -1, 1)$ and $\blue{\mathbf v} = (1, 2, 1)$, and add $\pink{\mathbf w} = (4, 3, 3)$. Because $\pink{\mathbf w} = \yellow{\mathbf u} + 2\blue{\mathbf v}$, any combination that uses $\pink{\mathbf w}$ folds back into $\yellow{\mathbf u}$ and $\blue{\mathbf v}$:
-
-$$
-\begin{aligned}
-c_1\yellow{\mathbf u} + c_2\blue{\mathbf v} + c_3\pink{\mathbf w} &= (c_1 + c_3)\,\yellow{\mathbf u} \\
-&\quad + (c_2 + 2c_3)\,\blue{\mathbf v}
-\end{aligned}
-$$
-
-The span stays the same plane, so $\pink{\mathbf w}$ is **redundant**.
+The pink $\pink{\mathbf w}$ ends on the plane of $\yellow{\mathbf u}$ and $\blue{\mathbf v}$, one $\yellow{\mathbf u}$ and two $\blue{\mathbf v}$ from the origin. A vector like this, which lies in the span of the others, is called **redundant**. Removing it leaves the span unchanged.
 </Pair>
 
 <ThirdVectorHunt start={[0, 0, 2]} />
@@ -42,21 +136,85 @@ When the new vector lies off the plane, the span grows. Change $\pink{\mathbf w}
 
 <Figure src="new-direction" alt="The teal plane of u and v with six fainter parallel copies stacked above and below it. The pink vector w = (4, 3, −1) points below the plane, and a dashed orange segment joins its tip to the point (4, 3, 3) on the plane." wide />
 
-In general, if $\mathbf w$ is already in $\operatorname{Span}\{\mathbf v_1, \dots, \mathbf v_p\}$, adding it changes nothing. If $\mathbf w$ is not in that span, the new span is strictly bigger, because it contains $\mathbf w$.
+<Concept title="A vector in the span adds nothing">
+If $\mathbf w$ is already in $\operatorname{Span}\{\mathbf v_1, \dots, \mathbf v_p\}$, adding it to the list leaves the span the same. If $\mathbf w$ is not in that span, the new span is strictly bigger, because it contains $\mathbf w$.
+</Concept>
+
+The same thing happens in the plane. Below, $\blue{\mathbf v_2}$ starts out as $2\yellow{\mathbf v_1}$, so the two vectors span only a line.
+
+<GrowTheSpan v1={[2, 1]} start={[4, 2]} target={[1, 3]} />
 
 ## A pivot in every row
 
-Pictures stop helping once the vectors live in $\mathbb R^4$ or beyond, so the goal of this section is a test you can run on the numbers alone. Put the vectors into the columns of a matrix, row reduce it to echelon form, and count the rows that have a pivot.
+Pictures stop helping once the vectors live in $\mathbb R^4$ or beyond, so the goal of this section is a test you can run on the numbers alone.
+
+<Problem>
+Do the vectors $(1, 0, 2)$, $(2, 1, 3)$ and $(0, 1, -1)$ span $\mathbb R^3$?
+
+<Solution>
+They span $\mathbb R^3$ when every $\mathbf b$ is reachable, so we would like to know when $[\,A \mid \mathbf b\,]$ can be inconsistent. That can only happen if some row of $A$ reduces to all zeros, so row reduce $A$ by itself and look for a zero row.
+
+<Steps>
+<Step>
+Put the vectors in the columns of $A$:
+
+$$
+A = \begin{bmatrix} 1 & 2 & 0 \\ 0 & 1 & 1 \\ 2 & 3 & -1 \end{bmatrix}
+$$
+</Step>
+<Step>
+Clear the first column with $R_3 - 2R_1$, which turns row 3 into $[\,0\ \ -1\ \ -1\,]$.
+</Step>
+<Step>
+Clear the second column with $R_3 + R_2$, which turns row 3 into $[\,0\ \ 0\ \ 0\,]$:
+
+$$
+A \sim \begin{bmatrix} 1 & 2 & 0 \\ 0 & 1 & 1 \\ 0 & 0 & 0 \end{bmatrix}
+$$
+</Step>
+<Step>
+Row 3 has no pivot. Pick a $\mathbf b$ whose reduction puts a nonzero number at the end of that row, and $[\,A \mid \mathbf b\,]$ ends in $[\,0\ \ 0\ \ 0 \mid \text{nonzero}\,]$. So some vectors are out of reach, and the answer is no.
+</Step>
+</Steps>
+
+The third vector is redundant: $(0, 1, -1) = (2, 1, 3) - 2(1, 0, 2)$, so all three lie in one plane.
+</Solution>
+</Problem>
 
 <Definition term="Theorem (Lay §1.4, Theorem 4)">
 Let $A$ be an $m \times n$ matrix. The columns of $A$ span $\mathbb R^m$ exactly when $A$ has a pivot position in every row. Equivalently, $A\mathbf x = \mathbf b$ has a solution for every $\mathbf b$ in $\mathbb R^m$.
 </Definition>
 
-The reason is the last row of the echelon form. If every row of $A$ has a pivot, the augmented matrix $[\,A\ \ \mathbf b\,]$ can never end in a row $[\,0\ \cdots\ 0 \mid \text{nonzero}\,]$, so every $\mathbf b$ is reachable. If some row of $A$ reduces to zeros, you can choose a $\mathbf b$ that puts a nonzero number at the end of that row, and that $\mathbf b$ is unreachable. The test is about $A$ alone, not $[\,A\ \ \mathbf b\,]$.
+If every row of $A$ has a pivot, the augmented matrix $[\,A \mid \mathbf b\,]$ can never end in a row $[\,0\ \cdots\ 0 \mid \text{nonzero}\,]$, so every $\mathbf b$ is reachable. If some row of $A$ reduces to zeros, some $\mathbf b$ is unreachable, as in the problem.
 
 <Figure src="pivot-rows" alt="Two row reductions. Top: the matrix with columns u, v and w = (4, 3, 3) reduces to an echelon form with pivots 2 and 5 circled in orange and a dashed outline around its third row of zeros, labelled a plane. Bottom: with w = (4, 3, −1), the echelon form has pivots 2, 5 and −40 circled, labelled R³." wide />
 
-When the columns don't span, carry a general $\mathbf b$ through the reduction to find out which targets you *can* reach. With $\pink{\mathbf w} = (4, 3, 3)$, the row operations $R_2 \to 2R_2 + R_1$, then $R_3 \to 2R_3 - R_1$, then $R_3 \to 5R_3 - R_2$ give
+<Warning>
+The test is about $A$ alone. A pivot in the last column of $[\,A \mid \mathbf b\,]$ means that particular $\mathbf b$ is out of reach, which is a different statement.
+</Warning>
+
+When the columns don't span, you can still describe exactly which targets they reach.
+
+<Problem>
+The columns $\yellow{\mathbf a_1} = (1, -2)$ and $\blue{\mathbf a_2} = (-2, 4)$ do not span $\mathbb R^2$. Which vectors $\mathbf b = (b_1, b_2)$ can they reach?
+
+<Solution>
+Carry a general $\mathbf b$ through the row reduction, so the condition for consistency appears in the last column.
+
+$$
+\left[\begin{array}{cc|c} 1 & -2 & b_1 \\ -2 & 4 & b_2 \end{array}\right]
+\sim
+\left[\begin{array}{cc|c} 1 & -2 & b_1 \\ 0 & 0 & b_2 + 2b_1 \end{array}\right]
+\qquad (R_2 + 2R_1)
+$$
+
+The second row says $0 = b_2 + 2b_1$. So $\mathbf b$ is reachable exactly when $b_2 = -2b_1$, which is the line through the origin and $(1, -2)$.
+</Solution>
+</Problem>
+
+<ConsistencyHunt a1={[1, -2]} a2={[-2, 4]} start={[2, 1]} />
+
+The same move works in $\mathbb R^3$. With $\yellow{\mathbf u}$, $\blue{\mathbf v}$ and the redundant $\pink{\mathbf w} = (4, 3, 3)$ as columns, the row operations $R_2 \to 2R_2 + R_1$, then $R_3 \to 2R_3 - R_1$, then $R_3 \to 5R_3 - R_2$ give
 
 $$
 \begin{aligned}
@@ -70,59 +228,149 @@ $$
 
 The system is consistent only when $-6b_1 - 2b_2 + 10b_3 = 0$, which simplifies to $3b_1 + b_2 - 5b_3 = 0$. That equation describes the plane $\operatorname{Span}\{\yellow{\mathbf u}, \blue{\mathbf v}\}$, and you can check it on $\yellow{\mathbf u}$: $6 - 1 - 5 = 0$.
 
+Now hunt for a missing pivot yourself. The third column has a variable last entry $h$.
+
 <PivotHunt a1={[1, 2, 0]} a2={[0, 1, 1]} a3={[2, 1]} start={1} />
 
-The theorem also explains why **fewer than $m$ vectors can never span $\mathbb R^m$**. A matrix has at most one pivot per column, so $n < m$ columns give at most $n$ pivots, and at least one of the $m$ rows is left without one. Having more vectors doesn't guarantee spanning either. Four vectors can still lie in one plane of $\mathbb R^3$.
+<Choice
+  question="Can two vectors span $\mathbb R^3$?"
+  options={["Yes, if they point in different directions", "No, never"]}
+  answer={1}
+>
+A $3 \times 2$ matrix has at most one pivot per column, so it has at most two pivots, and one of its three rows is left without one. In general, **fewer than $m$ vectors can never span $\mathbb R^m$**. Having more vectors doesn't guarantee spanning either, since four vectors can still lie in one plane of $\mathbb R^3$.
+</Choice>
 
 ## Spanning sets of polynomials
 
-A polynomial $a_0 + a_1 t + a_2 t^2$ in $\mathbb P_2$ is a combination of $\mathbf p_1, \mathbf p_2, \mathbf p_3$ exactly when its coefficient column $(a_0, a_1, a_2)$ is the same combination of their coefficient columns. Two polynomials are equal when their matching coefficients are equal, so the question becomes a question about vectors in $\mathbb R^3$. List the coefficients in the order $1, t, t^2$ and include the zeros. Day 15 shows that this translation always works, by treating the coefficient column as the polynomial's coordinates.
+<Problem>
+Do the polynomials $\yellow{1 + t}$, $\blue{t + t^2}$ and $\pink{1 + t^2}$ span $\mathbb P_2$?
+
+<Solution>
+A combination $c_1(1 + t) + c_2(t + t^2) + c_3(1 + t^2)$ equals a target $a_0 + a_1 t + a_2 t^2$ exactly when the coefficients of $1$, $t$ and $t^2$ match. Matching gives three equations, and they are the equations for the coefficient columns in $\mathbb R^3$. So we can answer the question with the pivot test.
+
+List each polynomial's coefficients in the order $1, t, t^2$, including zeros, and use them as columns:
 
 $$
-\yellow{1 + t},\ \ \blue{t + t^2},\ \ \pink{1 + t^2}
-\quad\longrightarrow\quad
 \begin{bmatrix} \yellow{1} & \blue{0} & \pink{1} \\ \yellow{1} & \blue{1} & \pink{0} \\ \yellow{0} & \blue{1} & \pink{1} \end{bmatrix}
+\sim
+\begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & -1 \\ 0 & 1 & 1 \end{bmatrix}
 \sim
 \begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & -1 \\ 0 & 0 & 2 \end{bmatrix}
 $$
 
-Every row has a pivot, so these three polynomials span $\mathbb P_2$. Any spanning set works as a recipe, including this one with $\mathbf p_1 = 1$, $\mathbf p_2 = 1 + t$ and $\mathbf p_3 = 1 + t + t^2$.
+The first step is $R_2 - R_1$ and the second is $R_3 - R_2$. Every row has a pivot, so every coefficient column is reachable, and the three polynomials span $\mathbb P_2$.
+</Solution>
+</Problem>
+
+Day 15 shows that this translation always works, by treating the coefficient column as the polynomial's coordinates. Any spanning set works as a recipe, including this one with $\mathbf p_1 = 1$, $\mathbf p_2 = 1 + t$ and $\mathbf p_3 = 1 + t + t^2$.
 
 <PolynomialRecipe basis={[[1, 0, 0], [1, 1, 0], [1, 1, 1]]} target={[3, 1, 2]} />
+
+<Warning>
+Keep the order $1, t, t^2$ in every column and write the zeros. The polynomial $2 - 3t$ is the column $(2, -3, 0)$, and dropping the $0$ or swapping the order changes the system.
+</Warning>
 
 Tomorrow gives redundancy a precise test called linear independence, which is the other half of what a basis needs on Day 14.
 
 ## Practice
 
-<Check>
-For what value of $h$ is $(h, 1, 3)$ in $\operatorname{Span}\{(1, 1, 0),\ (0, 1, 1)\}$? (Modeled on Lay §1.3 #17.)
+### Warm-up
 
-<VectorAnswer answer={[-2]} labels={["h"]} prefix="h =" />
+<Check>
+Find weights with $a(1, 0, 1) + b(0, 1, 1) = (2, 3, 5)$.
+
+<VectorAnswer answer={[2, 3]} labels={["a", "b"]} />
 
 <Answer>
-Look for weights with $a(1, 1, 0) + b(0, 1, 1) = (h, 1, 3)$.
-
-$$
-\begin{aligned}
-\text{third entry:}\quad b &= 3 \\
-\text{second entry:}\quad a + b &= 1 \implies a = -2 \\
-\text{first entry:}\quad a &= h \implies h = -2
-\end{aligned}
-$$
-
-Any other $h$ leaves the three equations inconsistent, so $(h, 1, 3)$ is in the span only when $h = -2$.
+The first entry gives $a = 2$ and the second gives $b = 3$. The third entry checks: $2 + 3 = 5$.
 </Answer>
 </Check>
 
 <Check>
-The vectors $(1, 0, 2)$, $(2, 1, 3)$ and $(0, 1, -1)$ do not span $\mathbb R^3$, because the third one is redundant. Find $a$ and $b$ with $(0, 1, -1) = a(1, 0, 2) + b(2, 1, 3)$. (Modeled on Lay §4.1 #13.)
+<Choice
+  question="A matrix reduces to $\begin{bmatrix} 1 & 2 & 0 \\ 0 & 0 & 3 \\ 0 & 0 & 0 \end{bmatrix}$. Do its columns span $\mathbb R^3$?"
+  options={["Yes, there are three columns", "No, row 3 has no pivot"]}
+  answer={1}
+>
+Only rows 1 and 2 have pivots. By the pivot test the columns reach only part of $\mathbb R^3$, however many columns there are.
+</Choice>
+</Check>
 
-<VectorAnswer answer={[-2, 1]} labels={["a", "b"]} />
+<Check>
+<Choice
+  question="Can the columns of a $4 \times 3$ matrix span $\mathbb R^4$?"
+  options={["Yes, if the matrix has three pivots", "No, at least one row has no pivot"]}
+  answer={1}
+>
+Three columns give at most three pivots, one per column, and there are four rows to fill. Fewer than $4$ vectors never span $\mathbb R^4$. (Modeled on Lay §1.4 #32.)
+</Choice>
+</Check>
+
+### Core
+
+<Check>
+For what value of $h$ is $(3, h, 4)$ in $\operatorname{Span}\{(1, 0, 2),\ (0, 1, -1)\}$? (Modeled on Lay §1.3 #17.)
+
+<VectorAnswer answer={[2]} labels={["h"]} prefix="h =" />
+
+<Hint>
+Write $a(1, 0, 2) + b(0, 1, -1) = (3, h, 4)$. The first two entries tell you $a$ and $b$ directly.
+</Hint>
 
 <Answer>
-The middle entries give $0a + 1b = 1$, so $b = 1$. The first entries give $a + 2b = 0$, so $a = -2$. The last entries check out: $2(-2) + 3(1) = -1$.
+The first entry gives $a = 3$ and the second gives $b = h$. The third entry needs $2a - b = 4$, so $6 - h = 4$ and $h = 2$.
 
-So $(0, 1, -1) = -2(1, 0, 2) + (2, 1, 3)$. The span of all three is the plane $\operatorname{Span}\{(1, 0, 2), (2, 1, 3)\}$, and the matrix of the three columns has pivots in only two rows.
+Check: $3(1, 0, 2) + 2(0, 1, -1) = (3, 2, 4)$.
+</Answer>
+</Check>
+
+<Check>
+The vectors $(1, 2, 0)$, $(0, 1, 3)$ and $(2, 5, 3)$ do not span $\mathbb R^3$, because the third is redundant. Find $a$ and $b$ with $(2, 5, 3) = a(1, 2, 0) + b(0, 1, 3)$. (Modeled on Lay §4.1 #13.)
+
+<VectorAnswer answer={[2, 1]} labels={["a", "b"]} />
+
+<Hint>
+The first entry involves only $a$, and the third involves only $b$.
+</Hint>
+
+<Answer>
+The first entry gives $a = 2$ and the third gives $3b = 3$, so $b = 1$. The middle entry checks: $2(2) + 1 = 5$.
+
+So $(2, 5, 3) = 2(1, 2, 0) + (0, 1, 3)$, and the three vectors span only the plane of the first two.
+</Answer>
+</Check>
+
+<Check>
+The columns $(2, -1)$ and $(-4, 2)$ span a line in $\mathbb R^2$. Find $b_2$ so that $(6, b_2)$ is reachable. (Modeled on Lay §1.4 #15.)
+
+<VectorAnswer answer={[-3]} labels={["b₂"]} prefix="b_2 =" />
+
+<Hint>
+Row reduce $\left[\begin{array}{cc|c} 2 & -4 & b_1 \\ -1 & 2 & b_2 \end{array}\right]$ with a general right side and read the condition off the last row.
+</Hint>
+
+<Answer>
+The operation $R_2 + \tfrac12 R_1$ gives the row $[\,0\ \ 0 \mid b_2 + \tfrac12 b_1\,]$. The system is consistent only when $b_2 = -\tfrac12 b_1$. With $b_1 = 6$ that means $b_2 = -3$. Indeed $(6, -3) = 3(2, -1)$.
+</Answer>
+</Check>
+
+<Check>
+The columns $(1, 0, 1)$, $(0, 1, 1)$ and $(1, 1, 2)$ reach exactly the vectors with $b_3 = b_1 + b_2$. Find $b_3$ so that $(2, -5, b_3)$ is reachable, and confirm the condition by row reduction.
+
+<VectorAnswer answer={[-3]} labels={["b₃"]} prefix="b_3 =" />
+
+<Hint>
+Carry $(b_1, b_2, b_3)$ through $R_3 - R_1$ and then $R_3 - R_2$.
+</Hint>
+
+<Answer>
+$$
+\left[\begin{array}{ccc|c} 1 & 0 & 1 & b_1 \\ 0 & 1 & 1 & b_2 \\ 1 & 1 & 2 & b_3 \end{array}\right]
+\sim
+\left[\begin{array}{ccc|c} 1 & 0 & 1 & b_1 \\ 0 & 1 & 1 & b_2 \\ 0 & 0 & 0 & b_3 - b_1 - b_2 \end{array}\right]
+$$
+
+The last row needs $b_3 = b_1 + b_2 = 2 + (-5) = -3$.
 </Answer>
 </Check>
 
@@ -131,19 +379,75 @@ Write $2 + 4t$ as $c_1(1 + t) + c_2(t + t^2) + c_3(1 + t^2)$. (Modeled on Lay §
 
 <VectorAnswer answer={[3, 1, -1]} labels={["c₁", "c₂", "c₃"]} />
 
-<Answer>
-Match the coefficients of $1$, $t$ and $t^2$:
+<Hint>
+Match the coefficients of $1$, $t$ and $t^2$ to get three equations. Adding all three equations is a quick start.
+</Hint>
 
+<Answer>
 $$
 \begin{aligned}
-c_1 + c_3 &= 2 \\
-c_1 + c_2 &= 4 \\
-c_2 + c_3 &= 0
+1:\quad c_1 + c_3 &= 2 \\
+t:\quad c_1 + c_2 &= 4 \\
+t^2:\quad c_2 + c_3 &= 0
 \end{aligned}
 $$
 
 Adding all three equations gives $2(c_1 + c_2 + c_3) = 6$, so $c_1 + c_2 + c_3 = 3$. Subtracting each equation from that total gives $c_2 = 1$, $c_3 = -1$ and $c_1 = 3$.
 
 Check: $3(1 + t) + (t + t^2) - (1 + t^2) = 2 + 4t$.
+</Answer>
+</Check>
+
+### Challenge
+
+<Check>
+For which value of $k$ do the columns $(1, 2, k)$, $(0, 1, 1)$ and $(1, 3, 4)$ fail to span $\mathbb R^3$?
+
+<VectorAnswer answer={[3]} labels={["k"]} prefix="k =" />
+
+<Hint>
+Row reduce with $k$ left as a letter and find when the last row turns into zeros.
+</Hint>
+
+<Answer>
+$$
+\begin{bmatrix} 1 & 0 & 1 \\ 2 & 1 & 3 \\ k & 1 & 4 \end{bmatrix}
+\sim
+\begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & 1 \\ 0 & 1 & 4 - k \end{bmatrix}
+\sim
+\begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & 1 \\ 0 & 0 & 3 - k \end{bmatrix}
+$$
+
+The first step is $R_2 - 2R_1$ and $R_3 - kR_1$, and the second is $R_3 - R_2$. Row 3 has a pivot unless $3 - k = 0$, so the columns fail to span exactly when $k = 3$. Then $(1, 2, 3) + (0, 1, 1) = (1, 3, 4)$ makes the third column redundant.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="Do the polynomials $1 - t$, $t - t^2$ and $1 - t^2$ span $\mathbb P_2$?"
+  options={["Yes", "No"]}
+  answer={1}
+>
+The coefficient columns are $(1, -1, 0)$, $(0, 1, -1)$ and $(1, 0, -1)$. The third is the sum of the first two, since $(1 - t) + (t - t^2) = 1 - t^2$. So the matrix has only two pivots, and the three polynomials span only a plane inside $\mathbb P_2$. For example, the constant $1$ is out of reach. (Modeled on Lay §4.4 #31.)
+</Choice>
+</Check>
+
+<Check>
+Suppose $\mathbf w$ is in $\operatorname{Span}\{\mathbf v_1, \mathbf v_2\}$. Prove that $\operatorname{Span}\{\mathbf v_1, \mathbf v_2, \mathbf w\} = \operatorname{Span}\{\mathbf v_1, \mathbf v_2\}$.
+
+<Hint>
+Show each set is inside the other. For one direction, use a weight of $0$. For the other, write $\mathbf w = a\mathbf v_1 + b\mathbf v_2$ and substitute.
+</Hint>
+
+<Answer>
+Every combination $c_1\mathbf v_1 + c_2\mathbf v_2$ equals $c_1\mathbf v_1 + c_2\mathbf v_2 + 0\,\mathbf w$, so the smaller span sits inside the larger one.
+
+For the other direction, write $\mathbf w = a\mathbf v_1 + b\mathbf v_2$. Then
+
+$$
+c_1\mathbf v_1 + c_2\mathbf v_2 + c_3\mathbf w = (c_1 + c_3 a)\,\mathbf v_1 + (c_2 + c_3 b)\,\mathbf v_2,
+$$
+
+which is a combination of $\mathbf v_1$ and $\mathbf v_2$. Each span contains the other, so they are equal.
 </Answer>
 </Check>

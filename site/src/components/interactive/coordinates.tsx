@@ -196,3 +196,124 @@ export function PolynomialCoordinates({ basis, names, target }: { basis: Coeffic
     </Panel>
   );
 }
+
+const BUILDER_BOUNDS = { xMin: -4, xMax: 5, yMin: -3, yMax: 6 };
+
+/**
+ * The learner sets the coordinates c1 and c2 with sliders and watches P_B times the coordinate vector build x.
+ * The goal is a point given in standard entries.
+ */
+export function CoordinateBuilder({ b1, b2, target }: { b1: Vec; b2: Vec; target: Vec }) {
+  const [c1, setC1] = useState(0);
+  const [c2, setC2] = useState(0);
+  const corner = scale(c1, b1);
+  const x = add(corner, scale(c2, b2));
+  const { settled: solved, gesture } = useSettled(nearlyEqual(x, target));
+  const answer = coordinatesOf(target, b1, b2);
+  const matrix = `\\begin{bmatrix} \\textcolor{${palette.i_hat}}{${texNumber(b1[0])}} & \\textcolor{${palette.j_hat}}{${texNumber(b2[0])}} \\\\ \\textcolor{${palette.i_hat}}{${texNumber(b1[1])}} & \\textcolor{${palette.j_hat}}{${texNumber(b2[1])}} \\end{bmatrix}`;
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Set the coordinates so that <Tex>{"P_{\\mathcal B}\\,[\\mathbf x]_{\\mathcal B}"}</Tex> lands on the ringed point <Tex>{columnTex(target)}</Tex>.</>}
+        success={<>Right. The point <Tex>{columnTex(target)}</Tex> has coordinates <Tex>{coordinateTex(answer)}</Tex>, and multiplying by <Tex>{"P_{\\mathcal B}"}</Tex> turns those coordinates back into standard entries.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={BUILDER_BOUNDS} label="Plane with the basis grid of b1 and b2, a ringed target point, and the point built from the slider coordinates.">
+            <BasisGrid b1={b1} b2={b2} />
+            <Marker at={target} color={solved ? "teal" : "glow"} ring />
+            <Arrow to={corner} color="green" width={2.5} dashed />
+            <Arrow from={corner} to={x} color="red" width={2.5} dashed />
+            <Arrow to={b1} color="green" />
+            <Arrow to={b2} color="red" />
+            <Arrow to={x} color="yellow" />
+            <Label at={b1} color="green" dx={6} dy={18}>b₁</Label>
+            <Label at={b2} color="red" dx={-26}>b₂</Label>
+          </Plane>
+        }
+        readout={
+          <>
+            <Slider label="c_1" value={c1} onChange={setC1} min={-3} max={3} step={1} color={palette.i_hat} />
+            <Slider label="c_2" value={c2} onChange={setC2} min={-3} max={3} step={1} color={palette.j_hat} />
+            <Readout tex={`${matrix} ${coordinateTex([c1, c2])} = ${columnTex(x, palette.yellow)}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+const DIMENSION_BOUNDS = { xMin: -5, xMax: 5, yMin: -4, yMax: 4 };
+
+function spanDimension(u: Vec, v: Vec): number {
+  if (u[0] * v[1] - u[1] * v[0] !== 0) return 2;
+  const allZero = [...u, ...v].every((entry) => entry === 0);
+  return allZero ? 0 : 1;
+}
+
+const nonzeroOf = (u: Vec, v: Vec): Vec => (u[0] !== 0 || u[1] !== 0 ? u : v);
+
+function SpanShape({ dimension, u, v }: { dimension: number; u: Vec; v: Vec }) {
+  const { toSvg } = usePlane();
+  if (dimension === 2) {
+    const [x1, y1] = toSvg([DIMENSION_BOUNDS.xMin, DIMENSION_BOUNDS.yMax]);
+    const [x2, y2] = toSvg([DIMENSION_BOUNDS.xMax, DIMENSION_BOUNDS.yMin]);
+    return <rect x={x1} y={y1} width={x2 - x1} height={y2 - y1} fill="var(--palette-teal)" fillOpacity={0.12} aria-hidden />;
+  }
+  if (dimension === 1) {
+    const direction = nonzeroOf(u, v);
+    const [x1, y1] = toSvg(scale(-20, direction));
+    const [x2, y2] = toSvg(scale(20, direction));
+    return <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="var(--palette-teal)" strokeWidth={6} strokeOpacity={0.5} strokeLinecap="round" aria-hidden />;
+  }
+  const [x, y] = toSvg([0, 0]);
+  return <circle cx={x} cy={y} r={9} fill="var(--palette-teal)" fillOpacity={0.6} aria-hidden />;
+}
+
+const SHAPE_NAMES = ["the origin alone", "a line through the origin", "the whole plane"];
+
+/** Two draggable vectors and their span, drawn as a point, a line or the whole plane. The goal is a span of a given dimension. */
+export function SpanDimension({ u: startU, v: startV, target }: { u: Vec; v: Vec; target: number }) {
+  const [u, setU] = useState<Vec>(startU);
+  const [v, setV] = useState<Vec>(startV);
+  const dimension = spanDimension(u, v);
+  const bothNonzero = [u, v].every((vector) => vector[0] !== 0 || vector[1] !== 0);
+  const { settled: solved, gesture } = useSettled(dimension === target && bothNonzero);
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Two vectors can span a space of dimension <Tex>0</Tex>, <Tex>1</Tex> or <Tex>2</Tex>. Keeping both vectors nonzero, drag them until <Tex>{`\\dim \\operatorname{Span}\\{\\mathbf u, \\mathbf v\\} = ${target}`}</Tex>.</>}
+        success={<>The span is now {SHAPE_NAMES[target]}. Two vectors gave a subspace of dimension <Tex>{`${target}`}</Tex>, because the dimension counts a basis, not the vectors you started with.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={DIMENSION_BOUNDS} label={`Vectors u at ${describeVector(u)} and v at ${describeVector(v)}. Their span is ${SHAPE_NAMES[dimension]}. Drag either tip or use the arrow keys.`}>
+            <SpanShape dimension={dimension} u={u} v={v} />
+            <Arrow to={u} color="yellow" />
+            <Arrow to={v} color="blue" />
+            <Label at={u} color="yellow">u</Label>
+            <Label at={v} color="blue" dx={-18}>v</Label>
+            <Handle at={v} onMove={setV} color="blue" label={`Tip of vector v, at ${describeVector(v)}`} />
+            <Handle at={u} onMove={setU} color="yellow" label={`Tip of vector u, at ${describeVector(u)}`} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Readout tex={`\\dim \\operatorname{Span}\\{\\textcolor{${palette.yellow}}{\\mathbf u}, \\textcolor{${palette.blue}}{\\mathbf v}\\} = \\textcolor{${palette.teal}}{${dimension}}`} />
+            <div className="grid rounded-lg bg-surface-sunken px-4 py-3 text-meta">
+              {SHAPE_NAMES.map((name, index) => (
+                <span key={name} aria-hidden={index !== dimension} className={`[grid-area:1/1] ${index === dimension ? "swap-shown" : "swap-hidden"}`}>
+                  The span is {name}.
+                </span>
+              ))}
+            </div>
+          </>
+        }
+      />
+    </Panel>
+  );
+}

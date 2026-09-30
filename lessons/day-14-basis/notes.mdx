@@ -1,59 +1,136 @@
-Day 12 tested whether a set spans a space, and Day 13 tested whether it has a spare vector. Today asks what you gain when a set passes both tests at once. A spanning set tells you how to build every vector in a space, and an independent set has no vector that the others can already build. A set that does both jobs at once is a basis. Because it has no spare vectors, it gives each vector in the space exactly one list of weights, which the video calls its **address**.
+Day 12 tested whether a set spans a space, and Day 13 tested whether it has a spare vector. Today asks what you gain when a set passes both tests at once. A spanning set tells you how to build every vector in a space, and an independent set has no vector that the others can already build. A set that does both jobs is a basis. Because it has no spare vectors, it gives each vector in the space exactly one list of weights, which the video calls its **address**.
+
+Each section opens with a problem. Try it before you open the walkthrough, even if you only get partway.
 
 ## The definition
 
-<Definition term="Basis">
-Let $H$ be a subspace of a vector space $V$. A set $\mathcal B = \{\mathbf b_1, \dots, \mathbf b_p\}$ in $V$ is a **basis** for $H$ when both of these hold:
+<Problem>
+For each set below, decide whether it is independent and whether it spans $\mathbb R^2$.
 
-- (i) $\mathcal B$ is linearly independent, and
-- (ii) $\operatorname{Span}\{\mathbf b_1, \dots, \mathbf b_p\} = H$.
+The first set is $\{\yellow{(2, 1)}\}$, the second is $\{\yellow{(2, 1)},\ \blue{(-1, 1)}\}$, and the third is $\{\yellow{(2, 1)},\ \blue{(-1, 1)},\ \pink{(1, 2)}\}$.
+
+<Solution>
+Take the sets one at a time and run both of the last two days' tests.
+
+A single nonzero vector is independent, since $c(2, 1) = (0, 0)$ forces $c = 0$. Its span is the line through $(2, 1)$, which misses points like $(0, 1)$, so it does not span $\mathbb R^2$.
+
+The pair is independent because neither vector is a multiple of the other. The matrix with columns $(2, 1)$ and $(-1, 1)$ reduces with $R_2 - \tfrac12 R_1$ to $\begin{bmatrix} 2 & -1 \\ 0 & \tfrac32 \end{bmatrix}$, which has a pivot in both rows, so the pair spans $\mathbb R^2$ too.
+
+The third set still spans, because it contains the pair. But $\pink{(1, 2)} = \yellow{(2, 1)} + \blue{(-1, 1)}$, so the relation $\yellow{(2, 1)} + \blue{(-1, 1)} - \pink{(1, 2)} = \mathbf 0$ makes it dependent.
+
+Only the middle set passes both tests. The first set has too few vectors to reach everything, and the third has one more than it needs.
+</Solution>
+</Problem>
+
+<Definition term="Basis">
+Let $H$ be a subspace of a vector space $V$. A set $\mathcal B = \{\mathbf b_1, \dots, \mathbf b_p\}$ in $V$ is a **basis** for $H$ when both of these hold.
+
+(i) $\mathcal B$ is linearly independent.
+
+(ii) $\operatorname{Span}\{\mathbf b_1, \dots, \mathbf b_p\} = H$.
 
 Condition (ii) forces every $\mathbf b_i$ to lie in $H$. The definition also applies with $H = V$.
 </Definition>
 
-The columns of the identity matrix $I_n$ form the **standard basis** of $\mathbb R^n$. In $\mathbb R^2$ they are $\green{\mathbf e_1} = (1, 0)$ and $\red{\mathbf e_2} = (0, 1)$, the arrows that draw ordinary graph paper.
-
 <Figure src="three-sets" alt="Three planes side by side. Left: the yellow vector b1 = (2, 1) with its span drawn as a single teal line. Middle: b1 and the blue vector b2 = (−1, 1) with a teal skewed grid covering the whole plane. Right: the same grid with a third pink vector u = (1, 2) added." wide />
 
-Read the three pictures from left to right. The single vector $\yellow{\mathbf b_1}$ is independent but spans only a line. The pair $\{\yellow{\mathbf b_1}, \blue{\mathbf b_2}\}$ is independent and spans $\mathbb R^2$, so it is a basis. Adding $\pink{\mathbf u} = \yellow{\mathbf b_1} + \blue{\mathbf b_2}$ keeps the span but breaks independence. You always have to check both conditions, because each one can hold while the other fails.
+The columns of the identity matrix $I_n$ form the **standard basis** of $\mathbb R^n$. In $\mathbb R^2$ they are $\green{\mathbf e_1} = (1, 0)$ and $\red{\mathbf e_2} = (0, 1)$, the arrows that draw ordinary graph paper.
+
+<Warning>
+Check both conditions every time. Each one can hold while the other fails, as the first and third sets in the problem show.
+</Warning>
+
+<Choice
+  question="Classify $\{(1, 0, 0),\ (0, 1, 0)\}$ as a set in $\mathbb R^3$."
+  options={["A basis for $\\mathbb R^3$", "Independent but not spanning", "Spanning but dependent", "Neither"]}
+  answer={1}
+>
+Neither vector is a multiple of the other, so the pair is independent. Every combination has third entry $0$, so $(0, 0, 1)$ is out of reach and the pair does not span $\mathbb R^3$. It is a basis for the smaller subspace $\{(s, t, 0)\}$ from Day 11.
+</Choice>
 
 ## A square set of vectors
 
-When you have exactly $n$ vectors in $\mathbb R^n$, put them into the columns of an $n \times n$ matrix $A$. A pivot in every row means the columns span $\mathbb R^n$, and a pivot in every column means they are independent. For a square matrix those two conditions happen together, so one row reduction settles both, and the columns form a basis exactly when $A$ is invertible.
+<Problem>
+Is $\{(1, 2, 0),\ (0, 1, 3),\ (2, 5, 4)\}$ a basis for $\mathbb R^3$?
+
+<Solution>
+We need a pivot in every row, for spanning, and a pivot in every column, for independence. Both are questions about the same echelon form, so one row reduction answers both.
+
+<Steps>
+<Step>
+Put the vectors in the columns of a $3 \times 3$ matrix and clear the first column with $R_2 - 2R_1$:
 
 $$
 \begin{bmatrix} 1 & 0 & 2 \\ 2 & 1 & 5 \\ 0 & 3 & 4 \end{bmatrix}
 \sim \begin{bmatrix} 1 & 0 & 2 \\ 0 & 1 & 1 \\ 0 & 3 & 4 \end{bmatrix}
-\sim \begin{bmatrix} 1 & 0 & 2 \\ 0 & 1 & 1 \\ 0 & 0 & 1 \end{bmatrix}
 $$
+</Step>
+<Step>
+Clear the second column with $R_3 - 3R_2$:
 
-This matrix has three pivots, so $(1, 2, 0)$, $(0, 1, 3)$ and $(2, 5, 4)$ form a basis for $\mathbb R^3$.
+$$
+\begin{bmatrix} 1 & 0 & 2 \\ 0 & 1 & 1 \\ 0 & 0 & 1 \end{bmatrix}
+$$
+</Step>
+<Step>
+Count pivots. There are three, one in every row and one in every column, so the set spans $\mathbb R^3$ and is independent. It is a basis.
+</Step>
+</Steps>
+
+Compare Day 13's set $(1, 2, 0)$, $(0, 1, 3)$, $(2, 5, 3)$. Changing the last entry from $3$ to $4$ is what gave the third row its pivot.
+</Solution>
+</Problem>
+
+<Concept title="Square sets pass or fail both tests together">
+With exactly $n$ vectors in $\mathbb R^n$, the matrix $A$ is square. A square matrix has as many rows as columns, so a pivot in every row happens exactly when there is a pivot in every column. The columns form a basis exactly when $A$ is invertible.
+</Concept>
 
 The count matters too. Fewer than $n$ vectors in $\mathbb R^n$ cannot have a pivot in every row, so they cannot span. More than $n$ vectors in $\mathbb R^n$ are always dependent. So every basis of $\mathbb R^n$ has exactly $n$ vectors. Day 15 proves that every basis of any space has the same size and names that size the dimension.
+
+<Choice
+  question="Can four vectors form a basis for $\mathbb R^3$?"
+  options={["Yes, if they span $\\mathbb R^3$", "No, four vectors in $\\mathbb R^3$ are always dependent"]}
+  answer={1}
+>
+The $3 \times 4$ matrix has at most three pivots, one per row, so one of its four columns is free. The set is dependent and fails condition (i), however well it spans.
+</Choice>
 
 ## Trimming a spanning set
 
 Often you start with a set that spans but has spare vectors, and the goal is to remove vectors until what is left is a basis. Day 16 uses this idea to read a basis for a column space straight off a row reduction.
 
-<Definition term="The Spanning Set Theorem">
-Let $S = \{\mathbf v_1, \dots, \mathbf v_p\}$ and $H = \operatorname{Span} S$.
+<Problem>
+Let $\mathbf v_1 = (1, 2, 3)$, $\mathbf v_2 = (2, 0, 1)$, $\mathbf v_3 = (4, 4, 7)$ and $H = \operatorname{Span}\{\mathbf v_1, \mathbf v_2, \mathbf v_3\}$. Check that $\mathbf v_3 = 2\mathbf v_1 + \mathbf v_2$. Then find a basis for $H$.
 
-- (a) If some $\mathbf v_k$ is a linear combination of the other vectors in $S$, then removing $\mathbf v_k$ leaves a set that still spans $H$.
-- (b) If $H \neq \{\mathbf 0\}$, some subset of $S$ is a basis for $H$.
-</Definition>
+<Solution>
+First the check: $2(1, 2, 3) + (2, 0, 1) = (2 + 2,\ 4 + 0,\ 6 + 1) = (4, 4, 7)$.
 
-Part (a) works because you can substitute. Take $\mathbf v_1 = (1, 2, 3)$, $\mathbf v_2 = (2, 0, 1)$ and $\mathbf v_3 = (4, 4, 7)$. Here $\mathbf v_3 = 2\mathbf v_1 + \mathbf v_2$, so any combination that uses $\mathbf v_3$ can be rewritten without it:
+That equation says $\mathbf v_3$ is spare, so we expect to drop it without losing anything. To be sure, substitute it into an arbitrary combination:
 
 $$
 \begin{aligned}
 c_1\mathbf v_1 + c_2\mathbf v_2 + c_3\mathbf v_3 &= c_1\mathbf v_1 + c_2\mathbf v_2 + c_3(2\mathbf v_1 + \mathbf v_2) \\
-&= (c_1 + 2c_3)\,\mathbf v_1 + (c_2 + c_3)\,\mathbf v_2 .
+&= (c_1 + 2c_3)\,\mathbf v_1 + (c_2 + c_3)\,\mathbf v_2
 \end{aligned}
 $$
 
-So $\operatorname{Span}\{\mathbf v_1, \mathbf v_2, \mathbf v_3\} = \operatorname{Span}\{\mathbf v_1, \mathbf v_2\}$. Neither of $\mathbf v_1$ and $\mathbf v_2$ is a multiple of the other, so the pair is independent and is a basis for that plane. Part (b) repeats this step until no vector can be removed.
+So every vector of $H$ is already a combination of $\mathbf v_1$ and $\mathbf v_2$, and $H = \operatorname{Span}\{\mathbf v_1, \mathbf v_2\}$. Neither of those two is a multiple of the other, so the pair is independent. It spans $H$ and is independent, so $\{\mathbf v_1, \mathbf v_2\}$ is a basis for $H$.
+</Solution>
+</Problem>
 
-Only a vector with a nonzero weight in a dependence relation can go. In the widget, $\pink{\mathbf c} = 2\yellow{\mathbf a} + 0\,\blue{\mathbf b}$, so $\blue{\mathbf b}$ has weight zero and is not a combination of the others.
+<Definition term="The Spanning Set Theorem">
+Let $S = \{\mathbf v_1, \dots, \mathbf v_p\}$ and $H = \operatorname{Span} S$.
+
+(a) If some $\mathbf v_k$ is a linear combination of the other vectors in $S$, then removing $\mathbf v_k$ leaves a set that still spans $H$.
+
+(b) If $H \neq \{\mathbf 0\}$, some subset of $S$ is a basis for $H$.
+</Definition>
+
+Part (a) is the substitution in the problem. Part (b) repeats that step until no vector can be removed.
+
+<Warning>
+Only a vector with a nonzero weight in a dependence relation can go. In the widget, $\pink{\mathbf c} = 2\yellow{\mathbf a} + 0\,\blue{\mathbf b}$, so $\blue{\mathbf b}$ has weight zero and is not a combination of the others. Removing it would shrink the span.
+</Warning>
 
 <TrimToBasis />
 
@@ -61,11 +138,29 @@ This gives two ways to picture a basis. It is a spanning set that is as small as
 
 ## One address for every vector
 
+<Problem>
+The set $\{\yellow{\mathbf b_1}, \blue{\mathbf b_2}\}$ with $\yellow{\mathbf b_1} = (2, 1)$ and $\blue{\mathbf b_2} = (-1, 1)$ is a basis for $\mathbb R^2$. Find the weights that build $\teal{\mathbf x} = (1, 5)$. Then add the spare vector $\pink{\mathbf u} = (1, 2)$ and find a second recipe for $\teal{\mathbf x}$ that uses it.
+
+<Solution>
+Matching entries in $c_1(2, 1) + c_2(-1, 1) = (1, 5)$ gives $2c_1 - c_2 = 1$ and $c_1 + c_2 = 5$. Adding the two equations gives $3c_1 = 6$, so $c_1 = 2$, and then $c_2 = 3$. Check: $2(2, 1) + 3(-1, 1) = (4 - 3,\ 2 + 3) = (1, 5)$.
+
+For the second recipe, use $\pink{\mathbf u} = \yellow{\mathbf b_1} + \blue{\mathbf b_2}$ once and take one copy of each basis vector away to compensate:
+
+$$
+1\,\yellow{\mathbf b_1} + 2\,\blue{\mathbf b_2} + 1\,\pink{\mathbf u} = (2, 1) + (-2, 2) + (1, 2) = (1, 5)
+$$
+
+With the spare vector there are many recipes. Without it, the two equations had exactly one solution.
+</Solution>
+</Problem>
+
 <Definition term="The Unique Representation Theorem">
 If $\mathcal B = \{\mathbf b_1, \dots, \mathbf b_n\}$ is a basis for $V$, then each $\mathbf x$ in $V$ can be written as $\mathbf x = c_1\mathbf b_1 + \dots + c_n\mathbf b_n$ for exactly one list of weights $c_1, \dots, c_n$.
 </Definition>
 
-Spanning guarantees that at least one list of weights exists. If two lists $c_i$ and $d_i$ both built $\mathbf x$, subtracting would give $\mathbf 0 = (c_1 - d_1)\mathbf b_1 + \dots + (c_n - d_n)\mathbf b_n$, and independence forces every $c_i - d_i = 0$. With a spare vector this argument fails, which is why $\teal{\mathbf x}$ had three different recipes in the video.
+Spanning guarantees that at least one list of weights exists. If two lists $c_i$ and $d_i$ both built $\mathbf x$, subtracting would give $\mathbf 0 = (c_1 - d_1)\mathbf b_1 + \dots + (c_n - d_n)\mathbf b_n$, and independence forces every $c_i - d_i = 0$. With a spare vector this argument fails, which is why the problem found two recipes.
+
+<SpareRecipe b1={[2, 1]} b2={[-1, 1]} x={[1, 5]} />
 
 <Figure src="same-grids" alt="The point x = (1, 5) on two grids. Left: the standard grid, reached by one green step along e1 and five red steps along e2. Right: the skewed grid of b1 = (2, 1) and b2 = (−1, 1), where the same point is reached by two yellow steps along b1 and three blue steps along b2." wide />
 
@@ -73,14 +168,32 @@ The point stays put while the grid changes. On the standard grid $\teal{\mathbf 
 
 <AddressHunt />
 
+Now keep the point fixed and change the basis instead.
+
+<BasisForAddress b1={[1, 1]} start={[2, 0]} x={[1, 5]} target={[1, 2]} />
+
+<Warning>
+Order matters in an address. The basis $\{\blue{\mathbf b_2}, \yellow{\mathbf b_1}\}$ gives $\teal{\mathbf x}$ the address $(3, 2)$ instead of $(2, 3)$, so always list a basis in a fixed order.
+</Warning>
+
 ## A basis for polynomials
 
-The standard basis of $\mathbb P_n$ is $\{1, t, t^2, \dots, t^n\}$. It spans $\mathbb P_n$ because every polynomial of degree at most $n$ is written in these powers. It is independent because a combination $c_0 + c_1 t + \dots + c_n t^n$ that equals zero for every $t$ has infinitely many roots, while a nonzero polynomial of degree at most $n$ has at most $n$ roots. So every $c_i$ is $0$.
+<Problem>
+Explain why $\{1, t, t^2\}$ is independent in $\mathbb P_2$. Then find the weights that build $\yellow{\mathbf p(t)} = 1 + 2t - t^2$ from it.
+
+<Solution>
+Independence asks whether $c_0 + c_1 t + c_2 t^2 = 0$ for every $t$ forces all three weights to be $0$. Try a few values of $t$ to see why it does. At $t = 0$ the equation says $c_0 = 0$. At $t = 1$ it says $c_1 + c_2 = 0$, and at $t = -1$ it says $-c_1 + c_2 = 0$. Adding those two gives $c_2 = 0$, and then $c_1 = 0$.
+
+The same idea works for any degree. A nonzero polynomial of degree at most $n$ has at most $n$ roots, so a combination that is $0$ at every $t$ must have every coefficient $0$.
+
+The set spans $\mathbb P_2$ because every polynomial in $\mathbb P_2$ is already written in these powers. The weights for $\yellow{\mathbf p}$ are its coefficients: $\green{1}$, $\red{2}$ and $\pink{-1}$.
+</Solution>
+</Problem>
 
 <Pair>
 <Figure src="polynomial-basis" alt="Graphs of the basis polynomials 1 in green, t in red and t squared in pink, with the yellow curve p(t) = 1 + 2t − t² drawn over them." />
 
-In this basis the address of a polynomial is its list of coefficients:
+The set $\{1, t, \dots, t^n\}$ is the **standard basis** of $\mathbb P_n$. In it, the address of a polynomial is its list of coefficients:
 
 $$
 \yellow{\mathbf p(t)} = \green{1}\cdot 1 + \red{2}\cdot t + \pink{(-1)}\cdot t^2
@@ -97,15 +210,7 @@ Tomorrow the address becomes a coordinate vector, which lets you do any computat
 
 ## Practice
 
-<Check>
-Let $\mathbf v_1 = (1, 0, 2)$, $\mathbf v_2 = (0, 1, -1)$ and $\mathbf v_3 = (3, -2, 8)$. Find weights $a$ and $b$ with $\mathbf v_3 = a\mathbf v_1 + b\mathbf v_2$, then give a basis for $\operatorname{Span}\{\mathbf v_1, \mathbf v_2, \mathbf v_3\}$. (Modeled on Lay §4.3 #19.)
-
-<VectorAnswer answer={[3, -2]} labels={["a", "b"]} />
-
-<Answer>
-The first two entries give $a = 3$ and $b = -2$. The third entry checks out, since $3 \cdot 2 + (-2)(-1) = 8$. So $3\mathbf v_1 - 2\mathbf v_2 - \mathbf v_3 = \mathbf 0$, and the Spanning Set Theorem lets you remove $\mathbf v_3$. The remaining pair $\{\mathbf v_1, \mathbf v_2\}$ is independent because neither vector is a multiple of the other, so it is a basis for the span.
-</Answer>
-</Check>
+### Warm-up
 
 <Check>
 The set $\mathcal B = \{(1, 1),\ (1, -1)\}$ is a basis for $\mathbb R^2$. Find the weights $c_1$ and $c_2$ with $c_1(1, 1) + c_2(1, -1) = (4, 2)$. (Modeled on Lay §4.4, Example 1.)
@@ -113,13 +218,75 @@ The set $\mathcal B = \{(1, 1),\ (1, -1)\}$ is a basis for $\mathbb R^2$. Find t
 <VectorAnswer answer={[3, 1]} labels={["c₁", "c₂"]} />
 
 <Answer>
-Matching entries gives $c_1 + c_2 = 4$ and $c_1 - c_2 = 2$. Adding the equations gives $2c_1 = 6$, so $c_1 = 3$ and $c_2 = 1$.
+Matching entries gives $c_1 + c_2 = 4$ and $c_1 - c_2 = 2$. Adding the equations gives $2c_1 = 6$, so $c_1 = 3$ and $c_2 = 1$. These are the only weights that work, because $\mathcal B$ is a basis.
+</Answer>
+</Check>
 
+<Check>
+<Choice
+  question="Is $\{(1, 2),\ (2, 4)\}$ a basis for $\mathbb R^2$?"
+  options={["Yes", "No"]}
+  answer={1}
+>
+$(2, 4) = 2(1, 2)$, so the set is dependent, and both vectors lie on one line, so it does not span $\mathbb R^2$ either.
+</Choice>
+</Check>
+
+<Check>
+<Choice
+  question="Classify $\{(1, 0, 0),\ (0, 1, 0),\ (0, 0, 1),\ (1, 1, 1)\}$ in $\mathbb R^3$."
+  options={["A basis", "Independent but not spanning", "Spanning but dependent", "Neither"]}
+  answer={2}
+>
+The first three vectors already span $\mathbb R^3$, so the set spans. But $(1, 1, 1)$ is their sum, so the set is dependent. Dropping $(1, 1, 1)$ leaves the standard basis. (Modeled on Lay §4.3 #5.)
+</Choice>
+</Check>
+
+### Core
+
+<Check>
+Let $\mathbf v_1 = (1, 0, 2)$, $\mathbf v_2 = (0, 1, -1)$ and $\mathbf v_3 = (3, -2, 8)$. Find weights $a$ and $b$ with $\mathbf v_3 = a\mathbf v_1 + b\mathbf v_2$, then give a basis for $\operatorname{Span}\{\mathbf v_1, \mathbf v_2, \mathbf v_3\}$. (Modeled on Lay §4.3 #19.)
+
+<VectorAnswer answer={[3, -2]} labels={["a", "b"]} />
+
+<Hint>
+The first entry of $a\mathbf v_1 + b\mathbf v_2$ involves only $a$, and the second involves only $b$.
+</Hint>
+
+<Answer>
+The first two entries give $a = 3$ and $b = -2$. The third entry checks out, since $3 \cdot 2 + (-2)(-1) = 8$. So $3\mathbf v_1 - 2\mathbf v_2 - \mathbf v_3 = \mathbf 0$, and the Spanning Set Theorem lets you remove $\mathbf v_3$. The remaining pair $\{\mathbf v_1, \mathbf v_2\}$ is independent because neither vector is a multiple of the other, so it is a basis for the span.
+</Answer>
+</Check>
+
+<Check>
+For which value of $h$ is $\{(1, 2),\ (3, h)\}$ **not** a basis for $\mathbb R^2$?
+
+<VectorAnswer answer={[6]} labels={["h"]} prefix="h =" />
+
+<Hint>
+Two vectors in $\mathbb R^2$ form a basis unless one is a multiple of the other.
+</Hint>
+
+<Answer>
+The operation $R_2 - 2R_1$ turns $\begin{bmatrix} 1 & 3 \\ 2 & h \end{bmatrix}$ into $\begin{bmatrix} 1 & 3 \\ 0 & h - 6 \end{bmatrix}$. The second column loses its pivot when $h = 6$, and then $(3, 6) = 3(1, 2)$.
+</Answer>
+</Check>
+
+<Check>
+Find a basis for the plane $H$ of vectors $(x_1, x_2, x_3)$ with $x_1 - x_2 + 2x_3 = 0$. Solve for $x_1$, split by the free variables $x_2$ and $x_3$, and enter the two basis vectors as the columns of a $3 \times 2$ matrix, row by row. (Modeled on Lay §4.3 #21.)
+
+<VectorAnswer answer={[1, -2, 1, 0, 0, 1]} columns={2} />
+
+<Hint>
+Solving gives $x_1 = x_2 - 2x_3$. Write $(x_1, x_2, x_3)$ as $x_2$ times one vector plus $x_3$ times another.
+</Hint>
+
+<Answer>
 $$
-3\begin{bmatrix} 1 \\ 1 \end{bmatrix} + 1\begin{bmatrix} 1 \\ -1 \end{bmatrix} = \begin{bmatrix} 4 \\ 2 \end{bmatrix}
+\begin{bmatrix} x_2 - 2x_3 \\ x_2 \\ x_3 \end{bmatrix} = x_2\begin{bmatrix} 1 \\ 1 \\ 0 \end{bmatrix} + x_3\begin{bmatrix} -2 \\ 0 \\ 1 \end{bmatrix}
 $$
 
-These are the only weights that work, because $\mathcal B$ is a basis.
+The two vectors span $H$, and they are independent because neither is a multiple of the other, so they form a basis. Both lie in $H$: $1 - 1 + 0 = 0$ and $-2 - 0 + 2 = 0$.
 </Answer>
 </Check>
 
@@ -128,7 +295,79 @@ In $\mathbb P_1$, let $\mathbf p_1(t) = 1 + 2t$, $\mathbf p_2(t) = 1 - 2t$ and $
 
 <VectorAnswer answer={[1.5, 1.5]} labels={["a", "b"]} />
 
+<Hint>
+Match the constant terms and the $t$ terms separately.
+</Hint>
+
 <Answer>
 Matching coefficients gives $a + b = 3$ for the constant term and $2a - 2b = 0$ for the $t$ term. So $a = b$ and $a = b = \tfrac32$. Because $\mathbf p_3$ is a combination of $\mathbf p_1$ and $\mathbf p_2$, it can be dropped, and $\{\mathbf p_1, \mathbf p_2\}$ is a basis for the span, which is all of $\mathbb P_1$.
+</Answer>
+</Check>
+
+<Check>
+Find the weights $c_1, c_2, c_3$ with $c_1 \cdot 1 + c_2(1 + t) + c_3(1 + t + t^2) = 4 + t - 2t^2$.
+
+<VectorAnswer answer={[3, 3, -2]} labels={["c₁", "c₂", "c₃"]} />
+
+<Hint>
+Only the last basis polynomial has a $t^2$ term, so start there and work backward.
+</Hint>
+
+<Answer>
+$$
+\begin{aligned}
+t^2:\quad c_3 &= -2 \\
+t:\quad c_2 + c_3 &= 1 \;\Rightarrow\; c_2 = 3 \\
+1:\quad c_1 + c_2 + c_3 &= 4 \;\Rightarrow\; c_1 = 3
+\end{aligned}
+$$
+
+Check: $3 + 3(1 + t) - 2(1 + t + t^2) = 4 + t - 2t^2$.
+</Answer>
+</Check>
+
+### Challenge
+
+<Check>
+For which value of $k$ is $\{(1, 0, 1),\ (2, 1, k),\ (0, 1, 1)\}$ **not** a basis for $\mathbb R^3$?
+
+<VectorAnswer answer={[3]} labels={["k"]} prefix="k =" />
+
+<Hint>
+Row reduce the $3 \times 3$ matrix with $k$ left as a letter and find when a pivot disappears.
+</Hint>
+
+<Answer>
+$$
+\begin{bmatrix} 1 & 2 & 0 \\ 0 & 1 & 1 \\ 1 & k & 1 \end{bmatrix}
+\sim \begin{bmatrix} 1 & 2 & 0 \\ 0 & 1 & 1 \\ 0 & k - 2 & 1 \end{bmatrix}
+\sim \begin{bmatrix} 1 & 2 & 0 \\ 0 & 1 & 1 \\ 0 & 0 & 3 - k \end{bmatrix}
+$$
+
+The steps are $R_3 - R_1$, then $R_3 - (k - 2)R_2$. The last pivot disappears when $k = 3$. Then $(2, 1, 3) = 2(1, 0, 1) + (0, 1, 1)$, so the set is dependent.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="A spanning set satisfies $2\mathbf v_1 - \mathbf v_2 + 0\,\mathbf v_3 = \mathbf 0$. Which vector can you remove without shrinking the span?"
+  options={["Only $\\mathbf v_3$", "$\\mathbf v_1$ or $\\mathbf v_2$", "Any of the three"]}
+  answer={1}
+>
+The relation can be solved for $\mathbf v_1 = \tfrac12\mathbf v_2$ or for $\mathbf v_2 = 2\mathbf v_1$, so either of those is redundant. It cannot be solved for $\mathbf v_3$, whose weight is $0$, so removing $\mathbf v_3$ may shrink the span.
+</Choice>
+</Check>
+
+<Check>
+Suppose $\{\mathbf b_1, \mathbf b_2\}$ is a basis for $\mathbb R^2$. Prove that $\{\mathbf b_1,\ \mathbf b_1 + \mathbf b_2\}$ is also a basis for $\mathbb R^2$.
+
+<Hint>
+Two vectors in $\mathbb R^2$ form a basis when they are independent, because the matrix is square. Start from $a\mathbf b_1 + b(\mathbf b_1 + \mathbf b_2) = \mathbf 0$.
+</Hint>
+
+<Answer>
+Suppose $a\mathbf b_1 + b(\mathbf b_1 + \mathbf b_2) = \mathbf 0$. Regrouping gives $(a + b)\,\mathbf b_1 + b\,\mathbf b_2 = \mathbf 0$. Since $\{\mathbf b_1, \mathbf b_2\}$ is independent, $a + b = 0$ and $b = 0$, so $a = 0$ as well. The new pair is independent.
+
+Two independent vectors in $\mathbb R^2$ form a square matrix with a pivot in every column, and so with a pivot in every row. The pair also spans $\mathbb R^2$, so it is a basis.
 </Answer>
 </Check>
