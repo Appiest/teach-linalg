@@ -1,28 +1,78 @@
 Yesterday you multiplied a matrix by one vector at a time. Today asks what a matrix does to every vector at once. Read that way, the product is a rule: feed in any $\yellow{\mathbf x}$ and the matrix hands back $A\yellow{\mathbf x}$, and doing that to every point at once moves the whole plane. The rest of the course leans on this picture of a matrix as a motion, starting tomorrow, when Day 6 runs two motions in a row.
 
+Each section below opens with a problem. Try it before you open the walkthrough, even if you only get partway.
+
+## Transformations
+
+<Problem>
+Let $A = \begin{bmatrix} \green{1} & \red{1} \\ \green{0} & \red{1} \end{bmatrix}$. Compute $A\yellow{\mathbf x}$ for $\yellow{\mathbf x} = (1, 2)$. Then compute $A(0, 2)$ and $A(3, 0)$. What does $A$ do to a point, in words?
+
+<VectorAnswer answer={[3, 2]} />
+
+<Solution>
+By the row rule, $A(x_1, x_2) = (x_1 + x_2,\ x_2)$. So
+
+$$
+A\begin{bmatrix} 1 \\ 2 \end{bmatrix} = \begin{bmatrix} 3 \\ 2 \end{bmatrix}, \qquad
+A\begin{bmatrix} 0 \\ 2 \end{bmatrix} = \begin{bmatrix} 2 \\ 2 \end{bmatrix}, \qquad
+A\begin{bmatrix} 3 \\ 0 \end{bmatrix} = \begin{bmatrix} 3 \\ 0 \end{bmatrix}.
+$$
+
+Look at what changed. The second entry, the height, never changes. The first entry grows by the height: $(1, 2)$ moved $2$ to the right, $(0, 2)$ also moved $2$ to the right, and $(3, 0)$ sits at height $0$ and did not move at all. So $A$ slides each point sideways by its height.
+</Solution>
+</Problem>
+
+<Pair>
+<Figure src="shear" alt="A shear. The blue grid lines lean to the right while the horizontal lines stay put. The green arrow e1 stays at (1, 0), the red arrow e2 lands on (1, 1), and the yellow arrow Ax ends at (3, 2). The matrix A has green first column (1, 0) and red second column (1, 1)." />
+
+Doing that to every point moves the whole grid. This matrix is a **shear**: the base line stays still and the grid leans over. The grid lines stay straight, parallel and evenly spaced, and the origin stays put.
+</Pair>
+
 <Definition term="Transformation">
 A **transformation** $T$ from $\mathbb{R}^n$ to $\mathbb{R}^m$ is a rule that assigns to each vector $\mathbf x$ in $\mathbb{R}^n$ a vector $T(\mathbf x)$ in $\mathbb{R}^m$. We write $T : \mathbb{R}^n \to \mathbb{R}^m$. The set $\mathbb{R}^n$ is the **domain**, $\mathbb{R}^m$ is the **codomain**, and $T(\mathbf x)$ is the **image** of $\mathbf x$. The set of all images is the **range** of $T$.
 
 When $A$ is an $m \times n$ matrix, $T(\mathbf x) = A\mathbf x$ is a **matrix transformation**. Its domain is $\mathbb{R}^n$ because $\mathbf x$ needs one entry per column of $A$, and its codomain is $\mathbb{R}^m$ because each column has $m$ entries.
 </Definition>
 
-The range matters because it says which equations $A\mathbf x = \mathbf b$ have a solution. On Day 16 the range of $\mathbf x \mapsto A\mathbf x$ gets its own name, the column space of $A$.
-
-<Pair>
-<Figure src="shear" alt="A shear. The blue grid lines lean to the right while the horizontal lines stay put. The green arrow e1 stays at (1, 0), the red arrow e2 lands on (1, 1), and the yellow arrow Ax ends at (3, 2). The matrix A has green first column (1, 0) and red second column (1, 1)." />
-
-$$
-\begin{bmatrix} \green{1} & \red{1} \\ \green{0} & \red{1} \end{bmatrix}\yellow{\begin{bmatrix} 1 \\ 2 \end{bmatrix}} = \teal{\begin{bmatrix} 3 \\ 2 \end{bmatrix}}
-$$
-
-This matrix is a **shear**. It slides each point sideways by its height, so the base line stays still and the grid leans over. The grid lines stay straight, parallel and evenly spaced, and the origin stays put.
-</Pair>
+<Choice
+  question="Let $A$ be a $2 \times 3$ matrix. The map $T(\mathbf x) = A\mathbf x$ goes"
+  options={["from $\\mathbb{R}^2$ to $\\mathbb{R}^3$", "from $\\mathbb{R}^3$ to $\\mathbb{R}^2$", "from $\\mathbb{R}^3$ to $\\mathbb{R}^3$"]}
+  answer={1}
+>
+The input $\mathbf x$ needs one entry for each of the $3$ columns, so the domain is $\mathbb{R}^3$. Each column has $2$ entries, so every output lives in $\mathbb{R}^2$.
+</Choice>
 
 ## The standard matrix
 
-Often you know a move in words, such as a quarter turn, and want its matrix. The goal of this section is a recipe for that matrix that needs no algebra.
+Often you know a move in words, such as a quarter turn, and want its matrix. This section finds a recipe for that matrix that needs no algebra.
 
-Every $\mathbf x$ in $\mathbb{R}^2$ is $x_1\green{\mathbf e_1} + x_2\red{\mathbf e_2}$, where $\green{\mathbf e_1} = (1, 0)$ and $\red{\mathbf e_2} = (0, 1)$. So once you know where $\green{\mathbf e_1}$ and $\red{\mathbf e_2}$ land, you know where everything lands. Those two landing spots are the columns of the matrix.
+<Problem>
+Turn the plane a quarter turn counterclockwise about the origin. Where do $\green{\mathbf e_1} = (1, 0)$ and $\red{\mathbf e_2} = (0, 1)$ land? Use that to find where $(2, 1)$ lands.
+
+<VectorAnswer answer={[-1, 2]} />
+
+<Solution>
+The arrow $\green{\mathbf e_1}$ points right, and a quarter turn counterclockwise makes it point up, so it lands on $(0, 1)$. The arrow $\red{\mathbf e_2}$ points up and turns to point left, so it lands on $(-1, 0)$.
+
+Now write $(2, 1)$ as a walk made of those arrows: $(2, 1) = 2\green{\mathbf e_1} + 1\red{\mathbf e_2}$. The turn carries the whole walk along rigidly, so the turned point is two turned $\green{\mathbf e_1}$ steps plus one turned $\red{\mathbf e_2}$ step:
+
+$$
+2\begin{bmatrix} 0 \\ 1 \end{bmatrix} + 1\begin{bmatrix} -1 \\ 0 \end{bmatrix} = \begin{bmatrix} -1 \\ 2 \end{bmatrix}.
+$$
+
+By Day 4, that combination is a matrix times $(2, 1)$, and the matrix has the two landing spots as its columns:
+
+$$
+\begin{bmatrix} \green{0} & \red{-1} \\ \green{1} & \red{0} \end{bmatrix}\begin{bmatrix} 2 \\ 1 \end{bmatrix} = \begin{bmatrix} -1 \\ 2 \end{bmatrix}.
+$$
+</Solution>
+</Problem>
+
+<Pair>
+<Figure src="quarter-turn" alt="A quarter turn counterclockwise. The green arrow e1 now points up to (0, 1) and the red arrow e2 points left to (−1, 0). Their coordinates form the columns of A = [[0, −1], [1, 0]]." />
+
+Every $\mathbf x$ in $\mathbb{R}^2$ is $x_1\green{\mathbf e_1} + x_2\red{\mathbf e_2}$. So once you know where $\green{\mathbf e_1}$ and $\red{\mathbf e_2}$ land, you know where everything lands, and those two landing spots are the columns of the matrix.
+</Pair>
 
 <Definition term="Theorem 10">
 Let $T : \mathbb{R}^n \to \mathbb{R}^m$ be a linear transformation. Then there is exactly one matrix $A$ with $T(\mathbf x) = A\mathbf x$ for every $\mathbf x$ in $\mathbb{R}^n$, namely
@@ -34,21 +84,74 @@ $$
 where $\mathbf e_j$ is column $j$ of the $n \times n$ identity matrix. This $A$ is the **standard matrix** of $T$.
 </Definition>
 
-<Pair>
-<Figure src="quarter-turn" alt="A quarter turn counterclockwise. The green arrow e1 now points up to (0, 1) and the red arrow e2 points left to (−1, 0). Their coordinates form the columns of A = [[0, −1], [1, 0]]." />
-
-A counterclockwise quarter turn sends $\green{\mathbf e_1}$ up to $(0, 1)$ and $\red{\mathbf e_2}$ left to $(-1, 0)$. Writing those as columns gives the matrix with no formula to memorize:
-
-$$
-A = \begin{bmatrix} \green{0} & \red{-1} \\ \green{1} & \red{0} \end{bmatrix}
-$$
-</Pair>
+The word "linear" is defined precisely in the section after next. For now it means the map carries walks along the way the quarter turn did.
 
 <TransformExplorer matrix={[[1, 0], [0, 1]]} goal={{ matrix: [[0, 1], [-1, 0]], prompt: "Drag the green and red tips to build a quarter turn clockwise. Picture where $\\mathbf e_1$ and $\\mathbf e_2$ should end up first.", success: "That's it. Turning clockwise sends $\\mathbf e_1$ down to $(0, -1)$ and $\\mathbf e_2$ right to $(1, 0)$, so those are the two columns." }} />
 
+<Warning>
+$T(\mathbf e_1)$ is the first **column** of $A$, not the first row. You can always check: $A\mathbf e_1$ picks out the first column, so it must equal $T(\mathbf e_1)$.
+</Warning>
+
+## Rotation
+
+The quarter turn was one angle. The same recipe gives a turn through any angle $\varphi$.
+
+<Problem>
+Rotate the plane counterclockwise through an angle $\varphi$. Where do $\green{\mathbf e_1}$ and $\red{\mathbf e_2}$ land? Write the matrix, and check it against Problem 2 with $\varphi = 90^\circ$.
+
+<Solution>
+The arrow $\green{\mathbf e_1}$ has length $1$ and ends up at angle $\varphi$ from the positive $x_1$-axis. A point on the unit circle at angle $\varphi$ is $(\cos\varphi, \sin\varphi)$, so that is where $\green{\mathbf e_1}$ lands.
+
+The arrow $\red{\mathbf e_2}$ starts a quarter turn ahead of $\green{\mathbf e_1}$, so it ends at angle $\varphi + 90^\circ$. Turning $(\cos\varphi, \sin\varphi)$ by a quarter turn gives $(-\sin\varphi, \cos\varphi)$, by the same move as Problem 2. The matrix is
+
+$$
+\begin{bmatrix} \green{\cos\varphi} & \red{-\sin\varphi} \\ \green{\sin\varphi} & \red{\cos\varphi} \end{bmatrix}.
+$$
+
+At $\varphi = 90^\circ$, $\cos\varphi = 0$ and $\sin\varphi = 1$, so the matrix is $\begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}$, the quarter turn from Problem 2.
+</Solution>
+</Problem>
+
+Find the angle that makes the F land on its dashed outline. Read the first column of the target matrix as a point on the dashed unit circle.
+
+<RotationDial target={135} start={0} />
+
+<Warning>
+The minus sign sits on $\sin\varphi$ in the top right. A clockwise turn uses a negative angle, so a turn of $45^\circ$ clockwise has $\varphi = -45^\circ$ and $\sin\varphi < 0$.
+</Warning>
+
 ## Linearity
 
-The recipe above works only because matrix maps obey two rules, and naming those rules tells you which moves a matrix can make. On Day 20 the same two rules become the definition of a linear map between any vector spaces, so differentiation counts too.
+Problem 2 relied on the turn carrying a walk of $\green{\mathbf e_1}$ and $\red{\mathbf e_2}$ steps along with it. Naming that property tells you exactly which moves a matrix can make.
+
+<Problem>
+A map $T$ carries walks along, and it sends $\green{\mathbf e_1}$ to $(1, 2)$ and $\red{\mathbf e_2}$ to $(-3, 1)$. Find $T(4, -1)$ and the standard matrix of $T$.
+
+<VectorAnswer answer={[7, 7]} />
+
+<Solution>
+Write the input as a walk: $(4, -1) = 4\green{\mathbf e_1} - 1\red{\mathbf e_2}$. The map moves each step, and the walk follows:
+
+$$
+\begin{aligned}
+T\begin{bmatrix} 4 \\ -1 \end{bmatrix} &= 4\,\green{T(\mathbf e_1)} - 1\,\red{T(\mathbf e_2)} \\
+&= \begin{bmatrix} 4 \\ 8 \end{bmatrix} - \begin{bmatrix} -3 \\ 1 \end{bmatrix} = \begin{bmatrix} 7 \\ 7 \end{bmatrix}.
+\end{aligned}
+$$
+
+The standard matrix has the two images as columns, $\begin{bmatrix} \green{1} & \red{-3} \\ \green{2} & \red{1} \end{bmatrix}$. Check with the row rule: $1 \cdot 4 + (-3)(-1) = 7$ and $2 \cdot 4 + 1 \cdot (-1) = 7$.
+</Solution>
+</Problem>
+
+<Pair>
+<Figure src="walk" alt="The grid moved by the matrix [[2, −1], [1, 1]]. Two green steps T(e1) = (2, 1) and one red step T(e2) = (−1, 1) are placed tip to tail, and the yellow arrow T(x) runs from the origin to their end at (3, 3)." />
+
+The same walk picture works for any linear map. Here $\yellow{\mathbf x} = (2, 1)$ is two $\green{\mathbf e_1}$ steps and one $\red{\mathbf e_2}$ step, and its image is two $\green{T(\mathbf e_1)}$ steps and one $\red{T(\mathbf e_2)}$ step:
+
+$$
+T(\yellow{\mathbf x}) = 2\,\green{T(\mathbf e_1)} + 1\,\red{T(\mathbf e_2)}
+$$
+</Pair>
 
 <Definition term="Linear transformation">
 A transformation $T$ is **linear** when, for all vectors $\mathbf u, \mathbf v$ in its domain and every scalar $c$,
@@ -60,52 +163,109 @@ A transformation $T$ is **linear** when, for all vectors $\mathbf u, \mathbf v$ 
 Every matrix transformation is linear, because $A(\mathbf u + \mathbf v) = A\mathbf u + A\mathbf v$ and $A(c\mathbf u) = cA\mathbf u$ from Day 4.
 </Definition>
 
-Two facts follow right away. Taking $c = 0$ in (ii) gives $T(\mathbf 0) = \mathbf 0$, so a linear map never moves the origin. Using (i) and then (ii) gives $T(c\,\mathbf u + d\,\mathbf v) = c\,T(\mathbf u) + d\,T(\mathbf v)$. A slide such as $T(\mathbf x) = \mathbf x + (1, 1)$ keeps grid lines straight, but it moves the origin, so it is not linear and no matrix can do it.
+<Concept title="What linearity guarantees">
+Using (i) and then (ii) gives $T(c\,\mathbf u + d\,\mathbf v) = c\,T(\mathbf u) + d\,T(\mathbf v)$. So the images of any two vectors determine the images of all their combinations, as in Problem 4.
 
-<Pair>
-<Figure src="walk" alt="The grid moved by the matrix [[2, −1], [1, 1]]. Two green steps T(e1) = (2, 1) and one red step T(e2) = (−1, 1) are placed tip to tail, and the yellow arrow T(x) runs from the origin to their end at (3, 3)." />
+Taking $c = 0$ in (ii) gives $T(\mathbf 0) = 0\,T(\mathbf u) = \mathbf 0$. A linear map never moves the origin. A slide such as $T(\mathbf x) = \mathbf x + (1, 1)$ keeps grid lines straight, but it sends $\mathbf 0$ to $(1, 1)$, so it is not linear and no matrix can do it. On Day 20 these same two rules define a linear map between any vector spaces, so differentiation counts too.
+</Concept>
 
-The vector $\yellow{\mathbf x} = (2, 1)$ is a walk of two $\green{\mathbf e_1}$ steps and one $\red{\mathbf e_2}$ step. The map moves each step, and the walk follows:
+The vectors $\mathbf u$ and $\mathbf v$ below are not $\green{\mathbf e_1}$ and $\red{\mathbf e_2}$, but the same reasoning works for them.
+
+<ImagePredictor u={[1, 1]} v={[1, -1]} imageU={[2, 1]} imageV={[-1, 2]} weights={[2, 1]} />
+
+<Choice
+  question="Which of these maps is linear?"
+  options={["$T(x_1, x_2) = (x_1 + 1,\\ x_2)$", "$T(x_1, x_2) = (x_1 x_2,\\ x_2)$", "$T(x_1, x_2) = (2x_2,\\ -x_1)$"]}
+  answer={2}
+>
+The third map is $\begin{bmatrix} 0 & 2 \\ -1 & 0 \end{bmatrix}\mathbf x$, a matrix map, so it is linear. The first sends $\mathbf 0$ to $(1, 0)$, so it fails $T(\mathbf 0) = \mathbf 0$. The second fails (ii): doubling $(1, 1)$ gives $T(2, 2) = (4, 2)$, but $2\,T(1, 1) = (2, 2)$.
+</Choice>
+
+## The range
+
+Going backwards asks which $\mathbf x$ has a given image $\mathbf b$. That is Day 4's equation $A\mathbf x = \mathbf b$, seen as a picture.
+
+<Problem>
+Let $T(\mathbf x) = A\mathbf x$ with $A = \begin{bmatrix} 2 & -1 \\ 1 & 1 \end{bmatrix}$. Is $\mathbf b = (1, 5)$ in the range of $T$? If so, find an $\mathbf x$ with $T(\mathbf x) = \mathbf b$.
+
+<VectorAnswer answer={[2, 3]} labels={["x₁", "x₂"]} />
+
+<Solution>
+$\mathbf b$ is in the range exactly when $A\mathbf x = \mathbf b$ has a solution, so row reduce $\begin{bmatrix} A & \mathbf b \end{bmatrix}$.
+
+<Steps>
+<Step>
+Swap the rows so the pivot is a $1$, which avoids fractions:
 
 $$
-T(\yellow{\mathbf x}) = 2\,\green{T(\mathbf e_1)} + 1\,\red{T(\mathbf e_2)}
+\begin{bmatrix} 2 & -1 & 1 \\ 1 & 1 & 5 \end{bmatrix} \sim \begin{bmatrix} 1 & 1 & 5 \\ 2 & -1 & 1 \end{bmatrix}
 $$
-</Pair>
-
-Suppose $T$ is linear with $\green{T(\mathbf e_1)} = (1, 2)$ and $\red{T(\mathbf e_2)} = (-3, 1)$. You can find $T(4, -1)$ from those two images alone:
+</Step>
+<Step>
+Clear below the pivot with $R_2 \leftarrow R_2 - 2R_1$. Row 2 becomes $(2 - 2,\ -1 - 2,\ 1 - 10) = (0, -3, -9)$:
 
 $$
-\begin{aligned}
-T\begin{bmatrix} 4 \\ -1 \end{bmatrix} &= 4\,\green{T(\mathbf e_1)} - 1\,\red{T(\mathbf e_2)} \\
-&= 4\begin{bmatrix} 1 \\ 2 \end{bmatrix} - \begin{bmatrix} -3 \\ 1 \end{bmatrix} = \begin{bmatrix} 7 \\ 7 \end{bmatrix},
-\end{aligned}
+\sim \begin{bmatrix} 1 & 1 & 5 \\ 0 & -3 & -9 \end{bmatrix}
+$$
+</Step>
+<Step>
+Scale row 2 by $-\tfrac13$ to get $(0, 1, 3)$, then $R_1 \leftarrow R_1 - R_2$:
+
+$$
+\sim \begin{bmatrix} 1 & 0 & 2 \\ 0 & 1 & 3 \end{bmatrix}
 $$
 
-and the standard matrix is $\begin{bmatrix} \green{1} & \red{-3} \\ \green{2} & \red{1} \end{bmatrix}$.
+So $\mathbf x = (2, 3)$, and $\mathbf b$ is in the range. Check: $2(2, 1) + 3(-1, 1) = (1, 5)$.
+</Step>
+</Steps>
+</Solution>
+</Problem>
 
-Going backwards asks which $\mathbf x$ has a given image $\mathbf b$, so it is Day 4's equation $A\mathbf x = \mathbf b$ seen as a picture. Because the moved grid is made of copies of $\green{T(\mathbf e_1)}$ and $\red{T(\mathbf e_2)}$, you can count how many of each step reach $\mathbf b$.
+The moved grid is made of copies of $\green{T(\mathbf e_1)}$ and $\red{T(\mathbf e_2)}$, so you can also count how many of each step reach $\mathbf b$.
 
 <PreimageHunt matrix={[[2, -1], [1, 1]]} target={[1, 5]} success="Found it. With $\mathbf x = (2, 3)$ you take two green steps and three red steps, and $2(2, 1) + 3(-1, 1) = (1, 5)$." />
 
-Row reduction gives the same answer without a picture. The point $\mathbf b$ is in the range exactly when $\begin{bmatrix} A & \mathbf b \end{bmatrix}$ is consistent:
-
-$$
-\begin{bmatrix} 2 & -1 & 1 \\ 1 & 1 & 5 \end{bmatrix} \sim \begin{bmatrix} 1 & 1 & 5 \\ 0 & -3 & -9 \end{bmatrix} \sim \begin{bmatrix} 1 & 0 & 2 \\ 0 & 1 & 3 \end{bmatrix}
-$$
+<Warning>
+The codomain is where outputs are allowed to live, and the range is where they actually land. The projection $\begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix}$ has codomain $\mathbb{R}^2$, but every output has second entry $0$, so its range is only the $x_1$-axis. On Day 16 the range of $\mathbf x \mapsto A\mathbf x$ gets its own name, the column space of $A$.
+</Warning>
 
 ## A gallery of moves
 
+<Problem>
+A horizontal shear keeps $\green{\mathbf e_1}$ fixed and sends $\red{\mathbf e_2}$ to $(2, 1)$. Write its matrix, and find where the corner $(1, 1)$ of the unit square lands.
+
+<VectorAnswer answer={[3, 1]} />
+
+<Solution>
+The columns are the landing spots, so the matrix is $\begin{bmatrix} \green{1} & \red{2} \\ \green{0} & \red{1} \end{bmatrix}$. The corner is $\green{\mathbf e_1} + \red{\mathbf e_2}$, so it lands on $(1, 0) + (2, 1) = (3, 1)$. The top edge of the square slid $2$ to the right while the bottom edge stayed put.
+</Solution>
+</Problem>
+
 <Figure src="gallery" alt="Four small grids, each with the unit square outlined in gray and its image filled. A stretch doubles the square's width. A reflection flips it to the left and fills it pink. A vertical shear tilts it upward. A projection flattens the whole grid onto the horizontal axis. Each matrix is printed below its grid." wide />
 
-Each matrix above is $\begin{bmatrix} T(\mathbf e_1) & T(\mathbf e_2) \end{bmatrix}$, so you can rebuild it from the picture. From left to right they are $\begin{bmatrix} 2 & 0 \\ 0 & 1 \end{bmatrix}$, $\begin{bmatrix} -1 & 0 \\ 0 & 1 \end{bmatrix}$, $\begin{bmatrix} 1 & 0 \\ 1 & 1 \end{bmatrix}$ and $\begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix}$. A pink square means the map flipped the plane over, and on Day 25 the sign of the determinant detects exactly that flip. Turning $\green{\mathbf e_1}$ and $\red{\mathbf e_2}$ through an angle $\varphi$ gives the rotation matrix the same way:
+Each matrix above is $\begin{bmatrix} T(\mathbf e_1) & T(\mathbf e_2) \end{bmatrix}$, so you can rebuild it from the picture. From left to right they are $\begin{bmatrix} 2 & 0 \\ 0 & 1 \end{bmatrix}$, $\begin{bmatrix} -1 & 0 \\ 0 & 1 \end{bmatrix}$, $\begin{bmatrix} 1 & 0 \\ 1 & 1 \end{bmatrix}$ and $\begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix}$. A pink square means the map flipped the plane over, and on Day 25 the sign of the determinant detects exactly that flip.
 
+<Concept title="The standard catalog">
 $$
-\begin{bmatrix} \green{\cos\varphi} & \red{-\sin\varphi} \\ \green{\sin\varphi} & \red{\cos\varphi} \end{bmatrix}
+\begin{array}{ll}
+\textsf{Reflection across the } x_1\textsf{-axis} & \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix} \\[10pt]
+\textsf{Reflection across the line } x_2 = x_1 & \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix} \\[10pt]
+\textsf{Horizontal shear by } k & \begin{bmatrix} 1 & k \\ 0 & 1 \end{bmatrix} \\[10pt]
+\textsf{Vertical stretch by } k & \begin{bmatrix} 1 & 0 \\ 0 & k \end{bmatrix} \\[10pt]
+\textsf{Projection onto the } x_1\textsf{-axis} & \begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix}
+\end{array}
 $$
+
+You never need to memorize this table. Picture where $\green{\mathbf e_1}$ and $\red{\mathbf e_2}$ go and write them down as columns.
+</Concept>
 
 <ShapeMatch target={[[0, 1], [1, 0]]} prompt="Drag the green and red tips so the F lands exactly on the dashed outline." success="Matched. This map swaps $\mathbf e_1$ and $\mathbf e_2$, which reflects the plane across the line $x_2 = x_1$. The F turned pink because it was flipped over." />
 
+Tomorrow you run two of these moves in a row, and the matrix of the combined move turns out to be a product of matrices.
+
 ## Practice
+
+### Warm-up
 
 <Check>
 A $3 \times 5$ matrix $A$ defines $T(\mathbf x) = A\mathbf x$ as a map $T : \mathbb{R}^n \to \mathbb{R}^m$. Find $n$ and $m$. (Modeled on Lay §1.8 #21.)
@@ -118,12 +278,38 @@ The product $A\mathbf x$ needs one entry of $\mathbf x$ for each of the $5$ colu
 </Check>
 
 <Check>
+Let $A = \begin{bmatrix} 2 & -1 \\ 0 & 3 \\ 1 & 1 \end{bmatrix}$ and $T(\mathbf x) = A\mathbf x$. Find the image of $\mathbf u = (3, 2)$. (Modeled on Lay §1.8 #1.)
+
+<VectorAnswer answer={[4, 6, 5]} />
+
+<Answer>
+By the row rule, $T(\mathbf u) = (2 \cdot 3 - 1 \cdot 2,\ 0 \cdot 3 + 3 \cdot 2,\ 1 \cdot 3 + 1 \cdot 2) = (4, 6, 5)$. The input lives in $\mathbb{R}^2$ and the image lives in $\mathbb{R}^3$.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="Which matrix reflects the plane across the $x_1$-axis?"
+  options={["$\\begin{bmatrix} -1 & 0 \\\\ 0 & 1 \\end{bmatrix}$", "$\\begin{bmatrix} 1 & 0 \\\\ 0 & -1 \\end{bmatrix}$", "$\\begin{bmatrix} 0 & 1 \\\\ 1 & 0 \\end{bmatrix}$"]}
+  answer={1}
+>
+Reflecting across the $x_1$-axis keeps $\mathbf e_1 = (1, 0)$ where it is and flips $\mathbf e_2$ to $(0, -1)$. Those are the two columns.
+</Choice>
+</Check>
+
+### Core
+
+<Check>
 $T$ first performs a vertical shear that sends $\mathbf e_1$ to $\mathbf e_1 + 2\mathbf e_2$ and keeps $\mathbf e_2$ fixed, then reflects through the line $x_2 = x_1$. Find $T(1, 1)$. (Modeled on Lay §1.9 #9.)
 
 <VectorAnswer answer={[3, 1]} />
 
+<Hint>
+Follow $\mathbf e_1$ and $\mathbf e_2$ through both steps, in order. The reflection swaps the two coordinates.
+</Hint>
+
 <Answer>
-Track each basis vector through both steps. The reflection swaps the two coordinates.
+Track each basis vector through both steps.
 
 $$
 \begin{aligned}
@@ -141,6 +327,10 @@ A linear map $T$ sends $\mathbf u = (1, 1)$ to $(4, 2)$ and $\mathbf v = (1, -1)
 
 <VectorAnswer answer={[3, -1]} />
 
+<Hint>
+Write $\mathbf e_1$ as a combination of $\mathbf u$ and $\mathbf v$. Adding them gives $(2, 0)$.
+</Hint>
+
 <Answer>
 Since $\mathbf e_1 = \tfrac12(\mathbf u + \mathbf v)$, linearity gives
 
@@ -152,4 +342,102 @@ In the same way $\mathbf e_2 = \tfrac12(\mathbf u - \mathbf v)$ gives $T(\mathbf
 </Answer>
 </Check>
 
-Tomorrow you run two of these moves in a row, and the matrix of the combined move turns out to be a product of matrices.
+<Check>
+Let $T(\mathbf x) = A\mathbf x$ with $A = \begin{bmatrix} 1 & 2 \\ 0 & 1 \\ 2 & 3 \end{bmatrix}$. Find $\mathbf x$ with $T(\mathbf x) = (4, 1, 7)$. (Modeled on Lay §1.8 #9.)
+
+<VectorAnswer answer={[2, 1]} labels={["x₁", "x₂"]} />
+
+<Hint>
+Row 2 of the system says $x_2 = 1$ directly. Use it in row 1, and then check row 3.
+</Hint>
+
+<Answer>
+The rows are $x_1 + 2x_2 = 4$, $\ x_2 = 1$ and $2x_1 + 3x_2 = 7$. Row 2 gives $x_2 = 1$, and then row 1 gives $x_1 = 2$. Row 3 checks: $4 + 3 = 7$. So $\mathbf x = (2, 1)$. Had the third entry of $\mathbf b$ been anything other than $7$, $\mathbf b$ would not be in the range.
+</Answer>
+</Check>
+
+<Check>
+Find the standard matrix of a quarter turn clockwise. Enter it row by row. (Modeled on Lay §1.9 #3.)
+
+<VectorAnswer answer={[0, 1, -1, 0]} columns={2} />
+
+<Hint>
+Clockwise sends $\mathbf e_1$ pointing down. Alternatively, use the rotation matrix with $\varphi = -90^\circ$.
+</Hint>
+
+<Answer>
+A clockwise quarter turn sends $\mathbf e_1 = (1, 0)$ to $(0, -1)$ and $\mathbf e_2 = (0, 1)$ to $(1, 0)$. With those as columns,
+
+$$
+A = \begin{bmatrix} 0 & 1 \\ -1 & 0 \end{bmatrix}.
+$$
+
+The rotation formula agrees: $\cos(-90^\circ) = 0$ and $\sin(-90^\circ) = -1$.
+</Answer>
+</Check>
+
+<Check>
+Let $T(x_1, x_2) = (x_1 + 4x_2,\ 3x_1 - x_2)$. Find $T(\mathbf e_1)$ and $T(\mathbf e_2)$, write the standard matrix, and use it to find $T(2, 1)$. (Modeled on Lay §1.9 #19.)
+
+<VectorAnswer answer={[6, 5]} />
+
+<Hint>
+Put $(1, 0)$ into the formula to get the first column, and $(0, 1)$ to get the second.
+</Hint>
+
+<Answer>
+$T(1, 0) = (1, 3)$ and $T(0, 1) = (4, -1)$, so
+
+$$
+A = \begin{bmatrix} 1 & 4 \\ 3 & -1 \end{bmatrix}, \qquad A\begin{bmatrix} 2 \\ 1 \end{bmatrix} = \begin{bmatrix} 2 + 4 \\ 6 - 1 \end{bmatrix} = \begin{bmatrix} 6 \\ 5 \end{bmatrix}.
+$$
+
+The formula gives the same thing directly: $(2 + 4,\ 6 - 1) = (6, 5)$.
+</Answer>
+</Check>
+
+### Challenge
+
+<Check>
+$T$ first rotates the plane a quarter turn counterclockwise and then reflects it across the $x_1$-axis. Find the standard matrix of $T$ and enter it row by row. Which single reflection is it?
+
+<VectorAnswer answer={[0, -1, -1, 0]} columns={2} />
+
+<Hint>
+Track $\mathbf e_1$ and $\mathbf e_2$ through the turn first, then flip the sign of each second entry.
+</Hint>
+
+<Answer>
+The turn sends $\mathbf e_1 \to (0, 1)$ and $\mathbf e_2 \to (-1, 0)$. The reflection flips the sign of the second entry, so $\mathbf e_1 \to (0, -1)$ and $\mathbf e_2 \to (-1, 0)$:
+
+$$
+A = \begin{bmatrix} 0 & -1 \\ -1 & 0 \end{bmatrix}.
+$$
+
+This matrix swaps the two coordinates and negates both, so it reflects the plane across the line $x_2 = -x_1$. Two moves in a row made a single move, which is tomorrow's topic.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="A linear map $T$ has $T(\mathbf u) = (1, 2)$. What is $T(-3\mathbf u)$?"
+  options={["$(-3, -6)$", "$(-2, -1)$", "It depends on $\\mathbf u$"]}
+  answer={0}
+>
+Rule (ii) with $c = -3$ gives $T(-3\mathbf u) = -3\,T(\mathbf u) = (-3, -6)$. You do not need to know $\mathbf u$ or the matrix.
+</Choice>
+</Check>
+
+<Check>
+Show that $T(\mathbf x) = \mathbf x + (1, 1)$ is not linear. Then explain why every linear map must send $\mathbf 0$ to $\mathbf 0$.
+
+<Hint>
+Compute $T(\mathbf 0)$. For the second part, write $\mathbf 0 = 0\,\mathbf u$ for any $\mathbf u$ and use rule (ii).
+</Hint>
+
+<Answer>
+$T(\mathbf 0) = (1, 1)$, but a linear map sends $\mathbf 0$ to $\mathbf 0$, so $T$ is not linear. Rule (i) fails directly too: $T(\mathbf 0 + \mathbf 0) = (1, 1)$, while $T(\mathbf 0) + T(\mathbf 0) = (2, 2)$.
+
+For any linear $T$ and any vector $\mathbf u$, $\mathbf 0 = 0\,\mathbf u$, so rule (ii) gives $T(\mathbf 0) = T(0\,\mathbf u) = 0\,T(\mathbf u) = \mathbf 0$.
+</Answer>
+</Check>

@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { palette } from "@/lib/palette.generated";
-import { columnTex, describeVector, Goal, Panel, Readout, RichText, Tex, Workbench } from "./controls";
+import { columnTex, describeVector, Goal, Panel, Readout, RichText, Slider, Tex, Workbench } from "./controls";
 import { useSettled } from "./gesture";
-import { apply, det, nearlyEqual, texNumber, type Matrix2, type Vec } from "./math";
+import { add, apply, det, nearlyEqual, scale, texNumber, type Matrix2, type Vec } from "./math";
 import { Arrow, boundsAround, type Bounds, Handle, Label, Marker, Plane, usePlane } from "./plane";
 
 const GRID_REACH = 14;
@@ -132,6 +132,100 @@ export function ShapeMatch({ target, prompt, success }: { target: Matrix2; promp
           </Plane>
         }
         readout={<Readout tex={`A = ${basisMatrixTex(matrix)}`} />}
+      />
+    </Panel>
+  );
+}
+
+const rotation = (degrees: number): Matrix2 => {
+  const radians = (degrees * Math.PI) / 180;
+  const [c, s] = [Math.cos(radians), Math.sin(radians)];
+  return [[c, -s], [s, c]];
+};
+
+function UnitCircle() {
+  const { toSvg, unit } = usePlane();
+  const [cx, cy] = toSvg([0, 0]);
+  return <circle cx={cx} cy={cy} r={unit} fill="none" stroke="var(--palette-text-muted)" strokeOpacity={0.6} strokeWidth={1.5} strokeDasharray="4 5" aria-hidden />;
+}
+
+/** A rotation by an angle set with a slider. The goal is the angle whose matrix is given, shown as a dashed F to cover. */
+export function RotationDial({ target, start = 0 }: { target: number; start?: number }) {
+  const [angle, setAngle] = useState(start);
+  const matrix = rotation(angle);
+  const goalMatrix = rotation(target);
+  const [iImage, jImage] = columnsOf(matrix);
+  const { settled: solved, gesture } = useSettled(angle === target);
+  const ghostCorners = F_SHAPE.map((corner) => apply(goalMatrix, corner));
+  const symbolic = `\\begin{bmatrix} \\textcolor{${palette.i_hat}}{\\cos\\varphi} & \\textcolor{${palette.j_hat}}{-\\sin\\varphi} \\\\ \\textcolor{${palette.i_hat}}{\\sin\\varphi} & \\textcolor{${palette.j_hat}}{\\cos\\varphi} \\end{bmatrix}`;
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Slide the angle <Tex>{"\\varphi"}</Tex>, in degrees, until the F covers the dashed outline. The outline is the F moved by <Tex>{basisMatrixTex(goalMatrix)}</Tex>.</>}
+        success={<>That is <Tex>{`\\varphi = ${target}^\\circ`}</Tex>. The first column is <Tex>{`(\\cos ${target}^\\circ, \\sin ${target}^\\circ)`}</Tex>, which is where <Tex>{"\\mathbf e_1"}</Tex> lands on the dashed circle.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={boundsAround(ghostCorners, CLOSE_UP)} label="A letter F rotated about the origin by an adjustable angle, with the unit circle dashed and a dashed outline to match.">
+            <MovedGrid matrix={matrix} />
+            <UnitCircle />
+            {!solved ? <MovedShape matrix={goalMatrix} ghost /> : null}
+            <MovedShape matrix={matrix} />
+            <Arrow to={iImage} color="green" />
+            <Arrow to={jImage} color="red" />
+          </Plane>
+        }
+        readout={
+          <>
+            <Slider label={"\\varphi"} value={angle} onChange={setAngle} min={-180} max={180} step={15} color={palette.i_hat} />
+            <Readout tex={symbolic} />
+            <Readout tex={`= ${basisMatrixTex(matrix)}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+/** T is known only through T(u) and T(v). The learner drags a guess to where linearity says T(c u + d v) must land. */
+export function ImagePredictor({ u, v, imageU, imageV, weights }: { u: Vec; v: Vec; imageU: Vec; imageV: Vec; weights: Vec }) {
+  const [guess, setGuess] = useState<Vec>([0, 0]);
+  const firstLeg = scale(weights[0], imageU);
+  const answer = add(firstLeg, scale(weights[1], imageV));
+  const { settled: solved, gesture } = useSettled(nearlyEqual(guess, answer));
+  const combination = `${texNumber(weights[0])}\\,\\mathbf u ${weights[1] < 0 ? "-" : "+"} ${texNumber(Math.abs(weights[1]))}\\,\\mathbf v`;
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>You only know where <Tex>T</Tex> sends <Tex>{"\\mathbf u"}</Tex> and <Tex>{"\\mathbf v"}</Tex>. Drag the teal point to where <Tex>{`T(${combination})`}</Tex> must land.</>}
+        success={<>Linearity says <Tex>{`T(${combination}) = ${texNumber(weights[0])}\\,T(\\mathbf u) + ${texNumber(weights[1])}\\,T(\\mathbf v) = ${columnTex(answer)}`}</Tex>. You never needed the matrix.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={boundsAround([answer, firstLeg, imageU, imageV, u, v])} label="The vectors u and v dashed, their images T(u) and T(v) solid, and a teal point to drag. Use arrow keys or drag.">
+            <Arrow to={u} color="yellow" width={1.5} dashed />
+            <Arrow to={v} color="blue" width={1.5} dashed />
+            <Arrow to={imageU} color="yellow" />
+            <Arrow to={imageV} color="blue" />
+            <Label at={imageU} color="yellow" dx={8} dy={20}>T(u)</Label>
+            <Label at={imageV} color="blue" dx={-44}>T(v)</Label>
+            {solved ? <Arrow to={firstLeg} color="yellow" width={2} /> : null}
+            {solved ? <Arrow from={firstLeg} to={answer} color="blue" width={2} /> : null}
+            {solved ? <Marker at={answer} color="teal" ring /> : null}
+            <Handle at={guess} onMove={setGuess} color="teal" label={`Your guess for the image, at ${describeVector(guess)}`} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Readout tex={`T(\\mathbf u) = ${columnTex(imageU, palette.yellow)}`} />
+            <Readout tex={`T(\\mathbf v) = ${columnTex(imageV, palette.blue)}`} />
+            <Readout tex={`\\text{guess} = ${columnTex(guess, palette.teal)}`} />
+          </>
+        }
       />
     </Panel>
   );

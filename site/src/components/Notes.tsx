@@ -9,7 +9,7 @@ import { TransformExplorer } from "@/components/interactive/transform";
 import { EntryHunt, LineSpanPicker, RowLinesMeet, SpanPainter } from "@/components/interactive/span";
 import { PivotSpotter, RowReduceExplorer, RowReducer, SolutionCountExplorer } from "@/components/interactive/systems";
 import { ColumnSpanCheck, MatrixVectorExplorer, RowPictureSolver, SpanBreaker } from "@/components/interactive/matrix";
-import { PreimageHunt, ShapeMatch } from "@/components/interactive/transformations";
+import { ImagePredictor, PreimageHunt, RotationDial, ShapeMatch } from "@/components/interactive/transformations";
 import { ClosureHunt, PolynomialCombiner } from "@/components/interactive/vector-spaces";
 import { CostCompare, LUBuilder, SubstitutionSolver } from "@/components/interactive/lu";
 import { AdditionExplorer, CombinationTarget, DifferenceExplorer, GridWeights, ScaleExplorer, VectorExplorer } from "@/components/interactive/vectors";
@@ -115,6 +115,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     SpanBreaker,
     PreimageHunt,
     ShapeMatch,
+    RotationDial,
+    ImagePredictor,
     CompositionExplorer,
     ProductColumns,
     CommuteHunt,
