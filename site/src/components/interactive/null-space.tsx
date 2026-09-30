@@ -168,3 +168,105 @@ export function FreeWeights({ u, v, target, freeRows = [1, 3] }: { u: Vec4; v: V
     </Panel>
   );
 }
+
+const SUM_BOUNDS: Bounds = { xMin: -5, xMax: 5, yMin: -5, yMax: 5 };
+const sameVec = (a: Vec, b: Vec) => a[0] === b[0] && a[1] === b[1];
+
+function bothCrushed(matrix: Matrix2, u: Vec, v: Vec): boolean {
+  const crushed = (w: Vec) => !isZero(w) && isZero(apply(matrix, w));
+  return crushed(u) && crushed(v) && !sameVec(u, v);
+}
+
+/** Drag u and v into Nul A; their sum then lands in Nul A too, which is closure under addition. */
+export function NullSumCheck({ matrix, start = [[1, 1], [-1, 2]] }: { matrix: Matrix2; start?: [Vec, Vec] }) {
+  const [u, setU] = useState<Vec>(start[0]);
+  const [v, setV] = useState<Vec>(start[1]);
+  const sum: Vec = [u[0] + v[0], u[1] + v[1]];
+  const { settled: solved, gesture } = useSettled(bothCrushed(matrix, u, v));
+  const outputRow = (name: string, w: Vec, color: string) => `A${name} = ${colTex(apply(matrix, w), color)}`;
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Drag <Tex>{"\\mathbf u"}</Tex> and <Tex>{"\\mathbf v"}</Tex> to two different nonzero inputs that <Tex>{"A"}</Tex> sends to <Tex>{"\\mathbf 0"}</Tex>. Then look at <Tex>{"A(\\mathbf u + \\mathbf v)"}</Tex>.</>}
+        success={<>Both are in <Tex>{"\\operatorname{Nul}A"}</Tex>, and so is their sum, because <Tex>{"A(\\mathbf u + \\mathbf v) = A\\mathbf u + A\\mathbf v = \\mathbf 0 + \\mathbf 0"}</Tex>.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={SUM_BOUNDS} label={`Inputs u at ${describeVector(u)} and v at ${describeVector(v)}, with their sum at ${describeVector(sum)}`}>
+            {solved ? <LineThrough point={[0, 0]} direction={nullDirection(matrix)} color="pink" faint /> : null}
+            <Arrow from={u} to={sum} color="blue" width={2} dashed />
+            <Arrow to={sum} color="teal" />
+            <Arrow to={u} color="yellow" />
+            <Arrow to={v} color="blue" />
+            <Label at={u} color="yellow">u</Label>
+            <Label at={v} color="blue">v</Label>
+            <Label at={sum} color="teal" dx={6} dy={-18}>u + v</Label>
+            <Handle at={v} onMove={setV} color="blue" label={`Tip of v, at ${describeVector(v)}`} />
+            <Handle at={u} onMove={setU} color="yellow" label={`Tip of u, at ${describeVector(u)}`} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Readout tex={`A = ${matrixTex(matrix)}`} />
+            <Readout tex={outputRow("\\mathbf u", u, palette.yellow)} />
+            <Readout tex={outputRow("\\mathbf v", v, palette.blue)} />
+            <Readout tex={outputRow("(\\mathbf u + \\mathbf v)", sum, palette.teal)} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+const SHIFT_BOUNDS: Bounds = { xMin: -6, xMax: 6, yMin: -5, yMax: 5 };
+
+function termTex(coefficient: number, name: string): string {
+  if (coefficient === 1) return name;
+  if (coefficient === -1) return `-${name}`;
+  return `${texNumber(coefficient)}${name}`;
+}
+
+const linearTex = (row: Vec) => `${termTex(row[0], "x_1")} + ${termTex(row[1], "x_2")}`.replace("+ -", "- ");
+
+/** The solutions of a x + b y = k for a slider k: a line parallel to Nul, with two solutions whose sum escapes unless k = 0. */
+export function RightSideShift({ row, direction }: { row: Vec; direction: Vec }) {
+  const [k, setK] = useState(2);
+  const { settled: solved, gesture } = useSettled(k === 0);
+  const p: Vec = [k / row[0], 0];
+  const u: Vec = [p[0] + direction[0], p[1] + direction[1]];
+  const v: Vec = [p[0] - direction[0], p[1] - direction[1]];
+  const sum: Vec = [u[0] + v[0], u[1] + v[1]];
+  const rowTex = linearTex(row);
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>The yellow line is every solution of <Tex>{`${rowTex} = k`}</Tex>. Slide <Tex>{"k"}</Tex> until the sum of the two yellow solutions lands back on the line.</>}
+        success={<>With <Tex>{"k = 0"}</Tex> the line passes through the origin and is the null space itself, so sums of solutions stay solutions.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={SHIFT_BOUNDS} label={`Solution line for k = ${k}, two solutions and their sum at ${describeVector(sum)}`}>
+            <LineThrough point={[0, 0]} direction={direction} color="pink" faint />
+            <LineThrough point={p} direction={direction} color="yellow" />
+            <Marker at={[0, 0]} color={solved ? "teal" : "glow"} ring={!solved} />
+            <Arrow to={u} color="yellow" width={2.5} />
+            <Arrow to={v} color="yellow" width={2.5} />
+            <Arrow to={sum} color="teal" />
+            <Label at={sum} color="teal" dy={22}>sum</Label>
+          </Plane>
+        }
+        readout={
+          <>
+            <Slider label="k" value={k} onChange={setK} min={-2} max={2} step={1} color={palette.yellow} />
+            <Readout tex={`\\text{sum} = ${colTex(sum, palette.teal)}`} />
+            <Readout tex={`\\text{at the sum, } ${rowTex} = ${texNumber(row[0] * sum[0] + row[1] * sum[1])}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}

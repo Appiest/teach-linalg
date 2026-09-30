@@ -1,6 +1,28 @@
 Yesterday's column space collected every output $A\mathbf x$, so it tells you whether $A\mathbf x = \mathbf b$ has a solution at all. The other half of solving a system is knowing how many solutions there are, and that depends on the opposite question: which inputs does $A$ send to $\mathbf 0$? Those inputs form a second subspace that comes with every matrix. By the end of today you will see that every solution of $A\mathbf x = \mathbf b$ is one fixed solution plus a vector from this subspace.
 
+Each section opens with a problem. Try it before you open the walkthrough, even if you only get partway.
+
 ## The null space
+
+<Problem>
+Let $A = \begin{bmatrix} 1 & 2 \\ 2 & 4 \end{bmatrix}$. Compute $A\begin{bmatrix} 2 \\ -1 \end{bmatrix}$, $A\begin{bmatrix} 4 \\ -2 \end{bmatrix}$ and $A\begin{bmatrix} 1 \\ 1 \end{bmatrix}$. Which inputs land on $\mathbf 0$? Then describe every input that lands on $\mathbf 0$.
+
+<Solution>
+Multiply each input by $A$, one row at a time.
+
+$$
+A\begin{bmatrix} 2 \\ -1 \end{bmatrix} = \begin{bmatrix} 2 - 2 \\ 4 - 4 \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \end{bmatrix}, \quad
+A\begin{bmatrix} 4 \\ -2 \end{bmatrix} = \begin{bmatrix} 4 - 4 \\ 8 - 8 \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \end{bmatrix}, \quad
+A\begin{bmatrix} 1 \\ 1 \end{bmatrix} = \begin{bmatrix} 3 \\ 6 \end{bmatrix}
+$$
+
+The first two land on $\mathbf 0$ and the third does not.
+
+To find every such input, we need $A\mathbf x = \mathbf 0$. Row 2 of $A$ is twice row 1, so both equations say the same thing, $x_1 + 2x_2 = 0$. That means $x_1 = -2x_2$, and $x_2$ can be anything. Writing $x_2 = -t$ gives $\mathbf x = t(2, -1)$.
+
+So the inputs that land on $\mathbf 0$ are the multiples of $(2, -1)$. They fill a line through the origin, and $(4, -2) = 2(2, -1)$ was one of them.
+</Solution>
+</Problem>
 
 <Definition term="Null space">
 The **null space** of an $m \times n$ matrix $A$ is the set of all solutions of the homogeneous equation $A\mathbf x = \mathbf 0$:
@@ -12,6 +34,10 @@ $$
 It lives in $\mathbb R^n$, where $n$ is the number of **columns**, because only vectors with $n$ entries can be multiplied by $A$.
 </Definition>
 
+Find two of these inputs yourself. Each input you settle on that lands on $\mathbf 0$ gets stamped in pink.
+
+<LandingHunt matrix={[[1, 2], [2, 4]]} start={[1, 1]} prompt="Find two different nonzero inputs $\mathbf x$ that this $A$ sends to $\mathbf 0$." success="Both land on $\mathbf 0$, and so does every point of the pink line through them. That line is $\operatorname{Nul}A = \operatorname{Span}\{(2, -1)\}$." />
+
 <Pair>
 <Figure src="collapse" alt="A plane with the teal diagonal line Col P and the pink anti-diagonal line Nul P crossing at the origin. Gray arrows show several points sliding in the direction (1, −1) until they land on the teal line. The pink dots on the anti-diagonal all head to the origin, which is circled in orange. A panel shows P = ½[1 1; 1 1] and P(1, −1) = (0, 0)." />
 
@@ -21,20 +47,51 @@ P = \tfrac12 \begin{bmatrix} 1 & 1 \\ 1 & 1 \end{bmatrix},
 P\,\pink{\begin{bmatrix} 1 \\ -1 \end{bmatrix}} = \teal{\begin{bmatrix} 0 \\ 0 \end{bmatrix}}
 $$
 
-The projection $P$ slides every point along $(1, -1)$ onto the diagonal. The points already on the anti-diagonal slide all the way to the origin, so $\operatorname{Nul}P = \operatorname{Span}\{(1, -1)\}$.
+Here is a second example. The projection $P$ slides every point along $(1, -1)$ onto the diagonal. Points already on the anti-diagonal slide all the way to the origin, so $\operatorname{Nul}P = \operatorname{Span}\{(1, -1)\}$.
 </Pair>
 
-Testing one vector takes a single multiplication. For example, $P(2, 1) = (1.5, 1.5) \ne \mathbf 0$, so $(2, 1)$ is not in $\operatorname{Nul}P$. Finding the whole null space takes more work, which is the reverse of the column space, where listing members is easy and testing one takes a row reduction.
+<Concept title="Testing is easy and listing is work">
+To test one vector, multiply once. For example, $P(2, 1) = (1.5, 1.5) \ne \mathbf 0$, so $(2, 1)$ is not in $\operatorname{Nul}P$. To list the whole null space, you have to solve $A\mathbf x = \mathbf 0$. This is the reverse of Day 16's column space, where listing members is easy and testing one takes a row reduction.
+</Concept>
 
-<LandingHunt matrix={[[1, 2], [2, 4]]} start={[1, 1]} prompt="Find two different nonzero inputs $\mathbf x$ that this $A$ sends to $\mathbf 0$." success="Both land on $\mathbf 0$, and so does every point of the pink line through them. That line is $\operatorname{Nul}A = \operatorname{Span}\{(2, -1)\}$." />
+<Choice
+  question="Which vector is in $\operatorname{Nul}\begin{bmatrix} 1 & 1 & -2 \end{bmatrix}$?"
+  options={["$(1, 1, 1)$", "$(1, -1, 1)$", "$(2, 0, 0)$"]}
+  answer={0}
+>
+Multiply each one by the row. $(1, 1, 1)$ gives $1 + 1 - 2 = 0$, so it is in the null space. $(1, -1, 1)$ gives $1 - 1 - 2 = -2$ and $(2, 0, 0)$ gives $2$.
+</Choice>
 
 ## Why it is a subspace
+
+The null space of $A = \begin{bmatrix} 1 & 2 \\ 2 & 4 \end{bmatrix}$ came out as a line through the origin, which is a subspace. The next problem shows that this always happens.
+
+<Problem>
+For the same $A$, take $\mathbf u = (2, -1)$ and $\mathbf v = (-4, 2)$, which are both in $\operatorname{Nul}A$. Compute $A(\mathbf u + \mathbf v)$ and $A(3\mathbf u)$. Could you have predicted the answers without multiplying?
+
+<Solution>
+First do it directly. The sum is $\mathbf u + \mathbf v = (-2, 1)$ and the multiple is $3\mathbf u = (6, -3)$.
+
+$$
+A\begin{bmatrix} -2 \\ 1 \end{bmatrix} = \begin{bmatrix} -2 + 2 \\ -4 + 4 \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \end{bmatrix}, \qquad
+A\begin{bmatrix} 6 \\ -3 \end{bmatrix} = \begin{bmatrix} 6 - 6 \\ 12 - 12 \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \end{bmatrix}
+$$
+
+Now predict them. Matrix multiplication splits over sums and lets scalars move out front, so
+
+$$
+A(\mathbf u + \mathbf v) = A\mathbf u + A\mathbf v = \mathbf 0 + \mathbf 0 = \mathbf 0, \qquad A(3\mathbf u) = 3A\mathbf u = 3\cdot\mathbf 0 = \mathbf 0.
+$$
+
+The prediction used nothing about this particular $A$, $\mathbf u$ or $\mathbf v$ except that $A\mathbf u$ and $A\mathbf v$ were $\mathbf 0$.
+</Solution>
+</Problem>
 
 <Definition term="Theorem">
 The null space of an $m \times n$ matrix is a subspace of $\mathbb R^n$.
 </Definition>
 
-Run Day 11's three checks. Suppose $A\mathbf u = \mathbf 0$ and $A\mathbf v = \mathbf 0$, and let $c$ be any scalar.
+The proof runs Day 11's three checks. Suppose $A\mathbf u = \mathbf 0$ and $A\mathbf v = \mathbf 0$, and let $c$ be any scalar.
 
 $$
 \begin{aligned}
@@ -44,39 +101,128 @@ $$
 \end{aligned}
 $$
 
-Each line uses only the fact that matrix multiplication distributes over sums and pulls out scalars. So any set cut out by **homogeneous** linear equations, meaning equations whose right side is $0$, is a null space and therefore a subspace. For example, $\{(a, b, c) : a + 2b = c,\ 3a = b\}$ equals $\operatorname{Nul}\begin{bmatrix} 1 & 2 & -1 \\ 3 & -1 & 0 \end{bmatrix}$. The set $\{(a, b, c) : a + b + c = 1\}$ is not a subspace, because $(0, 0, 0)$ gives $0 = 1$. Day 28 leans on this theorem: the eigenvectors of $A$ for one eigenvalue $\lambda$ fill $\operatorname{Nul}(A - \lambda I)$, so they form a subspace without any extra proof.
+Check (b) with the picture. The readouts show where each input lands.
+
+<NullSumCheck matrix={[[1, 2], [2, 4]]} />
+
+<Problem>
+Is $H = \{(a, b, c) : a + 2b = c,\ 3a = b\}$ a subspace of $\mathbb R^3$? What about $K = \{(a, b, c) : a + b + c = 1\}$?
+
+<Solution>
+For $H$, move every variable to the left side so each equation reads "something $= 0$". That gives $a + 2b - c = 0$ and $3a - b = 0$, which is the system
+
+$$
+\begin{bmatrix} 1 & 2 & -1 \\ 3 & -1 & 0 \end{bmatrix}\begin{bmatrix} a \\ b \\ c \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \end{bmatrix}.
+$$
+
+So $H$ is the null space of that matrix, and the theorem says it is a subspace.
+
+For $K$, try the zero vector: $0 + 0 + 0 = 0$, which is not $1$. A subspace must contain $\mathbf 0$, so $K$ is not a subspace.
+</Solution>
+</Problem>
+
+<Concept title="Homogeneous equations cut out subspaces">
+A set described by **homogeneous** linear equations, meaning equations whose right side is $0$, is a null space and therefore a subspace. A single nonzero right side ruins it, because $\mathbf 0$ no longer satisfies the equations. Day 28 leans on this theorem. The eigenvectors of $A$ for one eigenvalue $\lambda$ fill $\operatorname{Nul}(A - \lambda I)$, so they form a subspace without any extra proof.
+</Concept>
 
 ## Basis from free variables
 
-Testing members one at a time never shows the whole null space, so the goal here is a basis. We want a few vectors whose combinations give every solution of $A\mathbf x = \mathbf 0$, since a basis describes the whole subspace with a short list. To find them, solve $A\mathbf x = \mathbf 0$. Row reduce $A$ to **reduced** echelon form, since the zero column of $[\,A \ \ \mathbf 0\,]$ never changes, then write each basic variable in terms of the free ones.
+Testing members one at a time never shows the whole null space, so the goal here is a basis. We want a few vectors whose combinations give every solution of $A\mathbf x = \mathbf 0$.
+
+<Problem>
+Find a basis for $\operatorname{Nul}A$, where $A = \begin{bmatrix} 1 & -2 & 0 & 3 \\ 2 & -4 & 1 & 4 \end{bmatrix}$.
+
+<Solution>
+The null space is the solution set of $A\mathbf x = \mathbf 0$, so we solve that system and then split the solution into pieces, one per free variable.
+
+<Steps>
+<Step>
+Row reduce $A$ to **reduced** echelon form. We can skip the augmented column because it is all zeros and no row operation changes it. The move $R_2 \leftarrow R_2 - 2R_1$ gives
 
 $$
-\begin{aligned}
-A = \begin{bmatrix} 1 & -2 & 0 & 3 \\ 2 & -4 & 1 & 4 \end{bmatrix}
-&\sim \begin{bmatrix} 1 & -2 & 0 & 3 \\ 0 & 0 & 1 & -2 \end{bmatrix} \\[4pt]
-x_1 = 2\yellow{x_2} - 3\blue{x_4}, &\qquad x_3 = 2\blue{x_4} \\[4pt]
-\mathbf x = \begin{bmatrix} 2x_2 - 3x_4 \\ x_2 \\ 2x_4 \\ x_4 \end{bmatrix}
-&= \yellow{x_2} \yellow{\begin{bmatrix} 2 \\ 1 \\ 0 \\ 0 \end{bmatrix}} + \blue{x_4} \blue{\begin{bmatrix} -3 \\ 0 \\ 2 \\ 1 \end{bmatrix}}
-\end{aligned}
+\begin{bmatrix} 1 & -2 & 0 & 3 \\ 2 & -4 & 1 & 4 \end{bmatrix} \sim \begin{bmatrix} 1 & -2 & 0 & 3 \\ 0 & 0 & 1 & -2 \end{bmatrix}.
 $$
+
+The pivots are in columns 1 and 3, so $x_1$ and $x_3$ are basic and $\yellow{x_2}$ and $\blue{x_4}$ are free.
+</Step>
+<Step>
+Solve each row for its basic variable. Row 1 says $x_1 - 2x_2 + 3x_4 = 0$, so $x_1 = 2\yellow{x_2} - 3\blue{x_4}$. Row 2 says $x_3 - 2x_4 = 0$, so $x_3 = 2\blue{x_4}$.
+</Step>
+<Step>
+Write the whole vector using only the free variables, then split it by free variable.
+
+$$
+\mathbf x = \begin{bmatrix} 2x_2 - 3x_4 \\ x_2 \\ 2x_4 \\ x_4 \end{bmatrix} = \yellow{x_2} \yellow{\begin{bmatrix} 2 \\ 1 \\ 0 \\ 0 \end{bmatrix}} + \blue{x_4} \blue{\begin{bmatrix} -3 \\ 0 \\ 2 \\ 1 \end{bmatrix}}
+$$
+
+Every solution is a combination of $\yellow{\mathbf u} = (2, 1, 0, 0)$ and $\blue{\mathbf v} = (-3, 0, 2, 1)$, so these two vectors span $\operatorname{Nul}A$.
+</Step>
+<Step>
+Check that they are independent. Entry 2 of $x_2\mathbf u + x_4\mathbf v$ is $x_2$ and entry 4 is $x_4$. If the combination is $\mathbf 0$, both of those entries are $0$, so both weights are $0$. That makes $\{\mathbf u, \mathbf v\}$ independent, and so it is a basis.
+</Step>
+</Steps>
+</Solution>
+</Problem>
 
 <Pair>
 <Figure src="free-variables" alt="The reduced form of A with rows (1, −2, 0, 3) and (0, 0, 1, −2), the equations x1 = 2x2 − 3x4 and x3 = 2x4, and the vector x written as x2 times the yellow vector u = (2, 1, 0, 0) plus x4 times the blue vector v = (−3, 0, 2, 1). Orange boxes mark entries 2 and 4 of u and v, which read 1, 0 and 0, 1." />
 
-The vectors $\yellow{\mathbf u}$ and $\blue{\mathbf v}$ span $\operatorname{Nul}A$. They are also independent, because entries 2 and 4 of $x_2\mathbf u + x_4\mathbf v$ are $x_2$ and $x_4$ themselves. That combination can only be $\mathbf 0$ when both weights are $0$, so $\{\mathbf u, \mathbf v\}$ is a basis, with one vector for each free variable.
+The orange boxes mark the free-variable rows. There $\yellow{\mathbf u}$ reads $1, 0$ and $\blue{\mathbf v}$ reads $0, 1$, which is why neither vector can be built from the other.
 </Pair>
+
+<Concept title="One basis vector per free variable">
+To find a basis for $\operatorname{Nul}A$, solve $A\mathbf x = \mathbf 0$ from the reduced echelon form, write $\mathbf x$ in terms of the free variables, and pull out one vector per free variable. Those vectors are automatically independent, because each has a $1$ in its own free slot and $0$ in the other free slots.
+</Concept>
+
+The sliders below set the two free variables. Watch rows 2 and 4 of the result.
 
 <FreeWeights u={[2, 1, 0, 0]} v={[-3, 0, 2, 1]} target={[-7, -2, 2, 1]} />
 
-The two spaces of this $A$ live in different places. $\operatorname{Nul}A$ sits in $\mathbb R^4$ because $A$ has four columns, and $\operatorname{Col}A$ sits in $\mathbb R^2$ because each column has two entries. So a vector's length alone tells you which of the two it could belong to.
+<Warning>
+The two spaces of this $A$ live in different places. $\operatorname{Nul}A$ sits in $\mathbb R^4$ because $A$ has four columns, and $\operatorname{Col}A$ sits in $\mathbb R^2$ because each column has two entries. A vector's length alone tells you which of the two it could belong to.
+</Warning>
+
+<Choice
+  question="$A$ is $2 \times 4$. Which space could the vector $(1, 0, 3, -1)$ belong to?"
+  options={["Only $\\operatorname{Nul}A$", "Only $\\operatorname{Col}A$", "Both"]}
+  answer={0}
+>
+The vector has four entries. $\operatorname{Nul}A$ is inside $\mathbb R^4$ and $\operatorname{Col}A$ is inside $\mathbb R^2$, so only the null space is possible. Whether it actually is in $\operatorname{Nul}A$ still takes one multiplication to check.
+</Choice>
 
 ## Solutions of Ax = b
+
+The opening promised a link between the null space and the solutions of $A\mathbf x = \mathbf b$ when $\mathbf b \ne \mathbf 0$. Here it is.
+
+<Problem>
+Let $A = \begin{bmatrix} 1 & 2 \\ 2 & 4 \end{bmatrix}$ and $\mathbf b = (1, 2)$. Check that $(1, 0)$, $(3, -1)$ and $(-1, 1)$ all solve $A\mathbf x = \mathbf b$. Then subtract $(1, 0)$ from each of the other two. What do you notice?
+
+<Solution>
+Multiply each candidate by $A$.
+
+$$
+A\begin{bmatrix} 1 \\ 0 \end{bmatrix} = \begin{bmatrix} 1 \\ 2 \end{bmatrix}, \quad
+A\begin{bmatrix} 3 \\ -1 \end{bmatrix} = \begin{bmatrix} 3 - 2 \\ 6 - 4 \end{bmatrix} = \begin{bmatrix} 1 \\ 2 \end{bmatrix}, \quad
+A\begin{bmatrix} -1 \\ 1 \end{bmatrix} = \begin{bmatrix} -1 + 2 \\ -2 + 4 \end{bmatrix} = \begin{bmatrix} 1 \\ 2 \end{bmatrix}
+$$
+
+All three solve it. Now subtract:
+
+$$
+(3, -1) - (1, 0) = (2, -1), \qquad (-1, 1) - (1, 0) = (-2, 1).
+$$
+
+Both differences are multiples of $(2, -1)$, so both are in $\operatorname{Nul}A$ from the first problem. The reason is that $A(\mathbf w - \mathbf p) = A\mathbf w - A\mathbf p = \mathbf b - \mathbf b = \mathbf 0$ whenever $\mathbf w$ and $\mathbf p$ both solve the system.
+</Solution>
+</Problem>
 
 <Definition term="Solution sets are shifted null spaces">
 If $A\mathbf p = \mathbf b$ for one vector $\mathbf p$, then the solutions of $A\mathbf x = \mathbf b$ are exactly the vectors $\mathbf p + \mathbf v$ with $\mathbf v$ in $\operatorname{Nul}A$.
 </Definition>
 
-The reason takes two lines. If $A\mathbf v = \mathbf 0$, then $A(\mathbf p + \mathbf v) = \mathbf b + \mathbf 0 = \mathbf b$. If $A\mathbf w = \mathbf b$, then $A(\mathbf w - \mathbf p) = \mathbf b - \mathbf b = \mathbf 0$, so $\mathbf w$ is $\mathbf p$ plus a null-space vector.
+The problem showed one direction: any solution minus $\mathbf p$ is in $\operatorname{Nul}A$. The other direction is just as short. If $A\mathbf v = \mathbf 0$, then $A(\mathbf p + \mathbf v) = \mathbf b + \mathbf 0 = \mathbf b$.
+
+<LandingHunt matrix={[[1, 2], [2, 4]]} target={[1, 2]} start={[2, 2]} prompt="On Day 7 this matrix sent three different points to $\mathbf b = (1, 2)$. Find two inputs with $A\mathbf x = \mathbf b$." success="Both solve it, and their difference is in $\operatorname{Nul}A$. The yellow line of all solutions is the dashed pink null space shifted off the origin." />
 
 <Pair>
 <Figure src="shifted-copy" alt="The pink line Nul P through the origin and a parallel yellow line through the tip of the yellow arrow p = (4, 0). The yellow line crosses the teal line Col P at b = (2, 2), which is circled in orange. A second orange circle marks the origin, which the yellow line misses." />
@@ -90,23 +236,31 @@ $$
 \end{aligned}
 $$
 
-This line is parallel to $\operatorname{Nul}P$ but misses $\mathbf 0$, so it is not a subspace whenever $\mathbf b \ne \mathbf 0$.
+This line is parallel to $\operatorname{Nul}P$, but it misses $\mathbf 0$.
 </Pair>
 
-<LandingHunt matrix={[[1, 2], [2, 4]]} target={[1, 2]} start={[2, 2]} prompt="On Day 7 this matrix sent three different points to $\mathbf b = (1, 2)$. Find two inputs with $A\mathbf x = \mathbf b$." success="Both solve it, and their difference is in $\operatorname{Nul}A$. The yellow line of all solutions is the dashed pink null space shifted off the origin." />
+A shifted line is not a subspace. Slide the right side $k$ of the equation $x_1 + 2x_2 = k$ and watch what happens to the sum of two solutions.
 
-The theorem also answers the question from the opening. A consistent system has exactly one solution when $\operatorname{Nul}A = \{\mathbf 0\}$, and infinitely many otherwise. Day 19 adds $\operatorname{Nul}A = \{\mathbf 0\}$ to its list of tests for an invertible matrix. Tomorrow, on Day 18, we count the vectors in today's basis and in yesterday's basis for $\operatorname{Col}A$, and the two counts always add up to the number of columns.
+<RightSideShift row={[1, 2]} direction={[2, -1]} />
+
+<Warning>
+The shifted-copy picture needs at least one solution $\mathbf p$ to start from. When $A\mathbf x = \mathbf b$ is inconsistent, the solution set is empty and there is nothing to shift.
+</Warning>
+
+The theorem also answers the question from the opening. A consistent system has exactly one solution when $\operatorname{Nul}A = \{\mathbf 0\}$, and infinitely many otherwise. Day 19 adds $\operatorname{Nul}A = \{\mathbf 0\}$ to its list of tests for an invertible matrix.
 
 ## Practice
 
+### Warm-up
+
 <Check>
-Let $A = \begin{bmatrix} 2 & -1 & 3 \\ 4 & 1 & -1 \end{bmatrix}$ and $\mathbf u = (1, -7, -3)$. Compute $A\mathbf u$. Is $\mathbf u$ in $\operatorname{Nul}A$, and could it be in $\operatorname{Col}A$? (Modeled on Lay §4.2, Example 1.)
+Let $A = \begin{bmatrix} 2 & -1 & 3 \\ 4 & 1 & -1 \end{bmatrix}$ and $\mathbf u = (1, -7, -3)$. Compute $A\mathbf u$. (Modeled on Lay §4.2, Example 1.)
 
 <VectorAnswer answer={[0, 0]} />
 
 <Answer>
 $$
-A\mathbf u = \begin{bmatrix} 2 + 7 - 9 \\ 4 - 7 + 3 \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \end{bmatrix}
+A\mathbf u = \begin{bmatrix} 2(1) - 1(-7) + 3(-3) \\ 4(1) + 1(-7) - 1(-3) \end{bmatrix} = \begin{bmatrix} 2 + 7 - 9 \\ 4 - 7 + 3 \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \end{bmatrix}
 $$
 
 So $\mathbf u$ is in $\operatorname{Nul}A$. It cannot be in $\operatorname{Col}A$, because $\operatorname{Col}A$ is a subspace of $\mathbb R^2$ and $\mathbf u$ has three entries.
@@ -114,9 +268,59 @@ So $\mathbf u$ is in $\operatorname{Nul}A$. It cannot be in $\operatorname{Col}A
 </Check>
 
 <Check>
+<Choice
+  question="A matrix $A$ is $3 \times 5$. Where does $\operatorname{Nul}A$ live?"
+  options={["In $\\mathbb R^3$", "In $\\mathbb R^5$"]}
+  answer={1}
+>
+Only vectors with $5$ entries can be multiplied by a matrix with $5$ columns, so the inputs, and therefore the null space, live in $\mathbb R^5$.
+</Choice>
+</Check>
+
+<Check>
+Write $H = \{(a, b, c) : a - b + 2c = 0,\ b = 3c\}$ as $\operatorname{Nul}A$. Move every variable to the left side, keep the equations in the order given, and enter $A$ row by row. (Modeled on Lay §4.2, Example 2.)
+
+<VectorAnswer answer={[1, -1, 2, 0, 1, -3]} columns={3} />
+
+<Answer>
+The second equation becomes $b - 3c = 0$, which is $0a + 1b - 3c = 0$. So
+
+$$
+A = \begin{bmatrix} 1 & -1 & 2 \\ 0 & 1 & -3 \end{bmatrix}, \qquad H = \operatorname{Nul}A,
+$$
+
+and $H$ is a subspace of $\mathbb R^3$.
+</Answer>
+</Check>
+
+### Core
+
+<Check>
+Find a basis for $\operatorname{Nul}A$, where $A = \begin{bmatrix} 1 & 2 & -1 \\ 2 & 5 & 1 \end{bmatrix}$. There is one free variable. Enter the basis vector whose free entry is $1$. (Modeled on Lay §4.2, Exercise 3.)
+
+<VectorAnswer answer={[7, -3, 1]} labels={["x₁", "x₂", "x₃"]} />
+
+<Hint>
+Row reduce to reduced echelon form. The free variable is the one without a pivot.
+</Hint>
+
+<Answer>
+$$
+\begin{bmatrix} 1 & 2 & -1 \\ 2 & 5 & 1 \end{bmatrix} \sim \begin{bmatrix} 1 & 2 & -1 \\ 0 & 1 & 3 \end{bmatrix} \sim \begin{bmatrix} 1 & 0 & -7 \\ 0 & 1 & 3 \end{bmatrix}
+$$
+
+The first move is $R_2 \leftarrow R_2 - 2R_1$ and the second is $R_1 \leftarrow R_1 - 2R_2$. So $x_1 = 7x_3$ and $x_2 = -3x_3$, and $\mathbf x = x_3(7, -3, 1)$. Check: $A(7, -3, 1) = (7 - 6 - 1,\ 14 - 15 + 1) = (0, 0)$.
+</Answer>
+</Check>
+
+<Check>
 Find a basis for $\operatorname{Nul}A$, where $A = \begin{bmatrix} 1 & 2 & 0 & -1 \\ 2 & 4 & 1 & 1 \\ 1 & 2 & 1 & 2 \end{bmatrix}$. Enter the basis vector that comes from the free variable $x_4$. (Modeled on Lay §4.2, Exercise 3.)
 
 <VectorAnswer answer={[1, 0, -3, 1]} labels={["x₁", "x₂", "x₃", "x₄"]} />
+
+<Hint>
+After reducing, the free variables are $x_2$ and $x_4$. Set $x_2 = 0$ and $x_4 = 1$ to get the vector asked for.
+</Hint>
 
 <Answer>
 $$
@@ -132,11 +336,99 @@ The basis is $\{(-2, 1, 0, 0),\ (1, 0, -3, 1)\}$. Rows 2 and 4 read $1, 0$ and $
 </Check>
 
 <Check>
+Find $k$ so that $(1, 1, k)$ is in $\operatorname{Nul}\begin{bmatrix} 2 & 1 & -1 \\ 1 & -1 & 0 \end{bmatrix}$.
+
+<VectorAnswer answer={[3]} labels={["k"]} prefix="k =" />
+
+<Hint>
+Multiply and set each entry of the result to $0$. One row does not involve $k$ at all.
+</Hint>
+
+<Answer>
+Row 2 gives $1 - 1 + 0 = 0$ for any $k$. Row 1 gives $2 + 1 - k = 3 - k$, which is $0$ exactly when $k = 3$.
+</Answer>
+</Check>
+
+<Check>
 Let $A = \begin{bmatrix} 1 & -1 & 2 \\ 2 & -2 & 4 \end{bmatrix}$ and $\mathbf b = (3, 6)$. One solution of $A\mathbf x = \mathbf b$ is $\mathbf p = (3, 0, 0)$, and $\operatorname{Nul}A$ has basis $(1, 1, 0)$ and $(-2, 0, 1)$. The vector $(0, 1, 2)$ also solves the system. Find $s$ and $t$ with $(0, 1, 2) = \mathbf p + s(1, 1, 0) + t(-2, 0, 1)$. (Modeled on Lay §1.5, Example 3.)
 
 <VectorAnswer answer={[1, 2]} labels={["s", "t"]} />
+
+<Hint>
+Subtract $\mathbf p$ first. The result is in $\operatorname{Nul}A$, and its free entries give the weights.
+</Hint>
 
 <Answer>
 The difference $(0, 1, 2) - (3, 0, 0) = (-3, 1, 2)$ must lie in $\operatorname{Nul}A$. Its second entry gives $s = 1$ and its third gives $t = 2$, and then the first entry is $1 - 4 = -3$, which matches. As a check, $A(0, 1, 2) = (0 - 1 + 4,\ 0 - 2 + 8) = (3, 6)$.
 </Answer>
 </Check>
+
+<Check>
+Let $A = \begin{bmatrix} 1 & -2 \\ -2 & 4 \end{bmatrix}$ and $\mathbf b = (3, -6)$. One solution is $\mathbf p = (3, 0)$, and $\operatorname{Nul}A = \operatorname{Span}\{(2, 1)\}$. Find the solution of $A\mathbf x = \mathbf b$ whose second entry is $5$. (Modeled on Lay §1.5, Example 3.)
+
+<VectorAnswer answer={[13, 5]} />
+
+<Hint>
+Every solution has the form $(3, 0) + t(2, 1)$. Choose $t$ to make the second entry $5$.
+</Hint>
+
+<Answer>
+The second entry of $(3, 0) + t(2, 1)$ is $t$, so $t = 5$ and the solution is $(3 + 10,\ 5) = (13, 5)$. Check: $A(13, 5) = (13 - 10,\ -26 + 20) = (3, -6)$.
+</Answer>
+</Check>
+
+### Challenge
+
+<Check>
+<Choice
+  question="Vectors $\mathbf p$ and $\mathbf q$ both solve $A\mathbf x = \mathbf b$, where $\mathbf b \neq \mathbf 0$. Which vector is always in $\operatorname{Nul}A$?"
+  options={["$\\mathbf p + \\mathbf q$", "$\\mathbf p - \\mathbf q$", "$2\\mathbf p$"]}
+  answer={1}
+>
+$A(\mathbf p - \mathbf q) = \mathbf b - \mathbf b = \mathbf 0$. The others fail: $A(\mathbf p + \mathbf q) = 2\mathbf b$ and $A(2\mathbf p) = 2\mathbf b$, which are not $\mathbf 0$ because $\mathbf b \neq \mathbf 0$.
+</Choice>
+
+<Hint>
+Apply $A$ to each option and use $A\mathbf p = A\mathbf q = \mathbf b$.
+</Hint>
+</Check>
+
+<Check>
+Find the value of $h$ for which $\operatorname{Nul}\begin{bmatrix} 1 & h \\ 2 & 6 \end{bmatrix}$ is a line instead of just $\{\mathbf 0\}$.
+
+<VectorAnswer answer={[3]} labels={["h"]} prefix="h =" />
+
+<Hint>
+The null space has a nonzero vector exactly when the reduced form has a free variable.
+</Hint>
+
+<Answer>
+The move $R_2 \leftarrow R_2 - 2R_1$ gives
+
+$$
+\begin{bmatrix} 1 & h \\ 2 & 6 \end{bmatrix} \sim \begin{bmatrix} 1 & h \\ 0 & 6 - 2h \end{bmatrix}.
+$$
+
+If $6 - 2h \neq 0$ both columns have pivots, there are no free variables, and $\operatorname{Nul}A = \{\mathbf 0\}$. When $h = 3$ the second row is zero, $x_2$ is free, and $\operatorname{Nul}A = \operatorname{Span}\{(-3, 1)\}$.
+</Answer>
+</Check>
+
+<Check>
+Show that if $\operatorname{Nul}A = \{\mathbf 0\}$, then $A\mathbf x = \mathbf b$ has at most one solution for every $\mathbf b$.
+
+<Hint>
+Suppose $\mathbf p$ and $\mathbf q$ are both solutions, and look at $\mathbf p - \mathbf q$.
+</Hint>
+
+<Answer>
+Suppose $A\mathbf p = \mathbf b$ and $A\mathbf q = \mathbf b$. Then
+
+$$
+A(\mathbf p - \mathbf q) = A\mathbf p - A\mathbf q = \mathbf b - \mathbf b = \mathbf 0,
+$$
+
+so $\mathbf p - \mathbf q$ is in $\operatorname{Nul}A$. The only vector there is $\mathbf 0$, so $\mathbf p = \mathbf q$. Any two solutions are equal, which means there is at most one. There may be none, since the null space says nothing about whether $\mathbf b$ is in $\operatorname{Col}A$.
+</Answer>
+</Check>
+
+Tomorrow, on Day 18, we count the vectors in today's basis and in yesterday's basis for $\operatorname{Col}A$, and the two counts always add up to the number of columns.

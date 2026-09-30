@@ -25,7 +25,7 @@ import { PivotBudget, RankTally } from "@/components/interactive/rank-nullity";
 import { ColumnBuilder, DerivativeRoutes } from "@/components/interactive/matrix-representations";
 import { InvertibilityCalls, StatementBoard } from "@/components/interactive/invertible-matrix-theorem";
 import { ChangeMatrixBuilder, SimilarityHunt, TwoAddresses } from "@/components/interactive/change-of-basis";
-import { FreeWeights, LandingHunt } from "@/components/interactive/null-space";
+import { FreeWeights, LandingHunt, NullSumCheck, RightSideShift } from "@/components/interactive/null-space";
 import { DerivativeTarget, SharedDerivativeHunt, TranslationGap } from "@/components/interactive/linear-maps";
 import { PivotHunt, PolynomialRecipe, ThirdVectorHunt } from "@/components/interactive/span-revisited";
 import { DifferenceInKernel, EvaluationKernel } from "@/components/interactive/kernel";
@@ -148,6 +148,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     SimilarityHunt,
     LandingHunt,
     FreeWeights,
+    NullSumCheck,
+    RightSideShift,
     TranslationGap,
     DerivativeTarget,
     SharedDerivativeHunt,
