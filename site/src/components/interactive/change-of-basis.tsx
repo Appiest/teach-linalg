@@ -213,3 +213,101 @@ export function SimilarityHunt({ matrix = [[1, 2], [1, 0]], b1 = [2, 1], b2 = [-
     </Panel>
   );
 }
+
+function WeightWalk({ weights, u, v, colors }: { weights: Vec; u: Vec; v: Vec; colors: ["pink" | "green", "blue" | "red"] }) {
+  const corner = scale(weights[0], u);
+  return (
+    <>
+      <Arrow to={corner} color={colors[0]} width={2.5} dashed />
+      <Arrow from={corner} to={add(corner, scale(weights[1], v))} color={colors[1]} width={2.5} dashed />
+    </>
+  );
+}
+
+const isBasis = (u: Vec, v: Vec) => Math.abs(u[0] * v[1] - v[0] * u[1]) > 1e-9;
+const UNKNOWN_PAIR = `\\begin{bmatrix} ? \\\\ ? \\end{bmatrix}`;
+
+/** The arrow x never moves. Drag c1 and c2 until x's address in the new basis is the target. */
+export function RenameTheArrow({ x = [3, 4], target = [2, 1] }: { x?: Vec; target?: Vec }) {
+  const [c1, setC1] = useState<Vec>([1, 0]);
+  const [c2, setC2] = useState<Vec>([0, 1]);
+  const basis = isBasis(c1, c2);
+  const inC = weightsOf(x, c1, c2);
+  const { settled: solved, gesture } = useSettled(basis && nearlyEqual(inC, target));
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>The yellow arrow stays fixed. Drag <Tex>{"\\mathbf c_1"}</Tex> and <Tex>{"\\mathbf c_2"}</Tex> until <Tex>{`[\\mathbf x]_{\\mathcal C} = ${pairTex(target, C_TEX)}`}</Tex>.</>}
+        success={<>The arrow never moved, but its address is now <Tex>{pairTex(target, C_TEX)}</Tex>. The dashed walk is <Tex>{`${texNumber(target[0])}\\,\\mathbf c_1 + ${texNumber(target[1])}\\,\\mathbf c_2`}</Tex>.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={{ xMin: -4, xMax: 5, yMin: -3, yMax: 6 }} label="Plane with a fixed yellow arrow x and two draggable basis vectors c1 and c2, with the grid they build.">
+            {basis ? <AddressGrid u={c1} v={c2} stroke={C_GRID} opacity={0.4} /> : null}
+            {solved ? <WeightWalk weights={target} u={c1} v={c2} colors={["pink", "blue"]} /> : null}
+            <Arrow to={x} color="yellow" />
+            <Arrow to={c1} color="pink" />
+            <Arrow to={c2} color="blue" />
+            <Label at={x} color="yellow">x</Label>
+            <Handle at={c1} onMove={setC1} color="pink" label={`Tip of c1, at ${describeVector(c1)}`} />
+            <Handle at={c2} onMove={setC2} color="blue" label={`Tip of c2, at ${describeVector(c2)}`} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Readout tex={`\\mathbf x = ${columnTex(x, palette.yellow)}`} />
+            <Readout tex={`[\\mathbf x]_{\\mathcal C} = ${basis ? pairTex(inC, C_TEX) : UNKNOWN_PAIR}`} />
+            <p className={`text-meta text-text-muted ${basis ? "swap-hidden" : "swap-shown"}`} aria-hidden={basis}>
+              These two arrows lie on one line, so they do not form a basis.
+            </p>
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+/** A point is known by its C-address. Set its B-weights with sliders until the walk along b1 and b2 reaches it. */
+export function BackToB({ b1 = [2, 1], b2 = [-1, 2], c1 = [1, 0], c2 = [-1, 1], targetC = [1, -3] }: TwoBases & { targetC?: Vec }) {
+  const [weights, setWeights] = useState<Vec>([0, 0]);
+  const point = add(scale(weights[0], b1), scale(weights[1], b2));
+  const goalPoint = add(scale(targetC[0], c1), scale(targetC[1], c2));
+  const answer = weightsOf(goalPoint, b1, b2);
+  const { settled: solved, gesture } = useSettled(nearlyEqual(point, goalPoint));
+  const change: [Vec, Vec] = [weightsOf(b1, c1, c2), weightsOf(b2, c1, c2)];
+  const setWeight = (index: 0 | 1) => (value: number) => setWeights((current) => (index === 0 ? [value, current[1]] : [current[0], value]));
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>The ringed point has <Tex>{`[\\mathbf x]_{\\mathcal C} = ${pairTex(targetC, C_TEX)}`}</Tex>. Set its <Tex>{"\\mathcal B"}</Tex>-coordinates so the green and red walk ends on the ring.</>}
+        success={<>So <Tex>{`[\\mathbf x]_{\\mathcal B} = ${pairTex(answer, B_TEX)}`}</Tex>. Multiplying it by <Tex>{"P_{\\mathcal C \\leftarrow \\mathcal B}"}</Tex> gives back <Tex>{pairTex(targetC, C_TEX)}</Tex>, so going from <Tex>{"\\mathcal C"}</Tex> to <Tex>{"\\mathcal B"}</Tex> undoes that matrix.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={{ xMin: -4, xMax: 6, yMin: -5, yMax: 4 }} label="Plane with the pink grid of c1 and c2, a ringed target point, and a walk along b1 and b2 set by two sliders.">
+            <AddressGrid u={c1} v={c2} stroke={C_GRID} opacity={0.35} />
+            <Marker at={goalPoint} color={solved ? "teal" : "glow"} ring />
+            <WeightWalk weights={weights} u={b1} v={b2} colors={["green", "red"]} />
+            <Arrow to={point} color="yellow" width={solved ? 5 : 3.5} />
+            <Arrow to={b1} color="green" />
+            <Arrow to={b2} color="red" />
+            <Label at={b1} color="green" dx={6} dy={18}>b₁</Label>
+            <Label at={b2} color="red" dx={-26}>b₂</Label>
+          </Plane>
+        }
+        readout={
+          <>
+            <Slider label="x_1" value={weights[0]} onChange={setWeight(0)} min={-3} max={3} step={1} color={palette.i_hat} />
+            <Slider label="x_2" value={weights[1]} onChange={setWeight(1)} min={-3} max={3} step={1} color={palette.j_hat} />
+            <Readout tex={`P_{\\mathcal C \\leftarrow \\mathcal B} = ${matrixTex(change)}`} />
+            <Readout tex={`P_{\\mathcal C \\leftarrow \\mathcal B}${pairTex(weights, B_TEX)} = ${pairTex(weightsOf(point, c1, c2), C_TEX)}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}

@@ -24,7 +24,7 @@ import { OutputReach, PivotPicker, RowSlide } from "@/components/interactive/col
 import { PivotBudget, RankTally } from "@/components/interactive/rank-nullity";
 import { ColumnBuilder, DerivativeRoutes, LandingPredict, RotationColumns } from "@/components/interactive/matrix-representations";
 import { InvertibilityCalls, StatementBoard } from "@/components/interactive/invertible-matrix-theorem";
-import { ChangeMatrixBuilder, SimilarityHunt, TwoAddresses } from "@/components/interactive/change-of-basis";
+import { BackToB, ChangeMatrixBuilder, RenameTheArrow, SimilarityHunt, TwoAddresses } from "@/components/interactive/change-of-basis";
 import { FreeWeights, LandingHunt } from "@/components/interactive/null-space";
 import { DerivativeTarget, SharedDerivativeHunt, TranslationGap } from "@/components/interactive/linear-maps";
 import { PivotHunt, PolynomialRecipe, ThirdVectorHunt } from "@/components/interactive/span-revisited";
@@ -146,6 +146,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     TwoAddresses,
     ChangeMatrixBuilder,
     SimilarityHunt,
+    RenameTheArrow,
+    BackToB,
     LandingHunt,
     FreeWeights,
     TranslationGap,
