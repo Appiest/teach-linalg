@@ -187,16 +187,55 @@ Keep the video under 12 MB.
 
 ## 7. Notes
 
-Write `<folder>/notes.mdx`. It should be very short: roughly one screen of math per section, three or four
-sections, then practice. Let rendered LaTeX and the figures carry it, not paragraphs.
+Write `<folder>/notes.mdx`. The notes teach the way Art of Problem Solving books do: the learner meets a concrete
+problem first, tries it, reads a walkthrough that reasons one step at a time, and only then sees the general idea
+named. `lessons/day-01-vectors/notes.mdx` is the reference; match its structure.
 
-- Available components: `<Pair>` (first child is the visual, the rest stack beside it), `<Figure src="slug"
-  alt="…" />` (add `wide` for a full-width figure), `<Definition term="…">`, and `<Check>` with an `<Answer>`
-  inside. Day 1 shows all of them.
-- **Interactivity, in the style of Brilliant.** Every lesson needs two to four interactive widgets. Each one
+The learner said the practice problems felt easy while the explanations felt confusing. The fix is to make the
+explanation itself a sequence of small, concrete problems, so the reader is never asked to absorb a definition
+before they have done an example of it.
+
+### Teaching format
+
+- **Motivation first** (see "Motivation comes first"), then one sentence telling the reader to try each problem
+  before opening its walkthrough.
+- **Each `##` section follows this rhythm:**
+  1. A `<Problem>` with small integer numbers that the reader can attempt with only what came before. It
+     should lead them to discover the section's idea. Problems number themselves ("Problem 3").
+  2. A `<Solution>` inside the problem. Walk through the reasoning the way a tutor talks: say what we want, why
+     this step is the natural next one, then do it. Never skip an arithmetic step. End with one or two sentences
+     on what the example shows in general.
+  3. A `<Concept title="…">` that names the general idea just discovered, in the reader's words first and then
+     in symbols. Use `<Definition term="…">` for a formal definition or theorem stated precisely.
+  4. An interactive widget or `<Choice>` that exercises the idea right away.
+  5. A `<Warning>` for the mistake learners typically make here, when there is one.
+- **Build difficulty gradually.** Use two or three problems per section when the idea has more than one move
+  (compute a combination, then find weights, then read them off a grid). Each problem adds exactly one new thing.
+- **Multi-step computations** go in `<Steps>` with one `<Step>` per move, so the reader reveals one move at a
+  time. Each step says what it does and why in words before the math.
+- **Never introduce a symbol or term without a concrete instance on the same screen.** If a general formula
+  appears, a specific number version of it appears right before it.
+- **Short paragraphs.** Two to four sentences, one idea each. Transition sentences between sections say how the
+  next idea follows from the last.
+- Available components:
+  - `<Problem>` containing the statement, optionally a `<VectorAnswer>`, a `<Hint>`, and a `<Solution>`
+  - `<Concept title="…">`, `<Definition term="…">`, `<Warning>`
+  - `<Steps>` of `<Step>` children
+  - `<Choice question="…" options={["…", "…"]} answer={index}>explanation</Choice>`. Strings may contain
+    `$…$` math; inside the `options={[…]}` array, backslashes are doubled because it is JavaScript. Use it for
+    quick conceptual checks (is this in echelon form, is this set a subspace, which picture matches).
+  - `<Pair>`, `<Figure src="slug" alt="…" />` (add `wide` for full width)
+  - `<Check>` with `<VectorAnswer>`, optional `<Hint>`, and `<Answer>`. `VectorAnswer` takes `columns={n}` for
+    a matrix answer listed row by row, for example `<VectorAnswer answer={[1, 2, 3, 4]} columns={2} />`.
+    A `<Choice>` may sit inside a `<Check>`. A proof question may have only a `<Hint>` and an `<Answer>`.
+- **Practice** is the last `##` section, split into `### Warm-up` (2–3 one-step checks), `### Core` (4–5
+  checks at the level of the lesson), and `### Challenge` (2–3 that combine ideas or ask why). Every check has a
+  full worked answer, and the core and challenge checks have a `<Hint>`. Aim for at least 9 checks.
+
+- **Interactivity, in the style of Brilliant.** Every lesson needs at least four interactive modules, and at
+  least three of them are manipulable widgets (drag, slide, pick on a picture), not `Choice` or `Steps`. Each one
   gives the learner a goal, lets them manipulate the math directly, and gives immediate visible feedback.
-  - Place each widget right after the idea it exercises: first a short explanation, then the widget with a
-    goal, then the precise math.
+  - Place each widget right after the idea it exercises.
   - Existing widgets live in `site/src/components/interactive/` and are registered in
     `site/src/components/Notes.tsx`:
     - `<VectorExplorer start goal />`
@@ -240,8 +279,8 @@ sections, then practice. Let rendered LaTeX and the figures carry it, not paragr
 - Math is `$…$` inline and `$$…$$` display. Use `\begin{bmatrix}` for matrices. The color macros `\yellow{}`,
   `\blue{}`, `\teal{}`, `\green{}`, `\red{}`, `\pink{}` and `\glow{}` match the video, so use them to tie a
   symbol to its arrow.
-- Include one definition or theorem stated precisely, one worked example with the steps shown in an
-  `aligned` block, and two practice checks with full answers.
+- Include one definition or theorem stated precisely and at least one worked example whose steps are in `<Steps>`
+  or an `aligned` block.
 - Section headings (`##`) name one thing each, with no commas. Don't start with a heading. The page already
   shows the title and big idea.
 - Writing:

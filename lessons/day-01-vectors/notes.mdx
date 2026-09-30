@@ -1,16 +1,56 @@
 Linear algebra answers two kinds of question. The first is how to solve many linear equations at once, which Day 3 does. The second is how a matrix moves every point of space, which starts on Day 5 and leads to Day 28's search for the directions a matrix only stretches. Both are written in the language of vectors, so the course starts with the vector itself.
 
-A vector in $\mathbb{R}^n$ is a column of $n$ real numbers called its **entries**. Drawn as an arrow from the origin, entry $i$ says how far to travel along axis $i$.
+Each section below opens with a problem. Try it before you open the walkthrough, even if you only get partway. The idea you need is always one you can reach from what came before, and the box after the walkthrough names what you just did.
+
+## Vectors
+
+<Problem>
+A robot starts at the origin of a grid. You tell it "go 3 steps right, then 2 steps up." Write down where it ends up. Then describe, as a pair of numbers, the instruction "go 2 steps left, then 3 steps up."
+
+<Solution>
+Right is the positive $x$ direction and up is the positive $y$ direction, so the robot ends at the point $(3, 2)$.
+
+The second instruction moves $-2$ in $x$ (left is negative) and $+3$ in $y$, so it is the pair $(-2, 3)$.
+
+Notice that the pair of numbers is the whole instruction. If you know the two numbers, you know exactly where the robot goes, and if you know where it went, you can read the two numbers back off the grid.
+</Solution>
+</Problem>
+
+<Concept title="A vector is a list of numbers and an arrow">
+A **vector** in $\mathbb{R}^2$ is a column of two real numbers called its **entries**. We draw it as an arrow from the origin: the first entry says how far to go along the $x$-axis and the second says how far along the $y$-axis.
 
 $$
-\yellow{\vec v} = \begin{bmatrix} \green{3} \\ \red{2} \end{bmatrix} \in \mathbb{R}^2
+\yellow{\vec v} = \begin{bmatrix} \green{3} \\ \red{2} \end{bmatrix}
 $$
+
+A vector in $\mathbb{R}^n$ is the same idea with $n$ entries, one for each axis.
+</Concept>
+
+Drag the tip of the arrow and watch the two entries change. The green dashes show the first entry and the red dashes show the second.
 
 <VectorExplorer start={[3, 2]} goal={[-2, 3]} />
 
+<Warning>
+Order matters. $\begin{bmatrix} 4 \\ 7 \end{bmatrix}$ means 4 across and 7 up, while $\begin{bmatrix} 7 \\ 4 \end{bmatrix}$ means 7 across and 4 up, so they are different vectors. Two vectors are **equal** only when every entry matches in the same position.
+</Warning>
+
+<Choice
+  question="Which vector is the arrow that goes 1 step left and 4 steps down?"
+  options={["$\\begin{bmatrix} 1 \\\\ 4 \\end{bmatrix}$", "$\\begin{bmatrix} -4 \\\\ -1 \\end{bmatrix}$", "$\\begin{bmatrix} -1 \\\\ -4 \\end{bmatrix}$", "$\\begin{bmatrix} 1 \\\\ -4 \\end{bmatrix}$"]}
+  answer={2}
+>
+Left is negative $x$ and down is negative $y$. The $x$ entry always comes first, so the vector is $(-1, -4)$.
+</Choice>
+
 ## Vector addition
 
-Everything later in the course is built from adding vectors and scaling them, so we learn those two operations first. To add two vectors, add their entries one position at a time. In the picture, slide $\blue{\vec w}$ so it starts at the tip of $\yellow{\vec v}$. The sum points to where the second arrow ends.
+Everything later in the course is built from two operations, adding vectors and scaling them. We start with adding.
+
+<Problem>
+The robot follows the instruction $\yellow{\vec v} = \begin{bmatrix} 3 \\ 2 \end{bmatrix}$ and then, starting from where it stopped, the instruction $\blue{\vec w} = \begin{bmatrix} -1 \\ 2 \end{bmatrix}$. Where does it end? Would it end somewhere else if it did $\blue{\vec w}$ first?
+
+<Solution>
+Track each coordinate separately. The first trip moves $3$ right and the second moves $1$ left, so the total sideways motion is $3 + (-1) = 2$. The first trip moves $2$ up and the second moves $2$ up, so the total upward motion is $2 + 2 = 4$. The robot ends at $(2, 4)$.
 
 $$
 \yellow{\begin{bmatrix} 3 \\ 2 \end{bmatrix}} + \blue{\begin{bmatrix} -1 \\ 2 \end{bmatrix}}
@@ -18,19 +58,103 @@ $$
 = \teal{\begin{bmatrix} 2 \\ 4 \end{bmatrix}}
 $$
 
+Doing $\blue{\vec w}$ first gives sideways motion $-1 + 3$ and upward motion $2 + 2$, which are the same two sums. So the robot lands at $(2, 4)$ either way.
+
+In the picture, doing one trip after the other means drawing the second arrow starting at the tip of the first. The two orders trace the two halves of a parallelogram and meet at its far corner.
+</Solution>
+</Problem>
+
+<Concept title="Add vectors entry by entry">
+To add two vectors of the same size, add the entries in each position:
+
+$$
+\begin{bmatrix} u_1 \\ u_2 \end{bmatrix} + \begin{bmatrix} v_1 \\ v_2 \end{bmatrix} = \begin{bmatrix} u_1 + v_1 \\ u_2 + v_2 \end{bmatrix}
+$$
+
+In the picture, slide $\vec v$ so its tail sits on the tip of $\vec u$. The sum is the arrow from the origin to where $\vec v$ now ends. Since $\vec u + \vec v = \vec v + \vec u$, the sum is the far corner of the parallelogram with sides $\vec u$ and $\vec v$.
+</Concept>
+
 <AdditionExplorer v={[3, 2]} w={[-1, 2]} goal={[4, 1]} />
 
 ## Scalar multiplication
 
-A **scalar** is a single real number. Multiplying by $c$ multiplies every entry by $c$ and stretches the arrow by a factor of $|c|$. A negative $c$ also reverses its direction.
+<Problem>
+What single instruction does the same thing as doing $\yellow{\vec v} = \begin{bmatrix} 3 \\ 2 \end{bmatrix}$ twice in a row? What would "do $\yellow{\vec v}$ half a time" mean, and what about "do $\yellow{\vec v}$ backward"?
+
+<Solution>
+Twice in a row is $\yellow{\vec v} + \yellow{\vec v} = \begin{bmatrix} 3 + 3 \\ 2 + 2 \end{bmatrix} = \begin{bmatrix} 6 \\ 4 \end{bmatrix}$. Each entry doubled, and the arrow points the same way but is twice as long.
+
+Half a time should be the vector that, done twice, gives $\yellow{\vec v}$. That is $\begin{bmatrix} 1.5 \\ 1 \end{bmatrix}$, which is each entry halved.
+
+Backward means undoing the trip, going 3 left and 2 down. That is $\begin{bmatrix} -3 \\ -2 \end{bmatrix}$, which is each entry multiplied by $-1$.
+
+In all three cases we multiplied every entry by the same number: $2$, $\tfrac12$ and $-1$.
+</Solution>
+</Problem>
+
+<Concept title="Scaling multiplies every entry">
+A **scalar** is a single real number. The **scalar multiple** $c\,\vec u$ multiplies every entry of $\vec u$ by $c$:
 
 $$
 c \begin{bmatrix} u_1 \\ u_2 \end{bmatrix} = \begin{bmatrix} c\,u_1 \\ c\,u_2 \end{bmatrix}
 $$
 
+The arrow gets $|c|$ times as long. If $c$ is negative it also flips to point the opposite way, and if $c = 0$ you get the **zero vector** $\vec 0$, which has every entry $0$.
+</Concept>
+
+Find the scalar that lands on the ringed point. Notice that every position the arrow can reach lies on one line through the origin.
+
 <ScaleExplorer vector={[3, 2]} target={-1.5} />
 
+<Choice
+  question="Is $\begin{bmatrix} 9 \\ 5 \end{bmatrix}$ a scalar multiple of $\begin{bmatrix} 3 \\ 2 \end{bmatrix}$?"
+  options={["Yes, with $c = 3$", "No"]}
+  answer={1}
+>
+To get the first entry we would need $3c = 9$, so $c = 3$. But then the second entry would be $3 \cdot 2 = 6$, not $5$. One scalar has to work for every entry at once, so no such $c$ exists, and the point $(9, 5)$ is off the line of multiples.
+</Choice>
+
+## Subtraction
+
+<Problem>
+Let $\yellow{\vec u} = \begin{bmatrix} 4 \\ 1 \end{bmatrix}$ and $\blue{\vec v} = \begin{bmatrix} 1 \\ 3 \end{bmatrix}$. Compute $\yellow{\vec u} - \blue{\vec v}$. Then find the instruction that takes the robot from the tip of $\blue{\vec v}$ to the tip of $\yellow{\vec u}$.
+
+<Solution>
+Subtracting means adding the backward trip, $\vec u - \vec v = \vec u + (-1)\vec v$:
+
+$$
+\begin{bmatrix} 4 \\ 1 \end{bmatrix} + \begin{bmatrix} -1 \\ -3 \end{bmatrix} = \begin{bmatrix} 3 \\ -2 \end{bmatrix}
+$$
+
+To go from $(1, 3)$ to $(4, 1)$ the robot moves $4 - 1 = 3$ right and $1 - 3 = -2$ up, so the instruction is also $\begin{bmatrix} 3 \\ -2 \end{bmatrix}$. That is no coincidence. Since $\vec v + (\vec u - \vec v) = \vec u$, the difference is exactly the trip that finishes the journey from $\vec v$ to $\vec u$.
+</Solution>
+</Problem>
+
+<DifferenceExplorer u={[4, 1]} v={[1, 3]} goal={[-2, 2]} />
+
 ## Linear combinations
+
+Now we can combine the two operations: scale some vectors, then add the results. This is the single most important construction in the course.
+
+<Problem>
+Let $\yellow{\vec u} = \begin{bmatrix} 2 \\ -1 \end{bmatrix}$ and $\blue{\vec v} = \begin{bmatrix} 1 \\ 3 \end{bmatrix}$. Compute $3\yellow{\vec u} - 2\blue{\vec v}$.
+
+<Solution>
+Do the scalings first, then the addition. Work through it one step at a time.
+
+<Steps>
+<Step>
+Scale $\yellow{\vec u}$ by $3$: $\;3\begin{bmatrix} 2 \\ -1 \end{bmatrix} = \begin{bmatrix} 6 \\ -3 \end{bmatrix}$.
+</Step>
+<Step>
+Scale $\blue{\vec v}$ by $-2$, because subtracting $2\vec v$ is adding $-2\vec v$: $\;-2\begin{bmatrix} 1 \\ 3 \end{bmatrix} = \begin{bmatrix} -2 \\ -6 \end{bmatrix}$.
+</Step>
+<Step>
+Add entry by entry: $\;\begin{bmatrix} 6 \\ -3 \end{bmatrix} + \begin{bmatrix} -2 \\ -6 \end{bmatrix} = \begin{bmatrix} 4 \\ -9 \end{bmatrix}$.
+</Step>
+</Steps>
+</Solution>
+</Problem>
 
 <Definition term="Linear combination">
 Given vectors $\vec v_1, \dots, \vec v_p$ in $\mathbb{R}^n$ and scalars $c_1, \dots, c_p$, the vector
@@ -39,10 +163,28 @@ $$
 \vec y = c_1 \vec v_1 + c_2 \vec v_2 + \cdots + c_p \vec v_p
 $$
 
-is a **linear combination** of $\vec v_1, \dots, \vec v_p$ with **weights** $c_1, \dots, c_p$.
+is a **linear combination** of $\vec v_1, \dots, \vec v_p$ with **weights** $c_1, \dots, c_p$. The weights can be any real numbers, including $0$ and negatives.
 </Definition>
 
-Tomorrow you will see that solving a system of equations means finding the right weights for a linear combination. On Day 4, multiplying a matrix by a vector computes exactly this kind of sum.
+The previous problem gave you the weights and asked for the vector. The harder and more useful question runs the other way: given a target vector, which weights reach it? Tomorrow you will see that solving a system of equations is exactly this question.
+
+<Problem>
+The slanted grid below is made of whole steps of $\yellow{\vec v} = \begin{bmatrix} -1 \\ 1 \end{bmatrix}$ and $\blue{\vec w} = \begin{bmatrix} 2 \\ 1 \end{bmatrix}$. Find weights $a$ and $b$ with $a\yellow{\vec v} + b\blue{\vec w} = \begin{bmatrix} -5 \\ 2 \end{bmatrix}$ by counting grid steps. Use the sliders to test your guess.
+
+<Solution>
+Starting at the origin, three yellow steps take you to $3\yellow{\vec v} = (-3, 3)$. From there you need to go $2$ more left and $1$ down, which is one blue step backward, $-\blue{\vec w} = (-2, -1)$. So $a = 3$ and $b = -1$:
+
+$$
+3\begin{bmatrix} -1 \\ 1 \end{bmatrix} - \begin{bmatrix} 2 \\ 1 \end{bmatrix} = \begin{bmatrix} -5 \\ 2 \end{bmatrix}
+$$
+
+On this slanted grid, the weights play the role that $x$ and $y$ play on the ordinary grid. Day 15 turns that idea into coordinates relative to a basis.
+</Solution>
+</Problem>
+
+<GridWeights v={[-1, 1]} w={[2, 1]} target={[-5, 2]} />
+
+When the grid is not drawn for you, you have to find the weights by reasoning. Try it with a different pair of vectors. On Day 4, multiplying a matrix by a vector will compute exactly this kind of sum.
 
 <CombinationTarget v={[3, 2]} w={[-1, 2]} target={[5, 6]} />
 
@@ -51,6 +193,44 @@ Tomorrow you will see that solving a system of equations means finding the right
 Every orange dot above is $a\,\yellow{\vec v} + b\,\blue{\vec w}$ for one choice of $a$ and $b$. Because $\yellow{\vec v}$ and $\blue{\vec w}$ point in different directions, some choice of weights reaches every point of the plane. Tomorrow's lesson names that set the **span** and asks which vectors a given set of arrows can reach.
 
 ## Practice
+
+### Warm-up
+
+<Check>
+Compute $\begin{bmatrix} 2 \\ -1 \end{bmatrix} + \begin{bmatrix} -5 \\ 4 \end{bmatrix}$.
+
+<VectorAnswer answer={[-3, 3]} />
+
+<Answer>
+$$
+\begin{bmatrix} 2 + (-5) \\ -1 + 4 \end{bmatrix} = \begin{bmatrix} -3 \\ 3 \end{bmatrix}
+$$
+</Answer>
+</Check>
+
+<Check>
+Compute $-3\begin{bmatrix} 2 \\ -1 \\ 4 \end{bmatrix}$.
+
+<VectorAnswer answer={[-6, 3, -12]} />
+
+<Answer>
+Multiply each of the three entries by $-3$: $\begin{bmatrix} -6 \\ 3 \\ -12 \end{bmatrix}$. A vector in $\mathbb{R}^3$ works exactly like one in $\mathbb{R}^2$, with one more entry.
+</Answer>
+</Check>
+
+<Check>
+Let $\vec u = \begin{bmatrix} 5 \\ -2 \end{bmatrix}$ and $\vec v = \begin{bmatrix} 1 \\ 3 \end{bmatrix}$. Compute $\vec u - \vec v$.
+
+<VectorAnswer answer={[4, -5]} />
+
+<Answer>
+$$
+\begin{bmatrix} 5 - 1 \\ -2 - 3 \end{bmatrix} = \begin{bmatrix} 4 \\ -5 \end{bmatrix}
+$$
+</Answer>
+</Check>
+
+### Core
 
 <Check>
 Compute $\;2\begin{bmatrix} 1 \\ -3 \end{bmatrix} + \begin{bmatrix} 4 \\ 5 \end{bmatrix}$.
@@ -65,13 +245,114 @@ $$
 </Check>
 
 <Check>
+Let $\vec u = \begin{bmatrix} 2 \\ 0 \\ -1 \end{bmatrix}$ and $\vec v = \begin{bmatrix} 1 \\ -4 \\ 2 \end{bmatrix}$. Compute $3\vec u - 2\vec v$. (Modeled on Lay §1.3, Example 1.)
+
+<VectorAnswer answer={[4, 8, -7]} />
+
+<Hint>
+Compute $3\vec u$ and $-2\vec v$ separately, then add them entry by entry.
+</Hint>
+
+<Answer>
+$$
+\begin{aligned}
+3\vec u - 2\vec v &= \begin{bmatrix} 6 \\ 0 \\ -3 \end{bmatrix} + \begin{bmatrix} -2 \\ 8 \\ -4 \end{bmatrix} \\
+&= \begin{bmatrix} 4 \\ 8 \\ -7 \end{bmatrix}
+\end{aligned}
+$$
+</Answer>
+</Check>
+
+<Check>
+Find the scalar $c$ with $c\begin{bmatrix} -2 \\ 6 \end{bmatrix} = \begin{bmatrix} 5 \\ -15 \end{bmatrix}$.
+
+<VectorAnswer answer={[-2.5]} labels={["c"]} prefix="c =" />
+
+<Answer>
+The first entries need $-2c = 5$, so $c = -\tfrac52$. Check the second entry with the same $c$: $6 \cdot (-\tfrac52) = -15$. Both entries agree, so $c = -\tfrac52$.
+</Answer>
+</Check>
+
+<Check>
 Find weights $a$ and $b$ so that $a\begin{bmatrix} 1 \\ 1 \end{bmatrix} + b\begin{bmatrix} 2 \\ -1 \end{bmatrix} = \begin{bmatrix} 7 \\ 1 \end{bmatrix}$.
 
 <VectorAnswer answer={[3, 2]} labels={["a", "b"]} />
+
+<Hint>
+Write out the left side as one vector, then match its top entry to $7$ and its bottom entry to $1$. That gives two equations in $a$ and $b$.
+</Hint>
 
 <Answer>
 Matching entries gives $a + 2b = 7$ and $a - b = 1$. Subtracting the second equation from the first gives $3b = 6$, so $b = 2$ and $a = 3$.
 
 Check: $3\begin{bmatrix} 1 \\ 1 \end{bmatrix} + 2\begin{bmatrix} 2 \\ -1 \end{bmatrix} = \begin{bmatrix} 7 \\ 1 \end{bmatrix}$.
+</Answer>
+</Check>
+
+<Check>
+A bakery tray of bread uses $4$ kg of flour, $1$ kg of sugar and $1$ kg of butter, and a tray of muffins uses $2$ kg of flour, $2$ kg of sugar and $1$ kg of butter. Write each recipe as a vector (flour, sugar, butter). How much of each ingredient do $3$ trays of bread and $5$ trays of muffins use? (Modeled on Lay §1.3, Example 7.)
+
+<VectorAnswer answer={[22, 13, 8]} labels={["flour", "sugar", "butter"]} />
+
+<Answer>
+The recipes are $\vec b = \begin{bmatrix} 4 \\ 1 \\ 1 \end{bmatrix}$ and $\vec m = \begin{bmatrix} 2 \\ 2 \\ 1 \end{bmatrix}$. The total is the linear combination $3\vec b + 5\vec m$:
+
+$$
+\begin{bmatrix} 12 \\ 3 \\ 3 \end{bmatrix} + \begin{bmatrix} 10 \\ 10 \\ 5 \end{bmatrix} = \begin{bmatrix} 22 \\ 13 \\ 8 \end{bmatrix}
+$$
+
+So they need $22$ kg of flour, $13$ kg of sugar and $8$ kg of butter. Here a vector is a bundle of quantities, not an arrow, and scaling then adding is still the right operation.
+</Answer>
+</Check>
+
+### Challenge
+
+<Check>
+Find the vector $\vec x$ with $\vec x + \begin{bmatrix} 3 \\ -1 \end{bmatrix} = 2\vec x - \begin{bmatrix} 1 \\ 5 \end{bmatrix}$.
+
+<VectorAnswer answer={[4, 4]} />
+
+<Hint>
+Vector equations can be rearranged like ordinary equations. Move every $\vec x$ to one side.
+</Hint>
+
+<Answer>
+Subtract $\vec x$ from both sides and add $\begin{bmatrix} 1 \\ 5 \end{bmatrix}$ to both sides:
+
+$$
+\vec x = \begin{bmatrix} 3 \\ -1 \end{bmatrix} + \begin{bmatrix} 1 \\ 5 \end{bmatrix} = \begin{bmatrix} 4 \\ 4 \end{bmatrix}
+$$
+
+Check: the left side is $\begin{bmatrix} 7 \\ 3 \end{bmatrix}$, and the right side is $\begin{bmatrix} 8 \\ 8 \end{bmatrix} - \begin{bmatrix} 1 \\ 5 \end{bmatrix} = \begin{bmatrix} 7 \\ 3 \end{bmatrix}$.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="Can you reach $\begin{bmatrix} 7 \\ 3 \end{bmatrix}$ with a linear combination of $\begin{bmatrix} 2 \\ 1 \end{bmatrix}$ and $\begin{bmatrix} 4 \\ 2 \end{bmatrix}$?"
+  options={["Yes", "No"]}
+  answer={1}
+>
+The second vector is $2\begin{bmatrix} 2 \\ 1 \end{bmatrix}$, so every combination $a\begin{bmatrix} 2 \\ 1 \end{bmatrix} + b\begin{bmatrix} 4 \\ 2 \end{bmatrix}$ equals $(a + 2b)\begin{bmatrix} 2 \\ 1 \end{bmatrix}$. That is always a multiple of $(2, 1)$, so its second entry is half its first. The target has second entry $3$, not $3.5$, so no weights reach it. Two vectors that point along the same line can only reach that line, which is the main example in tomorrow's lesson.
+</Choice>
+</Check>
+
+<Check>
+Show that $c(\vec u + \vec v) = c\,\vec u + c\,\vec v$ for any vectors $\vec u, \vec v$ in $\mathbb{R}^2$ and any scalar $c$. (Modeled on Lay §1.3, Practice Problem 1.)
+
+<Hint>
+Write $\vec u = (u_1, u_2)$ and $\vec v = (v_1, v_2)$, work out both sides entry by entry, and use a fact about ordinary numbers.
+</Hint>
+
+<Answer>
+$$
+\begin{aligned}
+c(\vec u + \vec v) &= c\begin{bmatrix} u_1 + v_1 \\ u_2 + v_2 \end{bmatrix} && \text{definition of addition} \\
+&= \begin{bmatrix} c u_1 + c v_1 \\ c u_2 + c v_2 \end{bmatrix} && \text{distributive law for numbers} \\
+&= c\,\vec u + c\,\vec v && \text{definitions of scaling and addition}
+\end{aligned}
+$$
+
+Every vector rule works this way. The operations act one entry at a time, so each rule follows from the matching rule for ordinary numbers.
 </Answer>
 </Check>

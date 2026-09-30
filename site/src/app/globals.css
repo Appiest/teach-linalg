@@ -12,6 +12,8 @@
   --color-accent: var(--palette-yellow);
   --color-glow: var(--palette-glow);
   --color-grid: var(--palette-grid-faint);
+  --color-correct: var(--palette-teal);
+  --color-wrong: var(--palette-j-hat);
   --font-sans: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
   --radius-card: 0.875rem;
   --radius-media: 0.625rem;
@@ -118,10 +120,29 @@
     margin-top: 1.25rem;
   }
 
+  .notes {
+    counter-reset: problem;
+  }
+
   .notes h2 {
     @apply text-section;
     margin-top: 3.5rem;
     scroll-margin-top: 2rem;
+  }
+
+  .notes > h3 {
+    font-size: 1.125rem;
+    line-height: 1.3;
+    font-weight: 650;
+    margin-top: 2.5rem;
+  }
+
+  .notes .problem {
+    counter-increment: problem;
+  }
+
+  .notes .problem-number::before {
+    content: "Problem " counter(problem);
   }
 
   .notes strong {

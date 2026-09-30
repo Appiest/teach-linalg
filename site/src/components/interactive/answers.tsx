@@ -27,7 +27,7 @@ function wrongEntries(values: string[], answer: number[]): number[] {
 function Feedback({ status, wrong, labels }: { status: Status; wrong: number[]; labels: string[] }) {
   if (status === "correct") {
     return (
-      <p className="flex items-center gap-2 font-semibold text-[var(--palette-teal)]">
+      <p className="flex items-center gap-2 font-semibold text-correct">
         <CheckCircle weight="fill" className="size-5" aria-hidden /> Correct.
       </p>
     );
@@ -35,7 +35,7 @@ function Feedback({ status, wrong, labels }: { status: Status; wrong: number[]; 
   if (status === "wrong") {
     const names = wrong.map((index) => labels[index]).join(" and ");
     return (
-      <p className="flex items-center gap-2 text-[var(--palette-j-hat)]">
+      <p className="flex items-center gap-2 text-wrong">
         <WarningCircle weight="fill" className="size-5 shrink-0" aria-hidden /> Not quite. Check {names}.
       </p>
     );
@@ -62,8 +62,14 @@ function TouchKeys({ onFlipSign, onFractionBar }: { onFlipSign: () => void; onFr
   );
 }
 
-export function VectorAnswer({ answer, labels, prefix }: { answer: number[]; labels?: string[]; prefix?: string }) {
-  const names = labels ?? answer.map((_, index) => `entry ${index + 1}`);
+function defaultNames(count: number, columns: number): string[] {
+  if (columns === 1) return Array.from({ length: count }, (_, index) => `entry ${index + 1}`);
+  return Array.from({ length: count }, (_, index) => `row ${Math.floor(index / columns) + 1}, column ${(index % columns) + 1}`);
+}
+
+/** Typed answer checked entry by entry. With `columns`, the entries are a matrix listed row by row. */
+export function VectorAnswer({ answer, labels, prefix, columns = 1 }: { answer: number[]; labels?: string[]; prefix?: string; columns?: number }) {
+  const names = labels ?? defaultNames(answer.length, columns);
   const [values, setValues] = useState<string[]>(answer.map(() => ""));
   const [status, setStatus] = useState<Status>("idle");
   const [wrong, setWrong] = useState<number[]>([]);
@@ -95,7 +101,7 @@ export function VectorAnswer({ answer, labels, prefix }: { answer: number[]; lab
       {prefix ? <Tex>{prefix}</Tex> : null}
       <div className="flex items-stretch gap-1.5">
         <span aria-hidden className="w-2 border-y-2 border-l-2 border-text-muted" />
-        <div className="flex flex-col gap-1.5 py-1">
+        <div className="grid gap-1.5 py-1" style={{ gridTemplateColumns: `repeat(${columns}, auto)` }}>
           {answer.map((_, index) => (
             <input
               key={index}
@@ -109,8 +115,8 @@ export function VectorAnswer({ answer, labels, prefix }: { answer: number[]; lab
               value={values[index]}
               onChange={(event) => update(index, event.target.value)}
               className={`w-20 rounded-md border bg-surface-sunken px-2 py-1.5 text-center text-base tabular-nums outline-none focus-visible:border-accent ${
-                status === "wrong" && wrong.includes(index) ? "border-[var(--palette-j-hat)]" : "border-line"
-              } ${status === "correct" ? "border-[var(--palette-teal)]" : ""}`}
+                status === "wrong" && wrong.includes(index) ? "border-wrong" : "border-line"
+              } ${status === "correct" ? "border-correct" : ""}`}
             />
           ))}
         </div>

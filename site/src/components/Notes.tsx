@@ -1,9 +1,10 @@
 import { Children } from "react";
-import { CaretRight } from "@phosphor-icons/react/dist/ssr";
 import { MDXRemote } from "next-mdx-remote-client/rsc";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
 import { VectorAnswer } from "@/components/interactive/answers";
+import { Choice, Step, Steps } from "@/components/interactive/walkthrough";
+import { Answer, Check, Concept, Definition, Hint, Problem, Solution, Warning } from "@/components/Walkthrough";
 import { TransformExplorer } from "@/components/interactive/transform";
 import { EntryHunt, SpanPainter } from "@/components/interactive/span";
 import { RowReduceExplorer, SolutionCountExplorer } from "@/components/interactive/systems";
@@ -11,7 +12,7 @@ import { ColumnSpanCheck, MatrixVectorExplorer } from "@/components/interactive/
 import { PreimageHunt, ShapeMatch } from "@/components/interactive/transformations";
 import { ClosureHunt, PolynomialCombiner } from "@/components/interactive/vector-spaces";
 import { CostCompare, LUBuilder, SubstitutionSolver } from "@/components/interactive/lu";
-import { AdditionExplorer, CombinationTarget, ScaleExplorer, VectorExplorer } from "@/components/interactive/vectors";
+import { AdditionExplorer, CombinationTarget, DifferenceExplorer, GridWeights, ScaleExplorer, VectorExplorer } from "@/components/interactive/vectors";
 import { CommuteHunt, CompositionExplorer, ProductColumns } from "@/components/interactive/product";
 import { ElementaryMoves, InverseBuilder } from "@/components/interactive/elementary";
 import { InverseColumnsHunt, SingularHunt, UndoOrder } from "@/components/interactive/inverse";
@@ -77,32 +78,6 @@ function Pair({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Definition({ term, children }: { term: string; children: React.ReactNode }) {
-  return (
-    <section className="rounded-card bg-surface-raised p-6 shadow-lift sm:p-8 [&>*+*]:mt-4">
-      <h3 className="text-section text-accent">{term}</h3>
-      {children}
-    </section>
-  );
-}
-
-function Check({ children }: { children: React.ReactNode }) {
-  return <div className="rounded-card bg-surface-raised p-6 shadow-lift [&>*+*]:mt-4">{children}</div>;
-}
-
-function Answer({ children }: { children: React.ReactNode }) {
-  return (
-    <details className="group">
-      <summary className="inline-flex cursor-pointer list-none items-center gap-1.5 rounded-md py-1 text-meta font-semibold text-accent [&::-webkit-details-marker]:hidden">
-        <CaretRight weight="bold" className="size-3.5 transition-transform duration-200 group-open:rotate-90" />
-        <span className="group-open:hidden">Show the solution</span>
-        <span className="hidden group-open:inline">Hide the solution</span>
-      </summary>
-      <div className="mt-3 [&>*+*]:mt-3">{children}</div>
-    </details>
-  );
-}
-
 export function Notes({ lesson }: { lesson: Lesson }) {
   const components = {
     Figure: makeFigure(lesson),
@@ -110,10 +85,20 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     Definition,
     Check,
     Answer,
+    Problem,
+    Solution,
+    Hint,
+    Concept,
+    Warning,
+    Steps,
+    Step,
+    Choice,
     VectorExplorer,
     AdditionExplorer,
     ScaleExplorer,
     CombinationTarget,
+    DifferenceExplorer,
+    GridWeights,
     TransformExplorer,
     VectorAnswer,
     SpanPainter,
