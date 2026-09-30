@@ -190,3 +190,91 @@ export function QrWeightSliders({ u1, u2, x1, x2 }: { u1: Vec; u2: Vec; x1: Vec;
     </Panel>
   );
 }
+
+/** Drag x₂ until Gram–Schmidt leaves nothing: that happens exactly when x₂ lies on the line through x₁. */
+export function VanishingStepHunt({ x1 = [2, 1], start = [1, 3] }: { x1?: Vec; start?: Vec }) {
+  const [x2, setX2] = useState<Vec>(start);
+  const v2 = straightened(x2, x1);
+  const { settled: solved, gesture } = useSettled(nearlyEqual(v2, [0, 0]) && !nearlyEqual(x2, [0, 0]));
+  const shadow = scale(shadowWeight(x2, x1), x1);
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Drag <Tex>{`\\textcolor{${palette.blue}}{\\mathbf x_2}`}</Tex> to a spot other than the origin where Gram–Schmidt leaves no <Tex>{`\\textcolor{${palette.teal}}{\\mathbf v_2}`}</Tex> at all.</>}
+        success={<>Now <Tex>{`\\textcolor{${palette.blue}}{\\mathbf x_2}`}</Tex> is all shadow, because it is a multiple of <Tex>{`\\textcolor{${palette.yellow}}{\\mathbf x_1}`}</Tex>. A zero <Tex>{"\\mathbf v"}</Tex> means the starting vectors were dependent, so that vector gets dropped.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={{ xMin: -5, xMax: 6, yMin: -4, yMax: 5 }} label={`x1 at ${describeVector(x1)}, a movable x2 at ${describeVector(x2)}, and v2 at ${describeVector(v2)}. Drag x2 or use the arrow keys.`}>
+            <SpanLine direction={x1} color="var(--palette-yellow)" />
+            <ShadowBar to={shadow} />
+            <Segment from={shadow} to={x2} color="blue" />
+            {solved ? <Marker at={[0, 0]} color="glow" ring /> : null}
+            <Arrow to={x1} color="yellow" />
+            <Arrow to={v2} color="teal" />
+            <Arrow to={x2} color="blue" width={2.5} />
+            <Label at={x1} color="yellow" dy={24}>x₁</Label>
+            <Label at={x2} color="blue">x₂</Label>
+            <Handle at={x2} onMove={setX2} color="blue" label={`Tip of x2, at ${describeVector(x2)}`} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Readout tex={`\\tfrac{\\mathbf x_2\\cdot\\mathbf x_1}{\\mathbf x_1\\cdot\\mathbf x_1} = \\tfrac{${texNumber(dot(x2, x1))}}{${texNumber(dot(x1, x1))}}`} />
+            <Readout tex={`\\mathbf v_2 = \\mathbf x_2 - \\tfrac{${texNumber(dot(x2, x1))}}{${texNumber(dot(x1, x1))}}\\,\\mathbf x_1 = ${columnTex(v2, palette.teal)}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+function UnitCircle() {
+  const { toSvg, unit } = usePlane();
+  const [cx, cy] = toSvg([0, 0]);
+  return <circle cx={cx} cy={cy} r={unit} fill="none" stroke="var(--palette-glow)" strokeWidth={2} strokeDasharray="4 4" />;
+}
+
+const onUnitCircle = (v: Vec) => Math.abs(length(v) - 1) < 1e-6;
+
+/** Scale two perpendicular vectors onto the unit circle. The right angle survives every scaling. */
+export function NormalizePair({ v1 = [3, 4], v2 = [-4, 3] }: { v1?: Vec; v2?: Vec }) {
+  const [k1, setK1] = useState(1);
+  const [k2, setK2] = useState(1);
+  const scaled1 = scale(k1, v1);
+  const scaled2 = scale(k2, v2);
+  const { settled: solved, gesture } = useSettled(onUnitCircle(scaled1) && onUnitCircle(scaled2));
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Shrink both arrows until their tips sit on the dashed unit circle.</>}
+        success={<>Both factors are <Tex>{`\\tfrac{1}{${texNumber(length(v1))}}`}</Tex>, one over each length. The arrows kept their directions, so the right angle survived, and the pair is now orthonormal.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={{ xMin: -5, xMax: 4, yMin: -1, yMax: 5 }} label={`Perpendicular vectors scaled to ${describeVector(scaled1)} and ${describeVector(scaled2)}, with the unit circle drawn.`}>
+            <UnitCircle />
+            <Arrow to={v1} color="yellow" width={1.5} dashed />
+            <Arrow to={v2} color="blue" width={1.5} dashed />
+            <Arrow to={scaled1} color="yellow" />
+            <Arrow to={scaled2} color="blue" />
+            <RightCorner first={v1} second={v2} shown />
+            <Label at={v1} color="yellow">v₁</Label>
+            <Label at={v2} color="blue" dx={-30}>v₂</Label>
+          </Plane>
+        }
+        readout={
+          <>
+            <Slider label="k_1" value={k1} onChange={setK1} min={0.1} max={1.2} step={0.1} color={palette.yellow} />
+            <Slider label="k_2" value={k2} onChange={setK2} min={0.1} max={1.2} step={0.1} color={palette.blue} />
+            <Readout tex={`\\|k_1\\mathbf v_1\\| = ${texNumber(length(scaled1))}, \\quad \\|k_2\\mathbf v_2\\| = ${texNumber(length(scaled2))}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}

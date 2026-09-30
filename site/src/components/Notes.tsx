@@ -43,7 +43,7 @@ import { SpectralEllipseBuilder, SymmetricPerpendicularHunt } from "@/components
 import { DotShadowHunt, RowPerpendicularHunt, UnitCircleScale } from "@/components/interactive/inner-products";
 import { LongestStretchHunt, RankCopyBudget, SvdEllipseMatch } from "@/components/interactive/singular-value-decomposition";
 import { LineFootHunt, LineOnlyShadow, NearestPlanePoint, ShadowPreimageHunt, ShadowSumBasis } from "@/components/interactive/orthogonal-projection";
-import { QrWeightSliders, ShadowSubtractSlider, StraightenedTargetHunt } from "@/components/interactive/gram-schmidt";
+import { NormalizePair, QrWeightSliders, ShadowSubtractSlider, StraightenedTargetHunt, VanishingStepHunt } from "@/components/interactive/gram-schmidt";
 import { ProjectionRightAngle, ResidualSquaresFit } from "@/components/interactive/least-squares";
 import { QuadraticAxisTurner, QuadraticCircleMax, QuadraticSurfaceShaper } from "@/components/interactive/quadratic-forms";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
@@ -196,6 +196,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     ShadowSubtractSlider,
     StraightenedTargetHunt,
     QrWeightSliders,
+    VanishingStepHunt,
+    NormalizePair,
     ResidualSquaresFit,
     ProjectionRightAngle,
     QuadraticAxisTurner,

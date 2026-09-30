@@ -1,24 +1,131 @@
 Day 36 showed how to project a vector onto a subspace, but its formula only works when the basis of that subspace is orthogonal. The bases you are handed, such as the columns of a matrix, almost never are, so today asks how to repair one. Starting from any basis, the **Gram–Schmidt process** builds an orthogonal basis for the same subspace by projecting each new vector onto the ones already built and keeping only the part that sticks out.
 
+Each section below opens with a problem. Try it before you open the walkthrough, even if you only get partway. The box after each walkthrough names the idea you just used.
+
 ## Subtracting the shadow
 
-<Pair>
-<Figure src="second-step" alt="Oblique 3D view. Yellow v1 = (1, 1, 0) lies on the floor with a faint yellow line through it. The faded blue arrow x2 = (1, 0, 1) drops a dashed line onto that line, landing at the tip of a purple-gray bar labelled one half v1. A solid blue v2 rises from the origin with a small orange right-angle corner between it and v1, and a dashed blue segment joins the tips of x2 and v2." />
+<Problem>
+The vectors $\yellow{\mathbf x_1} = \begin{bmatrix} 3 \\ 1 \end{bmatrix}$ and $\blue{\mathbf x_2} = \begin{bmatrix} 1 \\ 3 \end{bmatrix}$ are a basis of $\mathbb R^2$, but they are not perpendicular. Keep $\mathbf x_1$ as it is. Find the number $c$ that makes $\mathbf x_2 - c\,\mathbf x_1$ perpendicular to $\mathbf x_1$, and write down that new vector.
 
-The goal is a new basis with the same span in which every pair of vectors meets at a right angle, built one vector at a time. Keep $\yellow{\mathbf v_1} = \mathbf x_1$. The **shadow** of $\blue{\mathbf x_2}$ on the line through $\yellow{\mathbf v_1}$ is its projection $\frac{\mathbf x_2\cdot\mathbf v_1}{\mathbf v_1\cdot\mathbf v_1}\,\yellow{\mathbf v_1}$. That shadow is the part of $\blue{\mathbf x_2}$ that leans along $\yellow{\mathbf v_1}$, so removing it leaves a vector at a right angle to $\yellow{\mathbf v_1}$:
+<Hint>
+Perpendicular means the dot product is zero. Write $(\mathbf x_2 - c\,\mathbf x_1)\cdot\mathbf x_1$ in terms of $c$ and set it to zero.
+</Hint>
+
+<Solution>
+We want to change $\mathbf x_2$ as little as possible so that it meets $\mathbf x_1$ at a right angle. Sliding it back along $\mathbf x_1$ is the natural move, because that keeps it inside the same span, and the dot product tells us how far to slide.
+
+<Steps>
+<Step>
+Write the dot product in terms of $c$:
+
+$$
+(\mathbf x_2 - c\,\mathbf x_1)\cdot\mathbf x_1 = \mathbf x_2\cdot\mathbf x_1 - c\,(\mathbf x_1\cdot\mathbf x_1) = (3 + 3) - c\,(9 + 1) = 6 - 10c.
+$$
+</Step>
+<Step>
+Set it to zero: $6 - 10c = 0$ gives $c = \tfrac{6}{10} = \tfrac35$.
+</Step>
+<Step>
+Subtract: $\mathbf x_2 - \tfrac35\,\mathbf x_1 = \begin{bmatrix} 1 - \tfrac95 \\ 3 - \tfrac35 \end{bmatrix} = \begin{bmatrix} -\tfrac45 \\ \tfrac{12}{5} \end{bmatrix}$.
+</Step>
+<Step>
+Check: $3\cdot(-\tfrac45) + 1\cdot\tfrac{12}{5} = -\tfrac{12}{5} + \tfrac{12}{5} = 0$.
+</Step>
+</Steps>
+
+The number $c = \frac{\mathbf x_2\cdot\mathbf x_1}{\mathbf x_1\cdot\mathbf x_1}$ is Day 36's projection weight, so $c\,\mathbf x_1$ is the **shadow** of $\mathbf x_2$ on the line through $\mathbf x_1$. Subtracting the shadow removes the part of $\mathbf x_2$ that leans along $\mathbf x_1$, and what is left stands at a right angle to it.
+</Solution>
+</Problem>
+
+<ShadowSubtractSlider v1={[3, 1]} x2={[1, 3]} />
+
+<Concept title="One step of Gram–Schmidt">
+Keep the first vector, $\yellow{\mathbf v_1} = \mathbf x_1$. Then replace $\mathbf x_2$ by what is left after subtracting its shadow on $\mathbf v_1$:
 
 $$
 \blue{\mathbf v_2} = \mathbf x_2 - \frac{\mathbf x_2\cdot\mathbf v_1}{\mathbf v_1\cdot\mathbf v_1}\,\yellow{\mathbf v_1}.
 $$
-</Pair>
 
-The widget lets you subtract any multiple $c\,\yellow{\mathbf v_1}$. Watch the dot product in the readout while you slide.
+By the orthogonal decomposition theorem from Day 36, $\mathbf v_2$ is perpendicular to $\mathbf v_1$.
+</Concept>
 
-<ShadowSubtractSlider v1={[3, 1]} x2={[1, 3]} />
+The new pair must still describe the same subspace, or we would have repaired the wrong thing. The next problem checks that in $\mathbb R^3$.
+
+<Problem>
+Let $\mathbf x_1 = (1, 1, 0)$ and $\mathbf x_2 = (1, 0, 1)$, which span a plane $W$ in $\mathbb R^3$. Compute $\mathbf v_1$ and $\mathbf v_2$. Then show that $\mathbf x_2$ can be rebuilt from $\mathbf v_1$ and $\mathbf v_2$, so the new pair spans the same plane.
+
+<Solution>
+Follow the one-step recipe, then undo it.
+
+<Steps>
+<Step>
+Keep $\yellow{\mathbf v_1} = \mathbf x_1 = (1, 1, 0)$.
+</Step>
+<Step>
+The shadow weight is $\frac{\mathbf x_2\cdot\mathbf v_1}{\mathbf v_1\cdot\mathbf v_1} = \frac{1 + 0 + 0}{1 + 1 + 0} = \frac12$, so
+
+$$
+\blue{\mathbf v_2} = (1, 0, 1) - \tfrac12(1, 1, 0) = \left(\tfrac12,\ -\tfrac12,\ 1\right).
+$$
+</Step>
+<Step>
+Check the right angle: $\mathbf v_1\cdot\mathbf v_2 = \tfrac12 - \tfrac12 + 0 = 0$.
+</Step>
+<Step>
+Rearrange the formula for $\mathbf v_2$: $\mathbf x_2 = \mathbf v_2 + \tfrac12\,\mathbf v_1$. So $\mathbf x_2$ is a combination of $\mathbf v_1$ and $\mathbf v_2$, and $\mathbf v_2$ is a combination of $\mathbf x_1$ and $\mathbf x_2$. Each pair can build the other, so they span the same plane.
+</Step>
+</Steps>
+
+The vector $\mathbf v_2$ is not zero, because $\mathbf x_2$ is not a multiple of $\mathbf x_1$. If it were, all of $\mathbf x_2$ would be shadow and nothing would be left.
+</Solution>
+</Problem>
+
+<Figure src="second-step" alt="Oblique 3D view. Yellow v1 = (1, 1, 0) lies on the floor with a faint yellow line through it. The faded blue arrow x2 = (1, 0, 1) drops a dashed line onto that line, landing at the tip of a purple-gray bar labelled one half v1. A solid blue v2 rises from the origin with a small orange right-angle corner between it and v1, and a dashed blue segment joins the tips of x2 and v2." wide />
+
+Only the part of $\blue{\mathbf x_2}$ that sticks out from the line survives. That means many different starting vectors straighten to the same $\mathbf v_2$. Find one that is not already at the ring.
+
+<StraightenedTargetHunt v1={[2, 1]} target={[-1, 2]} start={[4, 0]} />
+
+The opposite extreme happens when nothing sticks out at all.
+
+<VanishingStepHunt x1={[2, 1]} start={[1, 3]} />
+
+<Warning>
+If a step of Gram–Schmidt produces $\mathbf v_k = \mathbf 0$, then $\mathbf x_k$ was already in the span of the earlier vectors, so the vectors you started with were not a basis. Drop that vector and say so. Do not divide by $\mathbf 0\cdot\mathbf 0$ in the next step.
+</Warning>
 
 ## The Gram–Schmidt process
 
-For a third vector you subtract its shadow on every vector built so far. Because $\yellow{\mathbf v_1}$ and $\blue{\mathbf v_2}$ are already orthogonal, the shadow on their plane is just the sum of the two separate shadows, which is Day 36's projection formula.
+With a third vector there are two earlier directions, so there are two shadows to remove.
+
+<Problem>
+Continue Problem 2 with $\mathbf x_3 = (0, 1, 1)$. You already have $\yellow{\mathbf v_1} = (1, 1, 0)$ and $\blue{\mathbf v_2} = (\tfrac12, -\tfrac12, 1)$. Find $\pink{\mathbf v_3}$, perpendicular to both.
+
+<Solution>
+We want the part of $\mathbf x_3$ that sticks out of the plane spanned by $\mathbf v_1$ and $\mathbf v_2$. That is $\mathbf x_3$ minus its projection onto the plane. Because $\mathbf v_1$ and $\mathbf v_2$ are already orthogonal, Day 36's formula lets us compute that projection as the sum of the two separate shadows.
+
+<Steps>
+<Step>
+Shadow on $\mathbf v_1$: $\frac{\mathbf x_3\cdot\mathbf v_1}{\mathbf v_1\cdot\mathbf v_1} = \frac{0 + 1 + 0}{2} = \frac12$, so the shadow is $\tfrac12(1, 1, 0) = (\tfrac12, \tfrac12, 0)$.
+</Step>
+<Step>
+Shadow on $\mathbf v_2$: $\mathbf x_3\cdot\mathbf v_2 = 0 - \tfrac12 + 1 = \tfrac12$ and $\mathbf v_2\cdot\mathbf v_2 = \tfrac14 + \tfrac14 + 1 = \tfrac32$. The weight is $\frac{1/2}{3/2} = \frac13$, so the shadow is $\tfrac13(\tfrac12, -\tfrac12, 1) = (\tfrac16, -\tfrac16, \tfrac13)$.
+</Step>
+<Step>
+Subtract both shadows:
+
+$$
+\pink{\mathbf v_3} = (0, 1, 1) - \left(\tfrac12, \tfrac12, 0\right) - \left(\tfrac16, -\tfrac16, \tfrac13\right) = \left(-\tfrac23,\ \tfrac23,\ \tfrac23\right).
+$$
+</Step>
+<Step>
+Check every pair: $\mathbf v_1\cdot\mathbf v_3 = -\tfrac23 + \tfrac23 + 0 = 0$ and $\mathbf v_2\cdot\mathbf v_3 = -\tfrac13 - \tfrac13 + \tfrac23 = 0$. Together with $\mathbf v_1\cdot\mathbf v_2 = 0$ from Problem 2, all three pairs are perpendicular.
+</Step>
+</Steps>
+</Solution>
+</Problem>
+
+<Figure src="third-step" alt="Oblique 3D view. A teal sheet is the plane spanned by yellow v1 and blue v2. The faded pink arrow x3 = (0, 1, 1) drops a dashed line onto the sheet, where two purple-gray bars along v1 and v2 and dashed edges meet. Solid pink v3 rises from the origin, with orange right-angle corners between it and both v1 and v2." wide />
 
 <Definition term="Theorem (the Gram–Schmidt process)">
 Let $\{\mathbf x_1, \dots, \mathbf x_p\}$ be a basis for a nonzero subspace $W$ of $\mathbb R^n$. Set $\mathbf v_1 = \mathbf x_1$ and, for $k = 2, \dots, p$,
@@ -30,48 +137,98 @@ $$
 Then $\{\mathbf v_1, \dots, \mathbf v_p\}$ is an orthogonal basis for $W$, and $\operatorname{Span}\{\mathbf v_1, \dots, \mathbf v_k\} = \operatorname{Span}\{\mathbf x_1, \dots, \mathbf x_k\}$ for every $k$.
 </Definition>
 
-Each $\mathbf v_k$ is $\mathbf x_k$ minus its projection onto $W_{k-1} = \operatorname{Span}\{\mathbf v_1, \dots, \mathbf v_{k-1}\}$, so the orthogonal decomposition theorem makes it perpendicular to every earlier $\mathbf v$. It still lies in $W$ because it is $\mathbf x_k$ minus a combination of earlier vectors. It is never zero, because $\mathbf x_k$ is not in $W_{k-1}$ when the $\mathbf x$'s are independent. Always project onto the new $\mathbf v$'s, never onto the old $\mathbf x$'s, because the shadows only add up correctly when the vectors you project onto are orthogonal.
+Each $\mathbf v_k$ is $\mathbf x_k$ minus its projection onto $W_{k-1} = \operatorname{Span}\{\mathbf v_1, \dots, \mathbf v_{k-1}\}$, so the orthogonal decomposition theorem makes it perpendicular to every earlier $\mathbf v$. It still lies in $W$ because it is $\mathbf x_k$ minus a combination of earlier vectors. It is never zero, because $\mathbf x_k$ is not in $W_{k-1}$ when the $\mathbf x$'s are independent.
 
-Only the part of $\blue{\mathbf x_2}$ that sticks out from the line survives. Find a starting vector that straightens to the ring without already being there.
+<Warning>
+Always project onto the new $\mathbf v$'s, never onto the old $\mathbf x$'s. The shadows only add up to the projection when the vectors you project onto are orthogonal. In Problem 3, using $\mathbf x_2 = (1, 0, 1)$ in place of $\mathbf v_2$ gives $(0, 1, 1) - (\tfrac12, \tfrac12, 0) - \tfrac12(1, 0, 1) = (-1, \tfrac12, \tfrac12)$, and its dot product with $\mathbf v_1$ is $-1 + \tfrac12 = -\tfrac12$, not $0$.
+</Warning>
 
-<StraightenedTargetHunt v1={[2, 1]} target={[-1, 2]} start={[4, 0]} />
+Fractions pile up quickly, and you are allowed to clear them.
 
-Here is the video's example with $\mathbf x_1 = (1, 1, 0)$, $\mathbf x_2 = (1, 0, 1)$ and $\mathbf x_3 = (0, 1, 1)$:
+<Problem>
+Replace $\mathbf v_2 = (\tfrac12, -\tfrac12, 1)$ by $\mathbf v_2' = 2\mathbf v_2 = (1, -1, 2)$ and redo the shadow of $\mathbf x_3 = (0, 1, 1)$ on it. Does $\mathbf v_3$ change?
 
-$$
-\begin{aligned}
-\yellow{\mathbf v_1} &= \mathbf x_1 = (1, 1, 0) \\
-\blue{\mathbf v_2} &= \mathbf x_2 - \tfrac{1}{2}\,\yellow{\mathbf v_1} = (1, 0, 1) - (\tfrac12, \tfrac12, 0) = (\tfrac12, -\tfrac12, 1) \\
-\pink{\mathbf v_3} &= \mathbf x_3 - \tfrac{1}{2}\,\yellow{\mathbf v_1} - \frac{1/2}{3/2}\,\blue{\mathbf v_2} \\
-&= (0, 1, 1) - (\tfrac12, \tfrac12, 0) - (\tfrac16, -\tfrac16, \tfrac13) = (-\tfrac23, \tfrac23, \tfrac23)
-\end{aligned}
-$$
+<Solution>
+The dot products are $\mathbf x_3\cdot\mathbf v_2' = 0 - 1 + 2 = 1$ and $\mathbf v_2'\cdot\mathbf v_2' = 1 + 1 + 4 = 6$, so the shadow is $\tfrac16(1, -1, 2) = (\tfrac16, -\tfrac16, \tfrac13)$. That is the same shadow as in Problem 3, so $\mathbf v_3$ does not change.
 
-<Figure src="third-step" alt="Oblique 3D view. A teal sheet is the plane spanned by yellow v1 and blue v2. The faded pink arrow x3 = (0, 1, 1) drops a dashed line onto the sheet, where two purple-gray bars along v1 and v2 and dashed edges meet. Solid pink v3 rises from the origin, with orange right-angle corners between it and both v1 and v2." wide />
+The factor 2 appears twice on top (in $\mathbf x_3\cdot\mathbf v_2'$ and in $\mathbf v_2'$ itself) and twice on the bottom (in $\mathbf v_2'\cdot\mathbf v_2'$), so it cancels. Any nonzero rescaling of an intermediate $\mathbf v_k$ is safe. The same argument lets us replace $\mathbf v_3$ by $\mathbf v_3' = -\tfrac32\mathbf v_3 = (1, -1, -1)$, or by $(-1, 1, 1)$.
+</Solution>
+</Problem>
 
-Every pair checks out: $\mathbf v_1\cdot\mathbf v_2 = \tfrac12 - \tfrac12 + 0 = 0$, $\mathbf v_1\cdot\mathbf v_3 = -\tfrac23 + \tfrac23 = 0$ and $\mathbf v_2\cdot\mathbf v_3 = -\tfrac13 - \tfrac13 + \tfrac23 = 0$.
-
-You may rescale any $\mathbf v_k$ to clear fractions before the next step, for example $\mathbf v_2' = 2\mathbf v_2 = (1, -1, 2)$. The projection does not change, because the factor 2 appears twice on top (in $\mathbf x_3\cdot\mathbf v_2'$ and in $\mathbf v_2'$) and twice on the bottom (in $\mathbf v_2'\cdot\mathbf v_2'$), so it cancels: $\frac{\mathbf x_3\cdot\mathbf v_2'}{\mathbf v_2'\cdot\mathbf v_2'}\,\mathbf v_2' = \tfrac16(1, -1, 2)$, which equals $\tfrac13\mathbf v_2$ as before.
+<Choice
+  question="You run Gram–Schmidt on $\mathbf x_2$ first and then $\mathbf x_1$, the reverse of the usual order. What do you get?"
+  options={["The same orthogonal basis", "A different orthogonal basis of the same subspace", "Something that is no longer a basis"]}
+  answer={1}
+>
+The first vector you keep is whichever one comes first, so the output changes with the order. It is still an orthogonal basis of the same subspace, so both answers are correct. When you check someone's work, test that the vectors are perpendicular and lie in the subspace rather than matching them against one particular answer.
+</Choice>
 
 ## Normalizing
 
-A set is **orthonormal** when its vectors are orthogonal and each has length 1. Unit vectors make every denominator $\mathbf u\cdot\mathbf u$ in Day 36's formula equal to 1, so each projection weight becomes a single dot product. Dividing each $\mathbf v_k$ by its length keeps every right angle and turns an orthogonal basis into an orthonormal one:
+An **orthonormal** set is an orthogonal set in which every vector has length 1. Unit vectors make every denominator $\mathbf u\cdot\mathbf u$ in Day 36's formula equal to 1, so each projection weight becomes a single dot product.
+
+<Problem>
+Turn the orthogonal basis $\mathbf v_1 = (1, 1, 0)$, $\mathbf v_2' = (1, -1, 2)$, $\mathbf v_3' = (-1, 1, 1)$ from Problems 3 and 4 into an orthonormal one.
+
+<Solution>
+Dividing a vector by its length keeps its direction and makes its length 1. Directions are what make the vectors perpendicular, so every right angle survives.
 
 $$
-\mathbf u_k = \frac{\mathbf v_k}{\lVert\mathbf v_k\rVert}
+\begin{aligned}
+\|\mathbf v_1\| &= \sqrt{1 + 1 + 0} = \sqrt2, & \yellow{\mathbf u_1} &= \tfrac{1}{\sqrt2}(1, 1, 0) \\
+\|\mathbf v_2'\| &= \sqrt{1 + 1 + 4} = \sqrt6, & \blue{\mathbf u_2} &= \tfrac{1}{\sqrt6}(1, -1, 2) \\
+\|\mathbf v_3'\| &= \sqrt{1 + 1 + 1} = \sqrt3, & \pink{\mathbf u_3} &= \tfrac{1}{\sqrt3}(-1, 1, 1)
+\end{aligned}
 $$
 
-For the video's example this gives
+Rescaling to whole numbers first made these lengths easy to compute.
+</Solution>
+</Problem>
+
+<Concept title="Normalize at the end">
+To turn an orthogonal basis into an orthonormal one, divide each vector by its length:
 
 $$
-\yellow{\mathbf u_1} = \tfrac{1}{\sqrt2}(1, 1, 0), \quad \blue{\mathbf u_2} = \tfrac{1}{\sqrt6}(1, -1, 2), \quad \pink{\mathbf u_3} = \tfrac{1}{\sqrt3}(-1, 1, 1).
+\mathbf u_k = \frac{\mathbf v_k}{\lVert\mathbf v_k\rVert}.
 $$
 
-Normalize last. If you normalize along the way, every later projection carries square roots.
+Do this after the whole Gram–Schmidt run. If you normalize along the way, every later projection carries square roots.
+</Concept>
+
+<NormalizePair v1={[3, 4]} v2={[-4, 3]} />
 
 ## QR factorization
 
-The goal of this section is to record all of Gram–Schmidt's work in two matrices you can reuse. $Q$ holds the orthonormal basis, and $R$ holds the weights that rebuild the original vectors from it. Put the $\mathbf x$'s into the columns of $A$ and the $\mathbf u$'s into the columns of $Q$. The span property says $\mathbf x_k$ is a combination of $\mathbf u_1, \dots, \mathbf u_k$ only, so the weights that rebuild $\mathbf x_k$ have zeros below position $k$. Those weight columns form an upper triangular $R$ with $A = QR$.
+The goal of this section is to record all of Gram–Schmidt's work in two matrices you can reuse. $Q$ holds the orthonormal basis, and $R$ holds the weights that rebuild the original vectors from it.
+
+<Problem>
+Let $A = \begin{bmatrix} 3 & -1 \\ 4 & 7 \end{bmatrix}$ with columns $\mathbf x_1 = (3, 4)$ and $\mathbf x_2 = (-1, 7)$. Build an orthonormal basis $\mathbf u_1, \mathbf u_2$ from the columns. Then find the weights that rebuild each column from $\mathbf u_1$ and $\mathbf u_2$.
+
+<Solution>
+Run Gram–Schmidt and normalize, then read the weights off with dot products. Because the $\mathbf u$'s are orthonormal, the weight of $\mathbf u_j$ in any vector is just that vector dotted with $\mathbf u_j$.
+
+<Steps>
+<Step>
+$\|\mathbf x_1\| = \sqrt{9 + 16} = 5$, so $\mathbf u_1 = \tfrac15(3, 4) = (0.6, 0.8)$.
+</Step>
+<Step>
+The shadow of $\mathbf x_2$ on $\mathbf u_1$ has weight $\mathbf x_2\cdot\mathbf u_1 = \tfrac15(-3 + 28) = 5$. Subtracting it leaves $\mathbf x_2 - 5\,\mathbf u_1 = (-1 - 3,\ 7 - 4) = (-4, 3)$.
+</Step>
+<Step>
+$\|(-4, 3)\| = 5$, so $\mathbf u_2 = (-0.8, 0.6)$.
+</Step>
+<Step>
+Rebuild the columns. $\mathbf x_1 = 5\,\mathbf u_1 + 0\,\mathbf u_2$ and $\mathbf x_2 = 5\,\mathbf u_1 + 5\,\mathbf u_2$. Put these weights in columns:
+
+$$
+A = \begin{bmatrix} 0.6 & -0.8 \\ 0.8 & 0.6 \end{bmatrix}\begin{bmatrix} 5 & 5 \\ \glow{0} & 5 \end{bmatrix} = QR.
+$$
+</Step>
+</Steps>
+
+The zero below the diagonal appears because $\mathbf x_1$ lies along $\mathbf u_1$ and needs none of $\mathbf u_2$. Multiply out to check: the first column of $QR$ is $5(0.6, 0.8) = (3, 4)$ and the second is $5(0.6, 0.8) + 5(-0.8, 0.6) = (-1, 7)$.
+</Solution>
+</Problem>
 
 <Pair>
 <Figure src="qr-weights" alt="Three equations: x1 = r11 u1, x2 = r12 u1 + r22 u2, x3 = r13 u1 + r23 u2 + r33 u3. Beside them, R is a 3 by 3 matrix with the r entries on and above the diagonal and orange zeros below it." />
@@ -81,21 +238,29 @@ If the $m \times n$ matrix $A$ has linearly independent columns, then $A = QR$, 
 </Definition>
 </Pair>
 
-You never need to track the weights by hand. Orthonormal columns give $Q^TQ = I$, so $Q^TA = Q^TQR = R$. For the video's example,
+The span property says $\mathbf x_k$ is a combination of $\mathbf u_1, \dots, \mathbf u_k$ only, so the weights that rebuild $\mathbf x_k$ have zeros below position $k$. That is why $R$ is upper triangular.
+
+You never need to track the weights by hand. Orthonormal columns give $Q^TQ = I$, so $Q^TA = Q^TQR = R$. In Problem 6, $Q^TA$ has entries $\mathbf u_i\cdot\mathbf x_j$, which are exactly the dot products we computed. For the three vectors of Problem 3,
 
 $$
-R = Q^TA = \begin{bmatrix} \sqrt2 & \tfrac{1}{\sqrt2} & \tfrac{1}{\sqrt2} \\ \glow{0} & \tfrac{3}{\sqrt6} & \tfrac{1}{\sqrt6} \\ \glow{0} & \glow{0} & \tfrac{2}{\sqrt3} \end{bmatrix}.
+R = Q^TA = \begin{bmatrix} \sqrt2 & \tfrac{1}{\sqrt2} & \tfrac{1}{\sqrt2} \\[6pt] \glow{0} & \tfrac{3}{\sqrt6} & \tfrac{1}{\sqrt6} \\[6pt] \glow{0} & \glow{0} & \tfrac{2}{\sqrt3} \end{bmatrix}.
 $$
 
-The diagonal holds the lengths $\lVert\mathbf v_1\rVert = \sqrt2$, $\lVert\mathbf v_2\rVert = \sqrt{3/2}$ and $\lVert\mathbf v_3\rVert = \sqrt{4/3}$. In the widget below, $\yellow{\mathbf u_1}$ and $\blue{\mathbf u_2}$ are already orthonormal, and you choose the weights that rebuild each column of $A$.
+The diagonal holds the lengths $\lVert\mathbf v_1\rVert = \sqrt2$, $\lVert\mathbf v_2\rVert = \sqrt{3/2}$ and $\lVert\mathbf v_3\rVert = \sqrt{4/3}$ of the unscaled Gram–Schmidt vectors. In the widget below, $\yellow{\mathbf u_1}$ and $\blue{\mathbf u_2}$ are already orthonormal, and you choose the weights that rebuild each column of $A$.
 
 <QrWeightSliders u1={[0.8, 0.6]} u2={[-0.6, 0.8]} x1={[4, 3]} x2={[2.5, 5]} />
+
+<Warning>
+The Gram–Schmidt weights $\frac{\mathbf x_k\cdot\mathbf v_j}{\mathbf v_j\cdot\mathbf v_j}$ are not the entries of $R$, because they were computed with unnormalized vectors. Use $R = Q^TA$. If a diagonal entry of $R$ comes out negative, flip the sign of that column of $Q$ and that row of $R$.
+</Warning>
 
 On a computer, rounding errors pile up in the plain process, so software uses a reordered version called modified Gram–Schmidt, or builds $Q$ from reflections instead.
 
 Tomorrow, on Day 38, you find the $\mathbf x$ that comes closest to solving a system with no exact solution. Day 38 solves it with the normal equations and then shows how $A = QR$ shortens them to the triangular system $R\hat{\mathbf x} = Q^T\mathbf b$. Day 40 uses Gram–Schmidt once more to finish an orthonormal basis for the singular value decomposition.
 
 ## Practice
+
+### Warm-up
 
 <Check>
 Use Gram–Schmidt on $\mathbf x_1 = (1, 2, 2)$ and $\mathbf x_2 = (3, 3, 0)$. Enter $\mathbf v_2$. (Modeled on Lay §6.4, Exercise 1.)
@@ -115,9 +280,57 @@ Check: $\mathbf v_1\cdot\mathbf v_2 = 2 + 2 - 4 = 0$.
 </Check>
 
 <Check>
-Find the QR factorization of $A = \begin{bmatrix} 2 & 4 \\ 1 & 5 \\ 2 & -2 \end{bmatrix}$. Enter the entries of $R$ in reading order. (Modeled on Lay §6.4, Exercise 15.)
+Normalize $\mathbf v = (2, -1, 2)$.
 
-<VectorAnswer answer={[3, 3, 0, 6]} labels={["top left", "top right", "bottom left", "bottom right"]} />
+<VectorAnswer answer={[2 / 3, -1 / 3, 2 / 3]} />
+
+<Answer>
+$\|\mathbf v\| = \sqrt{4 + 1 + 4} = 3$, so $\mathbf u = \tfrac13(2, -1, 2) = (\tfrac23, -\tfrac13, \tfrac23)$. Its length is $\sqrt{\tfrac49 + \tfrac19 + \tfrac49} = 1$.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="Gram–Schmidt on $\mathbf x_1, \mathbf x_2$ gives $\mathbf v_2 = \mathbf 0$. What does that tell you?"
+  options={["You made an arithmetic mistake", "$\\mathbf x_2$ is a multiple of $\\mathbf x_1$, so the set was not a basis", "$\\mathbf x_1$ and $\\mathbf x_2$ were already orthogonal"]}
+  answer={1}
+>
+$\mathbf v_2 = \mathbf 0$ means $\mathbf x_2$ equals its own shadow on $\mathbf x_1$, so it lies on the line through $\mathbf x_1$. The two vectors are dependent. Orthogonal inputs give the opposite result, since then the shadow is zero and $\mathbf v_2 = \mathbf x_2$.
+</Choice>
+</Check>
+
+### Core
+
+<Check>
+Find an orthogonal basis for the column space of $A = \begin{bmatrix} 1 & 3 & 4 \\ 1 & 1 & 0 \\ 1 & 3 & 2 \\ 1 & 1 & 2 \end{bmatrix}$. Enter $\mathbf v_3$. (Modeled on Lay §6.4, Exercise 9.)
+
+<VectorAnswer answer={[1, -1, -1, 1]} />
+
+<Hint>
+$\mathbf v_1 = \mathbf x_1$. For $\mathbf v_3$, subtract the shadows on $\mathbf v_1$ and $\mathbf v_2$, not on $\mathbf x_1$ and $\mathbf x_2$.
+</Hint>
+
+<Answer>
+$$
+\begin{aligned}
+\mathbf v_1 &= (1, 1, 1, 1) \\
+\mathbf v_2 &= \mathbf x_2 - \tfrac{8}{4}\,\mathbf v_1 = (3, 1, 3, 1) - (2, 2, 2, 2) = (1, -1, 1, -1) \\
+\mathbf v_3 &= \mathbf x_3 - \tfrac{8}{4}\,\mathbf v_1 - \tfrac{4}{4}\,\mathbf v_2 = (4, 0, 2, 2) - (2, 2, 2, 2) - (1, -1, 1, -1) = (1, -1, -1, 1)
+\end{aligned}
+$$
+
+For the last line, $\mathbf x_3\cdot\mathbf v_1 = 4 + 0 + 2 + 2 = 8$ and $\mathbf x_3\cdot\mathbf v_2 = 4 - 0 + 2 - 2 = 4$. Every pair of $\mathbf v$'s dots to zero.
+</Answer>
+</Check>
+
+<Check>
+Find the QR factorization of $A = \begin{bmatrix} 2 & 4 \\ 1 & 5 \\ 2 & -2 \end{bmatrix}$. Enter $R$ row by row. (Modeled on Lay §6.4, Exercise 15.)
+
+<VectorAnswer answer={[3, 3, 0, 6]} columns={2} />
+
+<Hint>
+Normalize the first column to get $\mathbf u_1$. The top row of $R$ is $\|\mathbf x_1\|$ and $\mathbf x_2\cdot\mathbf u_1$.
+</Hint>
 
 <Answer>
 $\lVert\mathbf x_1\rVert = 3$, so $\mathbf u_1 = \tfrac13(2, 1, 2)$. Then $\mathbf x_2\cdot\mathbf u_1 = \tfrac13(8 + 5 - 4) = 3$, and $\mathbf x_2 - 3\mathbf u_1 = (2, 4, -4)$ has length 6, so $\mathbf u_2 = \tfrac13(1, 2, -2)$.
@@ -127,5 +340,118 @@ Q = \begin{bmatrix} 2/3 & 1/3 \\ 1/3 & 2/3 \\ 2/3 & -2/3 \end{bmatrix}, \qquad R
 $$
 
 Check: the first column of $QR$ is $3\mathbf u_1 = (2, 1, 2)$ and the second is $3\mathbf u_1 + 6\mathbf u_2 = (4, 5, -2)$.
+</Answer>
+</Check>
+
+<Check>
+The columns of $Q = \tfrac12\begin{bmatrix} 1 & 1 \\ 1 & -1 \\ 1 & 1 \\ 1 & -1 \end{bmatrix}$ came from Gram–Schmidt on the columns of $A = \begin{bmatrix} 2 & 2 \\ 2 & 0 \\ 2 & 2 \\ 2 & 0 \end{bmatrix}$. Find $R$ with $A = QR$, row by row. (Modeled on Lay §6.4, Exercise 13.)
+
+<VectorAnswer answer={[4, 2, 0, 2]} columns={2} />
+
+<Hint>
+Use $R = Q^TA$. Entry $(i, j)$ is column $i$ of $Q$ dotted with column $j$ of $A$.
+</Hint>
+
+<Answer>
+$$
+R = Q^TA = \frac12\begin{bmatrix} 1 & 1 & 1 & 1 \\ 1 & -1 & 1 & -1 \end{bmatrix}\begin{bmatrix} 2 & 2 \\ 2 & 0 \\ 2 & 2 \\ 2 & 0 \end{bmatrix} = \frac12\begin{bmatrix} 8 & 4 \\ 0 & 4 \end{bmatrix} = \begin{bmatrix} 4 & 2 \\ 0 & 2 \end{bmatrix}
+$$
+
+Check: $4\,\mathbf q_1 = (2, 2, 2, 2)$ and $2\,\mathbf q_1 + 2\,\mathbf q_2 = (1, 1, 1, 1) + (1, -1, 1, -1) = (2, 0, 2, 0)$, which are the columns of $A$.
+</Answer>
+</Check>
+
+<Check>
+Use Gram–Schmidt on $\mathbf x_1 = (1, 0, 1)$ and $\mathbf x_2 = (1, 1, 3)$. Enter $\mathbf v_2$. (Modeled on Lay §6.4, Exercise 3.)
+
+<VectorAnswer answer={[-1, 1, 1]} />
+
+<Hint>
+The shadow weight is $\frac{\mathbf x_2\cdot\mathbf x_1}{\mathbf x_1\cdot\mathbf x_1}$.
+</Hint>
+
+<Answer>
+$\mathbf x_2\cdot\mathbf x_1 = 1 + 0 + 3 = 4$ and $\mathbf x_1\cdot\mathbf x_1 = 2$, so the weight is $2$:
+
+$$
+\mathbf v_2 = (1, 1, 3) - 2\,(1, 0, 1) = (-1, 1, 1).
+$$
+
+Check: $\mathbf v_1\cdot\mathbf v_2 = -1 + 0 + 1 = 0$. Normalizing gives $\tfrac{1}{\sqrt2}(1, 0, 1)$ and $\tfrac{1}{\sqrt3}(-1, 1, 1)$.
+</Answer>
+</Check>
+
+<Check>
+Run Gram–Schmidt on the same two vectors in the opposite order: $\mathbf x_1 = (1, 1, 3)$ first, then $\mathbf x_2 = (1, 0, 1)$. Enter $\mathbf v_2$ rescaled so its first entry is $7$.
+
+<VectorAnswer answer={[7, -4, -1]} />
+
+<Hint>
+The weight is $\frac{4}{11}$ this time. Multiply the result by $11$ to clear fractions.
+</Hint>
+
+<Answer>
+$\mathbf x_2\cdot\mathbf x_1 = 1 + 0 + 3 = 4$ and $\mathbf x_1\cdot\mathbf x_1 = 1 + 1 + 9 = 11$, so
+
+$$
+\mathbf v_2 = (1, 0, 1) - \tfrac{4}{11}(1, 1, 3) = \left(\tfrac{7}{11},\ -\tfrac{4}{11},\ -\tfrac{1}{11}\right),
+$$
+
+and $11\,\mathbf v_2 = (7, -4, -1)$. Check: $(1, 1, 3)\cdot(7, -4, -1) = 7 - 4 - 3 = 0$. This basis is different from the previous check's, and both are correct orthogonal bases of the same plane.
+</Answer>
+</Check>
+
+### Challenge
+
+<Check>
+A classmate runs Gram–Schmidt on $\mathbf x_1 = (1, 1, 0)$, $\mathbf x_2 = (1, 0, 1)$, $\mathbf x_3 = (0, 1, 1)$, but in the last step they subtract the shadow of $\mathbf x_3$ on $\mathbf x_2$ instead of on $\mathbf v_2$. Compute their $\mathbf v_3\cdot\mathbf v_1$.
+
+<VectorAnswer answer={[-0.5]} labels={["dot"]} />
+
+<Hint>
+Their $\mathbf v_3$ is $\mathbf x_3 - \frac{\mathbf x_3\cdot\mathbf v_1}{\mathbf v_1\cdot\mathbf v_1}\mathbf v_1 - \frac{\mathbf x_3\cdot\mathbf x_2}{\mathbf x_2\cdot\mathbf x_2}\mathbf x_2$.
+</Hint>
+
+<Answer>
+Both weights are $\tfrac12$, so their vector is
+
+$$
+(0, 1, 1) - \tfrac12(1, 1, 0) - \tfrac12(1, 0, 1) = \left(-1,\ \tfrac12,\ \tfrac12\right),
+$$
+
+and $(-1, \tfrac12, \tfrac12)\cdot(1, 1, 0) = -1 + \tfrac12 = -\tfrac12$. It is not zero, so the result is not orthogonal. $\mathbf v_1$ and $\mathbf x_2$ are not perpendicular, so their two shadows overlap and the sum is not the projection onto the plane.
+</Answer>
+</Check>
+
+<Check>
+Find an orthogonal basis for the span of $\mathbf x_1 = (1, 1, 0, 0)$, $\mathbf x_2 = (2, 0, 1, 1)$ and $\mathbf x_3 = (0, 2, 1, 3)$. Enter $\mathbf v_3$ rescaled to have whole-number entries with first entry $-3$. (Modeled on Lay §6.4, Exercise 10.)
+
+<VectorAnswer answer={[-3, 3, 1, 5]} />
+
+<Hint>
+You should find $\mathbf v_2 = (1, -1, 1, 1)$. Both shadow weights for $\mathbf x_3$ are simple fractions.
+</Hint>
+
+<Answer>
+$$
+\begin{aligned}
+\mathbf v_2 &= \mathbf x_2 - \tfrac{2}{2}\,\mathbf v_1 = (2, 0, 1, 1) - (1, 1, 0, 0) = (1, -1, 1, 1) \\
+\mathbf v_3 &= \mathbf x_3 - \tfrac{2}{2}\,\mathbf v_1 - \tfrac{2}{4}\,\mathbf v_2 = (0, 2, 1, 3) - (1, 1, 0, 0) - \left(\tfrac12, -\tfrac12, \tfrac12, \tfrac12\right) = \left(-\tfrac32, \tfrac32, \tfrac12, \tfrac52\right)
+\end{aligned}
+$$
+
+Multiplying by $2$ gives $(-3, 3, 1, 5)$. Check: it dots with $(1, 1, 0, 0)$ to $0$ and with $(1, -1, 1, 1)$ to $-3 - 3 + 1 + 5 = 0$.
+</Answer>
+</Check>
+
+<Check>
+Suppose $A = QR$, where $Q$ is $m \times n$ and $R$ is $n \times n$, and the columns of $A$ are linearly independent. Show that $R$ must be invertible. (Modeled on Lay §6.4, Exercise 19.)
+
+<Hint>
+Suppose $R\mathbf x = \mathbf 0$ and multiply both sides by $Q$ on the left.
+</Hint>
+
+<Answer>
+If $R\mathbf x = \mathbf 0$, then $A\mathbf x = Q(R\mathbf x) = Q\mathbf 0 = \mathbf 0$. The columns of $A$ are independent, so the only solution of $A\mathbf x = \mathbf 0$ is $\mathbf x = \mathbf 0$. So $R\mathbf x = \mathbf 0$ has only the trivial solution, and the square matrix $R$ is invertible by the Invertible Matrix Theorem (Day 19).
 </Answer>
 </Check>
