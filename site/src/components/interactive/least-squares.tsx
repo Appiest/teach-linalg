@@ -175,3 +175,132 @@ export function ProjectionRightAngle({ column, b, start = 2.5, min = -1, max = 3
     </Panel>
   );
 }
+
+const BALANCE_BOUNDS = { xMin: -1, xMax: 4, yMin: -1, yMax: 5 };
+
+function ResidualSticks({ points, predictAt }: { points: Vec[]; predictAt: (x: number) => number }) {
+  return (
+    <>
+      {points.map((point) => (
+        <Segment key={point.join(",")} from={point} to={[point[0], predictAt(point[0])]} color="pink" dashed={false} />
+      ))}
+    </>
+  );
+}
+
+const columnOf = (entries: number[], color?: string) => {
+  const body = `\\begin{bmatrix} ${entries.map((entry) => texNumber(entry)).join(" \\\\ ")} \\end{bmatrix}`;
+  return color ? `\\textcolor{${color}}{${body}}` : body;
+};
+
+const zeroColor = (value: number) => (Math.abs(value) < 1e-9 ? palette.teal : palette.glow);
+
+/** Two sliders set the line; the readouts are the dot products of the residual vector with the two columns of X. */
+export function ResidualBalance({ points, start = [0, 0] }: { points: Vec[]; start?: [number, number] }) {
+  const [beta0, setBeta0] = useState(start[0]);
+  const [beta1, setBeta1] = useState(start[1]);
+  const line = { intercept: beta0, slope: beta1 };
+  const residuals = points.map(([x, y]) => y - predict(line, x));
+  const withOnes = residuals.reduce((total, r) => total + r, 0);
+  const withXs = residuals.reduce((total, r, index) => total + r * points[index][0], 0);
+  const { settled: solved, gesture } = useSettled(Math.abs(withOnes) < 1e-9 && Math.abs(withXs) < 1e-9);
+  const best = bestLine(points);
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Move the line until the residual vector is perpendicular to both columns of <Tex>X</Tex>, so both dot products read <Tex>0</Tex>.</>}
+        success={<>Both dot products are zero, which is the normal equations <Tex>{"X^T(\\mathbf y - X\\boldsymbol\\beta) = \\mathbf 0"}</Tex>. The line is <Tex>{lineTex(best)}</Tex>, the least-squares line.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={BALANCE_BOUNDS} label={`${points.length} data points, the line ${formatNumber(beta0)} plus ${formatNumber(beta1)} x, and pink residual sticks.`}>
+            <WideLine line={line} color="teal" width={solved ? 5 : 3.5} />
+            <ResidualSticks points={points} predictAt={(x) => predict(line, x)} />
+            {points.map((point) => (
+              <Marker key={point.join(",")} at={point} color="yellow" />
+            ))}
+          </Plane>
+        }
+        readout={
+          <>
+            <Slider label="\beta_0" value={beta0} onChange={setBeta0} min={-2} max={3} step={0.5} color={palette.i_hat} />
+            <Slider label="\beta_1" value={beta1} onChange={setBeta1} min={-2} max={3} step={0.5} color={palette.j_hat} />
+            <Readout tex={`\\mathbf y - X\\boldsymbol\\beta = ${columnOf(residuals, palette.pink)}`} />
+            <Readout tex={`${columnOf(points.map(() => 1), palette.i_hat)}\\cdot\\textcolor{${palette.pink}}{\\mathbf r} = \\textcolor{${zeroColor(withOnes)}}{${texNumber(withOnes)}}`} />
+            <Readout tex={`${columnOf(points.map(([x]) => x), palette.j_hat)}\\cdot\\textcolor{${palette.pink}}{\\mathbf r} = \\textcolor{${zeroColor(withXs)}}{${texNumber(withXs)}}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+type Coefficients = [number, number, number];
+
+const PARABOLA_BOUNDS = { xMin: -2, xMax: 3, yMin: -1, yMax: 6 };
+const parabolaAt = ([c0, c1, c2]: Coefficients, x: number) => c0 + c1 * x + c2 * x * x;
+
+function determinant3(m: number[][]): number {
+  return m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]) - m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0]) + m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]);
+}
+
+/** The least-squares parabola from the 3×3 normal equations, solved by Cramer's rule. */
+function bestParabola(points: Vec[]): Coefficients {
+  const rows = points.map(([x]) => [1, x, x * x]);
+  const gram = [0, 1, 2].map((i) => [0, 1, 2].map((j) => rows.reduce((total, row) => total + row[i] * row[j], 0)));
+  const right = [0, 1, 2].map((i) => rows.reduce((total, row, k) => total + row[i] * points[k][1], 0));
+  const whole = determinant3(gram);
+  const swapped = (column: number) => gram.map((row, i) => row.map((entry, j) => (j === column ? right[i] : entry)));
+  return [0, 1, 2].map((column) => determinant3(swapped(column)) / whole) as Coefficients;
+}
+
+function ParabolaCurve({ coefficients, color, width }: { coefficients: Coefficients; color: Hue; width: number }) {
+  const { toSvg } = usePlane();
+  const samples = Array.from({ length: 61 }, (_, index) => PARABOLA_BOUNDS.xMin + (index * (PARABOLA_BOUNDS.xMax - PARABOLA_BOUNDS.xMin)) / 60);
+  const path = samples.map((x) => toSvg([x, parabolaAt(coefficients, x)]).map((value) => value.toFixed(1)).join(",")).join(" ");
+  return <polyline points={path} fill="none" stroke={hue(color)} strokeWidth={width} strokeLinejoin="round" />;
+}
+
+const designTex = (points: Vec[]) => `X = \\begin{bmatrix} ${points.map(([x]) => `1 & ${texNumber(x)} & ${texNumber(x * x)}`).join(" \\\\ ")} \\end{bmatrix}`;
+
+/** Three sliders shape a parabola; the fit is still least squares because the model is linear in the three weights. */
+export function ParabolaFit({ points }: { points: Vec[] }) {
+  const [coefficients, setCoefficients] = useState<Coefficients>([1, 0, 0]);
+  const total = points.reduce((sum, [x, y]) => sum + (y - parabolaAt(coefficients, x)) ** 2, 0);
+  const best = bestParabola(points);
+  const bestTotal = points.reduce((sum, [x, y]) => sum + (y - parabolaAt(best, x)) ** 2, 0);
+  const { settled: solved, gesture } = useSettled(Math.abs(total - bestTotal) < 1e-9);
+  const set = (index: number) => (value: number) => setCoefficients((current) => current.map((entry, i) => (i === index ? value : entry)) as Coefficients);
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Shape the parabola <Tex>{"y = \\beta_0 + \\beta_1 x + \\beta_2 x^2"}</Tex> so the sum of squared residuals is as small as it can be.</>}
+        success={<>The best parabola is <Tex>{`y = ${texNumber(best[0])} ${best[1] < 0 ? "-" : "+"} ${texNumber(Math.abs(best[1]))}x + ${texNumber(best[2])}x^2`}</Tex> with total <Tex>{texNumber(bestTotal)}</Tex>. The normal equations <Tex>{"X^TX\\boldsymbol\\beta = X^T\\mathbf y"}</Tex> find it with a third column of <Tex>{"x^2"}</Tex> values in <Tex>X</Tex>.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={PARABOLA_BOUNDS} label={`${points.length} data points and the parabola with weights ${coefficients.map((entry) => formatNumber(entry)).join(", ")}. The squared residuals add up to ${formatNumber(total)}.`}>
+            <ParabolaCurve coefficients={coefficients} color="teal" width={solved ? 5 : 3.5} />
+            <ResidualSticks points={points} predictAt={(x) => parabolaAt(coefficients, x)} />
+            {points.map((point) => (
+              <Marker key={point.join(",")} at={point} color="yellow" />
+            ))}
+          </Plane>
+        }
+        readout={
+          <>
+            <Slider label="\beta_0" value={coefficients[0]} onChange={set(0)} min={-1} max={3} step={0.5} color={palette.teal} />
+            <Slider label="\beta_1" value={coefficients[1]} onChange={set(1)} min={-2} max={2} step={0.5} color={palette.teal} />
+            <Slider label="\beta_2" value={coefficients[2]} onChange={set(2)} min={-1} max={2} step={0.5} color={palette.teal} />
+            <Readout tex={designTex(points)} />
+            <Readout tex={`\\textcolor{${palette.pink}}{r_1^2 + \\dots + r_${points.length}^2 = ${texNumber(total, 3)}}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}

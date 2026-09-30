@@ -273,3 +273,86 @@ export function NearestPlanePoint({ u1 = [1, 1, 0], u2 = [-1, 1, 1], y = [2, 2, 
     </Panel>
   );
 }
+
+const weightFraction = (y: Vec, u: Vec) => (dot(u, u) === 0 ? "0" : `\\tfrac{${texNumber(dot(y, u))}}{${texNumber(dot(u, u))}}`);
+
+/** Drag the direction u; the shadow of y stays put as long as u stays on the same line. */
+export function LineOnlyShadow({ y = [1, 5], start = [1, 1], target = [3, 3] }: { y?: Vec; start?: Vec; target?: Vec }) {
+  const [u, setU] = useState<Vec>(start);
+  const shadow = shadowOn(y, u);
+  const { settled: solved, gesture } = useSettled(nearlyEqual(shadow, target) && !nearlyEqual(u, start));
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Drag <Tex>{colored(palette.i_hat, "\\mathbf u")}</Tex> somewhere new so that the shadow <Tex>{colored(palette.teal, "\\hat{\\mathbf y}")}</Tex> still lands on the ring at <Tex>{`(${target[0]}, ${target[1]})`}</Tex>.</>}
+        success={<>Any nonzero multiple of <Tex>{`(${start[0]}, ${start[1]})`}</Tex> gives the same shadow. Stretching <Tex>{colored(palette.i_hat, "\\mathbf u")}</Tex> by <Tex>k</Tex> multiplies the top of the fraction by <Tex>k</Tex> and the bottom by <Tex>{"k^2"}</Tex>, and <Tex>{colored(palette.i_hat, "\\mathbf u")}</Tex> itself carries the missing factor of <Tex>k</Tex>.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={{ xMin: -5, xMax: 6, yMin: -4, yMax: 6 }} label={`The vector y, a movable direction u at ${describeVector(u)}, the line through u, and the shadow of y at ${describeVector(shadow)}. Drag u or use the arrow keys.`}>
+            <FullLine direction={u} color={solved ? "teal" : "text"} />
+            <Marker at={target} color="glow" ring />
+            <Segment from={shadow} to={y} color="pink" />
+            <Arrow to={y} color="yellow" />
+            <Arrow to={shadow} color="teal" />
+            <Arrow to={u} color="green" />
+            <Label at={y} color="yellow" dx={-22}>y</Label>
+            <Label at={u} color="green" dx={10} dy={20}>u</Label>
+            <Handle at={u} onMove={setU} color="green" label={`Tip of direction u, at ${describeVector(u)}`} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Readout tex={`\\frac{\\mathbf y\\cdot${colored(palette.i_hat, "\\mathbf u")}}{${colored(palette.i_hat, "\\mathbf u")}\\cdot${colored(palette.i_hat, "\\mathbf u")}} = ${weightFraction(y, u)}`} />
+            <Readout tex={`${colored(palette.teal, "\\hat{\\mathbf y}")} = ${weightFraction(y, u)}${columnTex(u, palette.i_hat)} = ${columnTex(shadow, palette.teal)}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+function projectionMatrixTex(u: Vec): string {
+  const [a, b] = u;
+  return `\\tfrac{1}{${dot(u, u)}}\\begin{bmatrix} ${a * a} & ${a * b} \\\\ ${a * b} & ${b * b} \\end{bmatrix}`;
+}
+
+/** Drag y anywhere; the matrix P = UU^T sends it to its shadow on the line. The goal is a second point with a given shadow. */
+export function ShadowPreimageHunt({ u = [2, 1], target = [4, 2], start = [1, 3] }: { u?: Vec; target?: Vec; start?: Vec }) {
+  const [y, setY] = useState<Vec>(start);
+  const shadow = shadowOn(y, u);
+  const { settled: solved, gesture } = useSettled(nearlyEqual(shadow, target) && !nearlyEqual(y, target));
+  const across: Vec = [-u[1], u[0]];
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Find a point <Tex>{colored(palette.yellow, "\\mathbf y")}</Tex> off the teal line whose shadow <Tex>{`P${colored(palette.yellow, "\\mathbf y")}`}</Tex> lands on the ring.</>}
+        success={<>Every point on the dashed line through the ring has that same shadow. <Tex>P</Tex> keeps the part of <Tex>{colored(palette.yellow, "\\mathbf y")}</Tex> along the line and throws away the pink part <Tex>{colored(palette.pink, "\\mathbf z")}</Tex>.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={{ xMin: -2, xMax: 7, yMin: -3, yMax: 7 }} label={`The line through u, a movable point y at ${describeVector(y)}, and its shadow P y at ${describeVector(shadow)}. Drag y or use the arrow keys.`}>
+            <FullLine direction={u} color="teal" />
+            {solved ? <Segment from={add(target, scale(-4, across))} to={add(target, scale(4, across))} color="glow" /> : null}
+            <Marker at={target} color="glow" ring />
+            <Segment from={shadow} to={y} color="pink" />
+            <Arrow to={shadow} color="teal" />
+            <Arrow to={y} color="yellow" />
+            <Label at={y} color="yellow" dx={-26}>y</Label>
+            <Handle at={y} onMove={setY} color="yellow" label={`Tip of y, at ${describeVector(y)}`} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Readout tex={`P = UU^T = ${projectionMatrixTex(u)}`} />
+            <Readout tex={`P${columnTex(y, palette.yellow)} = ${columnTex(shadow, palette.teal)}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}

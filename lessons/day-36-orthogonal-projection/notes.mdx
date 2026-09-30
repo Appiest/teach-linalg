@@ -1,30 +1,149 @@
 Yesterday's dot product can tell when two vectors are perpendicular. Today it answers a distance question: which point of a line or a plane sits closest to a given vector $\mathbf y$? The question matters because of Day 38. When $A\mathbf x = \mathbf b$ has no solution, the best you can do is find the point of $\operatorname{Col}A$ closest to $\mathbf b$ and solve for that point instead. You find the closest point by dropping a perpendicular, and the dot product tells you where it lands.
 
+Each section below opens with a problem. Try it before you open the walkthrough, even if you only get partway. The box after each walkthrough names the idea you just used.
+
 ## Projection onto a line
 
-A line is the simplest subspace, so start there. The goal is a multiple of the line's direction whose leftover piece is perpendicular to the line.
+A line through the origin is the simplest subspace, so we start there.
+
+<Problem>
+Let $L$ be the line through $\green{\mathbf u} = \begin{bmatrix} 1 \\ 1 \end{bmatrix}$ and let $\yellow{\mathbf y} = \begin{bmatrix} 1 \\ 5 \end{bmatrix}$. Every point of $L$ has the form $c\,\green{\mathbf u}$. Which value of $c$ puts that point closest to the tip of $\yellow{\mathbf y}$?
+
+<Hint>
+Picture the shortest path from the tip of $\mathbf y$ down to the line. At the closest point, the gap $\mathbf y - c\,\mathbf u$ meets the line at a right angle. Yesterday you learned how to test for a right angle.
+</Hint>
+
+<Solution>
+We want the point of $L$ where the gap from the line up to $\mathbf y$ is shortest. Think of dropping a ball from the tip of $\mathbf y$ onto the line. The shortest drop is straight down, at a right angle to the line, because any slanted path is the long side of a right triangle. So the condition to aim for is "the gap is perpendicular to $\mathbf u$", and the dot product turns that into an equation.
+
+<Steps>
+<Step>
+Write the gap in terms of $c$. The point on the line is $c\,\mathbf u = (c, c)$, so the gap is
+
+$$
+\mathbf y - c\,\mathbf u = \begin{bmatrix} 1 - c \\ 5 - c \end{bmatrix}.
+$$
+</Step>
+<Step>
+Ask for a right angle. Two vectors are perpendicular when their dot product is zero:
+
+$$
+(\mathbf y - c\,\mathbf u)\cdot\mathbf u = (1 - c)\cdot 1 + (5 - c)\cdot 1 = 6 - 2c.
+$$
+</Step>
+<Step>
+Solve $6 - 2c = 0$ to get $c = 3$. The closest point is $\teal{\hat{\mathbf y}} = 3\,\mathbf u = (3, 3)$.
+</Step>
+<Step>
+Find the leftover gap and check it. The gap is $\pink{\mathbf z} = \mathbf y - \hat{\mathbf y} = (1 - 3,\ 5 - 3) = (-2, 2)$, and $\mathbf z\cdot\mathbf u = -2 + 2 = 0$, so it really is perpendicular to the line. Its length $\|\mathbf z\| = \sqrt{4 + 4} = \sqrt 8$ is the distance from $\mathbf y$ to $L$.
+</Step>
+</Steps>
+
+Look at where the $6$ and the $2$ in $6 - 2c$ came from. The $6$ is $\mathbf y\cdot\mathbf u = 1 + 5$, and the $2$ is $\mathbf u\cdot\mathbf u = 1 + 1$. So the answer was $c = \frac{\mathbf y\cdot\mathbf u}{\mathbf u\cdot\mathbf u}$ all along.
+</Solution>
+</Problem>
 
 <Pair>
 <Figure src="line-projection" alt="A grid with the teal line L through the green vector u = (1, 1). The yellow vector y = (1, 5) ends above the line. A teal arrow runs from the origin to ŷ = (3, 3) on L, and a pink arrow z runs from ŷ up to the tip of y. An orange square marks the right angle between z and L. A panel reads ŷ = (y·u)/(u·u) u = 6/2 u = (3, 3)." />
 
-Let $L$ be the line through a nonzero vector $\green{\mathbf u}$. The **orthogonal projection** of $\yellow{\mathbf y}$ onto $L$ is the point of $L$ where the perpendicular from the tip of $\yellow{\mathbf y}$ lands:
+The same steps work for any $\mathbf y$ and $\mathbf u$. The gap is $\mathbf y - c\,\mathbf u$, and asking for a right angle gives
+
+$$
+(\mathbf y - c\,\mathbf u)\cdot\mathbf u = \mathbf y\cdot\mathbf u - c\,(\mathbf u\cdot\mathbf u) = 0,
+$$
+
+which is zero only for $c = \frac{\mathbf y\cdot\mathbf u}{\mathbf u\cdot\mathbf u}$. In Problem 1 that is $\frac{6}{2} = 3$.
+</Pair>
+
+<Concept title="Orthogonal projection onto a line">
+To find the point of a line closest to $\mathbf y$, drop a perpendicular from $\mathbf y$ to the line. If $L$ is the line through a nonzero vector $\green{\mathbf u}$, the foot of that perpendicular is the **orthogonal projection** of $\yellow{\mathbf y}$ onto $L$:
 
 $$
 \teal{\hat{\mathbf y}} = \operatorname{proj}_L \mathbf y = \frac{\mathbf y\cdot\mathbf u}{\mathbf u\cdot\mathbf u}\,\green{\mathbf u}.
 $$
 
-The vector $\pink{\mathbf z} = \yellow{\mathbf y} - \teal{\hat{\mathbf y}}$ is the **component of $\mathbf y$ orthogonal to $\mathbf u$**.
-</Pair>
+The leftover piece $\pink{\mathbf z} = \yellow{\mathbf y} - \teal{\hat{\mathbf y}}$ is the **component of $\mathbf y$ orthogonal to $\mathbf u$**. It always satisfies $\mathbf z\cdot\mathbf u = 0$, and $\|\mathbf z\|$ is the distance from $\mathbf y$ to $L$.
+</Concept>
 
-The weight comes from asking for $\mathbf z \cdot \mathbf u = 0$. If $\hat{\mathbf y} = c\,\mathbf u$, then $(\mathbf y - c\,\mathbf u)\cdot\mathbf u = \mathbf y\cdot\mathbf u - c\,(\mathbf u\cdot\mathbf u)$, and that is zero only for $c = \frac{\mathbf y\cdot\mathbf u}{\mathbf u\cdot\mathbf u}$. The denominator is $\mathbf u\cdot\mathbf u = \|\mathbf u\|^2$, not $\|\mathbf u\|$. With the square, rescaling $\mathbf u$ leaves $\hat{\mathbf y}$ unchanged, so the projection depends only on the line.
-
-In the video, $\mathbf y = (1, 5)$ and $\mathbf u = (1, 1)$ give $\mathbf y\cdot\mathbf u = 6$ and $\mathbf u\cdot\mathbf u = 2$, so $\hat{\mathbf y} = 3\mathbf u = (3, 3)$ and $\mathbf z = (-2, 2)$. This is Day 17's matrix $P$ at work, since $P\mathbf y = (3, 3)$ too.
+Slide the point along the line and watch the last readout. The distance is smallest exactly where the dot product hits zero.
 
 <LineFootHunt y={[2, 6]} u={[2, 1]} start={-1} limits={[-2, 3]} />
 
+This is Day 17's matrix $P$ at work, since $P = \tfrac12\begin{bmatrix} 1 & 1 \\ 1 & 1 \end{bmatrix}$ also sends $(1, 5)$ to $(3, 3)$. The last section of today explains where that matrix comes from.
+
+<Problem>
+Redo Problem 1 with the longer direction $\green{\mathbf u} = \begin{bmatrix} 2 \\ 2 \end{bmatrix}$ for the same line. Does the closest point change?
+
+<Solution>
+Use the formula we just found, since it came from the same right-angle condition. The two dot products are
+
+$$
+\mathbf y\cdot\mathbf u = 1\cdot 2 + 5\cdot 2 = 12, \qquad \mathbf u\cdot\mathbf u = 2\cdot 2 + 2\cdot 2 = 8,
+$$
+
+so the weight is $c = \tfrac{12}{8} = \tfrac32$. The closest point is $\tfrac32\,(2, 2) = (3, 3)$, the same point as before.
+
+The weight halved because $\mathbf u$ doubled, and the two changes cancel. Doubling $\mathbf u$ doubles the top of the fraction and multiplies the bottom by $4$, so the weight halves, and then the weight multiplies a vector twice as long. The closest point depends only on the line, which is why we write $\operatorname{proj}_L$ and not $\operatorname{proj}_{\mathbf u}$.
+</Solution>
+</Problem>
+
+<LineOnlyShadow y={[1, 5]} start={[1, 1]} target={[3, 3]} />
+
+<Warning>
+The bottom of the fraction is $\mathbf u\cdot\mathbf u = \|\mathbf u\|^2$, not $\|\mathbf u\|$. If you divide by $\|\mathbf u\|$ instead, your answer changes when you rescale $\mathbf u$, and the true projection never does. Also remember that $\frac{\mathbf y\cdot\mathbf u}{\mathbf u\cdot\mathbf u}$ is a number. The projection is that number times $\mathbf u$.
+</Warning>
+
+<Choice
+  question="Let $\mathbf y = (4, 3)$ and $\mathbf u = (1, 0)$. What is $\operatorname{proj}_L \mathbf y$ for the line $L$ through $\mathbf u$?"
+  options={["$4$", "$(4, 0)$", "$(0, 3)$", "$(4, 3)$"]}
+  answer={1}
+>
+The weight is $\frac{\mathbf y\cdot\mathbf u}{\mathbf u\cdot\mathbf u} = \frac{4}{1} = 4$, and the projection is $4\,(1, 0) = (4, 0)$. The line is the $x$-axis, so projecting just keeps the $x$ part. The leftover $(0, 3)$ is $\mathbf z$, which is the part that gets thrown away.
+</Choice>
+
 ## Projection onto a subspace
 
-For a bigger subspace $W$, the goal is to split $\mathbf y$ into a piece inside $W$ and a piece in Day 35's complement $W^\perp$. When $W$ has an orthogonal basis, you project onto each basis line separately and add the pieces. Each term is the same ratio Day 35 used to find coordinates in an orthogonal basis.
+For a plane or any bigger subspace $W$, the goal is the same: split $\mathbf y$ into a piece inside $W$ and a piece perpendicular to all of $W$, which means a piece in Day 35's complement $W^\perp$. When $W$ has an orthogonal basis, we can project onto each basis line separately and add the results.
+
+<Problem>
+Let $W$ be the plane spanned by $\green{\mathbf u_1} = \begin{bmatrix} 1 \\ 1 \\ 0 \end{bmatrix}$ and $\red{\mathbf u_2} = \begin{bmatrix} -1 \\ 1 \\ 1 \end{bmatrix}$, and let $\yellow{\mathbf y} = \begin{bmatrix} 2 \\ 2 \\ 3 \end{bmatrix}$. Project $\mathbf y$ onto each of the two lines, add the two shadows, and check whether what is left over is perpendicular to the whole plane.
+
+<Solution>
+The plan is to reuse Problem 1 twice. Each line gets its own shadow, and the sum should be the shadow on the plane. That can only work if the two lines do not interfere with each other, so we check that first.
+
+<Steps>
+<Step>
+Check that the basis is orthogonal: $\mathbf u_1\cdot\mathbf u_2 = 1\cdot(-1) + 1\cdot 1 + 0\cdot 1 = 0$. The two directions are perpendicular.
+</Step>
+<Step>
+Find the shadow on the first line. $\mathbf y\cdot\mathbf u_1 = 2 + 2 + 0 = 4$ and $\mathbf u_1\cdot\mathbf u_1 = 2$, so the shadow is $\tfrac42\,\mathbf u_1 = (2, 2, 0)$.
+</Step>
+<Step>
+Find the shadow on the second line. $\mathbf y\cdot\mathbf u_2 = -2 + 2 + 3 = 3$ and $\mathbf u_2\cdot\mathbf u_2 = 3$, so the shadow is $\tfrac33\,\mathbf u_2 = (-1, 1, 1)$.
+</Step>
+<Step>
+Add the shadows: $\teal{\hat{\mathbf y}} = (2, 2, 0) + (-1, 1, 1) = (1, 3, 1)$.
+</Step>
+<Step>
+Compute the leftover $\pink{\mathbf z} = \mathbf y - \hat{\mathbf y} = (2 - 1,\ 2 - 3,\ 3 - 1) = (1, -1, 2)$ and test it against both basis vectors:
+
+$$
+\mathbf z\cdot\mathbf u_1 = 1 - 1 + 0 = 0, \qquad \mathbf z\cdot\mathbf u_2 = -1 - 1 + 2 = 0.
+$$
+</Step>
+</Steps>
+
+The leftover is perpendicular to both $\mathbf u_1$ and $\mathbf u_2$, so it is perpendicular to every combination of them, which is every vector in $W$. We have split $\mathbf y = (1, 3, 1) + (1, -1, 2)$ into a piece in $W$ and a piece in $W^\perp$.
+</Solution>
+</Problem>
+
+<Pair>
+<Figure src="plane-projection" alt="An oblique 3D view of the teal plane W. The yellow vector y = (2, 2, 3) rises above it, the teal arrow ŷ = (1, 3, 1) lies in it, and the pink arrow z joins them with an orange right-angle mark. Dashed green and red lines run along u1 and u2 inside W. A green arrow reaches 2u1, and a red arrow u2 continues from its tip to ŷ. The panel reads ŷ = 4/2 u1 + 3/3 u2 = (1, 3, 1)." />
+
+The green shadow $2\,\green{\mathbf u_1}$ and the red shadow $1\,\red{\mathbf u_2}$ add tip to tail and land on $\teal{\hat{\mathbf y}}$. The pink $\pink{\mathbf z}$ stands straight up from the plane.
+
+Why did the check in Step 5 have to work? Dot $\mathbf z = \mathbf y - 2\mathbf u_1 - \mathbf u_2$ with $\mathbf u_1$. The term $\mathbf u_2\cdot\mathbf u_1$ is zero because the basis is orthogonal, and $2\,\mathbf u_1\cdot\mathbf u_1 = 4$ cancels $\mathbf y\cdot\mathbf u_1 = 4$ exactly.
+</Pair>
 
 <Definition term="The orthogonal decomposition theorem">
 Let $W$ be a subspace of $\mathbb R^n$. Every $\mathbf y$ in $\mathbb R^n$ can be written in exactly one way as
@@ -40,31 +159,55 @@ $$
 $$
 </Definition>
 
-The formula works because dotting $\mathbf z = \mathbf y - \hat{\mathbf y}$ with $\mathbf u_1$ kills every term except the first, since $\mathbf u_1 \cdot \mathbf u_j = 0$ for $j \ne 1$, and the first term cancels $\mathbf y\cdot\mathbf u_1$ exactly. The split is unique because a vector in both $W$ and $W^\perp$ is perpendicular to itself, and only $\mathbf 0$ is. So every orthogonal basis of $W$ gives the same $\hat{\mathbf y}$.
+Each term in the sum is the projection onto one basis line, and each weight is the same ratio Day 35 used to find coordinates in an orthogonal basis.
 
-<Pair>
-<Figure src="plane-projection" alt="An oblique 3D view of the teal plane W. The yellow vector y = (2, 2, 3) rises above it, the teal arrow ŷ = (1, 3, 1) lies in it, and the pink arrow z joins them with an orange right-angle mark. Dashed green and red lines run along u1 and u2 inside W. A green arrow reaches 2u1, and a red arrow u2 continues from its tip to ŷ. The panel reads ŷ = 4/2 u1 + 3/3 u2 = (1, 3, 1)." />
+The split is unique. Suppose $\mathbf y = \hat{\mathbf y} + \mathbf z$ and also $\mathbf y = \hat{\mathbf y}_1 + \mathbf z_1$. Then $\hat{\mathbf y} - \hat{\mathbf y}_1 = \mathbf z_1 - \mathbf z$. The left side is in $W$ and the right side is in $W^\perp$, so this vector is perpendicular to itself. Its dot product with itself is its squared length, so its length is zero and the two splits are the same. That means every orthogonal basis of $W$ gives the same $\hat{\mathbf y}$.
 
-Here is the video's example, with $\green{\mathbf u_1} = (1, 1, 0)$, $\red{\mathbf u_2} = (-1, 1, 1)$ and $\yellow{\mathbf y} = (2, 2, 3)$. First check $\mathbf u_1\cdot\mathbf u_2 = -1 + 1 + 0 = 0$.
+<Warning>
+Always finish with the check $\mathbf z\cdot\mathbf u_j = 0$ for every basis vector. It takes a few seconds and catches almost every arithmetic slip.
+</Warning>
+
+<Problem>
+The formula needs an orthogonal basis. See what happens without one. In $\mathbb R^2$, the vectors $\mathbf u_1 = \begin{bmatrix} 1 \\ 0 \end{bmatrix}$ and $\mathbf u_2 = \begin{bmatrix} 1 \\ 1 \end{bmatrix}$ span the whole plane, so for $\mathbf y = \begin{bmatrix} 0 \\ 1 \end{bmatrix}$ the right answer is $\operatorname{proj}_W \mathbf y = \mathbf y$. What does the formula give?
+
+<Solution>
+Plug in blindly. The first weight is $\frac{\mathbf y\cdot\mathbf u_1}{\mathbf u_1\cdot\mathbf u_1} = \frac{0}{1} = 0$ and the second is $\frac{\mathbf y\cdot\mathbf u_2}{\mathbf u_2\cdot\mathbf u_2} = \frac{1}{2}$. The formula returns
 
 $$
-\begin{aligned}
-\teal{\hat{\mathbf y}} &= \tfrac{4}{2}\,\green{\mathbf u_1} + \tfrac{3}{3}\,\red{\mathbf u_2} = \begin{bmatrix} 2 \\ 2 \\ 0 \end{bmatrix} + \begin{bmatrix} -1 \\ 1 \\ 1 \end{bmatrix} = \begin{bmatrix} 1 \\ 3 \\ 1 \end{bmatrix} \\
-\pink{\mathbf z} &= \mathbf y - \hat{\mathbf y} = \begin{bmatrix} 1 \\ -1 \\ 2 \end{bmatrix} \\
-\mathbf z\cdot\mathbf u_1 &= 1 - 1 + 0 = 0, \qquad \mathbf z\cdot\mathbf u_2 = -1 - 1 + 2 = 0
-\end{aligned}
+0\,\mathbf u_1 + \tfrac12\,\mathbf u_2 = \begin{bmatrix} \tfrac12 \\ \tfrac12 \end{bmatrix},
 $$
-</Pair>
 
-The last line is the check to do every time. If $\mathbf z$ is not perpendicular to every basis vector, some arithmetic went wrong.
+which is not $\mathbf y$. The two shadows overlap because $\mathbf u_1\cdot\mathbf u_2 = 1 \neq 0$, so the step that killed the cross terms in Problem 3 fails. The formula gives a wrong answer without any warning, so check $\mathbf u_i\cdot\mathbf u_j = 0$ before you use it.
+</Solution>
+</Problem>
 
-The formula needs the basis to be orthogonal. In the widget below, $W$ is the whole plane $\mathbb R^2$, so the correct projection of $\mathbf y$ is $\mathbf y$ itself. The formula only gets there when the two basis vectors are perpendicular.
+In the widget, $W$ is the whole plane again, so the shadows should add up to $\mathbf y$ itself. Move $\red{\mathbf u_2}$ and see which directions make that happen.
 
 <ShadowSumBasis y={[3, 4]} u1={[2, 1]} start={[1, 2]} />
 
-When a basis is not orthogonal, you first straighten it with Gram–Schmidt, which is Day 37's lesson.
+When a basis is not orthogonal, Day 37's Gram–Schmidt process straightens it first.
 
 ## The closest point
+
+Problem 1 found the closest point on a line by dropping a perpendicular. The same thing is true for a plane, and the reason is Pythagoras.
+
+<Problem>
+Keep $W$, $\mathbf y = (2, 2, 3)$ and $\hat{\mathbf y} = (1, 3, 1)$ from Problem 3. The point $\blue{\mathbf v} = (2, 2, 0)$ also lies in $W$, since it is $2\,\mathbf u_1$. Compute $\|\mathbf y - \mathbf v\|^2$, $\|\mathbf y - \hat{\mathbf y}\|^2$ and $\|\hat{\mathbf y} - \mathbf v\|^2$. What do you notice?
+
+<Solution>
+Work out each squared length by subtracting and then summing squares.
+
+$$
+\begin{aligned}
+\mathbf y - \mathbf v &= (0, 0, 3), & \|\mathbf y - \mathbf v\|^2 &= 0 + 0 + 9 = 9 \\
+\mathbf y - \hat{\mathbf y} &= (1, -1, 2), & \|\mathbf y - \hat{\mathbf y}\|^2 &= 1 + 1 + 4 = 6 \\
+\hat{\mathbf y} - \mathbf v &= (-1, 1, 1), & \|\hat{\mathbf y} - \mathbf v\|^2 &= 1 + 1 + 1 = 3
+\end{aligned}
+$$
+
+The first number is the sum of the other two, $9 = 6 + 3$. That is Pythagoras. The trip from $\mathbf v$ to $\mathbf y$ splits at $\hat{\mathbf y}$ into a piece $\hat{\mathbf y} - \mathbf v$ inside $W$ and a piece $\mathbf z$ perpendicular to $W$, so the three points form a right triangle. The distance from $\mathbf y$ to $\mathbf v$ is the hypotenuse, so it is longer than the leg $\|\mathbf z\| = \sqrt 6$.
+</Solution>
+</Problem>
 
 <Definition term="The best approximation theorem">
 Let $W$ be a subspace of $\mathbb R^n$ and let $\hat{\mathbf y} = \operatorname{proj}_W \mathbf y$. Then $\hat{\mathbf y}$ is the closest point in $W$ to $\mathbf y$:
@@ -76,63 +219,140 @@ $$
 The **distance from $\mathbf y$ to $W$** is $\|\mathbf z\| = \|\mathbf y - \hat{\mathbf y}\|$.
 </Definition>
 
-This theorem is the reason the course studies projection. On Day 38 it is applied with $W = \operatorname{Col}A$ to find the best answer to a system with no exact solution.
-
 <Pair>
 <Figure src="closest-point" alt="The same plane W, with y, ŷ and the pink z. A blue point v sits elsewhere in W, joined to y by a blue segment and to ŷ by a dashed teal segment, which makes a right triangle with its right angle at ŷ. The panel reads ‖y − v‖² = ‖z‖² + ‖ŷ − v‖², and below it 11.25 = 6 + 5.25." />
 
-For any $\mathbf v$ in $W$, split the trip from $\mathbf v$ to $\mathbf y$ at $\hat{\mathbf y}$. The piece $\hat{\mathbf y} - \mathbf v$ lies in $W$ and the piece $\mathbf z$ is perpendicular to $W$, so Pythagoras gives
+For any $\mathbf v$ in $W$, Problem 5's split gives
 
 $$
 \blue{\|\mathbf y - \mathbf v\|^2} = \pink{\|\mathbf z\|^2} + \teal{\|\hat{\mathbf y} - \mathbf v\|^2}.
 $$
 
-The last term is positive unless $\mathbf v = \hat{\mathbf y}$. In the example, $\|\mathbf z\|^2 = 6$, so the distance from $\mathbf y$ to $W$ is $\sqrt 6 \approx 2.45$.
+The last term is positive unless $\mathbf v = \hat{\mathbf y}$, so every other point of $W$ is farther away. The figure uses a different $\mathbf v$, and the pink term is $6$ again because $\mathbf z$ does not depend on $\mathbf v$.
 </Pair>
+
+Move $\blue{\mathbf v}$ around the plane with the two weights. The pink number never changes, and the orange number is how much farther you are than you need to be.
 
 <NearestPlanePoint u1={[1, 1, 0]} u2={[-1, 1, 1]} y={[2, 2, 3]} />
 
+This theorem is the reason the course studies projection. On Day 38 it is applied with $W = \operatorname{Col}A$ to find the best answer to a system with no exact solution.
+
+<Warning>
+The closest point is $\hat{\mathbf y}$, and the distance is $\|\mathbf z\| = \|\mathbf y - \hat{\mathbf y}\|$. Learners often report $\|\hat{\mathbf y}\|$ as the distance, but that is the length of the shadow, which measures something else.
+</Warning>
+
 ## The projection matrix
 
-If the basis is **orthonormal**, every $\mathbf u_j\cdot\mathbf u_j = 1$ and the denominators disappear. Put the basis vectors in the columns of $U$. The weights $\mathbf y\cdot\mathbf u_j$ are the entries of $U^T\mathbf y$, and multiplying by $U$ combines the columns with those weights, so
+Projection onto a fixed subspace is a linear transformation, so it has a matrix. Unit vectors make that matrix easy to write down.
+
+<Problem>
+The line in Problem 1 has the unit direction $\mathbf u = \tfrac{1}{\sqrt 2}\begin{bmatrix} 1 \\ 1 \end{bmatrix}$. Let $U$ be the $2 \times 1$ matrix whose only column is $\mathbf u$. Compute $U^TU$ and $UU^T$, and then compute $UU^T\mathbf y$ for $\mathbf y = (1, 5)$.
+
+<Solution>
+With a unit vector, $\mathbf u\cdot\mathbf u = 1$, so the projection formula loses its denominator and becomes $(\mathbf y\cdot\mathbf u)\,\mathbf u$. We want to see that as a matrix product.
+
+<Steps>
+<Step>
+$U^T$ is the row $\tfrac{1}{\sqrt2}\begin{bmatrix} 1 & 1 \end{bmatrix}$. A row times a column is a dot product, so $U^TU = \begin{bmatrix} \tfrac12 + \tfrac12 \end{bmatrix} = \begin{bmatrix} 1 \end{bmatrix}$. This says $\mathbf u$ is a unit vector.
+</Step>
+<Step>
+A column times a row is a full matrix whose entry $(i, j)$ is entry $i$ of the column times entry $j$ of the row:
+
+$$
+UU^T = \tfrac{1}{\sqrt2}\begin{bmatrix} 1 \\ 1 \end{bmatrix}\tfrac{1}{\sqrt2}\begin{bmatrix} 1 & 1 \end{bmatrix} = \tfrac12\begin{bmatrix} 1 & 1 \\ 1 & 1 \end{bmatrix}.
+$$
+</Step>
+<Step>
+Apply it: $UU^T\begin{bmatrix} 1 \\ 5 \end{bmatrix} = \tfrac12\begin{bmatrix} 1 + 5 \\ 1 + 5 \end{bmatrix} = \begin{bmatrix} 3 \\ 3 \end{bmatrix}$, which is the $\hat{\mathbf y}$ from Problem 1.
+</Step>
+</Steps>
+
+The matrix $UU^T$ is Day 17's projection $P$. Reading the product from the right explains why: $U^T\mathbf y$ computes the weight $\mathbf y\cdot\mathbf u$, and multiplying by $U$ turns that weight back into a multiple of $\mathbf u$.
+</Solution>
+</Problem>
+
+<Concept title="Projecting with an orthonormal basis">
+If $\{\mathbf u_1, \dots, \mathbf u_p\}$ is an **orthonormal** basis of $W$, every $\mathbf u_j\cdot\mathbf u_j = 1$ and the denominators disappear. Put the basis vectors in the columns of $U$. The weights $\mathbf y\cdot\mathbf u_j$ are the entries of $U^T\mathbf y$, and multiplying by $U$ combines the columns with those weights:
 
 $$
 \operatorname{proj}_W \mathbf y = (\mathbf y\cdot\mathbf u_1)\,\mathbf u_1 + \cdots + (\mathbf y\cdot\mathbf u_p)\,\mathbf u_p = UU^T\mathbf y.
 $$
 
-For the line $L$ through $(1, 1)$, the unit vector is $\mathbf u = \tfrac{1}{\sqrt2}(1, 1)$. Then
+A tall $U$ with orthonormal columns always has $U^TU = I$, because entry $(i, j)$ of $U^TU$ is $\mathbf u_i\cdot\mathbf u_j$. The other product $UU^T$ is the projection onto $\operatorname{Col}U$.
+</Concept>
 
-$$
-U^TU = \begin{bmatrix} 1 \end{bmatrix}, \qquad UU^T = \tfrac12\begin{bmatrix} 1 & 1 \\ 1 & 1 \end{bmatrix},
-$$
+Many different points share one shadow. The widget's line runs through $(2, 1)$, and $P = UU^T$ uses the unit vector $\tfrac{1}{\sqrt5}(2, 1)$.
 
-and $UU^T$ is exactly Day 17's projection $P$. A tall $U$ with orthonormal columns always has $U^TU = I$, but $UU^T$ is a projection. It equals $I$ only when $U$ is square. On Day 37 the same fact $Q^TQ = I$ for a matrix $Q$ with orthonormal columns is what makes the QR factorization easy to compute.
+<ShadowPreimageHunt u={[2, 1]} target={[4, 2]} start={[1, 3]} />
 
-Every formula today needed an orthogonal basis, so tomorrow Gram–Schmidt builds one from any basis, and on Day 38 projection onto $\operatorname{Col}A$ becomes the method of least squares.
+<Warning>
+$UU^T$ is not the identity unless $U$ is square. For the $2 \times 1$ matrix in Problem 6, $UU^T$ sent $(1, 5)$ to $(3, 3)$, so it clearly moved that vector. $UU^T\mathbf y = \mathbf y$ holds only for the vectors $\mathbf y$ that already lie in $W$.
+</Warning>
+
+<Choice
+  question="$U$ is a $3 \times 2$ matrix with orthonormal columns. Which statement is true?"
+  options={["$U^TU = I_2$ and $UU^T = I_3$", "$U^TU = I_2$, and $UU^T$ is the projection onto $\\operatorname{Col}U$", "$UU^T = I_3$, and $U^TU$ is a projection", "Neither product can be computed"]}
+  answer={1}
+>
+$U^TU$ is $2 \times 2$ and holds the dot products of the columns with each other, which are $1$ on the diagonal and $0$ off it. $UU^T$ is $3 \times 3$ and projects onto the plane $\operatorname{Col}U$. It cannot be $I_3$, because it sends every vector perpendicular to that plane to $\mathbf 0$.
+</Choice>
+
+On Day 37 the same fact $Q^TQ = I$ for a matrix $Q$ with orthonormal columns is what makes the QR factorization easy to compute. Every formula today needed an orthogonal basis, so tomorrow Gram–Schmidt builds one from any basis, and on Day 38 projection onto $\operatorname{Col}A$ becomes the method of least squares.
 
 ## Practice
 
-<Check>
-Let $\mathbf y = \begin{bmatrix} 1 \\ 7 \end{bmatrix}$ and $\mathbf u = \begin{bmatrix} 3 \\ 1 \end{bmatrix}$. Find the orthogonal projection $\hat{\mathbf y}$ of $\mathbf y$ onto $\operatorname{Span}\{\mathbf u\}$. (Modeled on Lay §6.2, Example 3.)
+### Warm-up
 
-<VectorAnswer answer={[3, 1]} />
+<Check>
+Let $\mathbf y = \begin{bmatrix} 5 \\ 5 \end{bmatrix}$ and $\mathbf u = \begin{bmatrix} 3 \\ 1 \end{bmatrix}$. Find the orthogonal projection $\hat{\mathbf y}$ of $\mathbf y$ onto the line through $\mathbf u$. (Modeled on Lay §6.2, Example 3.)
+
+<VectorAnswer answer={[6, 2]} />
 
 <Answer>
 $$
-\begin{aligned}
-\mathbf y\cdot\mathbf u &= 3 + 7 = 10, \qquad \mathbf u\cdot\mathbf u = 9 + 1 = 10 \\
-\hat{\mathbf y} &= \tfrac{10}{10}\,\mathbf u = \begin{bmatrix} 3 \\ 1 \end{bmatrix}, \qquad \mathbf z = \mathbf y - \hat{\mathbf y} = \begin{bmatrix} -2 \\ 6 \end{bmatrix}
-\end{aligned}
+\mathbf y\cdot\mathbf u = 15 + 5 = 20, \qquad \mathbf u\cdot\mathbf u = 9 + 1 = 10, \qquad \hat{\mathbf y} = \tfrac{20}{10}\,\mathbf u = \begin{bmatrix} 6 \\ 2 \end{bmatrix}
 $$
 
-Check: $\hat{\mathbf y}\cdot\mathbf z = -6 + 6 = 0$. The distance from $\mathbf y$ to the line is $\|\mathbf z\| = \sqrt{40} = 2\sqrt{10}$.
+Check: $\mathbf z = \mathbf y - \hat{\mathbf y} = (-1, 3)$ and $\mathbf z\cdot\mathbf u = -3 + 3 = 0$.
 </Answer>
 </Check>
+
+<Check>
+Let $\mathbf y = \begin{bmatrix} 0 \\ 5 \end{bmatrix}$ and $\mathbf u = \begin{bmatrix} 1 \\ 2 \end{bmatrix}$. Find the component $\mathbf z$ of $\mathbf y$ orthogonal to $\mathbf u$.
+
+<VectorAnswer answer={[-2, 1]} />
+
+<Answer>
+First find the projection: $\mathbf y\cdot\mathbf u = 10$ and $\mathbf u\cdot\mathbf u = 5$, so $\hat{\mathbf y} = 2\,\mathbf u = (2, 4)$. Then
+
+$$
+\mathbf z = \mathbf y - \hat{\mathbf y} = \begin{bmatrix} 0 - 2 \\ 5 - 4 \end{bmatrix} = \begin{bmatrix} -2 \\ 1 \end{bmatrix}.
+$$
+
+Check: $\mathbf z\cdot\mathbf u = -2 + 2 = 0$.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="Can the projection formula be used directly with $\mathbf u_1 = (1, 1, 0)$ and $\mathbf u_2 = (1, 0, 1)$ as the basis of $W$?"
+  options={["Yes", "No"]}
+  answer={1}
+>
+$\mathbf u_1\cdot\mathbf u_2 = 1 + 0 + 0 = 1$, which is not zero, so the basis is not orthogonal. The formula would add overlapping shadows and give a wrong answer, as in Problem 4. You would first run Gram–Schmidt (Day 37).
+</Choice>
+</Check>
+
+### Core
 
 <Check>
 Let $\mathbf u_1 = \begin{bmatrix} 1 \\ 2 \\ 2 \end{bmatrix}$, $\mathbf u_2 = \begin{bmatrix} 2 \\ 1 \\ -2 \end{bmatrix}$ and $\mathbf y = \begin{bmatrix} 5 \\ 1 \\ 1 \end{bmatrix}$. Find the closest point to $\mathbf y$ in $W = \operatorname{Span}\{\mathbf u_1, \mathbf u_2\}$. (Modeled on Lay §6.3, Exercises 7–10.)
 
 <VectorAnswer answer={[3, 3, 0]} />
+
+<Hint>
+Check that $\mathbf u_1\cdot\mathbf u_2 = 0$ first. Then compute one weight for each basis vector and add the two shadows.
+</Hint>
 
 <Answer>
 The basis is orthogonal because $\mathbf u_1\cdot\mathbf u_2 = 2 + 2 - 4 = 0$.
@@ -145,5 +365,146 @@ $$
 $$
 
 By the best approximation theorem, $\hat{\mathbf y} = (3, 3, 0)$ is the closest point, and the distance from $\mathbf y$ to $W$ is $\|\mathbf z\| = 3$.
+</Answer>
+</Check>
+
+<Check>
+Let $\mathbf u_1 = \begin{bmatrix} 1 \\ 1 \\ 1 \end{bmatrix}$, $\mathbf u_2 = \begin{bmatrix} 1 \\ -1 \\ 0 \end{bmatrix}$ and $\mathbf y = \begin{bmatrix} 3 \\ 1 \\ 5 \end{bmatrix}$. Find the squared distance from $\mathbf y$ to the plane $W = \operatorname{Span}\{\mathbf u_1, \mathbf u_2\}$. (Modeled on Lay §6.3, Exercise 15.)
+
+<VectorAnswer answer={[6]} labels={["distance²"]} />
+
+<Hint>
+The distance is $\|\mathbf z\|$, where $\mathbf z = \mathbf y - \hat{\mathbf y}$. Find $\hat{\mathbf y}$ first.
+</Hint>
+
+<Answer>
+The basis is orthogonal since $\mathbf u_1\cdot\mathbf u_2 = 1 - 1 + 0 = 0$.
+
+$$
+\begin{aligned}
+\hat{\mathbf y} &= \tfrac{9}{3}\,\mathbf u_1 + \tfrac{2}{2}\,\mathbf u_2 = \begin{bmatrix} 3 \\ 3 \\ 3 \end{bmatrix} + \begin{bmatrix} 1 \\ -1 \\ 0 \end{bmatrix} = \begin{bmatrix} 4 \\ 2 \\ 3 \end{bmatrix} \\
+\mathbf z &= \mathbf y - \hat{\mathbf y} = \begin{bmatrix} -1 \\ -1 \\ 2 \end{bmatrix}, \qquad \|\mathbf z\|^2 = 1 + 1 + 4 = 6
+\end{aligned}
+$$
+
+Check: $\mathbf z\cdot\mathbf u_1 = -1 - 1 + 2 = 0$ and $\mathbf z\cdot\mathbf u_2 = -1 + 1 + 0 = 0$. The distance itself is $\sqrt 6$.
+</Answer>
+</Check>
+
+<Check>
+Let $\mathbf u_1 = \begin{bmatrix} 2 \\ -1 \\ 1 \end{bmatrix}$, $\mathbf u_2 = \begin{bmatrix} 1 \\ 1 \\ -1 \end{bmatrix}$ and $\mathbf y = \begin{bmatrix} 1 \\ 2 \\ 0 \end{bmatrix}$. Find $\operatorname{proj}_W \mathbf y$ for $W = \operatorname{Span}\{\mathbf u_1, \mathbf u_2\}$. (Modeled on Lay §6.3, Exercise 7.)
+
+<VectorAnswer answer={[1, 1, -1]} />
+
+<Hint>
+One of the two weights comes out to zero. That is not a mistake.
+</Hint>
+
+<Answer>
+The basis is orthogonal: $\mathbf u_1\cdot\mathbf u_2 = 2 - 1 - 1 = 0$. The weights are
+
+$$
+\frac{\mathbf y\cdot\mathbf u_1}{\mathbf u_1\cdot\mathbf u_1} = \frac{2 - 2 + 0}{6} = 0, \qquad \frac{\mathbf y\cdot\mathbf u_2}{\mathbf u_2\cdot\mathbf u_2} = \frac{1 + 2 + 0}{3} = 1,
+$$
+
+so $\hat{\mathbf y} = \mathbf u_2 = (1, 1, -1)$. The first weight is zero because $\mathbf y$ is already perpendicular to $\mathbf u_1$, so its shadow on that line is the zero vector. Check: $\mathbf z = (0, 1, 1)$, and $\mathbf z\cdot\mathbf u_1 = 0 - 1 + 1 = 0$, $\mathbf z\cdot\mathbf u_2 = 0 + 1 - 1 = 0$.
+</Answer>
+</Check>
+
+<Check>
+Let $\mathbf u = \tfrac{1}{\sqrt5}\begin{bmatrix} 2 \\ -1 \end{bmatrix}$ and let $U$ be the $2\times1$ matrix with column $\mathbf u$. Compute the projection matrix $UU^T$, listing its entries row by row. (Modeled on Lay §6.3, Exercise 18.)
+
+<VectorAnswer answer={[0.8, -0.4, -0.4, 0.2]} columns={2} />
+
+<Hint>
+Entry $(i, j)$ of $UU^T$ is entry $i$ of $\mathbf u$ times entry $j$ of $\mathbf u$. Each product carries a factor $\tfrac{1}{\sqrt5}\cdot\tfrac{1}{\sqrt5} = \tfrac15$.
+</Hint>
+
+<Answer>
+$$
+UU^T = \frac15\begin{bmatrix} 2 \\ -1 \end{bmatrix}\begin{bmatrix} 2 & -1 \end{bmatrix} = \frac15\begin{bmatrix} 4 & -2 \\ -2 & 1 \end{bmatrix} = \begin{bmatrix} 4/5 & -2/5 \\ -2/5 & 1/5 \end{bmatrix}
+$$
+
+As a check, $UU^T(5, 5) = \tfrac15(20 - 10,\ -10 + 5) = (2, -1)$, and the formula gives the same thing: $\frac{(5, 5)\cdot(2, -1)}{5}(2, -1) = 1\cdot(2, -1)$. Meanwhile $U^TU = \begin{bmatrix} 1 \end{bmatrix}$.
+</Answer>
+</Check>
+
+<Check>
+Let $U = \dfrac12\begin{bmatrix} 1 & 1 \\ 1 & -1 \\ 1 & 1 \\ 1 & -1 \end{bmatrix}$ and $\mathbf y = \begin{bmatrix} 5 \\ 1 \\ 3 \\ -1 \end{bmatrix}$. The columns of $U$ are orthonormal. Find the closest point to $\mathbf y$ in $\operatorname{Col}U$. (Modeled on Lay §6.3, Exercise 17.)
+
+<VectorAnswer answer={[4, 0, 4, 0]} />
+
+<Hint>
+Compute $U^T\mathbf y$ first. Its two entries are the weights on the two columns.
+</Hint>
+
+<Answer>
+$$
+U^T\mathbf y = \frac12\begin{bmatrix} 5 + 1 + 3 - 1 \\ 5 - 1 + 3 + 1 \end{bmatrix} = \begin{bmatrix} 4 \\ 4 \end{bmatrix}, \qquad
+UU^T\mathbf y = 4\cdot\tfrac12\begin{bmatrix} 1 \\ 1 \\ 1 \\ 1 \end{bmatrix} + 4\cdot\tfrac12\begin{bmatrix} 1 \\ -1 \\ 1 \\ -1 \end{bmatrix} = \begin{bmatrix} 4 \\ 0 \\ 4 \\ 0 \end{bmatrix}
+$$
+
+The leftover is $\mathbf z = (1, 1, -1, -1)$, which dots to zero with both columns, and the distance from $\mathbf y$ to $\operatorname{Col}U$ is $\|\mathbf z\| = 2$. The recipe works in $\mathbb R^4$ even though we cannot draw it.
+</Answer>
+</Check>
+
+### Challenge
+
+<Check>
+Let $\mathbf u_1 = \begin{bmatrix} 1 \\ 0 \\ 1 \end{bmatrix}$ and $\mathbf u_2 = \begin{bmatrix} 1 \\ 1 \\ -1 \end{bmatrix}$, and let $\mathbf e_3 = (0, 0, 1)$. Use projection to build a nonzero vector orthogonal to both $\mathbf u_1$ and $\mathbf u_2$. Scale it so its first entry is $-1$. (Modeled on Lay §6.3, Exercise 19.)
+
+<VectorAnswer answer={[-1, 2, 1]} />
+
+<Hint>
+The leftover $\mathbf z = \mathbf e_3 - \operatorname{proj}_W \mathbf e_3$ is always in $W^\perp$.
+</Hint>
+
+<Answer>
+The basis is orthogonal since $\mathbf u_1\cdot\mathbf u_2 = 1 + 0 - 1 = 0$. The two weights are $\frac{\mathbf e_3\cdot\mathbf u_1}{2} = \frac12$ and $\frac{\mathbf e_3\cdot\mathbf u_2}{3} = -\frac13$, so
+
+$$
+\begin{aligned}
+\operatorname{proj}_W \mathbf e_3 &= \tfrac12(1, 0, 1) - \tfrac13(1, 1, -1) = \left(\tfrac16,\ -\tfrac13,\ \tfrac56\right) \\
+\mathbf z &= \mathbf e_3 - \operatorname{proj}_W \mathbf e_3 = \left(-\tfrac16,\ \tfrac13,\ \tfrac16\right)
+\end{aligned}
+$$
+
+Multiplying by $6$ gives $(-1, 2, 1)$. Check: $(-1, 2, 1)\cdot(1, 0, 1) = 0$ and $(-1, 2, 1)\cdot(1, 1, -1) = -1 + 2 - 1 = 0$. Subtracting a projection to get something perpendicular is exactly one step of tomorrow's Gram–Schmidt process.
+</Answer>
+</Check>
+
+<Check>
+The plane $x_3 = 0$ in $\mathbb R^3$ has the orthogonal basis $\{(3, 4, 0),\ (-4, 3, 0)\}$. Use that basis to project $\mathbf y = (2, 5, 7)$ onto the plane. Then say why the answer had to come out the way it did.
+
+<VectorAnswer answer={[2, 5, 0]} />
+
+<Hint>
+Both basis vectors have $\mathbf u\cdot\mathbf u = 25$. For the second part, think of a much simpler orthogonal basis of the same plane.
+</Hint>
+
+<Answer>
+$$
+\begin{aligned}
+\hat{\mathbf y} &= \frac{6 + 20}{25}\begin{bmatrix} 3 \\ 4 \\ 0 \end{bmatrix} + \frac{-8 + 15}{25}\begin{bmatrix} -4 \\ 3 \\ 0 \end{bmatrix} = \frac{1}{25}\begin{bmatrix} 78 - 28 \\ 104 + 21 \\ 0 \end{bmatrix} = \begin{bmatrix} 2 \\ 5 \\ 0 \end{bmatrix}
+\end{aligned}
+$$
+
+The simpler orthogonal basis $\{(1, 0, 0), (0, 1, 0)\}$ gives $(2, 5, 0)$ at a glance, since projecting onto the floor just drops the height. The orthogonal decomposition is unique, so every orthogonal basis of the same plane must give the same $\hat{\mathbf y}$.
+</Answer>
+</Check>
+
+<Check>
+Show that replacing $\mathbf u$ by $k\mathbf u$ for any nonzero number $k$ does not change $\operatorname{proj}_L \mathbf y = \frac{\mathbf y\cdot\mathbf u}{\mathbf u\cdot\mathbf u}\,\mathbf u$. (Modeled on Lay §6.2, the remark after Example 3.)
+
+<Hint>
+Substitute $k\mathbf u$ everywhere $\mathbf u$ appears and pull the numbers out of each dot product.
+</Hint>
+
+<Answer>
+$$
+\frac{\mathbf y\cdot(k\mathbf u)}{(k\mathbf u)\cdot(k\mathbf u)}\,(k\mathbf u) = \frac{k\,(\mathbf y\cdot\mathbf u)}{k^2\,(\mathbf u\cdot\mathbf u)}\,k\,\mathbf u = \frac{k^2}{k^2}\cdot\frac{\mathbf y\cdot\mathbf u}{\mathbf u\cdot\mathbf u}\,\mathbf u = \frac{\mathbf y\cdot\mathbf u}{\mathbf u\cdot\mathbf u}\,\mathbf u
+$$
+
+The weight shrinks by $k$ while the vector it multiplies grows by $k$. This is why the projection depends only on the line $L$, and why dividing by $\|\mathbf u\|$ instead of $\|\mathbf u\|^2$ would give the wrong answer: then a factor of $k$ would be left over.
 </Answer>
 </Check>

@@ -319,3 +319,84 @@ export function QuadraticCircleMax({ matrix, start = [1, -1] }: { matrix: Matrix
     </Panel>
   );
 }
+
+const LEVEL_BOUNDS: Bounds = { xMin: -5, xMax: 5, yMin: -4, yMax: 4 };
+
+function polynomialTex(m: Matrix2, x: Vec): string {
+  const cross = 2 * m[0][1];
+  return `${texNumber(m[0][0])}(${texNumber(x[0])})^2 ${cross < 0 ? "-" : "+"} ${texNumber(Math.abs(cross))}(${texNumber(x[0])})(${texNumber(x[1])}) + ${texNumber(m[1][1])}(${texNumber(x[1])})^2`;
+}
+
+/** Drag a point; the readout evaluates the form there. The goal is another whole-number point on the level curve through a given one. */
+export function LevelPointHunt({ matrix, level, known, start = [1, 0] }: { matrix: Matrix2; level: number; known: Vec; start?: Vec }) {
+  const [x, setX] = useState<Vec>(start);
+  const value = formAt(matrix, x);
+  const { settled: solved, gesture } = useSettled(Math.abs(value - level) < TOLERANCE && pointKey(x) !== pointKey(known));
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>The yellow point <Tex>{`(${known[0]}, ${known[1]})`}</Tex> gives <Tex>{`Q = ${level}`}</Tex>. Find a different grid point where <Tex>Q</Tex> is also <Tex>{`${level}`}</Tex>.</>}
+        success={<>This point lies on the same teal curve. The curve is the set of all points where <Tex>{`Q = ${level}`}</Tex>, and the cross term is what tilts it.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={LEVEL_BOUNDS} label={`The curve where Q equals ${level}, a known point at ${describeVector(known)}, and a movable point at ${describeVector(x)} where Q is ${formatNumber(value)}. Drag the point or use the arrow keys.`}>
+            <LevelCurve matrix={matrix} level={level} />
+            <Marker at={known} color="yellow" />
+            {solved ? <Marker at={x} color="glow" ring /> : null}
+            <Handle at={x} onMove={setX} color="blue" label={`Point x, at ${describeVector(x)}`} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Readout tex={`A = ${matrixTex(matrix)}`} />
+            <Readout tex={`Q = ${polynomialTex(matrix, x)} = \\textcolor{${solved ? palette.teal : palette.text}}{${texNumber(value)}}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+/** The two directions where the form is zero, as slopes x₂/x₁, when the form takes both signs. */
+function zeroSlopes(m: Matrix2): number[] {
+  const discriminant = m[0][1] ** 2 - m[0][0] * m[1][1];
+  if (discriminant <= 0 || m[1][1] === 0) return [];
+  const root = Math.sqrt(discriminant);
+  return [(-m[0][1] + root) / m[1][1], (-m[0][1] - root) / m[1][1]];
+}
+
+/** Drag a point to hunt for a spot where a form with all positive coefficients still comes out negative. */
+export function NegativeDirectionHunt({ matrix, start = [1, 1] }: { matrix: Matrix2; start?: Vec }) {
+  const [x, setX] = useState<Vec>(start);
+  const value = formAt(matrix, x);
+  const { settled: solved, gesture } = useSettled(value < -TOLERANCE);
+  const arrowColor: Hue = value < -TOLERANCE ? "pink" : "teal";
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Every coefficient of <Tex>Q</Tex> is positive. Find a point where <Tex>Q</Tex> is negative anyway.</>}
+        success={<>Between the two dashed lines, <Tex>Q</Tex> is negative, and along them it is exactly zero. A form that takes both signs is indefinite, and its matrix has one negative eigenvalue.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={LEVEL_BOUNDS} label={`A movable point at ${describeVector(x)} where Q is ${formatNumber(value)}. Drag the point or use the arrow keys.`}>
+            {solved ? zeroSlopes(matrix).map((slope) => <AxisLine key={slope} direction={unit([1, slope])} color="glow" bold={false} />) : null}
+            <Arrow to={x} color={arrowColor} />
+            <Handle at={x} onMove={setX} color={arrowColor} label={`Point x, at ${describeVector(x)}`} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Readout tex={`Q = ${polynomialTex(matrix, x)}`} />
+            <Readout tex={`Q = \\textcolor{${value < -TOLERANCE ? palette.pink : palette.teal}}{${texNumber(value)}}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
