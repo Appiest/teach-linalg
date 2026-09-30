@@ -1,0 +1,197 @@
+import { AddressHunt, StaircaseBasis, TrimToBasis } from "@/components/interactive/basis";
+import { ChangeMatrixBuilder, SimilarityHunt, TwoAddresses } from "@/components/interactive/change-of-basis";
+import { CharacteristicSweep, EigenpairHunt } from "@/components/interactive/characteristic-equation";
+import { CofactorLinePicker, MultipleAreaScale, ReplacementShear } from "@/components/interactive/cofactor-expansion";
+import { ConsistencyLine, OutputReach, PivotPicker, RelationTwins, RowSlide } from "@/components/interactive/column-space";
+import { CoordinateFinder, PolynomialCoordinates } from "@/components/interactive/coordinates";
+import { CramerAreas, HeightStack, ProductAreaHunt } from "@/components/interactive/determinant-properties";
+import { AreaShearSlide, CornerToOrigin } from "@/components/interactive/determinants-as-area";
+import { DiagonalEntryMatch, DiagonalFactorSteps, EigenColumnHunt, EigenCoordinateTarget } from "@/components/interactive/diagonalization";
+import { BasisColumnBuilder, DiagonalBasisHunt, EigenOrbitSettle, EigenPolynomialHunt, TwoCoordinateMap } from "@/components/interactive/diagonalizing-transformations";
+import { IterateSwing, ShiftToSingular, TraceCurveMatch } from "@/components/interactive/eigenvalue-properties";
+import { DiagonalZeroHunt, EigenDirectionHunt, EigenGapHunt } from "@/components/interactive/eigenvectors";
+import { BuildFromSteps, ElementaryMoves, InverseBuilder, RowRecipe } from "@/components/interactive/elementary";
+import { ChainCoordinates, JordanChainBuilder, MultiplicityGapSlider, NullPowerClimb, ShearRaySweep } from "@/components/interactive/generalized-eigenvectors";
+import { NormalizePair, QrWeightSliders, ShadowSubtractSlider, StraightenedTargetHunt, VanishingStepHunt } from "@/components/interactive/gram-schmidt";
+import { ComplementLanding, RangeCollapse } from "@/components/interactive/image-range";
+import { LiftToPlane, LoopAnywhere, RelationFinder } from "@/components/interactive/independence";
+import { DotShadowHunt, EqualDistanceTurn, OrthogonalWeights, RowPerpendicularHunt, UnitCircleScale } from "@/components/interactive/inner-products";
+import { DeterminantSlider, InverseColumnsHunt, SameLanding, SingularHunt, UndoOrder } from "@/components/interactive/inverse";
+import { CrushAndMiss, InvertibilityCalls, StatementBoard, ThirdPivotSlider } from "@/components/interactive/invertible-matrix-theorem";
+import { DifferenceInKernel, EvaluationKernel } from "@/components/interactive/kernel";
+import { ParabolaFit, ProjectionRightAngle, ResidualBalance, ResidualSquaresFit } from "@/components/interactive/least-squares";
+import { AdditivityHunt, DerivativeTarget, EvaluationZeros, SharedDerivativeHunt, TranslationGap } from "@/components/interactive/linear-maps";
+import { CostCompare, LUBuilder, PivotFlattener, SubstitutionSolver, TwoTriangleSolve } from "@/components/interactive/lu";
+import { ColumnSpanCheck, MatrixVectorExplorer, RowPictureSolver, SpanBreaker } from "@/components/interactive/matrix";
+import { ColumnBuilder, DerivativeRoutes } from "@/components/interactive/matrix-representations";
+import { FreeWeights, LandingHunt, NullSumCheck, RightSideShift } from "@/components/interactive/null-space";
+import { LineFootHunt, LineOnlyShadow, NearestPlanePoint, ShadowPreimageHunt, ShadowSumBasis } from "@/components/interactive/orthogonal-projection";
+import { ColumnWeights, CommuteHunt, CompositionExplorer, ProductColumns, ZeroProductHunt } from "@/components/interactive/product";
+import { LevelPointHunt, NegativeDirectionHunt, QuadraticAxisTurner, QuadraticCircleMax, QuadraticSurfaceShaper } from "@/components/interactive/quadratic-forms";
+import { CollapseSlider, PivotBudget, RankTally, RowColumnDrop } from "@/components/interactive/rank-nullity";
+import { CollapsedDirectionHunt, LongestStretchHunt, PerpendicularPairHunt, RankCopyBudget, SvdEllipseMatch } from "@/components/interactive/singular-value-decomposition";
+import { EntryHunt, LineSpanPicker, RowLinesMeet, SpanPainter } from "@/components/interactive/span";
+import { PivotHunt, PolynomialRecipe, ThirdVectorHunt } from "@/components/interactive/span-revisited";
+import { QuadrantEscape, ShiftedLineTest } from "@/components/interactive/subspaces";
+import { EigenDirectionSweep, ShadowStretchSum, SpectralEllipseBuilder, SymmetricPerpendicularHunt } from "@/components/interactive/symmetric-matrices";
+import { PivotSpotter, RowReduceExplorer, RowReducer, SolutionCountExplorer } from "@/components/interactive/systems";
+import { TransformExplorer } from "@/components/interactive/transform";
+import { ImagePredictor, PreimageHunt, RotationDial, ShapeMatch } from "@/components/interactive/transformations";
+import { ClosureHunt, NegativeFinder, PolynomialCombiner, ScalingEscape } from "@/components/interactive/vector-spaces";
+import { AdditionExplorer, CombinationTarget, DifferenceExplorer, GridWeights, ScaleExplorer, VectorExplorer } from "@/components/interactive/vectors";
+
+export const widgets = {
+  AdditionExplorer,
+  AdditivityHunt,
+  AddressHunt,
+  AreaShearSlide,
+  BasisColumnBuilder,
+  BuildFromSteps,
+  ChainCoordinates,
+  ChangeMatrixBuilder,
+  CharacteristicSweep,
+  ClosureHunt,
+  CofactorLinePicker,
+  CollapseSlider,
+  CollapsedDirectionHunt,
+  ColumnBuilder,
+  ColumnSpanCheck,
+  ColumnWeights,
+  CombinationTarget,
+  CommuteHunt,
+  ComplementLanding,
+  CompositionExplorer,
+  ConsistencyLine,
+  CoordinateFinder,
+  CornerToOrigin,
+  CostCompare,
+  CramerAreas,
+  CrushAndMiss,
+  DerivativeRoutes,
+  DerivativeTarget,
+  DeterminantSlider,
+  DiagonalBasisHunt,
+  DiagonalEntryMatch,
+  DiagonalFactorSteps,
+  DiagonalZeroHunt,
+  DifferenceExplorer,
+  DifferenceInKernel,
+  DotShadowHunt,
+  EigenColumnHunt,
+  EigenCoordinateTarget,
+  EigenDirectionHunt,
+  EigenDirectionSweep,
+  EigenGapHunt,
+  EigenOrbitSettle,
+  EigenPolynomialHunt,
+  EigenpairHunt,
+  ElementaryMoves,
+  EntryHunt,
+  EqualDistanceTurn,
+  EvaluationKernel,
+  EvaluationZeros,
+  FreeWeights,
+  GridWeights,
+  HeightStack,
+  ImagePredictor,
+  InverseBuilder,
+  InverseColumnsHunt,
+  InvertibilityCalls,
+  IterateSwing,
+  JordanChainBuilder,
+  LUBuilder,
+  LandingHunt,
+  LevelPointHunt,
+  LiftToPlane,
+  LineFootHunt,
+  LineOnlyShadow,
+  LineSpanPicker,
+  LongestStretchHunt,
+  LoopAnywhere,
+  MatrixVectorExplorer,
+  MultipleAreaScale,
+  MultiplicityGapSlider,
+  NearestPlanePoint,
+  NegativeDirectionHunt,
+  NegativeFinder,
+  NormalizePair,
+  NullPowerClimb,
+  NullSumCheck,
+  OrthogonalWeights,
+  OutputReach,
+  ParabolaFit,
+  PerpendicularPairHunt,
+  PivotBudget,
+  PivotFlattener,
+  PivotHunt,
+  PivotPicker,
+  PivotSpotter,
+  PolynomialCombiner,
+  PolynomialCoordinates,
+  PolynomialRecipe,
+  PreimageHunt,
+  ProductAreaHunt,
+  ProductColumns,
+  ProjectionRightAngle,
+  QrWeightSliders,
+  QuadrantEscape,
+  QuadraticAxisTurner,
+  QuadraticCircleMax,
+  QuadraticSurfaceShaper,
+  RangeCollapse,
+  RankCopyBudget,
+  RankTally,
+  RelationFinder,
+  RelationTwins,
+  ReplacementShear,
+  ResidualBalance,
+  ResidualSquaresFit,
+  RightSideShift,
+  RotationDial,
+  RowColumnDrop,
+  RowLinesMeet,
+  RowPerpendicularHunt,
+  RowPictureSolver,
+  RowRecipe,
+  RowReduceExplorer,
+  RowReducer,
+  RowSlide,
+  SameLanding,
+  ScaleExplorer,
+  ScalingEscape,
+  ShadowPreimageHunt,
+  ShadowStretchSum,
+  ShadowSubtractSlider,
+  ShadowSumBasis,
+  ShapeMatch,
+  SharedDerivativeHunt,
+  ShearRaySweep,
+  ShiftToSingular,
+  ShiftedLineTest,
+  SimilarityHunt,
+  SingularHunt,
+  SolutionCountExplorer,
+  SpanBreaker,
+  SpanPainter,
+  SpectralEllipseBuilder,
+  StaircaseBasis,
+  StatementBoard,
+  StraightenedTargetHunt,
+  SubstitutionSolver,
+  SvdEllipseMatch,
+  SymmetricPerpendicularHunt,
+  ThirdPivotSlider,
+  ThirdVectorHunt,
+  TraceCurveMatch,
+  TransformExplorer,
+  TranslationGap,
+  TrimToBasis,
+  TwoAddresses,
+  TwoCoordinateMap,
+  TwoTriangleSolve,
+  UndoOrder,
+  UnitCircleScale,
+  VanishingStepHunt,
+  VectorExplorer,
+  ZeroProductHunt,
+};

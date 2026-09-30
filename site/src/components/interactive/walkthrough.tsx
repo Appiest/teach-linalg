@@ -21,15 +21,17 @@ export function Steps({ children }: { children: React.ReactNode }) {
     <div className="not-prose rounded-card bg-surface-raised p-5 shadow-lift sm:p-6 in-[.problem]:bg-surface-sunken in-[.problem]:shadow-none">
       <ol className="space-y-5">
         {steps.map((step, index) => (
-          <li
-            key={index}
-            aria-hidden={index >= shown}
-            className={`grid grid-cols-[1.75rem_1fr] gap-3 ${index < shown ? "swap-shown" : "swap-hidden"}`}
-          >
-            <span className="mt-0.5 grid size-7 place-items-center rounded-full bg-surface-sunken text-meta font-semibold tabular-nums text-text-muted">
+          <li key={index} className="grid grid-cols-[1.75rem_1fr] gap-3">
+            <span
+              className={`mt-0.5 grid size-7 place-items-center rounded-full text-meta font-semibold tabular-nums transition-colors ${
+                index < shown ? "bg-line text-text" : "bg-surface-sunken text-text-muted/60"
+              }`}
+            >
               {index + 1}
             </span>
-            <div className="min-w-0">{step}</div>
+            <div aria-hidden={index >= shown} className={`min-w-0 ${index < shown ? "swap-shown" : "swap-hidden"}`}>
+              {step}
+            </div>
           </li>
         ))}
       </ol>
