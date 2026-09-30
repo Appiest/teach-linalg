@@ -30,7 +30,7 @@ import { DerivativeTarget, SharedDerivativeHunt, TranslationGap } from "@/compon
 import { PivotHunt, PolynomialRecipe, ThirdVectorHunt } from "@/components/interactive/span-revisited";
 import { DifferenceInKernel, EvaluationKernel } from "@/components/interactive/kernel";
 import { ComplementLanding, RangeCollapse } from "@/components/interactive/image-range";
-import { DiagonalZeroHunt, EigenDirectionHunt, EigenGapHunt } from "@/components/interactive/eigenvectors";
+import { DiagonalZeroHunt, EigenCandidatePicker, EigenDirectionHunt, EigenGapHunt, EigenLineCollapse } from "@/components/interactive/eigenvectors";
 import { AreaShearSlide, CornerToOrigin } from "@/components/interactive/determinants-as-area";
 import { CramerAreas, CramerParameterLines, EllipseAreaStretch, HeightStack, ProductAreaHunt } from "@/components/interactive/determinant-properties";
 import { CofactorHunt, CofactorLinePicker, ColumnClearExpand, MultipleAreaScale, ReplacementShear } from "@/components/interactive/cofactor-expansion";
@@ -159,6 +159,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     EigenDirectionHunt,
     EigenGapHunt,
     DiagonalZeroHunt,
+    EigenCandidatePicker,
+    EigenLineCollapse,
     AreaShearSlide,
     CornerToOrigin,
     HeightStack,

@@ -265,3 +265,156 @@ export function DiagonalZeroHunt({ matrix, start = 0, min = -4, max = 6 }: { mat
     </Panel>
   );
 }
+
+type CandidateState = "open" | "eigen" | "turned";
+
+const CANDIDATE_HUES: Record<CandidateState, Hue> = { open: "text", eigen: "yellow", turned: "pink" };
+
+function CandidatePoint({ at, state, onPick }: { at: Vec; state: CandidateState; onPick: () => void }) {
+  const { toSvg } = usePlane();
+  const [x, y] = toSvg(at);
+  const verdict = { open: "not tested yet", eigen: "an eigenvector", turned: "not an eigenvector" }[state];
+  return (
+    <g
+      role="button"
+      tabIndex={0}
+      aria-pressed={state !== "open"}
+      aria-label={`Test the vector ${describeVector(at)}, ${verdict}`}
+      className="group cursor-pointer outline-none"
+      onClick={onPick}
+      onKeyDown={(event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        onPick();
+      }}
+    >
+      <circle cx={x} cy={y} r={18} fill="transparent" />
+      <circle cx={x} cy={y} r={14} fill="none" stroke="var(--palette-yellow)" strokeWidth={2.5} className="opacity-0 group-focus-visible:opacity-100" />
+      {state === "eigen" ? <circle cx={x} cy={y} r={11} fill="none" stroke={hue("glow")} strokeWidth={2} /> : null}
+      <circle cx={x} cy={y} r={state === "open" ? 6 : 7} fill={hue(CANDIDATE_HUES[state])} fillOpacity={state === "turned" ? 0.55 : 1} />
+    </g>
+  );
+}
+
+function candidateVerdictTex(matrix: Matrix2, x: Vec): string {
+  const image = apply(matrix, x);
+  const stretch = stretchOf(matrix, x);
+  const verdict = stretch === null ? `\\neq \\lambda\\mathbf x` : `= ${texNumber(stretch)}\\,\\mathbf x`;
+  return `A${columnTex(x)} = ${columnTex(image, palette.teal)} ${verdict}`;
+}
+
+/** Click candidate vectors to test them; each one that A only stretches keeps its glow, and the goal is to find them all. */
+export function EigenCandidatePicker({ matrix, candidates }: { matrix: Matrix2; candidates: Vec[] }) {
+  const [tested, setTested] = useState<string[]>([]);
+  const [last, setLast] = useState<Vec | null>(null);
+  const eigenKeys = candidates.filter((candidate) => stretchOf(matrix, candidate) !== null).map(pointKey);
+  const foundKeys = eigenKeys.filter((key) => tested.includes(key));
+  const { settled: solved, gesture } = useSettled(foundKeys.length === eigenKeys.length);
+  const stateOf = (candidate: Vec): CandidateState => {
+    if (!tested.includes(pointKey(candidate))) return "open";
+    return stretchOf(matrix, candidate) === null ? "turned" : "eigen";
+  };
+  const pick = (candidate: Vec) => {
+    setLast(candidate);
+    setTested((current) => (current.includes(pointKey(candidate)) ? current : [...current, pointKey(candidate)]));
+  };
+  const lines = [...new Set(foundKeys.map((key) => directionKey(keyPoint(key))))];
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Click the dots to test each vector. Find all {eigenKeys.length} of them that <Tex>{"A"}</Tex> only stretches.</>}
+        success={<>Those {eigenKeys.length} vectors lie on just two lines through the origin. Every nonzero vector on those lines is an eigenvector, and every other vector gets turned.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={EIGEN_BOUNDS} label="Candidate vectors drawn as dots. Click one to draw it and its image under A.">
+            {lines.map((key, index) => (
+              <LineThrough key={key} direction={keyPoint(key)} color={LINE_HUES[index % LINE_HUES.length]} dashed />
+            ))}
+            {last ? <Arrow to={apply(matrix, last)} color="teal" /> : null}
+            {last ? <Arrow to={last} color="text" width={2.5} /> : null}
+            {candidates.map((candidate) => (
+              <CandidatePoint key={pointKey(candidate)} at={candidate} state={stateOf(candidate)} onPick={() => pick(candidate)} />
+            ))}
+          </Plane>
+        }
+        readout={
+          <>
+            <Readout tex={`A = ${matrixTex(matrix)}`} />
+            <Readout tex={last ? candidateVerdictTex(matrix, last) : `A\\mathbf x = \\,?`} />
+            <div className="space-y-2 rounded-lg bg-surface-sunken px-4 py-3 text-meta text-text-muted">
+              <p>Eigenvectors found, labelled by eigenvalue</p>
+              <FoundSlots labels={foundKeys.map((key) => formatNumber(stretchOf(matrix, keyPoint(key)) ?? 0))} needed={eigenKeys.length} colors={["yellow"]} />
+            </div>
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+/** The matrix with eigenvalue λ along `stretched` and eigenvalue 1 along `fixed`, built as P diag(λ, 1) P⁻¹. */
+function matrixWithEigenvalue(stretched: Vec, fixed: Vec, lambda: number): Matrix2 {
+  const d = cross(stretched, fixed);
+  const inverse: Matrix2 = [[fixed[1] / d, -fixed[0] / d], [-stretched[1] / d, stretched[0] / d]];
+  const scaled: Matrix2 = [[lambda * stretched[0], fixed[0]], [lambda * stretched[1], fixed[1]]];
+  return [
+    [scaled[0][0] * inverse[0][0] + scaled[0][1] * inverse[1][0], scaled[0][0] * inverse[0][1] + scaled[0][1] * inverse[1][1]],
+    [scaled[1][0] * inverse[0][0] + scaled[1][1] * inverse[1][0], scaled[1][0] * inverse[0][1] + scaled[1][1] * inverse[1][1]],
+  ];
+}
+
+const LATTICE = [-1, 0, 1].flatMap((a) => [-2, -1, 0, 1, 2].map((b): Vec => [a, b]));
+
+function dotHue([a, b]: Vec): Hue {
+  if (b === 0) return "yellow";
+  return a === 0 ? "blue" : "text";
+}
+
+function LatticeImages({ stretched, fixed, lambda }: { stretched: Vec; fixed: Vec; lambda: number }) {
+  return (
+    <>
+      {LATTICE.filter(([a, b]) => a !== 0 || b !== 0).map(([a, b]) => {
+        const image: Vec = [lambda * a * stretched[0] + b * fixed[0], lambda * a * stretched[1] + b * fixed[1]];
+        return <Marker key={`${a},${b}`} at={image} color={dotHue([a, b])} />;
+      })}
+    </>
+  );
+}
+
+/** Slide the eigenvalue λ of the yellow line: stretch, flip, or at λ = 0 flatten the whole plane onto the blue line. */
+export function EigenLineCollapse({ stretched = [2, 1], fixed = [1, 1], start = 2 }: { stretched?: Vec; fixed?: Vec; start?: number }) {
+  const [lambda, setLambda] = useState(start);
+  const matrix = matrixWithEigenvalue(stretched, fixed, lambda);
+  const { settled: solved, gesture } = useSettled(lambda === 0);
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>The dots are the images of a grid of points under <Tex>{"A"}</Tex>. Slide the yellow eigenvalue <Tex>{"\\lambda"}</Tex> until <Tex>{"A"}</Tex> is no longer invertible.</>}
+        success={<>At <Tex>{"\\lambda = 0"}</Tex> the yellow line collapses to the origin, so every dot lands on the blue line. The yellow eigenvectors are now solutions of <Tex>{"A\\mathbf x = \\mathbf 0"}</Tex>.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={EIGEN_BOUNDS} label={`Images of a grid of points under the matrix with eigenvalue ${lambda} on the yellow line and 1 on the blue line.`}>
+            <LineThrough direction={stretched} color="yellow" dashed />
+            <LineThrough direction={fixed} color="blue" dashed />
+            <LatticeImages stretched={stretched} fixed={fixed} lambda={lambda} />
+            {solved ? <Marker at={[0, 0]} color="glow" ring /> : null}
+          </Plane>
+        }
+        readout={
+          <>
+            <Slider label="\lambda" value={lambda} onChange={setLambda} min={-1.5} max={2.5} step={0.5} color={palette.yellow} />
+            <Readout tex={`A = ${matrixTex(matrix)}`} />
+            <Readout tex={`A${columnTex(stretched, palette.yellow)} = ${columnTex(apply(matrix, stretched))} = ${texNumber(lambda)}${columnTex(stretched, palette.yellow)}`} />
+            <Readout tex={`\\det A = ${texNumber(lambda)} \\cdot 1 = ${texNumber(lambda)}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
