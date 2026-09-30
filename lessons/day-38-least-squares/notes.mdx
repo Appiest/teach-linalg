@@ -1,33 +1,86 @@
 On Day 4 you learned that $A\mathbf x = \mathbf b$ has a solution exactly when $\mathbf b$ is in the span of the columns of $A$, which Day 16 named $\operatorname{Col}A$. Real measurements almost never land exactly in $\operatorname{Col}A$, so the system has no solution. Least squares finds the $\mathbf x$ that comes closest instead, and it is the payoff of the last two days, because Day 36's orthogonal projection tells you exactly where that closest point is.
 
+Each section below opens with a problem. Try it before you open the walkthrough, even if you only get partway. The box after each walkthrough names the idea you just used.
+
 ## Residuals
 
-Suppose you want the line $y = \beta_0 + \beta_1 x$ through the points $(0, 0)$, $(1, 4)$ and $(2, 2)$. Each point asks for one equation, $\beta_0 + x_j\beta_1 = y_j$, so the three together form the system $X\boldsymbol\beta = \mathbf y$:
+<Problem>
+Try to find a line $y = \beta_0 + \beta_1 x$ that passes through all three points $(0, 0)$, $(1, 4)$ and $(2, 2)$. When that fails, compare two lines, $y = 1 + x$ and $y = 2$. For each line, list how far each point sits above or below the line. Which line misses by less?
+
+<Hint>
+Plug each point into $y = \beta_0 + \beta_1 x$ to get one equation per point. For the comparison, "miss by less" needs a single number per line, and adding the misses directly lets a miss above cancel a miss below.
+</Hint>
+
+<Solution>
+We start by asking for an exact fit, because if one exists there is nothing more to do.
+
+<Steps>
+<Step>
+Each point gives one equation. The point $(0, 0)$ says $\beta_0 = 0$. The point $(1, 4)$ says $\beta_0 + \beta_1 = 4$, so $\beta_1 = 4$. The point $(2, 2)$ says $\beta_0 + 2\beta_1 = 2$, but $0 + 8 = 8 \ne 2$. No line fits all three.
+</Step>
+<Step>
+For $y = 1 + x$, the line's heights at $x = 0, 1, 2$ are $1, 2, 3$. The points sit at $0, 4, 2$, so the misses are $0 - 1 = -1$, $4 - 2 = 2$ and $2 - 3 = -1$.
+</Step>
+<Step>
+For $y = 2$, the heights are $2, 2, 2$, so the misses are $-2$, $2$ and $0$.
+</Step>
+<Step>
+Both lists add up to $0$, so plain sums cannot tell the lines apart. Squaring makes every miss count as positive. For $y = 1 + x$ the squares add to $1 + 4 + 1 = 6$, and for $y = 2$ they add to $4 + 4 + 0 = 8$. So $y = 1 + x$ misses by less.
+</Step>
+</Steps>
+
+The three equations in Step 1 are one matrix equation. Its matrix has a column of ones, because every point uses $\beta_0$ once, and a column of the $x$-values:
 
 $$
 \begin{bmatrix} \green{1} & \red{0} \\ \green{1} & \red{1} \\ \green{1} & \red{2} \end{bmatrix}
 \begin{bmatrix} \beta_0 \\ \beta_1 \end{bmatrix}
 = \yellow{\begin{bmatrix} 0 \\ 4 \\ 2 \end{bmatrix}}
 $$
-
-The matrix $X$ is called the **design matrix**. Its first column is all ones because every point uses $\beta_0$ once, and its second column lists the $x$-values. No line passes through all three points, so this system has no solution.
-
-For any line you pick, the **residual** at a point is the observed $y_j$ minus the height the line predicts there, $r_j = y_j - (\beta_0 + \beta_1 x_j)$. A **least-squares line** is a line that makes $r_1^2 + r_2^2 + \cdots + r_n^2$ as small as possible. Squaring keeps a miss below the line from cancelling a miss above it.
+</Solution>
+</Problem>
 
 <Figure src="residuals" alt="The points (0, 0), (1, 4) and (2, 2) with the teal line y = 1 + x. Pink vertical segments join each point to the line, and a pink square sits on each segment. The residuals are r1 = −1, r2 = 2 and r3 = −1, so the squares have areas 1, 4 and 1." />
+
+<Concept title="Residuals and the least-squares line">
+Writing one equation per data point gives a system $X\boldsymbol\beta = \mathbf y$. The matrix $X$ is the **design matrix**, $\boldsymbol\beta$ holds the unknown coefficients, and $\mathbf y$ holds the observed heights.
+
+For any line you pick, the **residual** at a point is the observed height minus the height the line predicts there, $r_j = y_j - (\beta_0 + \beta_1 x_j)$. A **least-squares line** is a line that makes $r_1^2 + r_2^2 + \cdots + r_n^2$ as small as possible.
+</Concept>
 
 The widget below uses four new points. Each pink square has the squared residual as its area, so shrinking the total pink area is exactly the least-squares problem.
 
 <ResidualSquaresFit points={[[-1, 0], [0, 2], [1, 3], [2, 3]]} handleXs={[-2, 3]} start={[1, 1]} />
 
+<Warning>
+A residual is observed minus predicted, $y_j - (\beta_0 + \beta_1 x_j)$, measured straight up and down. It is not the perpendicular distance from the point to the line.
+</Warning>
+
 ## Projection onto the column space
 
-Sliding a line around by hand never proves which line is best. Rewriting the fit as a question about vectors turns it into the closest-point problem Day 36 already solved. Stack the three heights into one vector $\yellow{\mathbf y}$ in $\mathbb R^3$. Every line gives a vector of predictions $X\boldsymbol\beta = \beta_0\green{\mathbf a_1} + \beta_1\red{\mathbf a_2}$, which always lies on the plane $\operatorname{Col}X$. The residuals are the entries of $\pink{\mathbf y - X\boldsymbol\beta}$, so the sum of their squares is $\|\pink{\mathbf y - X\boldsymbol\beta}\|^2$. Making it small means finding the point of $\operatorname{Col}X$ nearest to $\yellow{\mathbf y}$.
+Sliding a line around by hand never proves which line is best. Rewriting the fit as a question about vectors turns it into the closest-point problem Day 36 already solved.
+
+<Problem>
+Stack the three heights from Problem 1 into one vector $\yellow{\mathbf y} = (0, 4, 2)$ in $\mathbb R^3$, and stack the line $y = 1 + x$'s predictions into $X\boldsymbol\beta = (1, 2, 3)$. Compute the residual vector $\pink{\mathbf y - X\boldsymbol\beta}$ and its squared length. Then dot it with each column of $X$. What do the dot products tell you?
+
+<Solution>
+The residual vector is $(0 - 1,\ 4 - 2,\ 2 - 3) = (-1, 2, -1)$. Its squared length is $1 + 4 + 1 = 6$, which is the sum of squared residuals from Problem 1. So making the sum of squares small is the same as making the vector $\mathbf y - X\boldsymbol\beta$ short.
+
+Every choice of $\boldsymbol\beta$ gives predictions $X\boldsymbol\beta = \beta_0\green{\mathbf a_1} + \beta_1\red{\mathbf a_2}$, a combination of the columns $\mathbf a_1 = (1, 1, 1)$ and $\mathbf a_2 = (0, 1, 2)$. So the predictions always lie on the plane $\operatorname{Col}X$, and the question is which point of that plane is closest to $\mathbf y$.
+
+Now dot the residual with the columns:
+
+$$
+(-1, 2, -1)\cdot(1, 1, 1) = -1 + 2 - 1 = 0, \qquad (-1, 2, -1)\cdot(0, 1, 2) = 0 + 2 - 2 = 0.
+$$
+
+The residual is perpendicular to both columns, so it is perpendicular to the whole plane. By Day 36's best approximation theorem, the foot of a perpendicular is the closest point. So $(1, 2, 3)$ is the closest point of $\operatorname{Col}X$ to $\mathbf y$, and $y = 1 + x$ is the best line.
+</Solution>
+</Problem>
 
 <Pair>
 <Figure src="projection" alt="A 3D view of the teal plane Col X spanned by green a1 = (1, 1, 1) and red a2 = (0, 1, 2). The yellow arrow y = (0, 4, 2) rises above the plane. A pink segment drops from the tip of y to the tip of the teal arrow X beta-hat on the plane, and an orange corner marks a right angle there." />
 
-Day 36's Best Approximation Theorem says the nearest point is the orthogonal projection $\hat{\mathbf y} = \operatorname{proj}_{\operatorname{Col}X}\mathbf y$. So the best weights $\hat{\boldsymbol\beta}$ are the ones with $X\hat{\boldsymbol\beta} = \hat{\mathbf y}$. That equation always has a solution because $\hat{\mathbf y}$ lies in $\operatorname{Col}X$.
+The nearest point is the orthogonal projection $\hat{\mathbf y} = \operatorname{proj}_{\operatorname{Col}X}\mathbf y$. The best weights $\hat{\boldsymbol\beta}$ are the ones with $X\hat{\boldsymbol\beta} = \hat{\mathbf y}$. That equation always has a solution, because $\hat{\mathbf y}$ lies in $\operatorname{Col}X$.
 </Pair>
 
 <Definition term="Least-squares solution">
@@ -37,16 +90,53 @@ $$
 \|\mathbf b - A\hat{\mathbf x}\| \le \|\mathbf b - A\mathbf x\| \quad \text{for every } \mathbf x \text{ in } \mathbb R^n.
 $$
 
-The distance $\|\mathbf b - A\hat{\mathbf x}\|$ is the **least-squares error**.
+The distance $\|\mathbf b - A\hat{\mathbf x}\|$ is the **least-squares error**. In Problem 2 it is $\sqrt 6$.
 </Definition>
 
-The nearest point has one feature you can test without knowing where it is. The residual $\mathbf b - A\hat{\mathbf x}$ meets $\operatorname{Col}A$ at a right angle. The widget shrinks the picture to $\mathbb R^2$, where $A = \begin{bmatrix} 2 \\ 1 \end{bmatrix}$ has one column and $\operatorname{Col}A$ is a line.
+The widget shrinks the picture to $\mathbb R^2$, where $A = \begin{bmatrix} 2 \\ 1 \end{bmatrix}$ has one column and $\operatorname{Col}A$ is a line.
 
 <ProjectionRightAngle column={[2, 1]} b={[1, 3]} start={2.5} />
 
+<Warning>
+Keep $\hat{\mathbf x}$ and $A\hat{\mathbf x}$ apart. $\hat{\mathbf x}$ lives in $\mathbb R^n$ and holds the weights, such as $(\beta_0, \beta_1) = (1, 1)$. $A\hat{\mathbf x}$ lives in $\mathbb R^m$ and is the closest point, such as $(1, 2, 3)$.
+</Warning>
+
 ## Normal equations
 
-The goal here is an equation for $\hat{\mathbf x}$ that skips computing the projection first, since Day 36's formula would need an orthogonal basis of $\operatorname{Col}A$ from Day 37's Gram–Schmidt. A vector is perpendicular to $\operatorname{Col}A$ when it is perpendicular to every column $\mathbf a_j$. The rows of $A^T$ are those columns, so all of the conditions $\mathbf a_j \cdot (\mathbf b - A\hat{\mathbf x}) = 0$ stack into the single equation $A^T(\mathbf b - A\hat{\mathbf x}) = \mathbf 0$. Moving $A^TA\hat{\mathbf x}$ to the other side gives the theorem.
+Problem 2 checked a line we already had. Now we turn the right-angle test into an equation that finds the best line.
+
+<Problem>
+For the same three points, find $\hat{\boldsymbol\beta} = (\beta_0, \beta_1)$ by requiring the residual $\mathbf y - X\boldsymbol\beta$ to be perpendicular to both columns of $X$.
+
+<Solution>
+The goal is to skip computing the projection first. Day 36's formula would need an orthogonal basis of $\operatorname{Col}X$, and these columns are not orthogonal, since $(1, 1, 1)\cdot(0, 1, 2) = 3$. The right-angle condition works with any columns.
+
+<Steps>
+<Step>
+The two conditions are $\mathbf a_1\cdot(\mathbf y - X\boldsymbol\beta) = 0$ and $\mathbf a_2\cdot(\mathbf y - X\boldsymbol\beta) = 0$. The rows of $X^T$ are $\mathbf a_1$ and $\mathbf a_2$, so the two conditions stack into one equation, $X^T(\mathbf y - X\boldsymbol\beta) = \mathbf 0$, which rearranges to $X^TX\boldsymbol\beta = X^T\mathbf y$.
+</Step>
+<Step>
+Compute $X^TX$. Each entry is a dot product of two columns:
+
+$$
+X^TX = \begin{bmatrix} 1 & 1 & 1 \\ 0 & 1 & 2 \end{bmatrix}\begin{bmatrix} 1 & 0 \\ 1 & 1 \\ 1 & 2 \end{bmatrix} = \begin{bmatrix} 3 & 3 \\ 3 & 5 \end{bmatrix}.
+$$
+</Step>
+<Step>
+Compute $X^T\mathbf y$. Each entry is a column dotted with $\mathbf y$:
+
+$$
+X^T\yellow{\mathbf y} = \begin{bmatrix} 0 + 4 + 2 \\ 0 + 4 + 4 \end{bmatrix} = \begin{bmatrix} 6 \\ 8 \end{bmatrix}.
+$$
+</Step>
+<Step>
+Solve the $2 \times 2$ system. Subtracting the first equation $3\beta_0 + 3\beta_1 = 6$ from the second $3\beta_0 + 5\beta_1 = 8$ gives $2\beta_1 = 2$, so $\beta_1 = 1$. Then $3\beta_0 + 3 = 6$ gives $\beta_0 = 1$.
+</Step>
+</Steps>
+
+So $\hat{\boldsymbol\beta} = \teal{(1, 1)}$ and the best line is $y = 1 + x$, the line Problem 2 confirmed.
+</Solution>
+</Problem>
 
 <Definition term="The normal equations (Lay, Theorem 13)">
 The least-squares solutions of $A\mathbf x = \mathbf b$ are exactly the solutions of the **normal equations**
@@ -58,30 +148,155 @@ $$
 and this system always has at least one solution. When the columns of $A$ are linearly independent, $A^TA$ is invertible and the least-squares solution is unique.
 </Definition>
 
-Here are the steps for the video's three points:
+Move the line until both dot products are zero. These readouts are the two rows of $X^T(\mathbf y - X\boldsymbol\beta)$.
+
+<ResidualBalance points={[[0, 1], [1, 1], [2, 2], [3, 4]]} start={[0, 0]} />
+
+<Warning>
+The product is $A^TA$, not $AA^T$. If $A$ is $3 \times 2$, then $A^TA$ is $2 \times 2$, the size of $\hat{\mathbf x}$, while $AA^T$ is $3 \times 3$ and does not help. $A^TA$ is always symmetric, which is a quick check on your arithmetic.
+</Warning>
+
+<Problem>
+Let $A = \begin{bmatrix} 1 & 2 \\ 1 & 2 \\ 0 & 0 \end{bmatrix}$ and $\mathbf b = (1, 3, 5)$. The second column is twice the first. Find every least-squares solution.
+
+<Solution>
+Form the normal equations as usual and see what happens.
 
 $$
-\begin{aligned}
-X^TX &= \begin{bmatrix} 1 & 1 & 1 \\ 0 & 1 & 2 \end{bmatrix}\begin{bmatrix} 1 & 0 \\ 1 & 1 \\ 1 & 2 \end{bmatrix} = \begin{bmatrix} 3 & 3 \\ 3 & 5 \end{bmatrix} \\
-X^T\yellow{\mathbf y} &= \begin{bmatrix} 1 & 1 & 1 \\ 0 & 1 & 2 \end{bmatrix}\yellow{\begin{bmatrix} 0 \\ 4 \\ 2 \end{bmatrix}} = \begin{bmatrix} 6 \\ 8 \end{bmatrix} \\
-\begin{bmatrix} 3 & 3 \\ 3 & 5 \end{bmatrix}\hat{\boldsymbol\beta} &= \begin{bmatrix} 6 \\ 8 \end{bmatrix}
-\;\Longrightarrow\; \hat{\boldsymbol\beta} = \frac16\begin{bmatrix} 5 & -3 \\ -3 & 3 \end{bmatrix}\begin{bmatrix} 6 \\ 8 \end{bmatrix} = \teal{\begin{bmatrix} 1 \\ 1 \end{bmatrix}} \\
-X\hat{\boldsymbol\beta} &= \teal{\begin{bmatrix} 1 \\ 2 \\ 3 \end{bmatrix}}, \qquad \pink{\mathbf y - X\hat{\boldsymbol\beta}} = \pink{\begin{bmatrix} -1 \\ 2 \\ -1 \end{bmatrix}}, \qquad \|\pink{\mathbf y - X\hat{\boldsymbol\beta}}\| = \sqrt{6}
-\end{aligned}
+A^TA = \begin{bmatrix} 2 & 4 \\ 4 & 8 \end{bmatrix}, \qquad A^T\mathbf b = \begin{bmatrix} 1 + 3 \\ 2 + 6 \end{bmatrix} = \begin{bmatrix} 4 \\ 8 \end{bmatrix}.
 $$
 
-The best line is $y = 1 + x$. As a check, the residual is perpendicular to both columns: $(-1) + 2 + (-1) = 0$ and $0 + 2 - 2 = 0$. When one of these dot products comes out nonzero, the arithmetic has gone wrong somewhere.
+The second equation is twice the first, so there is only one condition, $2x_1 + 4x_2 = 4$, or $x_1 + 2x_2 = 2$. The free variable $x_2$ can be anything, so every $\hat{\mathbf x} = (2 - 2t,\ t)$ is a least-squares solution.
 
-If you already have $A = QR$ from Day 37, the normal equations get simpler. Since $A^TA = R^TQ^TQR = R^TR$ and $A^T\mathbf b = R^TQ^T\mathbf b$, you can cancel the invertible $R^T$ and solve $R\hat{\mathbf x} = Q^T\mathbf b$ by back substitution. Software usually takes this route because it never has to form $A^TA$, a step that magnifies rounding errors.
+The closest point is still unique. Every one of these gives $A\hat{\mathbf x} = (x_1 + 2x_2)(1, 1, 0) = (2, 2, 0)$, which is the projection of $\mathbf b$ onto the line $\operatorname{Col}A$. Only the weights are not unique, because two different recipes of dependent columns can make the same vector.
+</Solution>
+</Problem>
+
+<Choice
+  question="$A$ is $5 \times 3$ and its columns are linearly independent. How many least-squares solutions does $A\mathbf x = \mathbf b$ have?"
+  options={["None, when $\\mathbf b$ is not in $\\operatorname{Col}A$", "Exactly one", "Infinitely many"]}
+  answer={1}
+>
+The normal equations always have a solution. Independent columns make $A^TA$ invertible, so there is exactly one, $\hat{\mathbf x} = (A^TA)^{-1}A^T\mathbf b$. Infinitely many happens only when the columns are dependent, as in Problem 4.
+</Choice>
+
+## Shortcuts from Days 36 and 37
+
+The normal equations always work. Two special situations let you skip them.
+
+<Problem>
+Let $A = \begin{bmatrix} 1 & 2 \\ 1 & -1 \\ 1 & 1 \\ 1 & -2 \end{bmatrix}$ and $\mathbf b = (3, 1, 4, 0)$. Check that the columns are orthogonal, then find $\hat{\mathbf x}$ with Day 36's projection formula instead of the normal equations. (Modeled on Lay §6.5, Example 4.)
+
+<Solution>
+When the columns are orthogonal, Day 36's formula projects $\mathbf b$ onto $\operatorname{Col}A$ directly, and the weights in that formula are the entries of $\hat{\mathbf x}$.
+
+<Steps>
+<Step>
+Check: $\mathbf a_1\cdot\mathbf a_2 = 2 - 1 + 1 - 2 = 0$.
+</Step>
+<Step>
+First weight: $\frac{\mathbf b\cdot\mathbf a_1}{\mathbf a_1\cdot\mathbf a_1} = \frac{3 + 1 + 4 + 0}{4} = 2$.
+</Step>
+<Step>
+Second weight: $\frac{\mathbf b\cdot\mathbf a_2}{\mathbf a_2\cdot\mathbf a_2} = \frac{6 - 1 + 4 + 0}{4 + 1 + 1 + 4} = \frac{9}{10}$.
+</Step>
+<Step>
+So $\hat{\mathbf x} = (2, \tfrac{9}{10})$ and the closest point is $A\hat{\mathbf x} = 2\,\mathbf a_1 + \tfrac{9}{10}\,\mathbf a_2 = (3.8,\ 1.1,\ 2.9,\ 0.2)$.
+</Step>
+</Steps>
+
+This matches the normal equations. With orthogonal columns $A^TA$ is diagonal, here $\begin{bmatrix} 4 & 0 \\ 0 & 10 \end{bmatrix}$, so each equation involves one unknown.
+</Solution>
+</Problem>
+
+If you already have $A = QR$ from Day 37, the normal equations get simpler. Since $A^TA = R^TQ^TQR = R^TR$ and $A^T\mathbf b = R^TQ^T\mathbf b$, you can cancel the invertible $R^T$ and solve $R\hat{\mathbf x} = Q^T\mathbf b$ by back substitution.
+
+<Problem>
+Day 37's practice gave $A = \begin{bmatrix} 2 & 2 \\ 2 & 0 \\ 2 & 2 \\ 2 & 0 \end{bmatrix} = QR$ with $Q = \tfrac12\begin{bmatrix} 1 & 1 \\ 1 & -1 \\ 1 & 1 \\ 1 & -1 \end{bmatrix}$ and $R = \begin{bmatrix} 4 & 2 \\ 0 & 2 \end{bmatrix}$. Use it to find the least-squares solution for $\mathbf b = (3, 1, 5, -1)$.
+
+<Solution>
+<Steps>
+<Step>
+Compute the right side: $Q^T\mathbf b = \tfrac12\begin{bmatrix} 3 + 1 + 5 - 1 \\ 3 - 1 + 5 + 1 \end{bmatrix} = \begin{bmatrix} 4 \\ 4 \end{bmatrix}$.
+</Step>
+<Step>
+Back substitution starts at the bottom row of $R\hat{\mathbf x} = Q^T\mathbf b$, because it has only one unknown: $2x_2 = 4$, so $x_2 = 2$.
+</Step>
+<Step>
+The top row is $4x_1 + 2x_2 = 4$, so $4x_1 + 4 = 4$ and $x_1 = 0$.
+</Step>
+</Steps>
+
+So $\hat{\mathbf x} = (0, 2)$. Software usually takes this route because it never forms $A^TA$, a step that magnifies rounding errors.
+</Solution>
+</Problem>
+
+## Fitting curves
+
+The same method fits any model whose unknowns appear as plain coefficients.
+
+<Problem>
+Write the design matrix for fitting a parabola $y = \beta_0 + \beta_1 x + \beta_2 x^2$ to the points $(-1, 3)$, $(0, 3)$, $(1, 0)$ and $(2, 4)$.
+
+<Solution>
+Each point gives one equation, $\beta_0 + \beta_1 x_j + \beta_2 x_j^2 = y_j$. The unknowns $\beta_0, \beta_1, \beta_2$ appear only multiplied by numbers, so the equations are linear in them even though the curve is not a line. The coefficient of $\beta_0$ is $1$, the coefficient of $\beta_1$ is $x_j$ and the coefficient of $\beta_2$ is $x_j^2$:
+
+$$
+X = \begin{bmatrix} 1 & -1 & 1 \\ 1 & 0 & 0 \\ 1 & 1 & 1 \\ 1 & 2 & 4 \end{bmatrix}, \qquad \mathbf y = \begin{bmatrix} 3 \\ 3 \\ 0 \\ 4 \end{bmatrix}.
+$$
+
+From here the normal equations $X^TX\boldsymbol\beta = X^T\mathbf y$ work exactly as for a line, with a $3 \times 3$ system.
+</Solution>
+</Problem>
+
+<ParabolaFit points={[[-1, 3], [0, 3], [1, 0], [2, 4]]} />
 
 The matrix $A^TA$ from the normal equations is symmetric, and Day 40 uses its eigenvalues to build the singular value decomposition of $A$.
 
 ## Practice
 
+### Warm-up
+
+<Check>
+You fit a line to data with $x$-values $1$, $2$ and $4$. Compute $X^TX$, row by row. (Modeled on Lay §6.6, Exercise 1.)
+
+<VectorAnswer answer={[3, 7, 7, 21]} columns={2} />
+
+<Answer>
+$X = \begin{bmatrix} 1 & 1 \\ 1 & 2 \\ 1 & 4 \end{bmatrix}$. The entries of $X^TX$ are the dot products of its columns: $(1, 1, 1)\cdot(1, 1, 1) = 3$, $(1, 1, 1)\cdot(1, 2, 4) = 7$ and $(1, 2, 4)\cdot(1, 2, 4) = 1 + 4 + 16 = 21$, so $X^TX = \begin{bmatrix} 3 & 7 \\ 7 & 21 \end{bmatrix}$. The $y$-values are not needed for this part.
+</Answer>
+</Check>
+
+<Check>
+Find the residuals of the line $y = 2 + x$ at the points $(0, 1)$, $(1, 4)$ and $(2, 3)$.
+
+<VectorAnswer answer={[-1, 1, -1]} />
+
+<Answer>
+The line predicts $2, 3, 4$ at $x = 0, 1, 2$. Observed minus predicted gives $1 - 2 = -1$, $4 - 3 = 1$ and $3 - 4 = -1$.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="$A$ is $5 \times 2$. What size is $A^TA$?"
+  options={["$2 \\times 2$", "$5 \\times 5$", "$5 \\times 2$"]}
+  answer={0}
+>
+$A^T$ is $2 \times 5$, so $A^TA$ is $(2 \times 5)(5 \times 2) = 2 \times 2$. It matches the size of $\hat{\mathbf x}$, which has one entry per column of $A$.
+</Choice>
+</Check>
+
+### Core
+
 <Check>
 Find the least-squares solution of $A\mathbf x = \mathbf b$ for $A = \begin{bmatrix} 1 & 2 \\ 0 & 1 \\ 1 & 0 \end{bmatrix}$ and $\mathbf b = \begin{bmatrix} 3 \\ 3 \\ 3 \end{bmatrix}$. (Modeled on Lay §6.5 #1.)
 
-<VectorAnswer answer={[2, 1]} labels={["\\hat x_1", "\\hat x_2"]} />
+<VectorAnswer answer={[2, 1]} labels={["x̂₁", "x̂₂"]} />
+
+<Hint>
+Compute $A^TA$ and $A^T\mathbf b$, then solve the $2 \times 2$ system.
+</Hint>
 
 <Answer>
 $$
@@ -98,10 +313,14 @@ Then $A\hat{\mathbf x} = (4, 1, 2)$ and the residual is $\mathbf b - A\hat{\math
 <Check>
 Find the least-squares line $y = \beta_0 + \beta_1 x$ for the points $(0, 2)$, $(1, 1)$ and $(2, 3)$. (Modeled on Lay §6.6 #1.)
 
-<VectorAnswer answer={[1.5, 0.5]} labels={["\\beta_0", "\\beta_1"]} />
+<VectorAnswer answer={[1.5, 0.5]} labels={["β₀", "β₁"]} />
+
+<Hint>
+The $x$-values are the same as in Problem 3, so $X^TX$ is the same too. Only $X^T\mathbf y$ changes.
+</Hint>
 
 <Answer>
-The design matrix is the same as in the video, so $X^TX = \begin{bmatrix} 3 & 3 \\ 3 & 5 \end{bmatrix}$ again. Only the right side changes:
+$X^TX = \begin{bmatrix} 3 & 3 \\ 3 & 5 \end{bmatrix}$ again. Only the right side changes:
 
 $$
 X^T\mathbf y = \begin{bmatrix} 2 + 1 + 3 \\ 0 + 1 + 6 \end{bmatrix} = \begin{bmatrix} 6 \\ 7 \end{bmatrix},
@@ -110,5 +329,124 @@ X^T\mathbf y = \begin{bmatrix} 2 + 1 + 3 \\ 0 + 1 + 6 \end{bmatrix} = \begin{bma
 $$
 
 The line is $y = \tfrac32 + \tfrac12 x$. Its predictions are $(1.5, 2, 2.5)$, so the residuals are $(0.5, -1, 0.5)$. They add to $0$, which is the dot product with the column of ones.
+</Answer>
+</Check>
+
+<Check>
+Find the least-squares line for the four points $(0, 0)$, $(1, 0)$, $(2, 3)$ and $(3, 4)$. (Modeled on Lay §6.6, Example 1.)
+
+<VectorAnswer answer={[-0.5, 1.5]} labels={["β₀", "β₁"]} />
+
+<Hint>
+$X^TX = \begin{bmatrix} 4 & 6 \\ 6 & 14 \end{bmatrix}$. You still need $X^T\mathbf y$.
+</Hint>
+
+<Answer>
+$$
+X^T\mathbf y = \begin{bmatrix} 0 + 0 + 3 + 4 \\ 0 + 0 + 6 + 12 \end{bmatrix} = \begin{bmatrix} 7 \\ 18 \end{bmatrix}, \qquad
+\hat{\boldsymbol\beta} = \frac{1}{20}\begin{bmatrix} 14 & -6 \\ -6 & 4 \end{bmatrix}\begin{bmatrix} 7 \\ 18 \end{bmatrix} = \frac{1}{20}\begin{bmatrix} -10 \\ 30 \end{bmatrix} = \begin{bmatrix} -1/2 \\ 3/2 \end{bmatrix}
+$$
+
+The determinant of $X^TX$ is $56 - 36 = 20$. The line is $y = -\tfrac12 + \tfrac32 x$, with residuals $(\tfrac12, -1, \tfrac12, 0)$. They add to $0$, and $0\cdot\tfrac12 + 1\cdot(-1) + 2\cdot\tfrac12 + 3\cdot 0 = 0$, so the residual is perpendicular to both columns.
+</Answer>
+</Check>
+
+<Check>
+Let $A = \begin{bmatrix} 1 & 1 \\ 1 & -1 \\ 1 & 1 \\ 1 & -1 \end{bmatrix}$ and $\mathbf b = (5, 3, 1, -1)$. The columns are orthogonal. Find $\hat{\mathbf x}$ without the normal equations. (Modeled on Lay §6.5, Example 4.)
+
+<VectorAnswer answer={[2, 1]} labels={["x̂₁", "x̂₂"]} />
+
+<Hint>
+Each entry of $\hat{\mathbf x}$ is $\frac{\mathbf b\cdot\mathbf a_j}{\mathbf a_j\cdot\mathbf a_j}$.
+</Hint>
+
+<Answer>
+$\mathbf a_1\cdot\mathbf a_2 = 1 - 1 + 1 - 1 = 0$. The weights are
+
+$$
+\frac{5 + 3 + 1 - 1}{4} = 2, \qquad \frac{5 - 3 + 1 + 1}{4} = 1,
+$$
+
+so $\hat{\mathbf x} = (2, 1)$ and $A\hat{\mathbf x} = (3, 1, 3, 1)$. The residual $(2, 2, -2, -2)$ dots to zero with both columns.
+</Answer>
+</Check>
+
+<Check>
+Let $Q = \tfrac13\begin{bmatrix} 2 & 1 \\ 1 & 2 \\ 2 & -2 \end{bmatrix}$ and $R = \begin{bmatrix} 3 & 3 \\ 0 & 6 \end{bmatrix}$, so $A = QR = \begin{bmatrix} 2 & 4 \\ 1 & 5 \\ 2 & -2 \end{bmatrix}$. Find the least-squares solution of $A\mathbf x = (4, 8, 1)$. (Modeled on Lay §6.5, Example 5.)
+
+<VectorAnswer answer={[1, 1]} labels={["x̂₁", "x̂₂"]} />
+
+<Hint>
+Solve $R\hat{\mathbf x} = Q^T\mathbf b$, starting from the bottom row.
+</Hint>
+
+<Answer>
+$$
+Q^T\mathbf b = \tfrac13\begin{bmatrix} 8 + 8 + 2 \\ 4 + 16 - 2 \end{bmatrix} = \begin{bmatrix} 6 \\ 6 \end{bmatrix}
+$$
+
+The bottom row of $R\hat{\mathbf x} = (6, 6)$ is $6x_2 = 6$, so $x_2 = 1$. The top row is $3x_1 + 3 = 6$, so $x_1 = 1$. Check: $A\hat{\mathbf x} = (6, 6, 0)$ and the residual $(-2, 2, 1)$ dots to zero with both columns of $A$: $-4 + 2 + 2 = 0$ and $-8 + 10 - 2 = 0$.
+</Answer>
+</Check>
+
+### Challenge
+
+<Check>
+Fit the parabola $y = \beta_0 + \beta_1 x + \beta_2 x^2$ to the points $(-1, 4)$, $(0, 4)$, $(1, 0)$ and $(2, 2)$ by least squares. (Modeled on Lay §6.6, Example 2.)
+
+<VectorAnswer answer={[2.5, -1.5, 0.5]} labels={["β₀", "β₁", "β₂"]} />
+
+<Hint>
+The $x$-values match Problem 7, so $X^TX = \begin{bmatrix} 4 & 2 & 6 \\ 2 & 6 & 8 \\ 6 & 8 & 18 \end{bmatrix}$. Compute $X^T\mathbf y$ and row reduce.
+</Hint>
+
+<Answer>
+$X^T\mathbf y$ dots each column of $X$ with $\mathbf y = (4, 4, 0, 2)$: $4 + 4 + 0 + 2 = 10$, then $-4 + 0 + 0 + 4 = 0$, then $4 + 0 + 0 + 8 = 12$. Row reduce the normal equations:
+
+$$
+\left[\begin{array}{ccc|c} 4 & 2 & 6 & 10 \\ 2 & 6 & 8 & 0 \\ 6 & 8 & 18 & 12 \end{array}\right]
+\sim
+\left[\begin{array}{ccc|c} 2 & 1 & 3 & 5 \\ 0 & 5 & 5 & -5 \\ 0 & 5 & 9 & -3 \end{array}\right]
+\sim
+\left[\begin{array}{ccc|c} 2 & 1 & 3 & 5 \\ 0 & 5 & 5 & -5 \\ 0 & 0 & 4 & 2 \end{array}\right]
+$$
+
+So $\beta_2 = \tfrac12$, then $5\beta_1 + \tfrac52 = -5$ gives $\beta_1 = -\tfrac32$, then $2\beta_0 - \tfrac32 + \tfrac32 = 5$ gives $\beta_0 = \tfrac52$. The parabola is $y = \tfrac52 - \tfrac32 x + \tfrac12 x^2$, with residuals $(-\tfrac12, \tfrac32, -\tfrac32, \tfrac12)$.
+</Answer>
+</Check>
+
+<Check>
+Let $A = \begin{bmatrix} 1 & 2 \\ 2 & 4 \\ 0 & 0 \end{bmatrix}$ and $\mathbf b = (5, 0, 7)$. Find the least-squares solution with $x_2 = 0$. (Modeled on Lay §6.5, Example 2.)
+
+<VectorAnswer answer={[1, 0]} labels={["x̂₁", "x̂₂"]} />
+
+<Hint>
+The normal equations have a free variable. Write their one real condition, then set $x_2 = 0$.
+</Hint>
+
+<Answer>
+$$
+A^TA = \begin{bmatrix} 5 & 10 \\ 10 & 20 \end{bmatrix}, \qquad A^T\mathbf b = \begin{bmatrix} 5 \\ 10 \end{bmatrix}
+$$
+
+The second equation is twice the first, so the least-squares solutions are all $\mathbf x$ with $5x_1 + 10x_2 = 5$, or $x_1 + 2x_2 = 1$. With $x_2 = 0$ this gives $\hat{\mathbf x} = (1, 0)$. Every solution gives the same closest point $A\hat{\mathbf x} = (1, 2, 0)$, and the least-squares error is $\|(4, -2, 7)\| = \sqrt{69}$.
+</Answer>
+</Check>
+
+<Check>
+Show that if $A^TA\mathbf x = \mathbf 0$, then $A\mathbf x = \mathbf 0$. Explain why this means $A^TA$ is invertible whenever the columns of $A$ are linearly independent. (Modeled on Lay §6.5, Exercise 19.)
+
+<Hint>
+Multiply $A^TA\mathbf x = \mathbf 0$ on the left by $\mathbf x^T$ and recognize a squared length.
+</Hint>
+
+<Answer>
+If $A^TA\mathbf x = \mathbf 0$, then
+
+$$
+0 = \mathbf x^TA^TA\mathbf x = (A\mathbf x)^T(A\mathbf x) = \|A\mathbf x\|^2,
+$$
+
+and a vector with length zero is $\mathbf 0$, so $A\mathbf x = \mathbf 0$. If the columns of $A$ are independent, the only solution of $A\mathbf x = \mathbf 0$ is $\mathbf x = \mathbf 0$. So the only solution of $A^TA\mathbf x = \mathbf 0$ is $\mathbf 0$ too, and the square matrix $A^TA$ is invertible by the Invertible Matrix Theorem.
 </Answer>
 </Check>
