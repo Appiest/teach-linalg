@@ -45,7 +45,7 @@ import { LongestStretchHunt, RankCopyBudget, SvdEllipseMatch } from "@/component
 import { LineFootHunt, LineOnlyShadow, NearestPlanePoint, ShadowPreimageHunt, ShadowSumBasis } from "@/components/interactive/orthogonal-projection";
 import { NormalizePair, QrWeightSliders, ShadowSubtractSlider, StraightenedTargetHunt, VanishingStepHunt } from "@/components/interactive/gram-schmidt";
 import { ParabolaFit, ProjectionRightAngle, ResidualBalance, ResidualSquaresFit } from "@/components/interactive/least-squares";
-import { QuadraticAxisTurner, QuadraticCircleMax, QuadraticSurfaceShaper } from "@/components/interactive/quadratic-forms";
+import { LevelPointHunt, NegativeDirectionHunt, QuadraticAxisTurner, QuadraticCircleMax, QuadraticSurfaceShaper } from "@/components/interactive/quadratic-forms";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
 import { katexMacros } from "@/lib/katex-macros";
 
@@ -205,6 +205,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     QuadraticAxisTurner,
     QuadraticSurfaceShaper,
     QuadraticCircleMax,
+    LevelPointHunt,
+    NegativeDirectionHunt,
   };
   return (
     <div className="notes">
