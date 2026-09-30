@@ -1,6 +1,22 @@
 Yesterday a basis gave every vector exactly one way to be written as a combination. Because those weights are unique, they can stand in for the vector, and today they get a name, the coordinates. Coordinates turn any space with a basis of $n$ vectors into a copy of $\mathbb{R}^n$, so row reduction and every other tool you have for columns now works on polynomials too. That translation also answers the next question a basis raises, whether two bases of one space can have different sizes. They cannot, and their shared size is the dimension of the space.
 
+Each section opens with a problem. Try it before you open the walkthrough, even if you only get partway.
+
 ## Coordinates
+
+<Problem>
+Let $\mathcal B = \{\green{\mathbf b_1}, \red{\mathbf b_2}\}$ with $\green{\mathbf b_1} = (2, 1)$ and $\red{\mathbf b_2} = (-1, 2)$. A point $\yellow{\mathbf x}$ is reached by $2$ steps of $\green{\mathbf b_1}$ and then $1$ step of $\red{\mathbf b_2}$. What are its ordinary entries?
+
+<Solution>
+The instruction "2 steps of $\green{\mathbf b_1}$, then 1 step of $\red{\mathbf b_2}$" is the combination $2\green{\mathbf b_1} + 1\red{\mathbf b_2}$, so compute it entry by entry:
+
+$$
+2\green{\begin{bmatrix} 2 \\ 1 \end{bmatrix}} + 1\red{\begin{bmatrix} -1 \\ 2 \end{bmatrix}} = \begin{bmatrix} 4 - 1 \\ 2 + 2 \end{bmatrix} = \yellow{\begin{bmatrix} 3 \\ 4 \end{bmatrix}}
+$$
+
+So the same point has two descriptions. On the ordinary grid it is $(3, 4)$, and on the grid of $\mathcal B$ it is "2 and 1". Yesterday's Unique Representation Theorem says the pair $(2, 1)$ is the only $\mathcal B$-description of this point.
+</Solution>
+</Problem>
 
 <Definition term="Coordinate vector">
 Let $\mathcal B = \{\mathbf b_1, \dots, \mathbf b_n\}$ be a basis for $V$ and let $\mathbf x$ be in $V$. The **coordinates of $\mathbf x$ relative to $\mathcal B$** are the weights $c_1, \dots, c_n$ with $\mathbf x = c_1\mathbf b_1 + \cdots + c_n\mathbf b_n$. They form the **coordinate vector**
@@ -10,45 +26,93 @@ $$
 $$
 </Definition>
 
-The weights exist because $\mathcal B$ spans $V$, and they are unique because $\mathcal B$ is independent. The order of the basis matters, since swapping $\mathbf b_1$ and $\mathbf b_2$ swaps the entries of $[\mathbf x]_{\mathcal B}$.
+In the problem, $[\yellow{\mathbf x}]_{\mathcal B} = (2, 1)$ while $\yellow{\mathbf x} = (3, 4)$. The weights exist because $\mathcal B$ spans $V$, and they are unique because $\mathcal B$ is independent.
 
 <Pair>
 <Figure src="coordinates" alt="The basis vectors b1 = (2, 1) in green and b2 = (−1, 2) in red with the grid of their whole-number combinations. Two green steps of b1 and one red step of b2 lead from the origin to the tip of the yellow vector x = (3, 4), and a column shows its coordinate vector (2, 1)." />
 
-In $\mathbb R^n$, put the basis vectors side by side in the **change-of-coordinates matrix** $P_{\mathcal B} = [\,\mathbf b_1\ \cdots\ \mathbf b_n\,]$. Then the combination $c_1\mathbf b_1 + \cdots + c_n\mathbf b_n$ is the product $P_{\mathcal B}\,[\mathbf x]_{\mathcal B}$:
+The skewed grid is drawn by whole-number combinations of $\green{\mathbf b_1}$ and $\red{\mathbf b_2}$. Reading $[\yellow{\mathbf x}]_{\mathcal B}$ off the picture means counting green steps and then red steps.
+</Pair>
+
+The widget uses the same basis. The dashed path walks $c_1$ steps along $\green{\mathbf b_1}$ and then $c_2$ steps along $\red{\mathbf b_2}$, so you can read the coordinates off the grid.
+
+<CoordinateFinder b1={[2, 1]} b2={[-1, 2]} target={[-1, 2]} start={[3, 4]} />
+
+<Warning>
+The order of the basis matters. Swapping $\green{\mathbf b_1}$ and $\red{\mathbf b_2}$ swaps the entries of $[\mathbf x]_{\mathcal B}$, so $(3, 4)$ would have coordinates $(1, 2)$ instead of $(2, 1)$.
+</Warning>
+
+## The change-of-coordinates matrix
+
+Going from coordinates to the point was one multiplication. Going backward, from a point to its coordinates, means solving for the weights.
+
+<Problem>
+Let $\mathcal B = \left\{\green{\begin{bmatrix} 1 \\ 2 \end{bmatrix}}, \red{\begin{bmatrix} 3 \\ 5 \end{bmatrix}}\right\}$ and $\mathbf x = \yellow{\begin{bmatrix} 4 \\ 9 \end{bmatrix}}$. Find $[\mathbf x]_{\mathcal B}$.
+
+<Solution>
+We want $c_1$ and $c_2$ with $c_1\green{(1, 2)} + c_2\red{(3, 5)} = \yellow{(4, 9)}$. That is a linear system with the basis vectors as columns, so row reduce and aim for a reduced form whose last column holds the weights.
+
+<Steps>
+<Step>
+Write the augmented matrix $[\,\mathbf b_1\ \mathbf b_2 \mid \mathbf x\,]$ and clear the first column with $R_2 - 2R_1$:
+
+$$
+\begin{bmatrix} 1 & 3 & 4 \\ 2 & 5 & 9 \end{bmatrix}
+\sim \begin{bmatrix} 1 & 3 & 4 \\ 0 & -1 & 1 \end{bmatrix}
+$$
+</Step>
+<Step>
+Make the second pivot $1$ with $-R_2$, then clear above it with $R_1 - 3R_2$:
+
+$$
+\begin{bmatrix} 1 & 3 & 4 \\ 0 & 1 & -1 \end{bmatrix}
+\sim \begin{bmatrix} 1 & 0 & 7 \\ 0 & 1 & -1 \end{bmatrix}
+$$
+</Step>
+<Step>
+Read the weights from the last column: $c_1 = 7$ and $c_2 = -1$. Check: $7\green{(1, 2)} - \red{(3, 5)} = (7 - 3,\ 14 - 5) = \yellow{(4, 9)}$.
+</Step>
+</Steps>
+
+So $[\mathbf x]_{\mathcal B} = \begin{bmatrix} \green{7} \\ \red{-1} \end{bmatrix}$.
+</Solution>
+</Problem>
+
+<Concept title="The matrix of the basis converts coordinates">
+In $\mathbb R^n$, put the basis vectors side by side in the **change-of-coordinates matrix** $P_{\mathcal B} = [\,\mathbf b_1\ \cdots\ \mathbf b_n\,]$. Day 4 showed that a matrix times a vector is the combination of its columns with those weights, so $c_1\mathbf b_1 + \cdots + c_n\mathbf b_n = P_{\mathcal B}\,[\mathbf x]_{\mathcal B}$. In the problem, $\begin{bmatrix} 1 & 3 \\ 2 & 5 \end{bmatrix}\begin{bmatrix} 7 \\ -1 \end{bmatrix} = \begin{bmatrix} 4 \\ 9 \end{bmatrix}$. In general,
 
 $$
 \mathbf x = P_{\mathcal B}\,[\mathbf x]_{\mathcal B}, \qquad [\mathbf x]_{\mathcal B} = P_{\mathcal B}^{-1}\,\mathbf x .
 $$
 
 $P_{\mathcal B}$ is invertible because its columns form a basis of $\mathbb R^n$. On Day 22 this matrix returns as the change-of-basis matrix from $\mathcal B$ to the standard basis.
-</Pair>
+</Concept>
 
-Going backward from $\mathbf x$ to $[\mathbf x]_{\mathcal B}$ means solving $P_{\mathcal B}\,\mathbf c = \mathbf x$ for the weights $\mathbf c$. The row reduction below aims for a reduced form whose last column holds those weights. Take $\mathcal B = \left\{\green{\begin{bmatrix} 1 \\ 2 \end{bmatrix}}, \red{\begin{bmatrix} 3 \\ 5 \end{bmatrix}}\right\}$ and $\mathbf x = \yellow{\begin{bmatrix} 4 \\ 9 \end{bmatrix}}$. Row reduce $[\,\mathbf b_1\ \mathbf b_2 \mid \mathbf x\,]$:
+<CoordinateBuilder b1={[1, 1]} b2={[-1, 2]} target={[1, 4]} />
 
-$$
-\begin{aligned}
-\begin{bmatrix} 1 & 3 & 4 \\ 2 & 5 & 9 \end{bmatrix}
-&\sim \begin{bmatrix} 1 & 3 & 4 \\ 0 & -1 & 1 \end{bmatrix} && R_2 - 2R_1 \\
-&\sim \begin{bmatrix} 1 & 0 & 7 \\ 0 & 1 & -1 \end{bmatrix} && -R_2, \text{ then } R_1 - 3R_2
-\end{aligned}
-$$
-
-So $[\mathbf x]_{\mathcal B} = \begin{bmatrix} \green{7} \\ \red{-1} \end{bmatrix}$. To check, $7\green{\begin{bmatrix} 1 \\ 2 \end{bmatrix}} - \red{\begin{bmatrix} 3 \\ 5 \end{bmatrix}} = \yellow{\begin{bmatrix} 4 \\ 9 \end{bmatrix}}$.
-
-The widget uses the basis from the video. The dashed path walks $c_1$ steps along $\mathbf b_1$ and then $c_2$ steps along $\mathbf b_2$, so you can read the coordinates off the grid.
-
-<CoordinateFinder b1={[2, 1]} b2={[-1, 2]} target={[-1, 2]} start={[3, 4]} />
+<Warning>
+$P_{\mathcal B}$ turns coordinates into the point, and $P_{\mathcal B}^{-1}$ turns the point into coordinates. When unsure which way you went, multiply $P_{\mathcal B}$ by your answer and check that it reproduces $\mathbf x$.
+</Warning>
 
 ## The coordinate map
 
 Coordinates matter most in spaces whose vectors are not columns, because they let column tools such as row reduction work there.
 
-The standard basis of $\mathbb P_2$ is $\{1, t, t^2\}$, so a polynomial's coordinates are just its coefficients. The **coordinate map** $\mathbf p \mapsto [\mathbf p]_{\mathcal B}$ turns each polynomial into a column in $\mathbb R^3$, and each column turns back into exactly one polynomial.
+<Problem>
+In $\mathbb P_2$, let $\yellow{\mathbf p} = 2 - t + 3t^2$ and $\blue{\mathbf q} = 1 + 4t - t^2$. Using the standard basis $\{1, t, t^2\}$, write the coordinate columns of $\yellow{\mathbf p}$, $\blue{\mathbf q}$ and $\yellow{\mathbf p} + \blue{\mathbf q}$. How do the three columns relate?
+
+<Solution>
+In the standard basis, the weights are the coefficients of $1$, $t$ and $t^2$ in that order. So $[\yellow{\mathbf p}] = (2, -1, 3)$ and $[\blue{\mathbf q}] = (1, 4, -1)$.
+
+Adding the polynomials adds matching coefficients: $\yellow{\mathbf p} + \blue{\mathbf q} = (2 + 1) + (-1 + 4)t + (3 - 1)t^2 = 3 + 3t + 2t^2$, whose column is $(3, 3, 2)$.
+
+That is exactly $(2, -1, 3) + (1, 4, -1)$. The column of the sum is the sum of the columns.
+</Solution>
+</Problem>
 
 <Figure src="polynomial-to-column" alt="Left: the curves p(t) = 2 − t + 3t² in yellow, q(t) = 1 + 4t − t² in blue and their sum 3 + 3t + 2t² in teal. An arrow labelled p maps to [p]_B points from the formulas to the columns (2, −1, 3) + (1, 4, −1) = (3, 3, 2). Right: the same three columns drawn as arrows in 3D with axes 1, t and t², with q placed tip to tail on p." wide />
 
-The map respects both operations. Adding polynomials adds their coefficient columns, and scaling a polynomial scales its column:
+The **coordinate map** $\mathbf p \mapsto [\mathbf p]_{\mathcal B}$ turns each polynomial into a column in $\mathbb R^3$, and each column turns back into exactly one polynomial. It respects both operations:
 
 $$
 [\,\yellow{\mathbf p} + \blue{\mathbf q}\,]_{\mathcal B} = [\yellow{\mathbf p}]_{\mathcal B} + [\blue{\mathbf q}]_{\mathcal B}, \qquad [\,c\,\mathbf p\,]_{\mathcal B} = c\,[\mathbf p]_{\mathcal B}.
@@ -60,18 +124,66 @@ A linear transformation from $V$ onto $W$ that is also one-to-one is an **isomor
 
 An isomorphism copies every vector-space fact across. A set of polynomials is independent exactly when its coordinate columns are, and it spans $\mathbb P_2$ exactly when its columns span $\mathbb R^3$. For example, the columns $(2, -1, 3)$, $(1, 4, -1)$ and $(3, 3, 2)$ are dependent because the third is the sum of the first two, so $\yellow{\mathbf p}$, $\blue{\mathbf q}$ and $\teal{3 + 3t + 2t^2}$ are dependent too. Day 21 uses the same map to turn a linear map on polynomials, such as $d/dt$ on $\mathbb P_2$, into a matrix.
 
-Coordinates in a basis other than the standard one are not the coefficients. The widget uses the basis $\mathcal B = \{1,\ 1 + t,\ (1 + t)^2\}$, and matching the curve means solving for the weights.
+<Problem>
+The set $\mathcal B = \{1,\ 1 + t,\ (1 + t)^2\}$ is a basis for $\mathbb P_2$. Find $[\mathbf p]_{\mathcal B}$ for $\mathbf p(t) = 2 - t + 3t^2$.
+
+<Solution>
+We need $c_1 \cdot 1 + c_2(1 + t) + c_3(1 + t)^2 = 2 - t + 3t^2$. The basis is not the standard one, so expand it into powers of $t$ first and then match coefficients.
+
+<Steps>
+<Step>
+Expand $(1 + t)^2 = 1 + 2t + t^2$ and collect powers:
+
+$$
+c_1 + c_2(1 + t) + c_3(1 + 2t + t^2) = (c_1 + c_2 + c_3) + (c_2 + 2c_3)\,t + c_3\,t^2
+$$
+</Step>
+<Step>
+Only one term contains $t^2$, so start there: $c_3 = 3$.
+</Step>
+<Step>
+Match $t$: $c_2 + 2c_3 = -1$, so $c_2 = -1 - 6 = -7$.
+</Step>
+<Step>
+Match the constant: $c_1 + c_2 + c_3 = 2$, so $c_1 = 2 + 7 - 3 = 6$.
+</Step>
+<Step>
+Check: $6 - 7(1 + t) + 3(1 + 2t + t^2) = (6 - 7 + 3) + (-7 + 6)t + 3t^2 = 2 - t + 3t^2$.
+</Step>
+</Steps>
+
+So $[\mathbf p]_{\mathcal B} = (6, -7, 3)$, which is different from the coefficient list $(2, -1, 3)$.
+</Solution>
+</Problem>
+
+Match the dashed target curve by choosing the coordinates in this basis.
 
 <PolynomialCoordinates basis={[[1, 0, 0], [1, 1, 0], [1, 2, 1]]} names={["1", "(1 + t)", "(1 + t)^2"]} target={[2, -1, 3]} />
+
+<Warning>
+Coefficients equal coordinates only in the standard basis. Also keep the zeros: in $\mathbb P_3$ the polynomial $t - 2t^2 + t^3$ has standard coordinates $(0, 1, -2, 1)$.
+</Warning>
 
 ## Dimension
 
 The goal of this section is to show that every basis of a space has the same size, so that the size describes the space itself rather than a choice of basis.
 
+<Problem>
+Four polynomials in $\mathbb P_2$ are given. Explain why they must be dependent, without knowing what they are.
+
+<Solution>
+Translate to columns. Each polynomial in $\mathbb P_2$ has a standard coordinate column in $\mathbb R^3$, so the four polynomials give four columns in $\mathbb R^3$.
+
+A $3 \times 4$ matrix has at most three pivots, one per row, so at least one column is free and the four columns are dependent. Day 13 showed this for any set with more vectors than entries.
+
+The coordinate map carries a relation among the columns back to the same relation among the polynomials, because it respects adding and scaling. So the four polynomials are dependent.
+</Solution>
+</Problem>
+
 <Pair>
 <Figure src="third-vector" alt="The basis grid of b1 in green and b2 in red. The blue vector w = (3, −1) is reached by one step of b1 and one backward step of b2, and the equation w = b1 − b2 is shown at the top right." />
 
-Suppose $V$ has a basis of $n$ vectors. Any $p > n$ vectors in $V$ have $p$ coordinate columns in $\mathbb R^n$, and more than $n$ columns in $\mathbb R^n$ are always dependent. The coordinate map carries that dependence back to $V$. So a second basis of $V$ can't have more than $n$ vectors, and by the same argument with the roles swapped it can't have fewer.
+The same argument works in any space. Suppose $V$ has a basis of $n$ vectors. Any $p > n$ vectors in $V$ have $p$ coordinate columns in $\mathbb R^n$, and those columns are dependent, so the vectors are dependent. In the picture, a third vector $\blue{\mathbf w}$ in a two-dimensional space is already $\green{\mathbf b_1} - \red{\mathbf b_2}$. So a second basis of $V$ can't have more than $n$ vectors, and by the same argument with the roles swapped it can't have fewer.
 </Pair>
 
 <Definition term="Dimension">
@@ -80,30 +192,94 @@ If a vector space $V$ is spanned by a finite set, then every basis of $V$ has th
 
 The standard bases give $\dim \mathbb R^n = n$ and $\dim \mathbb P_n = n + 1$, because $\{1, t, \dots, t^n\}$ has one vector for each power from $t^0$ to $t^n$. A subspace $H$ of $V$ always has $\dim H \le \dim V$.
 
+Two vectors can span a subspace of dimension $0$, $1$ or $2$ in the plane. The dimension counts a basis of the span, not the vectors you started with.
+
+<SpanDimension u={[2, 1]} v={[-1, 2]} target={1} />
+
 <Figure src="subspaces" alt="Four copies of 3D axes. Dimension 0 shows only the origin, dimension 1 a teal line through the origin with one yellow arrow, dimension 2 a teal plane with a yellow and a blue arrow, and dimension 3 a lattice of dots filling space with yellow, blue and pink arrows." wide />
 
-Those are the only subspaces of $\mathbb R^3$: the origin, lines through the origin, planes through the origin, and $\mathbb R^3$ itself. When you know $\dim V = p$, the **Basis Theorem** saves half the work. Any $p$ independent vectors in $V$ automatically span it, and any $p$ vectors that span $V$ are automatically independent.
+Those are the only subspaces of $\mathbb R^3$: the origin, lines through the origin, planes through the origin, and $\mathbb R^3$ itself.
 
-To find the dimension of a subspace written with parameters, count a basis, not the letters. Take $H = \{(a + 2b,\ 2a + 4b + c,\ c) : a, b, c \in \mathbb R\}$:
+<Concept title="The Basis Theorem">
+When you know $\dim V = p$, you only need to check one of the two basis conditions. Any $p$ independent vectors in $V$ automatically span it, and any $p$ vectors that span $V$ are automatically independent. For example, $(1, 1, 0)$, $(0, 1, 1)$ and $(1, 0, 1)$ are three independent vectors in $\mathbb R^3$, so they form a basis without a separate spanning check.
+</Concept>
+
+<Problem>
+Find the dimension of $H = \{(a + 2b,\ 2a + 4b + c,\ c) : a, b, c \in \mathbb R\}$.
+
+<Solution>
+Three letters appear, but the dimension counts a basis, so split by parameter and then trim.
 
 $$
 \begin{aligned}
-H &= \operatorname{Span}\left\{\begin{bmatrix} 1 \\ 2 \\ 0 \end{bmatrix}, \begin{bmatrix} 2 \\ 4 \\ 0 \end{bmatrix}, \begin{bmatrix} 0 \\ 1 \\ 1 \end{bmatrix}\right\} \\
+H &= \operatorname{Span}\left\{\begin{bmatrix} 1 \\ 2 \\ 0 \end{bmatrix}, \begin{bmatrix} 2 \\ 4 \\ 0 \end{bmatrix}, \begin{bmatrix} 0 \\ 1 \\ 1 \end{bmatrix}\right\} && \text{one column per parameter} \\
 &= \operatorname{Span}\left\{\begin{bmatrix} 1 \\ 2 \\ 0 \end{bmatrix}, \begin{bmatrix} 0 \\ 1 \\ 1 \end{bmatrix}\right\} && \text{the second is twice the first} \\
 \dim H &= 2 && \text{the two left are not multiples}
 \end{aligned}
 $$
 
+So $H$ is a plane through the origin in $\mathbb R^3$.
+</Solution>
+</Problem>
+
+<Choice
+  question="What is $\dim \mathbb P_3$?"
+  options={["$3$", "$4$"]}
+  answer={1}
+>
+The standard basis $\{1, t, t^2, t^3\}$ has four polynomials, one for each power from $t^0$ to $t^3$. So $\dim \mathbb P_3 = 4$.
+</Choice>
+
+Tomorrow, on Day 16, you find bases for the column space and row space that every matrix carries, and on Day 18 the dimension of the column space becomes the rank of the matrix.
+
 ## Practice
+
+### Warm-up
+
+<Check>
+Let $\mathcal B = \{(1, 2),\ (3, 5)\}$ and $[\mathbf x]_{\mathcal B} = (2, -1)$. Find $\mathbf x$.
+
+<VectorAnswer answer={[-1, -1]} />
+
+<Answer>
+$$
+\mathbf x = 2\begin{bmatrix} 1 \\ 2 \end{bmatrix} - \begin{bmatrix} 3 \\ 5 \end{bmatrix} = \begin{bmatrix} 2 - 3 \\ 4 - 5 \end{bmatrix} = \begin{bmatrix} -1 \\ -1 \end{bmatrix}
+$$
+</Answer>
+</Check>
+
+<Check>
+Write the standard coordinate column of $t - 2t^2 + t^3$ in $\mathbb P_3$, using the order $1, t, t^2, t^3$.
+
+<VectorAnswer answer={[0, 1, -2, 1]} />
+
+<Answer>
+The constant term is $0$, and the coefficients of $t$, $t^2$ and $t^3$ are $1$, $-2$ and $1$. So the column is $(0, 1, -2, 1)$. The $0$ has to be there, since the column must have one entry per basis polynomial.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="What is $\dim \mathbb P_4$?"
+  options={["$4$", "$5$", "$6$"]}
+  answer={1}
+>
+The standard basis $\{1, t, t^2, t^3, t^4\}$ has five polynomials. (Modeled on Lay §4.5 #19.)
+</Choice>
+</Check>
+
+### Core
 
 <Check>
 Let $\mathcal B = \left\{\begin{bmatrix} 2 \\ 1 \end{bmatrix}, \begin{bmatrix} 1 \\ 1 \end{bmatrix}\right\}$ and $\mathbf x = \begin{bmatrix} 5 \\ 4 \end{bmatrix}$. Find $[\mathbf x]_{\mathcal B}$. (Modeled on Lay §4.4, Exercises 5–8.)
 
 <VectorAnswer answer={[1, 3]} labels={["c₁", "c₂"]} />
 
-<Answer>
-Row reduce $[\,\mathbf b_1\ \mathbf b_2 \mid \mathbf x\,]$:
+<Hint>
+Row reduce $[\,\mathbf b_1\ \mathbf b_2 \mid \mathbf x\,]$. Subtracting row 2 from row 1 is a quick first step.
+</Hint>
 
+<Answer>
 $$
 \begin{bmatrix} 2 & 1 & 5 \\ 1 & 1 & 4 \end{bmatrix} \sim \begin{bmatrix} 1 & 0 & 1 \\ 1 & 1 & 4 \end{bmatrix} \sim \begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & 3 \end{bmatrix}
 $$
@@ -113,9 +289,13 @@ The first step is $R_1 - R_2$ and the second is $R_2 - R_1$. So $[\mathbf x]_{\m
 </Check>
 
 <Check>
-In $\mathbb P_2$ with the basis $\mathcal B = \{1,\ 1 + t,\ (1 + t)^2\}$, the polynomial $\mathbf q$ has $[\mathbf q]_{\mathcal B} = (2, -1, 1)$. Enter the coefficients of $\mathbf q(t) = a_0 + a_1 t + a_2 t^2$. (Modeled on Lay §4.4, Exercise 32.)
+In $\mathbb P_2$ with the basis $\mathcal B = \{1,\ 1 + t,\ (1 + t)^2\}$, the polynomial $\mathbf q$ has $[\mathbf q]_{\mathcal B} = (2, -1, 1)$. Enter the coefficients of $\mathbf q(t) = a_0 + a_1 t + a_2 t^2$. (Modeled on Lay §4.4 #32.)
 
 <VectorAnswer answer={[2, 1, 1]} labels={["a₀", "a₁", "a₂"]} />
+
+<Hint>
+The coordinates are weights on the basis polynomials. Build $2 \cdot 1 - (1 + t) + (1 + t)^2$ and expand.
+</Hint>
 
 <Answer>
 $$
@@ -129,13 +309,101 @@ $$
 </Check>
 
 <Check>
+Let $\mathcal B = \{1 + t,\ 1 + t^2,\ t + t^2\}$, a basis for $\mathbb P_2$. Find $[\mathbf p]_{\mathcal B}$ for $\mathbf p(t) = 6 + 3t - t^2$. (Modeled on Lay §4.4 #14.)
+
+<VectorAnswer answer={[5, 1, -2]} labels={["c₁", "c₂", "c₃"]} />
+
+<Hint>
+Collect $c_1(1 + t) + c_2(1 + t^2) + c_3(t + t^2)$ by powers of $t$, then match. Adding all three equations is a quick start.
+</Hint>
+
+<Answer>
+$$
+\begin{aligned}
+1:\quad c_1 + c_2 &= 6 \\
+t:\quad c_1 + c_3 &= 3 \\
+t^2:\quad c_2 + c_3 &= -1
+\end{aligned}
+$$
+
+Adding all three gives $2(c_1 + c_2 + c_3) = 8$, so $c_1 + c_2 + c_3 = 4$. Subtracting each equation from that total gives $c_3 = -2$, $c_2 = 1$ and $c_1 = 5$. The coefficients $(6, 3, -1)$ are not the coordinates, because the basis is not the standard one.
+</Answer>
+</Check>
+
+<Check>
+The vectors $(1, 1, 0)$, $(0, 1, 1)$ and $(1, 0, 1)$ form a basis $\mathcal B$ of $\mathbb R^3$. Find $[\mathbf x]_{\mathcal B}$ for $\mathbf x = (3, 5, 4)$.
+
+<VectorAnswer answer={[2, 3, 1]} labels={["c₁", "c₂", "c₃"]} />
+
+<Hint>
+The equations are $c_1 + c_3 = 3$, $c_1 + c_2 = 5$ and $c_2 + c_3 = 4$. Add all three.
+</Hint>
+
+<Answer>
+Adding the three equations gives $2(c_1 + c_2 + c_3) = 12$, so the sum is $6$. Subtracting each equation from $6$ gives $c_2 = 3$, $c_3 = 1$ and $c_1 = 2$. Check: $2(1, 1, 0) + 3(0, 1, 1) + (1, 0, 1) = (3, 5, 4)$.
+</Answer>
+</Check>
+
+<Check>
 Find the dimension of $H = \{(a - b + 2c,\ 2a - 2b + 4c,\ b + c) : a, b, c \in \mathbb R\}$. (Modeled on Lay §4.5, Exercises 1–8.)
 
-<VectorAnswer answer={[2]} labels={["dimension"]} />
+<VectorAnswer answer={[2]} labels={["dimension"]} prefix="\dim H =" />
+
+<Hint>
+Write $H$ as the span of three vectors, one per parameter, then look for one that is a combination of the other two.
+</Hint>
 
 <Answer>
 $H$ is spanned by $\mathbf v_1 = (1, 2, 0)$, $\mathbf v_2 = (-1, -2, 1)$ and $\mathbf v_3 = (2, 4, 1)$. The third is redundant because $3\mathbf v_1 + \mathbf v_2 = (2, 4, 1) = \mathbf v_3$. The first two are not multiples of each other, so $\{\mathbf v_1, \mathbf v_2\}$ is a basis and $\dim H = 2$. Three parameters gave only two dimensions.
 </Answer>
 </Check>
 
-Tomorrow, on Day 16, you find bases for the column space and row space that every matrix carries, and on Day 18 the dimension of the column space becomes the rank of the matrix.
+### Challenge
+
+<Check>
+Find the dimension of $H = \{(a + 2b,\ b - c,\ a + 2c,\ 3b) : a, b, c \in \mathbb R\}$. (Modeled on Lay §4.5 #3.)
+
+<VectorAnswer answer={[3]} labels={["dimension"]} prefix="\dim H =" />
+
+<Hint>
+Split into three vectors in $\mathbb R^4$ and row reduce the $4 \times 3$ matrix they form. Count pivot columns.
+</Hint>
+
+<Answer>
+$H = \operatorname{Span}\{(1, 0, 1, 0),\ (2, 1, 0, 3),\ (0, -1, 2, 0)\}$.
+
+$$
+\begin{bmatrix} 1 & 2 & 0 \\ 0 & 1 & -1 \\ 1 & 0 & 2 \\ 0 & 3 & 0 \end{bmatrix}
+\sim \begin{bmatrix} 1 & 2 & 0 \\ 0 & 1 & -1 \\ 0 & -2 & 2 \\ 0 & 3 & 0 \end{bmatrix}
+\sim \begin{bmatrix} 1 & 2 & 0 \\ 0 & 1 & -1 \\ 0 & 0 & 0 \\ 0 & 0 & 3 \end{bmatrix}
+$$
+
+The steps are $R_3 - R_1$, then $R_3 + 2R_2$ and $R_4 - 3R_2$. All three columns have pivots, so the vectors are independent and $\dim H = 3$.
+</Answer>
+</Check>
+
+<Check>
+Use coordinates to find the dimension of $\operatorname{Span}\{1 - t,\ t - t^2,\ 1 - t^2\}$ in $\mathbb P_2$.
+
+<VectorAnswer answer={[2]} labels={["dimension"]} />
+
+<Hint>
+Write the three coordinate columns in $\mathbb R^3$ and look for a relation among them.
+</Hint>
+
+<Answer>
+The columns are $(1, -1, 0)$, $(0, 1, -1)$ and $(1, 0, -1)$. The third is the sum of the first two, and the first two are not multiples of each other. So the span of the columns is a plane, and by the isomorphism the span of the polynomials has dimension $2$.
+</Answer>
+</Check>
+
+<Check>
+Let $H$ be a subspace of $\mathbb R^3$ with $\dim H = 3$. Prove that $H = \mathbb R^3$.
+
+<Hint>
+A basis of $H$ has three independent vectors, and they also live in $\mathbb R^3$. Apply the Basis Theorem in $\mathbb R^3$.
+</Hint>
+
+<Answer>
+A basis of $H$ is a set of three independent vectors. They lie in $\mathbb R^3$, which has dimension $3$, so by the Basis Theorem they span $\mathbb R^3$. Every vector of $\mathbb R^3$ is then a combination of vectors of $H$, and $H$ is closed under combinations, so every vector of $\mathbb R^3$ is in $H$. Since $H$ is inside $\mathbb R^3$ to begin with, $H = \mathbb R^3$.
+</Answer>
+</Check>

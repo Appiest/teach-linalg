@@ -16,7 +16,7 @@ import { AdditionExplorer, CombinationTarget, DifferenceExplorer, GridWeights, S
 import { CommuteHunt, CompositionExplorer, ProductColumns } from "@/components/interactive/product";
 import { ElementaryMoves, InverseBuilder } from "@/components/interactive/elementary";
 import { InverseColumnsHunt, SingularHunt, UndoOrder } from "@/components/interactive/inverse";
-import { CoordinateFinder, PolynomialCoordinates } from "@/components/interactive/coordinates";
+import { CoordinateBuilder, CoordinateFinder, PolynomialCoordinates, SpanDimension } from "@/components/interactive/coordinates";
 import { CounterexampleHunt, PolynomialSetTest, QuadrantEscape, ShiftedLineTest } from "@/components/interactive/subspaces";
 import { AddressHunt, BasisForAddress, SpareRecipe, StaircaseBasis, TrimToBasis } from "@/components/interactive/basis";
 import { CollinearHunt, LiftToPlane, LoopAnywhere, RelationFinder, ZeroFunctionHunt } from "@/components/interactive/independence";
@@ -124,6 +124,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     UndoOrder,
     CoordinateFinder,
     PolynomialCoordinates,
+    CoordinateBuilder,
+    SpanDimension,
     ShiftedLineTest,
     QuadrantEscape,
     CounterexampleHunt,
