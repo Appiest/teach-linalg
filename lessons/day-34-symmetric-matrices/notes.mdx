@@ -1,66 +1,149 @@
-On Day 32 a matrix with enough eigenvectors factored as $A = PDP^{-1}$, and yesterday that factorization turned out to be the map written in a basis of its eigenvectors. Those eigenvectors could point in any directions at all, and some matrices do not have enough of them. Today asks which matrices always have a full set of eigenvectors at right angles. The answer is the matrices that equal their own transpose. Such a matrix $A$ stretches the plane along two perpendicular lines and the unit circle becomes an ellipse whose axes are exactly those eigenvectors. The course's last lessons depend on this, because Day 39's quadratic forms and Day 40's matrix $A^TA$ are both symmetric.
+On Day 32 a matrix with enough eigenvectors factored as $A = PDP^{-1}$, and yesterday that factorization turned out to be the map written in a basis of its eigenvectors. Those eigenvectors could point in any directions at all, and some matrices do not have enough of them. Today asks which matrices always have a full set of eigenvectors at right angles. The answer is the matrices that equal their own transpose. Such a matrix stretches the plane along two perpendicular lines, and the unit circle becomes an ellipse whose axes are exactly those eigenvectors. The course's last lessons depend on this, because Day 39's quadratic forms and Day 40's matrix $A^TA$ are both symmetric.
+
+Each section below opens with a problem. Try it before you open the walkthrough, even if you only get partway. The box after each walkthrough names the idea you just used.
 
 <Figure src="circle-to-ellipse" alt="The unit circle in purple-gray and its image under A = [7 2; 2 4], a tilted teal ellipse. A yellow arrow 8u1 runs along the dashed yellow line through (2, 1) to the far end of the ellipse, and a blue arrow 3u2 runs along the dashed blue line through (−1, 2) to its near side. An orange right-angle mark sits at the origin between them." wide />
 
 ## Symmetric matrices
 
-<Definition term="Symmetric matrix">
-A matrix $A$ is **symmetric** when $A^T = A$.
-</Definition>
+<Problem>
+Write down the transpose of $A = \begin{bmatrix} 7 & 2 \\ 2 & 4 \end{bmatrix}$ and of $B = \begin{bmatrix} 7 & 2 \\ -4 & 1 \end{bmatrix}$. Which one equals its own transpose?
 
-A symmetric matrix has to be square, because $A^T$ has the shape of $A$ turned sideways. Transposing mirrors every entry across the main diagonal, so $A^T = A$ says that entry $(i, j)$ equals entry $(j, i)$. The diagonal can hold anything, and the other entries come in matching pairs:
+<Solution>
+The transpose turns each row into a column (Day 6). The first row of $A$ is $(7, 2)$, so the first column of $A^T$ is $(7, 2)$. The second row $(2, 4)$ becomes the second column. That gives $A^T = \begin{bmatrix} 7 & 2 \\ 2 & 4 \end{bmatrix}$, which is $A$ again.
+
+For $B$ the rows $(7, 2)$ and $(-4, 1)$ become columns, so $B^T = \begin{bmatrix} 7 & -4 \\ 2 & 1 \end{bmatrix}$. The off-diagonal entries traded places, and since $2 \ne -4$, $B^T \ne B$.
+
+Transposing mirrors every entry across the main diagonal. A matrix survives the mirror exactly when the entries on opposite sides of the diagonal already match.
+</Solution>
+</Problem>
+
+<Definition term="Symmetric matrix">
+A matrix $A$ is **symmetric** when $A^T = A$. It has to be square, because $A^T$ has the shape of $A$ turned sideways. The diagonal entries can be anything, and every other entry $a_{ij}$ equals its mirror partner $a_{ji}$:
 
 $$
 \begin{bmatrix} 7 & \glow{2} \\ \glow{2} & 4 \end{bmatrix} \text{ is symmetric}, \qquad
 \begin{bmatrix} 7 & 2 \\ -4 & 1 \end{bmatrix} \text{ is not}.
 $$
+</Definition>
+
+<Choice
+  question="Which matrix is symmetric?"
+  options={["$\\begin{bmatrix} 1 & -3 \\\\ 3 & 0 \\end{bmatrix}$", "$\\begin{bmatrix} 0 & 5 & 1 \\\\ 5 & 2 & 4 \\\\ 1 & 4 & -1 \\end{bmatrix}$", "$\\begin{bmatrix} 2 & 1 & 0 \\\\ 1 & 2 & 1 \\end{bmatrix}$"]}
+  answer={1}
+>
+In the middle matrix, the pairs $(5, 5)$, $(1, 1)$ and $(4, 4)$ match across the diagonal. The first matrix has $-3$ opposite $3$, and the last is not square, so it cannot equal its transpose.
+</Choice>
 
 ## Perpendicular eigenvectors
 
-This lesson needs one tool from Day 35 early. The **dot product** of two vectors in $\mathbb R^n$ multiplies matching entries and adds them, and it can be written as a matrix product:
+This section needs one tool from Day 35 early. The **dot product** of two vectors multiplies matching entries and adds them. For $\mathbf u = (2, 1)$ and $\mathbf v = (-1, 2)$ it is $2 \cdot (-1) + 1 \cdot 2 = 0$. In general,
 
 $$
 \mathbf u \cdot \mathbf v = \mathbf u^T\mathbf v = u_1v_1 + u_2v_2 + \cdots + u_nv_n .
 $$
 
-Two vectors are **orthogonal**, which means perpendicular, when $\mathbf u \cdot \mathbf v = 0$. For example, $\yellow{(2, 1)} \cdot \blue{(-1, 2)} = -2 + 2 = 0$. The length of $\mathbf v$ is $\|\mathbf v\| = \sqrt{\mathbf v \cdot \mathbf v}$, and dividing $\mathbf v$ by its length **normalizes** it into a **unit vector** of length 1. Day 35 explains why a zero dot product means a right angle.
+Two vectors are **orthogonal**, which means perpendicular, when $\mathbf u \cdot \mathbf v = 0$. Day 35 explains why a zero dot product means a right angle.
+
+<Problem>
+Find the eigenvalues and eigenvectors of the symmetric matrix $A = \begin{bmatrix} 6 & 2 \\ 2 & 3 \end{bmatrix}$. Then compute the dot product of the two eigenvectors.
+
+<Solution>
+<Steps>
+<Step>
+Find the eigenvalues from the characteristic polynomial: $(6 - \lambda)(3 - \lambda) - 2 \cdot 2 = \lambda^2 - 9\lambda + 18 - 4 = \lambda^2 - 9\lambda + 14 = (\lambda - 7)(\lambda - 2)$.
+</Step>
+<Step>
+For $\lambda = 7$, $A - 7I = \begin{bmatrix} -1 & 2 \\ 2 & -4 \end{bmatrix}$. Its first row says $-x_1 + 2x_2 = 0$, so $\yellow{\mathbf v_1} = (2, 1)$.
+</Step>
+<Step>
+For $\lambda = 2$, $A - 2I = \begin{bmatrix} 4 & 2 \\ 2 & 1 \end{bmatrix}$. Its second row says $2x_1 + x_2 = 0$, so $\blue{\mathbf v_2} = (-1, 2)$.
+</Step>
+<Step>
+Take the dot product: $\yellow{\mathbf v_1} \cdot \blue{\mathbf v_2} = 2 \cdot (-1) + 1 \cdot 2 = 0$. The eigenvectors are perpendicular.
+</Step>
+</Steps>
+
+Nothing in the steps asked for a right angle. It came out of the symmetry of $A$, as the theorem below explains.
+</Solution>
+</Problem>
+
+<Pair>
+<Figure src="not-symmetric" alt="The unit circle and its image under B = [7 2; −4 1], a long teal ellipse tilted down to the right. Dashed teal lines show the ellipse's two axes. The yellow eigenline through (1, −1) and the blue eigenline through (1, −2) sit only about 18 degrees apart, and the arrows 5v1 and 3v2 along them end on the ellipse away from its axis ends." />
+
+Compare the matrix $B = \begin{bmatrix} 7 & 2 \\ -4 & 1 \end{bmatrix}$, which is not symmetric. It has eigenvalues $5$ and $3$ with eigenvectors $(1, -1)$ and $(1, -2)$, and their dot product is $1 + 2 = 3$. $B$ still turns the circle into an ellipse, but the ellipse's axes point in directions that are not eigenvectors at all.
+</Pair>
+
+Sweep a direction around under a symmetric matrix and find every line it keeps.
+
+<EigenDirectionSweep matrix={[[2, 1], [1, 2]]} start={90} />
+
+<Concept title="Symmetry forces a right angle">
+The dot product can be moved across a symmetric matrix: $(A\mathbf x) \cdot \mathbf y = \mathbf x \cdot (A\mathbf y)$. Apply that to two eigenvectors with different eigenvalues and the only way both sides can agree is a zero dot product.
+</Concept>
 
 <Definition term="Theorem">
 If $A$ is symmetric, then any two eigenvectors from different eigenspaces are orthogonal.
 </Definition>
 
-Suppose $A\mathbf v_1 = \lambda_1\mathbf v_1$ and $A\mathbf v_2 = \lambda_2\mathbf v_2$ with $\lambda_1 \ne \lambda_2$. Write the dot product as $\mathbf u^T\mathbf v$ and use $(AB)^T = B^TA^T$ from Day 6. The step where $A^T$ becomes $A$ is the only place symmetry enters:
+Suppose $A\mathbf v_1 = \lambda_1\mathbf v_1$ and $A\mathbf v_2 = \lambda_2\mathbf v_2$ with $\lambda_1 \ne \lambda_2$. The proof computes $(A\mathbf v_1) \cdot \mathbf v_2$ in two ways.
 
-$$
-\begin{aligned}
-\lambda_1\,\mathbf v_1 \cdot \mathbf v_2 = (A\mathbf v_1)^T\mathbf v_2 &= \mathbf v_1^T\glow{A^T}\mathbf v_2 = \mathbf v_1^T\glow{A}\mathbf v_2 = \mathbf v_1^T(\lambda_2\mathbf v_2) = \lambda_2\,\mathbf v_1 \cdot \mathbf v_2 \\
-(\lambda_1 - \lambda_2)\,\mathbf v_1 \cdot \mathbf v_2 &= 0 .
-\end{aligned}
-$$
+<Steps>
+<Step>
+Use the eigenvalue of $\mathbf v_1$: $(A\mathbf v_1) \cdot \mathbf v_2 = (\lambda_1\mathbf v_1) \cdot \mathbf v_2 = \lambda_1\,\mathbf v_1 \cdot \mathbf v_2$.
+</Step>
+<Step>
+Write the dot product as a matrix product and use $(AB)^T = B^TA^T$ from Day 6: $(A\mathbf v_1)^T\mathbf v_2 = \mathbf v_1^T\glow{A^T}\mathbf v_2$. Symmetry turns $A^T$ into $A$, which is the only place it enters.
+</Step>
+<Step>
+Now use the eigenvalue of $\mathbf v_2$: $\mathbf v_1^TA\mathbf v_2 = \mathbf v_1^T(\lambda_2\mathbf v_2) = \lambda_2\,\mathbf v_1 \cdot \mathbf v_2$.
+</Step>
+<Step>
+The two answers are equal, so $(\lambda_1 - \lambda_2)\,\mathbf v_1 \cdot \mathbf v_2 = 0$. Since $\lambda_1 - \lambda_2 \ne 0$, the dot product $\mathbf v_1 \cdot \mathbf v_2$ must be $0$.
+</Step>
+</Steps>
 
-Since $\lambda_1 - \lambda_2 \ne 0$, the dot product $\mathbf v_1 \cdot \mathbf v_2$ must be $0$.
-
-<Pair>
-<Figure src="not-symmetric" alt="The unit circle and its image under B = [7 2; −4 1], a long teal ellipse tilted down to the right. Dashed teal lines show the ellipse's two axes. The yellow eigenline through (1, −1) and the blue eigenline through (1, −2) sit only about 18 degrees apart, and the arrows 5v1 and 3v2 along them end on the ellipse away from its axis ends." />
-
-The matrix $B = \begin{bmatrix} 7 & 2 \\ -4 & 1 \end{bmatrix}$ is not symmetric, and it has eigenvalues $5$ and $3$ with eigenvectors $(1, -1)$ and $(1, -2)$. Their dot product is $1 + 2 = 3$, so they are not perpendicular. $B$ still turns the circle into an ellipse, but the ellipse's axes point in directions that are not eigenvectors at all.
-</Pair>
+Try breaking the symmetry. Slide the two off-diagonal entries and watch the angle between the eigenlines.
 
 <SymmetricPerpendicularHunt diagonal={[3, 1]} start={[2, 0]} />
 
 ## Orthogonal diagonalization
 
-A square matrix $P$ is an **orthogonal matrix** when its columns are orthonormal, which means they are unit vectors and each pair is orthogonal. Entry $(i, j)$ of $P^TP$ is the dot product of column $i$ with column $j$, so orthonormal columns give $P^TP = I$ and therefore $P^{-1} = P^T$. Undoing $P$ then costs a transpose instead of a row reduction. For a symmetric matrix, the normalized eigenvectors from different eigenvalues make exactly such a $P$.
+Perpendicular eigenvectors make a better $P$ than Day 32's, because such a $P$ is undone by a transpose.
+
+<Problem>
+Divide $\yellow{\mathbf v_1} = (2, 1)$ and $\blue{\mathbf v_2} = (-1, 2)$ by their lengths, where the length of $\mathbf v$ is $\|\mathbf v\| = \sqrt{\mathbf v \cdot \mathbf v}$. Put the results into the columns of $P$ and compute $P^TP$.
+
+<Solution>
+Both vectors have length $\sqrt{4 + 1} = \sqrt5$, so the new vectors are $\mathbf u_1 = \tfrac{1}{\sqrt5}(2, 1)$ and $\mathbf u_2 = \tfrac{1}{\sqrt5}(-1, 2)$. Dividing by the length is called **normalizing**, and the results are **unit vectors** of length 1.
+
+Entry $(i, j)$ of $P^TP$ is row $i$ of $P^T$ times column $j$ of $P$, which is $\mathbf u_i \cdot \mathbf u_j$:
+
+$$
+P^TP = \begin{bmatrix} \mathbf u_1 \cdot \mathbf u_1 & \mathbf u_1 \cdot \mathbf u_2 \\ \mathbf u_2 \cdot \mathbf u_1 & \mathbf u_2 \cdot \mathbf u_2 \end{bmatrix} = \begin{bmatrix} \tfrac{4 + 1}{5} & \tfrac{-2 + 2}{5} \\ \tfrac{-2 + 2}{5} & \tfrac{1 + 4}{5} \end{bmatrix} = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}.
+$$
+
+So $P^TP = I$, and $P^{-1} = P^T$. Undoing $P$ costs a transpose instead of a row reduction.
+</Solution>
+</Problem>
+
+<Concept title="Orthonormal columns invert by transposing">
+A square matrix $P$ is an **orthogonal matrix** when its columns are orthonormal, which means they are unit vectors and each pair is orthogonal. Then $P^TP = I$ and $P^{-1} = P^T$. For a symmetric matrix, normalized eigenvectors from different eigenvalues make exactly such a $P$, so $A = PDP^{-1}$ becomes $A = PDP^T$.
+</Concept>
 
 <Definition term="The spectral theorem">
 An $n \times n$ symmetric matrix $A$ has $n$ real eigenvalues, counted with multiplicity. The eigenspace for each eigenvalue has dimension equal to that multiplicity, eigenspaces for different eigenvalues are orthogonal, and $A$ is **orthogonally diagonalizable**:
 
 $$
-A = PDP^T, \qquad P^TP = I, \quad D \text{ diagonal}.
+A = PDP^T,
 $$
+
+where $P^TP = I$ and $D$ is diagonal.
 
 Conversely, every matrix of the form $PDP^T$ is symmetric, because $(PDP^T)^T = PD^TP^T = PDP^T$.
 </Definition>
+
+In Day 31's language, a symmetric matrix is never defective. For the problem's matrix, $P = \tfrac{1}{\sqrt5}\begin{bmatrix} 2 & -1 \\ 1 & 2 \end{bmatrix}$ and $D = \begin{bmatrix} 7 & 0 \\ 0 & 2 \end{bmatrix}$ give $A = PDP^T$.
 
 <Pair>
 <Figure src="three-moves" alt="Four small planes in a loop. Top left: the unit circle with short yellow and blue eigenvectors at a right angle, tilted. An arrow labelled P transpose leads to the top right, where the same circle has its eigenvectors turned onto the x and y axes. An arrow labelled D leads down to an upright ellipse stretched 8 along x and 3 along y. An arrow labelled P leads left to the final tilted ellipse, the same picture A makes." />
@@ -68,57 +151,142 @@ Conversely, every matrix of the form $PDP^T$ is symmetric, because $(PDP^T)^T = 
 Reading $PDP^T\mathbf x$ from right to left, $P^T$ turns the eigenvectors onto the axes, $D$ stretches along the axes, and $P$ turns them back. The circle ends up as the same ellipse that $A$ makes in one step.
 </Pair>
 
-To orthogonally diagonalize a symmetric matrix, the goal is a $P$ with orthonormal columns. Find the eigenvalues and eigenvectors as on Day 32, then divide each eigenvector by its length. Here is a worked example with $A = \begin{bmatrix} 6 & 2 \\ 2 & 3 \end{bmatrix}$:
-
-$$
-\begin{aligned}
-\det(A - \lambda I) &= \lambda^2 - 9\lambda + 14 = (\lambda - 7)(\lambda - 2) \\
-\lambda = 7:\ \yellow{\mathbf v_1} &= \yellow{(2, 1)}, \qquad \lambda = 2:\ \blue{\mathbf v_2} = \blue{(-1, 2)} \\
-\mathbf u_1 &= \tfrac{1}{\sqrt5}(2, 1), \qquad \mathbf u_2 = \tfrac{1}{\sqrt5}(-1, 2) \\
-P &= \tfrac{1}{\sqrt5}\begin{bmatrix} 2 & -1 \\ 1 & 2 \end{bmatrix}, \quad D = \begin{bmatrix} 7 & 0 \\ 0 & 2 \end{bmatrix}, \quad A = PDP^T
-\end{aligned}
-$$
-
-When an eigenvalue repeats, row reduction hands back a basis for its eigenspace that need not be orthogonal. Any basis of the eigenspace is allowed, so replace the second vector by $\mathbf z_2 = \mathbf v_2 - \frac{\mathbf v_2 \cdot \mathbf v_1}{\mathbf v_1 \cdot \mathbf v_1}\mathbf v_1$, which is still in the eigenspace and is orthogonal to $\mathbf v_1$. For $A = \begin{bmatrix} 2 & 1 & 1 \\ 1 & 2 & 1 \\ 1 & 1 & 2 \end{bmatrix}$, the eigenvalue $1$ has $\mathbf v_1 = (-1, 1, 0)$ and $\mathbf v_2 = (-1, 0, 1)$ with $\mathbf v_1 \cdot \mathbf v_2 = 1$, so $\mathbf z_2 = (-1, 0, 1) - \tfrac12(-1, 1, 0) = (-\tfrac12, -\tfrac12, 1)$. The eigenvector $(1, 1, 1)$ for $\lambda = 4$ is already orthogonal to both by the theorem. Days 36 and 37 explain where the formula for $\mathbf z_2$ comes from.
+Build a symmetric matrix from those moves. Aim one eigen-direction and choose the two stretches until your ellipse matches the dashed one.
 
 <SpectralEllipseBuilder target={[[5, 2], [2, 2]]} start={[1, 0]} stretches={[3, 1]} />
 
+When an eigenvalue repeats, row reduction hands back a basis for its eigenspace, and that basis need not be orthogonal. Any basis of the eigenspace is allowed, so we can fix it.
+
+<Problem>
+The symmetric matrix $A = \begin{bmatrix} 2 & 1 & 1 \\ 1 & 2 & 1 \\ 1 & 1 & 2 \end{bmatrix}$ has the eigenvalue $1$ twice, with eigenspace basis $\mathbf v_1 = (-1, 1, 0)$ and $\mathbf v_2 = (-1, 0, 1)$. Check whether they are orthogonal. If not, replace $\mathbf v_2$ with $\mathbf z_2 = \mathbf v_2 - \dfrac{\mathbf v_2 \cdot \mathbf v_1}{\mathbf v_1 \cdot \mathbf v_1}\mathbf v_1$.
+
+<Solution>
+<Steps>
+<Step>
+Test the pair: $\mathbf v_1 \cdot \mathbf v_2 = 1 + 0 + 0 = 1$. That is not zero, so these two need fixing.
+</Step>
+<Step>
+Compute the pieces of the formula: $\mathbf v_2 \cdot \mathbf v_1 = 1$ and $\mathbf v_1 \cdot \mathbf v_1 = 1 + 1 + 0 = 2$.
+</Step>
+<Step>
+Subtract half of $\mathbf v_1$: $\mathbf z_2 = (-1, 0, 1) - \tfrac12(-1, 1, 0) = (-\tfrac12, -\tfrac12, 1)$.
+</Step>
+<Step>
+Check both properties. $\mathbf z_2 \cdot \mathbf v_1 = \tfrac12 - \tfrac12 + 0 = 0$. And $\mathbf z_2$ is a combination of two eigenvectors for $1$, so it is still in that eigenspace: $A\mathbf z_2 = (-1 - \tfrac12 + 1,\ -\tfrac12 - 1 + 1,\ -\tfrac12 - \tfrac12 + 2) = (-\tfrac12, -\tfrac12, 1)$.
+</Step>
+</Steps>
+
+The eigenvector $(1, 1, 1)$ for $\lambda = 4$ is already orthogonal to both, by the theorem. Days 36 and 37 explain where the formula for $\mathbf z_2$ comes from.
+</Solution>
+</Problem>
+
+<Warning>
+Only mix vectors that share an eigenvalue. Combining an eigenvector for $1$ with one for $4$ gives a vector that is not an eigenvector at all. Eigenvectors from different eigenspaces are already orthogonal, so they never need fixing. Also remember to normalize at the end, or $P^TP \ne I$.
+</Warning>
+
 ## Spectral decomposition
 
-The factorization describes $A$ as three moves, but it can also show what $A$ does along each eigenline separately. Multiplying out $PDP^T$ column by row splits $A$ into one piece per eigenvalue:
+The factorization describes $A$ as three moves. It can also show what $A$ does along each eigenline separately.
 
-$$
-A = \lambda_1\mathbf u_1\mathbf u_1^T + \lambda_2\mathbf u_2\mathbf u_2^T + \cdots + \lambda_n\mathbf u_n\mathbf u_n^T .
-$$
+<Problem>
+Let $A = \begin{bmatrix} 7 & 2 \\ 2 & 4 \end{bmatrix}$, with unit eigenvectors $\mathbf u_1 = \tfrac{1}{\sqrt5}(2, 1)$ for $8$ and $\mathbf u_2 = \tfrac{1}{\sqrt5}(-1, 2)$ for $3$. For $\mathbf x = (0, 1)$, compute the shadows $(\mathbf u_1 \cdot \mathbf x)\,\mathbf u_1$ and $(\mathbf u_2 \cdot \mathbf x)\,\mathbf u_2$. Stretch them by $8$ and $3$ and add.
 
-This sum is the **spectral decomposition** of $A$. Each $\mathbf u_j\mathbf u_j^T$ is an $n \times n$ matrix, and $(\mathbf u_j\mathbf u_j^T)\mathbf x = (\mathbf u_j \cdot \mathbf x)\,\mathbf u_j$ is the shadow of $\mathbf x$ on the line through $\mathbf u_j$. Day 36 calls these shadows orthogonal projections and builds the same kind of matrix for any subspace. So $A\mathbf x$ is built by taking the shadow of $\mathbf x$ on each eigenline and stretching it by that eigenvalue. Note the order: $\mathbf u^T\mathbf u$ is the number $1$, while $\mathbf u\mathbf u^T$ is a matrix.
+<Solution>
+<Steps>
+<Step>
+First shadow: $\mathbf u_1 \cdot \mathbf x = \tfrac{1}{\sqrt5}(0 + 1) = \tfrac{1}{\sqrt5}$, so the shadow is $\tfrac{1}{\sqrt5} \cdot \tfrac{1}{\sqrt5}(2, 1) = \tfrac15(2, 1) = (0.4, 0.2)$.
+</Step>
+<Step>
+Second shadow: $\mathbf u_2 \cdot \mathbf x = \tfrac{1}{\sqrt5}(0 + 2) = \tfrac{2}{\sqrt5}$, so the shadow is $\tfrac25(-1, 2) = (-0.4, 0.8)$. The two shadows add back to $(0, 1) = \mathbf x$.
+</Step>
+<Step>
+Stretch: $8(0.4, 0.2) = (3.2, 1.6)$ and $3(-0.4, 0.8) = (-1.2, 2.4)$.
+</Step>
+<Step>
+Add: $(3.2 - 1.2,\ 1.6 + 2.4) = (2, 4)$. That is $A\mathbf x$, the second column of $A$.
+</Step>
+</Steps>
+</Solution>
+</Problem>
 
 <Pair>
 <Figure src="shadow-pieces" alt="The unit circle with x = (0, 1) drawn as a short purple-gray arrow. Dashed drops run from its tip to its shadows on the yellow and blue eigenlines. A yellow arrow 8 times the first shadow and a blue arrow 3 times the second meet tip to tail at Ax = (2, 4), drawn in teal, which lies on the ellipse." />
 
-In the video, $\mathbf x = (0, 1)$ has shadows on both eigenlines of $A = \begin{bmatrix} 7 & 2 \\ 2 & 4 \end{bmatrix}$. Stretching them by $8$ and $3$ and adding tip to tail lands on $A\mathbf x = (2, 4)$, the second column of $A$.
+<Concept title="One piece per eigenline">
+Multiplying out $PDP^T$ column by row splits $A$ into one piece per eigenvalue, the **spectral decomposition**:
+
+$$
+A = \lambda_1\mathbf u_1\mathbf u_1^T + \cdots + \lambda_n\mathbf u_n\mathbf u_n^T .
+$$
+
+Each $\mathbf u_j\mathbf u_j^T$ is an $n \times n$ matrix, and $(\mathbf u_j\mathbf u_j^T)\mathbf x = (\mathbf u_j \cdot \mathbf x)\,\mathbf u_j$ is the shadow of $\mathbf x$ on the line through $\mathbf u_j$. Day 36 calls these shadows orthogonal projections.
+</Concept>
 </Pair>
 
-For the worked example above,
+Aim with the shadows. This matrix stretches the yellow line through $(1, 1)$ by $3$ and the blue line through $(-1, 1)$ by $1$, which makes it $\begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$.
+
+<ShadowStretchSum direction={[1, 1]} lambdas={[3, 1]} target={[4, 5]} start={[1, 0]} />
+
+For the matrix from the second section, the pieces add back up as promised:
 
 $$
 \begin{aligned}
-7\,\mathbf u_1\mathbf u_1^T &= \tfrac75\begin{bmatrix} 4 & 2 \\ 2 & 1 \end{bmatrix}, \qquad
-2\,\mathbf u_2\mathbf u_2^T = \tfrac25\begin{bmatrix} 1 & -2 \\ -2 & 4 \end{bmatrix} \\
-7\,\mathbf u_1\mathbf u_1^T + 2\,\mathbf u_2\mathbf u_2^T &= \tfrac15\begin{bmatrix} 28 + 2 & 14 - 4 \\ 14 - 4 & 7 + 8 \end{bmatrix} = \begin{bmatrix} 6 & 2 \\ 2 & 3 \end{bmatrix}.
+7\,\mathbf u_1\mathbf u_1^T &= \tfrac75\begin{bmatrix} 4 & 2 \\ 2 & 1 \end{bmatrix} \\
+2\,\mathbf u_2\mathbf u_2^T &= \tfrac25\begin{bmatrix} 1 & -2 \\ -2 & 4 \end{bmatrix} \\
+\text{sum} &= \tfrac15\begin{bmatrix} 28 + 2 & 14 - 4 \\ 14 - 4 & 7 + 8 \end{bmatrix} = \begin{bmatrix} 6 & 2 \\ 2 & 3 \end{bmatrix}.
 \end{aligned}
 $$
 
-Setting both eigenvalues to $1$ gives $\mathbf u_1\mathbf u_1^T + \mathbf u_2\mathbf u_2^T = PP^T = I$, since the two shadows of $\mathbf x$ add back to $\mathbf x$.
+<Warning>
+Watch the order. $\mathbf u^T\mathbf u$ is the number $1$ for a unit vector, while $\mathbf u\mathbf u^T$ is a matrix. Setting every eigenvalue to $1$ gives $\mathbf u_1\mathbf u_1^T + \mathbf u_2\mathbf u_2^T = PP^T = I$, since the shadows of $\mathbf x$ add back to $\mathbf x$.
+</Warning>
 
 Tomorrow goes back to the dot product this lesson borrowed and explains why a zero dot product means a right angle, and Day 39 uses $A = PDP^T$ to find the principal axes of a quadratic form.
 
 ## Practice
 
-<Check>
-Orthogonally diagonalize $A = \begin{bmatrix} 1 & 3 \\ 3 & 1 \end{bmatrix}$. Enter the eigenvalue for the eigenvector $(1, 1)$ and the eigenvalue for $(-1, 1)$. (Modeled on Lay §7.1, Exercises 13–22.)
+### Warm-up
 
-<VectorAnswer answer={[4, -2]} labels={["λ for (1, 1)", "λ for (−1, 1)"]} />
+<Check>
+<Choice
+  question="Is $\begin{bmatrix} -5 & 3 & 0 \\ 3 & 1 & -2 \\ 0 & -2 & 4 \end{bmatrix}$ symmetric? (Modeled on Lay §7.1 #5.)"
+  options={["Yes", "No"]}
+  answer={0}
+>
+Mirror each entry across the diagonal: $3$ sits opposite $3$, $0$ opposite $0$, and $-2$ opposite $-2$. Every pair matches, so $A^T = A$.
+</Choice>
+</Check>
+
+<Check>
+Compute $\mathbf u \cdot \mathbf v$ for $\mathbf u = (2, -3, 1)$ and $\mathbf v = (4, 1, -2)$.
+
+<VectorAnswer answer={[3]} prefix="\mathbf u \cdot \mathbf v =" />
+
+<Answer>
+Multiply matching entries and add: $2 \cdot 4 + (-3) \cdot 1 + 1 \cdot (-2) = 8 - 3 - 2 = 3$. The result is not zero, so these vectors are not orthogonal.
+</Answer>
+</Check>
+
+<Check>
+Compute $P^TP$ for $P = \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}$. Enter it row by row. Is $P$ an orthogonal matrix? (Modeled on Lay §7.1 #8.)
+
+<VectorAnswer answer={[2, 0, 0, 2]} columns={2} />
+
+<Answer>
+The entries are dot products of columns: $(1, 1) \cdot (1, 1) = 2$, $(1, 1) \cdot (1, -1) = 0$ and $(1, -1) \cdot (1, -1) = 2$. So $P^TP = \begin{bmatrix} 2 & 0 \\ 0 & 2 \end{bmatrix}$. The columns are orthogonal, but each has length $\sqrt2$, so $P$ is not an orthogonal matrix. Dividing $P$ by $\sqrt2$ fixes it.
+</Answer>
+</Check>
+
+### Core
+
+<Check>
+Orthogonally diagonalize $A = \begin{bmatrix} 1 & 3 \\ 3 & 1 \end{bmatrix}$. Enter the eigenvalue for the eigenvector $(1, 1)$ and the eigenvalue for $(-1, 1)$, in that order. (Modeled on Lay §7.1 #13–22.)
+
+<VectorAnswer answer={[4, -2]} />
+
+<Hint>
+Multiply $A$ by each vector and see what multiple of the vector comes out.
+</Hint>
 
 <Answer>
 $$
@@ -134,25 +302,51 @@ The eigenvectors have dot product $-1 + 1 = 0$, as the theorem promises, and eac
 </Check>
 
 <Check>
-The symmetric matrix $A = \begin{bmatrix} 2 & -2 \\ -2 & 5 \end{bmatrix}$ has eigenvalue $6$ with eigenvector $(1, -2)$. Find the top row of the piece $6\,\mathbf u_1\mathbf u_1^T$ in its spectral decomposition. (Modeled on Lay §7.1, Exercises 33–34.)
+Let $A = \begin{bmatrix} 5 & 2 \\ 2 & 2 \end{bmatrix}$ and $P = \tfrac{1}{\sqrt5}\begin{bmatrix} 2 & -1 \\ 1 & 2 \end{bmatrix}$. Compute $P^TAP$. Enter it row by row.
 
-<VectorAnswer answer={[1.2, -2.4]} labels={["entry (1, 1)", "entry (1, 2)"]} />
+<VectorAnswer answer={[6, 0, 0, 1]} columns={2} />
+
+<Hint>
+Check whether $(2, 1)$ and $(-1, 2)$ are eigenvectors of $A$ first. If they are, $P^TAP$ is the diagonal matrix of their eigenvalues.
+</Hint>
 
 <Answer>
-Normalize first. The length of $(1, -2)$ is $\sqrt5$, so $\mathbf u_1 = \tfrac{1}{\sqrt5}(1, -2)$ and
+$A(2, 1) = (10 + 2,\ 4 + 2) = (12, 6) = 6(2, 1)$ and $A(-1, 2) = (-5 + 4,\ -2 + 4) = (-1, 2) = 1(-1, 2)$. The columns of $P$ are unit eigenvectors, so $P^T = P^{-1}$ and
+
+$$
+P^TAP = P^{-1}AP = \begin{bmatrix} 6 & 0 \\ 0 & 1 \end{bmatrix}.
+$$
+</Answer>
+</Check>
+
+<Check>
+The symmetric matrix $A = \begin{bmatrix} 2 & -2 \\ -2 & 5 \end{bmatrix}$ has eigenvalue $6$ with eigenvector $(1, -2)$. Find the top row of the piece $6\,\mathbf u_1\mathbf u_1^T$ in its spectral decomposition. (Modeled on Lay §7.1 #33–34.)
+
+<VectorAnswer answer={[1.2, -2.4]} />
+
+<Hint>
+Normalize $(1, -2)$ first. Then $\mathbf u\mathbf u^T$ is the column $\mathbf u$ times the row $\mathbf u^T$.
+</Hint>
+
+<Answer>
+The length of $(1, -2)$ is $\sqrt5$, so $\mathbf u_1 = \tfrac{1}{\sqrt5}(1, -2)$ and
 
 $$
 6\,\mathbf u_1\mathbf u_1^T = \tfrac65\begin{bmatrix} 1 & -2 \\ -2 & 4 \end{bmatrix} = \begin{bmatrix} 6/5 & -12/5 \\ -12/5 & 24/5 \end{bmatrix}.
 $$
 
-The other eigenvalue is $1$ with $\mathbf u_2 = \tfrac{1}{\sqrt5}(2, 1)$, and $1\cdot\tfrac15\begin{bmatrix} 4 & 2 \\ 2 & 1 \end{bmatrix}$ adds to the piece above to give back $A$. Forgetting to normalize would give $6\begin{bmatrix} 1 & -2 \\ -2 & 4 \end{bmatrix}$, which is five times too big.
+The other eigenvalue is $1$ with $\mathbf u_2 = \tfrac{1}{\sqrt5}(2, 1)$, and $\tfrac15\begin{bmatrix} 4 & 2 \\ 2 & 1 \end{bmatrix}$ adds to the piece above to give back $A$. Forgetting to normalize would give $6\begin{bmatrix} 1 & -2 \\ -2 & 4 \end{bmatrix}$, which is five times too big.
 </Answer>
 </Check>
 
 <Check>
-The matrix $A = \begin{bmatrix} 5 & -1 & -1 \\ -1 & 5 & -1 \\ -1 & -1 & 5 \end{bmatrix}$ has eigenvalue $6$ with eigenspace basis $\mathbf v_1 = (1, -1, 0)$ and $\mathbf v_2 = (1, 0, -1)$. These two are not orthogonal. Find $\mathbf z_2$. (Modeled on Lay §7.1, Exercises 23–24.)
+The matrix $A = \begin{bmatrix} 5 & -1 & -1 \\ -1 & 5 & -1 \\ -1 & -1 & 5 \end{bmatrix}$ has eigenvalue $6$ with eigenspace basis $\mathbf v_1 = (1, -1, 0)$ and $\mathbf v_2 = (1, 0, -1)$. These two are not orthogonal. Find $\mathbf z_2$. (Modeled on Lay §7.1 #23–24.)
 
 <VectorAnswer answer={[0.5, 0.5, -1]} />
+
+<Hint>
+Compute $\mathbf v_2 \cdot \mathbf v_1$ and $\mathbf v_1 \cdot \mathbf v_1$, then subtract that fraction of $\mathbf v_1$ from $\mathbf v_2$.
+</Hint>
 
 <Answer>
 $$
@@ -163,5 +357,67 @@ $$
 $$
 
 Check: $\mathbf z_2 \cdot \mathbf v_1 = \tfrac12 - \tfrac12 + 0 = 0$, and $A\mathbf z_2 = (3, 3, -6) = 6\,\mathbf z_2$, so $\mathbf z_2$ is still an eigenvector for $6$. The third eigenvalue is $3$ with eigenvector $(1, 1, 1)$, which is orthogonal to both without any correction.
+</Answer>
+</Check>
+
+<Check>
+The symmetric matrix $A = \begin{bmatrix} 3 & 0 & 0 \\ 0 & 1 & 2 \\ 0 & 2 & 1 \end{bmatrix}$ has eigenvalues $3, 3, -1$. Find the eigenvector for $-1$ whose last entry is $1$.
+
+<VectorAnswer answer={[0, -1, 1]} />
+
+<Hint>
+Row reduce $A + I$. Its first row involves only $x_1$.
+</Hint>
+
+<Answer>
+$A + I = \begin{bmatrix} 4 & 0 & 0 \\ 0 & 2 & 2 \\ 0 & 2 & 2 \end{bmatrix}$. The first row forces $x_1 = 0$, and the second says $x_2 + x_3 = 0$. With $x_3 = 1$ the eigenvector is $(0, -1, 1)$. Check: $A(0, -1, 1) = (0, 1, -1)$, which is $-1$ times the vector. It is orthogonal to the eigenvectors $(1, 0, 0)$ and $(0, 1, 1)$ for $3$, which are already orthogonal to each other.
+</Answer>
+</Check>
+
+### Challenge
+
+<Check>
+Use the spectral decomposition $A = 4\,\mathbf u_1\mathbf u_1^T - 2\,\mathbf u_2\mathbf u_2^T$ of $A = \begin{bmatrix} 1 & 3 \\ 3 & 1 \end{bmatrix}$, with $\mathbf u_1 = \tfrac{1}{\sqrt2}(1, 1)$ and $\mathbf u_2 = \tfrac{1}{\sqrt2}(-1, 1)$, to compute $A^3$. Enter it row by row.
+
+<VectorAnswer answer={[28, 36, 36, 28]} columns={2} />
+
+<Hint>
+$A^3 = PD^3P^T$, so each piece keeps its matrix $\mathbf u_j\mathbf u_j^T$ and its eigenvalue gets cubed.
+</Hint>
+
+<Answer>
+$A^3 = 4^3\,\mathbf u_1\mathbf u_1^T + (-2)^3\,\mathbf u_2\mathbf u_2^T$, with $\mathbf u_1\mathbf u_1^T = \tfrac12\begin{bmatrix} 1 & 1 \\ 1 & 1 \end{bmatrix}$ and $\mathbf u_2\mathbf u_2^T = \tfrac12\begin{bmatrix} 1 & -1 \\ -1 & 1 \end{bmatrix}$:
+
+$$
+A^3 = 32\begin{bmatrix} 1 & 1 \\ 1 & 1 \end{bmatrix} - 4\begin{bmatrix} 1 & -1 \\ -1 & 1 \end{bmatrix} = \begin{bmatrix} 28 & 36 \\ 36 & 28 \end{bmatrix}.
+$$
+
+Check the slow way: $A^2 = \begin{bmatrix} 10 & 6 \\ 6 & 10 \end{bmatrix}$ and $A^3 = A^2A = \begin{bmatrix} 10 + 18 & 30 + 6 \\ 6 + 30 & 18 + 10 \end{bmatrix}$.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="Which statement is true? (Modeled on Lay §7.1 #25–26.)"
+  options={["Every $n \\times n$ symmetric matrix has $n$ different eigenvalues.", "Some symmetric matrices cannot be orthogonally diagonalized.", "If $A^T = A$, $A\\mathbf u = 3\\mathbf u$ and $A\\mathbf v = 4\\mathbf v$, then $\\mathbf u \\cdot \\mathbf v = 0$.", "Every orthogonal matrix is orthogonally diagonalizable."]}
+  answer={2}
+>
+The third statement is the theorem of this lesson, since $3 \ne 4$. The identity matrix is symmetric with a single eigenvalue, so the first is false. The spectral theorem rules out the second. The rotation $\begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}$ is orthogonal but not symmetric, and it has no real eigenvectors, so the fourth is false.
+</Choice>
+</Check>
+
+<Check>
+Show that if $A$ is symmetric, then $(A\mathbf x) \cdot \mathbf y = \mathbf x \cdot (A\mathbf y)$ for all $\mathbf x, \mathbf y$ in $\mathbb R^n$. (Modeled on Lay §7.1 #27.)
+
+<Hint>
+Write each dot product as a transpose times a vector, and use $(A\mathbf x)^T = \mathbf x^TA^T$.
+</Hint>
+
+<Answer>
+$$
+(A\mathbf x) \cdot \mathbf y = (A\mathbf x)^T\mathbf y = \mathbf x^TA^T\mathbf y = \mathbf x^TA\mathbf y = \mathbf x \cdot (A\mathbf y).
+$$
+
+The third step is where $A^T = A$ is used. This identity is the engine of the theorem: with $\mathbf x$ and $\mathbf y$ eigenvectors, it gives $\lambda_1\,\mathbf x \cdot \mathbf y = \lambda_2\,\mathbf x \cdot \mathbf y$.
 </Answer>
 </Check>

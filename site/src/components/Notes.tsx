@@ -39,7 +39,7 @@ import { ChainCoordinates, JordanChainBuilder, MultiplicityGapSlider, NullPowerC
 import { BasisColumnBuilder, DiagonalBasisHunt, EigenOrbitSettle, EigenPolynomialHunt, TwoCoordinateMap } from "@/components/interactive/diagonalizing-transformations";
 import { DiagonalEntryMatch, DiagonalFactorSteps, EigenColumnHunt, EigenCoordinateTarget } from "@/components/interactive/diagonalization";
 import { CharacteristicSweep, EigenpairHunt } from "@/components/interactive/characteristic-equation";
-import { SpectralEllipseBuilder, SymmetricPerpendicularHunt } from "@/components/interactive/symmetric-matrices";
+import { EigenDirectionSweep, ShadowStretchSum, SpectralEllipseBuilder, SymmetricPerpendicularHunt } from "@/components/interactive/symmetric-matrices";
 import { DotShadowHunt, RowPerpendicularHunt, UnitCircleScale } from "@/components/interactive/inner-products";
 import { LongestStretchHunt, RankCopyBudget, SvdEllipseMatch } from "@/components/interactive/singular-value-decomposition";
 import { LineFootHunt, NearestPlanePoint, ShadowSumBasis } from "@/components/interactive/orthogonal-projection";
@@ -188,6 +188,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     EigenpairHunt,
     SymmetricPerpendicularHunt,
     SpectralEllipseBuilder,
+    EigenDirectionSweep,
+    ShadowStretchSum,
     DotShadowHunt,
     UnitCircleScale,
     RowPerpendicularHunt,
