@@ -8,7 +8,7 @@ import { Answer, Check, Concept, Definition, Hint, Problem, Solution, Warning } 
 import { TransformExplorer } from "@/components/interactive/transform";
 import { EntryHunt, LineSpanPicker, RowLinesMeet, SpanPainter } from "@/components/interactive/span";
 import { PivotSpotter, RowReduceExplorer, RowReducer, SolutionCountExplorer } from "@/components/interactive/systems";
-import { ColumnSpanCheck, MatrixVectorExplorer } from "@/components/interactive/matrix";
+import { ColumnSpanCheck, MatrixVectorExplorer, RowPictureSolver, SpanBreaker } from "@/components/interactive/matrix";
 import { PreimageHunt, ShapeMatch } from "@/components/interactive/transformations";
 import { ClosureHunt, PolynomialCombiner } from "@/components/interactive/vector-spaces";
 import { CostCompare, LUBuilder, SubstitutionSolver } from "@/components/interactive/lu";
@@ -111,6 +111,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     PivotSpotter,
     MatrixVectorExplorer,
     ColumnSpanCheck,
+    RowPictureSolver,
+    SpanBreaker,
     PreimageHunt,
     ShapeMatch,
     CompositionExplorer,
