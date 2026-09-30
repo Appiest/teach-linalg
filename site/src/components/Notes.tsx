@@ -31,7 +31,7 @@ import { PivotHunt, PolynomialRecipe, ThirdVectorHunt } from "@/components/inter
 import { DifferenceInKernel, EvaluationKernel, SecondDerivativeTwins, ZeroLanding } from "@/components/interactive/kernel";
 import { ComplementLanding, RangeCollapse, RangeProbe, ThirdColumnBudget } from "@/components/interactive/image-range";
 import { DiagonalZeroHunt, EigenDirectionHunt, EigenGapHunt } from "@/components/interactive/eigenvectors";
-import { AreaShearSlide, CornerToOrigin } from "@/components/interactive/determinants-as-area";
+import { AreaShearSlide, ColumnStretch, CornerToOrigin, SignSweep } from "@/components/interactive/determinants-as-area";
 import { CramerAreas, HeightStack, ProductAreaHunt } from "@/components/interactive/determinant-properties";
 import { CofactorLinePicker, MultipleAreaScale, ReplacementShear } from "@/components/interactive/cofactor-expansion";
 import { IterateSwing, ShiftToSingular, TraceCurveMatch } from "@/components/interactive/eigenvalue-properties";
@@ -169,6 +169,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     DiagonalZeroHunt,
     AreaShearSlide,
     CornerToOrigin,
+    ColumnStretch,
+    SignSweep,
     HeightStack,
     ProductAreaHunt,
     CramerAreas,
