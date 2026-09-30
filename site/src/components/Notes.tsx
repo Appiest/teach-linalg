@@ -36,7 +36,7 @@ import { CramerAreas, HeightStack, ProductAreaHunt } from "@/components/interact
 import { CofactorLinePicker, MultipleAreaScale, ReplacementShear } from "@/components/interactive/cofactor-expansion";
 import { IterateSwing, ShiftToSingular, TraceCurveMatch } from "@/components/interactive/eigenvalue-properties";
 import { ChainCoordinates, JordanChainBuilder, MultiplicityGapSlider, NullPowerClimb, ShearRaySweep } from "@/components/interactive/generalized-eigenvectors";
-import { DiagonalBasisHunt, EigenOrbitSettle, EigenPolynomialHunt } from "@/components/interactive/diagonalizing-transformations";
+import { BasisColumnBuilder, DiagonalBasisHunt, EigenOrbitSettle, EigenPolynomialHunt, TwoCoordinateMap } from "@/components/interactive/diagonalizing-transformations";
 import { DiagonalEntryMatch, DiagonalFactorSteps, EigenColumnHunt, EigenCoordinateTarget } from "@/components/interactive/diagonalization";
 import { CharacteristicSweep, EigenpairHunt } from "@/components/interactive/characteristic-equation";
 import { SpectralEllipseBuilder, SymmetricPerpendicularHunt } from "@/components/interactive/symmetric-matrices";
@@ -178,6 +178,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     DiagonalBasisHunt,
     EigenOrbitSettle,
     EigenPolynomialHunt,
+    BasisColumnBuilder,
+    TwoCoordinateMap,
     EigenCoordinateTarget,
     DiagonalFactorSteps,
     EigenColumnHunt,

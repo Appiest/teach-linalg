@@ -1,106 +1,311 @@
 Day 21 showed that one linear map has a different matrix in every basis, and on Day 22 the map $\mathbf x \mapsto A\mathbf x$ with $A = \begin{bmatrix} 1 & 2 \\ 1 & 0 \end{bmatrix}$ got a triangular matrix in the basis $\{(2, 1), (-1, 2)\}$. That raises a question: which basis gives a map its simplest possible matrix? Day 32 factored matrices as $A = PDP^{-1}$, and today reads that factorization as the answer. If you describe a map in a basis made of its own eigenvectors, its matrix is diagonal, because the map only stretches each basis vector.
 
-<Figure src="two-grids" alt="Two copies of the same plane after A = [1 2; 1 0] acts. On the left, the standard grid has been carried to slanted lines, green e1 has moved to (1, 1) and red e2 to (2, 0), and the yellow vector x = (1, 2) lands at teal Ax = (5, 1). On the right, the purple-gray grid of v1 = (2, 1) and v2 = (−1, 1) still lines up with itself: yellow v1 has doubled and blue v2 has flipped, and Ax is two yellow steps and one backward blue step. The top plates read x = (1, 2) maps to Ax = (5, 1) on the left, and [x]_B = (1, 1) maps to [Ax]_B = (2, −1) on the right, above [T]_B = [2 0; 0 −1]." wide />
+Each section below opens with a problem. Try it before you open the walkthrough, even if you only get partway. The box after each walkthrough names the idea you just used.
 
-Both halves show the same arrow $\yellow{\mathbf x}$ going to the same arrow $\teal{A\mathbf x}$. Only the coordinates differ. In standard coordinates, $(1, 2) \mapsto (5, 1)$ and it is hard to see a pattern. In the eigenvector basis $\mathcal B = \{\yellow{\mathbf v_1}, \blue{\mathbf v_2}\}$ with $\yellow{\mathbf v_1} = (2, 1)$ and $\blue{\mathbf v_2} = (-1, 1)$, the same move is $(1, 1) \mapsto (2, -1)$, which doubles the first coordinate and flips the sign of the second.
+## The matrix in a basis
 
-## The matrix in an eigenvector basis
+We start by rebuilding Day 21's recipe on a small example, since everything today is that recipe with a well-chosen basis.
 
-Recall from Day 21 that the **$\mathcal B$-matrix** $[T]_{\mathcal B}$ has the coordinate vectors $[T(\mathbf b_j)]_{\mathcal B}$ as its columns, so that $[T(\mathbf x)]_{\mathcal B} = [T]_{\mathcal B}[\mathbf x]_{\mathcal B}$. The goal of this section is to build that matrix for an eigenvector basis and see that it is exactly the $D$ from Day 32. When the basis vectors are eigenvectors, each $T(\mathbf b_j)$ is a multiple of $\mathbf b_j$ alone, so each column has a single nonzero entry, and it sits on the diagonal.
+<Problem>
+Let $A = \begin{bmatrix} 5 & -2 \\ 4 & -1 \end{bmatrix}$ and $\mathcal B = \{\yellow{\mathbf b_1}, \blue{\mathbf b_2}\}$ with $\yellow{\mathbf b_1} = (1, 1)$ and $\blue{\mathbf b_2} = (1, 0)$. Write $A\yellow{\mathbf b_1}$ and $A\blue{\mathbf b_2}$ as combinations of $\yellow{\mathbf b_1}$ and $\blue{\mathbf b_2}$. Then build the matrix $[T]_{\mathcal B}$ of $T(\mathbf x) = A\mathbf x$.
+
+<Solution>
+Day 21's rule says column $j$ of $[T]_{\mathcal B}$ holds the $\mathcal B$-coordinates of $T(\mathbf b_j)$. So we need the two images and then their coordinates.
+
+<Steps>
+<Step>
+Compute the images: $A\yellow{\mathbf b_1} = (5 - 2,\ 4 - 1) = (3, 3)$ and $A\blue{\mathbf b_2} = (5, 4)$.
+</Step>
+<Step>
+Write $(3, 3)$ in the basis. It is $3\yellow{\mathbf b_1} + 0\blue{\mathbf b_2}$, since $\yellow{\mathbf b_1} = (1, 1)$. So column 1 is $(3, 0)$.
+</Step>
+<Step>
+Write $(5, 4)$ in the basis. We need $c_1(1, 1) + c_2(1, 0) = (5, 4)$. The second entry says $c_1 = 4$, and then the first says $4 + c_2 = 5$, so $c_2 = 1$. Column 2 is $(4, 1)$.
+</Step>
+<Step>
+Put the columns side by side: $[T]_{\mathcal B} = \begin{bmatrix} 3 & 4 \\ 0 & 1 \end{bmatrix}$.
+</Step>
+</Steps>
+
+The first column came out with a single nonzero entry because $\yellow{\mathbf b_1}$ is an eigenvector: $A\yellow{\mathbf b_1} = 3\yellow{\mathbf b_1}$. The second basis vector is not an eigenvector, so its column needs both entries.
+</Solution>
+</Problem>
+
+Build the second column yourself on the slanted grid of $\yellow{\mathbf b_1}$ and $\blue{\mathbf b_2}$.
+
+<BasisColumnBuilder matrix={[[5, -2], [4, -1]]} b1={[1, 1]} b2={[1, 0]} column={1} />
+
+<Warning>
+Column $j$ holds the coordinates $[A\mathbf b_j]_{\mathcal B}$, not the vector $A\mathbf b_j$ itself. Here $A\blue{\mathbf b_2} = (5, 4)$, but the column is $(4, 1)$. The two agree only when $\mathcal B$ is the standard basis.
+</Warning>
+
+## An eigenvector basis
+
+<Problem>
+Keep the same $A$ and $\yellow{\mathbf b_1} = (1, 1)$, but replace the second basis vector with $\blue{\mathbf b_2} = (1, 2)$. Find the new $[T]_{\mathcal B}$.
+
+<Solution>
+Again we need the images and their coordinates. $A\yellow{\mathbf b_1} = (3, 3) = 3\yellow{\mathbf b_1}$ as before. Now $A\blue{\mathbf b_2} = (5 - 4,\ 4 - 2) = (1, 2)$, which is $1\blue{\mathbf b_2}$.
+
+Both images are multiples of their own basis vector, so each column has one nonzero entry and it sits on the diagonal:
+
+$$
+[T]_{\mathcal B} = \begin{bmatrix} 3 & 0 \\ 0 & 1 \end{bmatrix}.
+$$
+
+Changing one basis vector into an eigenvector cleared the off-diagonal entry.
+</Solution>
+</Problem>
+
+<Concept title="Eigenvectors give a diagonal matrix">
+When every basis vector is an eigenvector, $T(\mathbf b_j) = \lambda_j\mathbf b_j$, so column $j$ of $[T]_{\mathcal B}$ is $\lambda_j$ times the $j$th standard column. The matrix is diagonal with the eigenvalues in basis order. That is exactly the $D$ from Day 32.
+</Concept>
 
 <Definition term="Diagonal matrix representation">
-Suppose $A = PDP^{-1}$, where $D$ is a diagonal $n \times n$ matrix. If $\mathcal B$ is the basis of $\mathbb R^n$ formed from the columns of $P$, then $D$ is the $\mathcal B$-matrix of the transformation $\mathbf x \mapsto A\mathbf x$.
+Suppose $A = PDP^{-1}$, where $D$ is a diagonal $n \times n$ matrix. If $\mathcal B$ is the basis of $\mathbb R^n$ formed from the columns of $P$, then $D$ is the $\mathcal B$-matrix of the transformation $\mathbf x \mapsto A\mathbf x$ (Lay §5.4, Theorem 8).
 </Definition>
 
 The proof is Day 22's formula read column by column, with $P = [\,\mathbf b_1\ \cdots\ \mathbf b_n\,]$ and $[\mathbf y]_{\mathcal B} = P^{-1}\mathbf y$:
 
 $$
 \begin{aligned}
-[T]_{\mathcal B} &= \big[\,[A\mathbf b_1]_{\mathcal B}\ \cdots\ [A\mathbf b_n]_{\mathcal B}\,\big] && \text{definition of } [T]_{\mathcal B} \\
-&= \big[\,P^{-1}A\mathbf b_1\ \cdots\ P^{-1}A\mathbf b_n\,\big] && \text{change of coordinates} \\
-&= P^{-1}A\,[\,\mathbf b_1\ \cdots\ \mathbf b_n\,] = P^{-1}AP = D. && \text{since } A = PDP^{-1}
+[T]_{\mathcal B} &= \big[\,[A\mathbf b_1]_{\mathcal B}\ \cdots\ [A\mathbf b_n]_{\mathcal B}\,\big] \\
+&= \big[\,P^{-1}A\mathbf b_1\ \cdots\ P^{-1}A\mathbf b_n\,\big] \\
+&= P^{-1}A\,[\,\mathbf b_1\ \cdots\ \mathbf b_n\,] \\
+&= P^{-1}AP = D.
 \end{aligned}
 $$
 
-For the video's matrix, $P = \begin{bmatrix} \yellow{2} & \blue{-1} \\ \yellow{1} & \blue{1} \end{bmatrix}$ has determinant $3$, and the check comes out diagonal:
+The first line is the definition of $[T]_{\mathcal B}$. The second uses $[\mathbf y]_{\mathcal B} = P^{-1}\mathbf y$, the third pulls $P^{-1}A$ out of every column, and the last uses $A = PDP^{-1}$.
+
+In the picture, the same arrow $\yellow{\mathbf x}$ goes to the same arrow $\teal{A\mathbf x}$ on both sides. For $A = \begin{bmatrix} 1 & 2 \\ 1 & 0 \end{bmatrix}$, standard coordinates say $(1, 2) \mapsto (5, 1)$ and show no pattern. In the eigenvector basis $\yellow{\mathbf v_1} = (2, 1)$, $\blue{\mathbf v_2} = (-1, 1)$, the same move is $(1, 1) \mapsto (2, -1)$, which doubles the first coordinate and flips the second.
+
+<Figure src="two-grids" alt="Two copies of the same plane after A = [1 2; 1 0] acts. On the left, the standard grid has been carried to slanted lines, green e1 has moved to (1, 1) and red e2 to (2, 0), and the yellow vector x = (1, 2) lands at teal Ax = (5, 1). On the right, the purple-gray grid of v1 = (2, 1) and v2 = (−1, 1) still lines up with itself: yellow v1 has doubled and blue v2 has flipped, and Ax is two yellow steps and one backward blue step. The top plates read x = (1, 2) maps to Ax = (5, 1) on the left, and [x]_B = (1, 1) maps to [Ax]_B = (2, −1) on the right, above [T]_B = [2 0; 0 −1]." wide />
+
+Try it with the same map. Drag $\mathbf x$ in standard coordinates on the left and watch its eigen-coordinates on the right, where $A$ only scales each axis.
+
+<TwoCoordinateMap matrix={[[1, 2], [1, 0]]} b1={[2, 1]} b2={[-1, 1]} target={[2, 1]} />
+
+For this map, $P = \begin{bmatrix} \yellow{2} & \blue{-1} \\ \yellow{1} & \blue{1} \end{bmatrix}$ has determinant $3$, and the check comes out diagonal:
 
 $$
-P^{-1}AP = \tfrac13\begin{bmatrix} 1 & 1 \\ -1 & 2 \end{bmatrix}\begin{bmatrix} 1 & 2 \\ 1 & 0 \end{bmatrix}\begin{bmatrix} 2 & -1 \\ 1 & 1 \end{bmatrix} = \tfrac13\begin{bmatrix} 1 & 1 \\ -1 & 2 \end{bmatrix}\begin{bmatrix} 4 & 1 \\ 2 & -1 \end{bmatrix} = \begin{bmatrix} \yellow{2} & 0 \\ 0 & \blue{-1} \end{bmatrix}.
+\begin{aligned}
+P^{-1}AP &= \tfrac13\begin{bmatrix} 1 & 1 \\ -1 & 2 \end{bmatrix}\begin{bmatrix} 1 & 2 \\ 1 & 0 \end{bmatrix}\begin{bmatrix} 2 & -1 \\ 1 & 1 \end{bmatrix} \\
+&= \tfrac13\begin{bmatrix} 1 & 1 \\ -1 & 2 \end{bmatrix}\begin{bmatrix} 4 & 1 \\ 2 & -1 \end{bmatrix} = \begin{bmatrix} \yellow{2} & 0 \\ 0 & \blue{-1} \end{bmatrix}.
+\end{aligned}
 $$
 
 You never need $P^{-1}$ on its own. Row reducing $[\,P \ \ AP\,]$ to $[\,I \ \ P^{-1}AP\,]$ gives the same answer with less arithmetic.
 
-The widget below uses a different matrix. Its readout computes $[T]_{\mathcal B} = P^{-1}AP$ for whatever basis you drag, and the two off-diagonal entries glow orange while they are not zero.
+Now find an eigenvector basis for a different matrix. The readout computes $[T]_{\mathcal B} = P^{-1}AP$ for whatever basis you drag, and the two off-diagonal entries glow orange while they are not zero.
 
 <DiagonalBasisHunt matrix={[[1, 2], [3, 2]]} start1={[1, 0]} start2={[0, 1]} />
 
-Order matters only for the diagonal. Swapping $\mathbf b_1$ and $\mathbf b_2$ swaps the two eigenvalues on the diagonal, and both answers are correct as long as the order of $D$ matches the order of $\mathcal B$.
+Swapping $\mathbf b_1$ and $\mathbf b_2$ swaps the two eigenvalues on the diagonal. Both answers are correct as long as the order of $D$ matches the order of $\mathcal B$.
 
 ## Similar matrices
 
-Nothing in the proof above used that $D$ is diagonal. For any invertible $P$, the matrix $C = P^{-1}AP$ is the matrix of $\mathbf x \mapsto A\mathbf x$ in the basis formed by the columns of $P$. Read the other way, every matrix of this map in some basis is similar to $A$. Tomorrow's symmetric matrices use this with a basis of perpendicular unit eigenvectors, where $P^{-1}$ is simply $P^T$.
+<Problem>
+Three matrices describe $\mathbf x \mapsto A\mathbf x$ for $A = \begin{bmatrix} 1 & 2 \\ 1 & 0 \end{bmatrix}$: $A$ itself in the standard basis, $C = \begin{bmatrix} 2 & 1 \\ 0 & -1 \end{bmatrix}$ in Day 22's basis $\{(2, 1), (-1, 2)\}$, and $D = \begin{bmatrix} 2 & 0 \\ 0 & -1 \end{bmatrix}$ in the eigenvector basis. Compute the trace and determinant of each.
+
+<Solution>
+The trace is the sum of the diagonal entries, and the $2 \times 2$ determinant is $ad - bc$.
+
+$$
+\begin{aligned}
+A&: \quad \operatorname{tr} = 1 + 0 = 1, \qquad \det = 1 \cdot 0 - 2 \cdot 1 = -2 \\
+C&: \quad \operatorname{tr} = 2 + (-1) = 1, \qquad \det = 2 \cdot (-1) - 1 \cdot 0 = -2 \\
+D&: \quad \operatorname{tr} = 2 + (-1) = 1, \qquad \det = 2 \cdot (-1) - 0 = -2
+\end{aligned}
+$$
+
+All three agree. They describe one map, so they share every number that does not depend on the choice of coordinates, including the eigenvalues $2$ and $-1$.
+</Solution>
+</Problem>
 
 <Pair>
 <Figure src="square" alt="A square diagram. The top edge sends x to Ax by A. The left edge goes up from [x]_B to x by P, the right edge goes down from Ax to [Ax]_B by P inverse, and the bottom edge sends [x]_B to [Ax]_B by D. Below it, one third of [1 1; −1 2] times [1 2; 1 0] times [2 −1; 1 1] equals [2 0; 0 −1]." />
 
-So **similar** matrices are the same linear map written in different coordinates. The video shows three of them for one map: $A$ in the standard basis, the triangular $\begin{bmatrix} 2 & 1 \\ 0 & -1 \end{bmatrix}$ in Day 22's basis $\{(2, 1), (-1, 2)\}$, and $D$ in the eigenvector basis. Since they describe one map, they share everything that does not depend on coordinates, such as the eigenvalues $2$ and $-1$, the trace $1$ and the determinant $-2$.
+<Concept title="Similar means same map">
+The proof above never used that $D$ is diagonal. For any invertible $P$, the matrix $C = P^{-1}AP$ is the matrix of $\mathbf x \mapsto A\mathbf x$ in the basis formed by the columns of $P$. So **similar** matrices are one linear map written in different coordinates. Going around the square, $P$ turns coordinates into a vector, $A$ acts, and $P^{-1}$ turns the result back into coordinates.
+</Concept>
 </Pair>
 
-Not every map has a diagonal matrix. The derivative $\tfrac{d}{dt}$ on $\mathbb P_2$ has only the constants as eigenvectors, so no basis of three eigenvectors exists. For $\begin{bmatrix} 4 & -9 \\ 4 & -8 \end{bmatrix}$, whose only eigenvalue is $-2$ with a one-dimensional eigenspace, the best basis is a Jordan chain like Day 31's, and it gives the Jordan form $\begin{bmatrix} -2 & 1 \\ 0 & -2 \end{bmatrix}$.
+<Choice
+  question="Which matrix cannot be a matrix of $\mathbf x \mapsto A\mathbf x$ for $A = \begin{bmatrix} 1 & 2 \\ 1 & 0 \end{bmatrix}$ in any basis?"
+  options={["$\\begin{bmatrix} -1 & 0 \\\\ 0 & 2 \\end{bmatrix}$", "$\\begin{bmatrix} 2 & 5 \\\\ 0 & -1 \\end{bmatrix}$", "$\\begin{bmatrix} 2 & 0 \\\\ 0 & 1 \\end{bmatrix}$"]}
+  answer={2}
+>
+Every matrix of this map has trace $1$ and determinant $-2$. The last matrix has trace $3$ and determinant $2$, so it describes a different map. The first is $D$ with the basis order swapped, and the second is triangular with the right eigenvalues, which some basis produces.
+</Choice>
+
+Not every map has a diagonal matrix. For $\begin{bmatrix} 4 & -9 \\ 4 & -8 \end{bmatrix}$, whose only eigenvalue is $-2$ with a one-dimensional eigenspace, the best basis is a Jordan chain like Day 31's. The chain $\mathbf b_2 = (2, 1) \to \mathbf b_1 = (3, 2)$ gives the Jordan form $\begin{bmatrix} -2 & 1 \\ 0 & -2 \end{bmatrix}$.
+
+<Warning>
+The $\mathcal B$-matrix is $P^{-1}AP$, not $PAP^{-1}$. Read it right to left: $P$ turns $\mathcal B$-coordinates into a vector, $A$ acts on the vector, and $P^{-1}$ turns the answer back into $\mathcal B$-coordinates.
+</Warning>
 
 ## A map on polynomials
 
-The same idea works in any vector space. Let $T: \mathbb P_1 \to \mathbb P_1$ be $T(a_0 + a_1t) = (a_0 + a_1) + 2a_1t$. In the basis $\{1, t\}$ its matrix is $\begin{bmatrix} 1 & 1 \\ 0 & 2 \end{bmatrix}$, which is triangular with eigenvalues $1$ and $2$. An eigenvector here is a polynomial that $T$ only rescales, so its graph and the graph of $T(p)$ cross the $t$-axis at the same point.
+The same idea works in any vector space, as long as we use coordinates.
+
+<Problem>
+Let $T: \mathbb P_1 \to \mathbb P_1$ be $T(a_0 + a_1t) = (a_0 + a_1) + 2a_1t$. Find its matrix in the basis $\{1, t\}$. Then find two polynomials that $T$ only rescales.
+
+<Solution>
+<Steps>
+<Step>
+Apply $T$ to each basis polynomial. $T(1)$ has $a_0 = 1, a_1 = 0$, so $T(1) = 1$. $T(t)$ has $a_0 = 0, a_1 = 1$, so $T(t) = 1 + 2t$.
+</Step>
+<Step>
+Record the coordinates as columns: $T(1) = 1 \cdot 1 + 0 \cdot t$ and $T(t) = 1 \cdot 1 + 2 \cdot t$, so the matrix is $\begin{bmatrix} 1 & 1 \\ 0 & 2 \end{bmatrix}$.
+</Step>
+<Step>
+The matrix is triangular, so its eigenvalues are $1$ and $2$. For $1$, the shifted matrix $\begin{bmatrix} 0 & 1 \\ 0 & 1 \end{bmatrix}$ forces $a_1 = 0$, which gives the polynomial $1$.
+</Step>
+<Step>
+For $2$, the shifted matrix $\begin{bmatrix} -1 & 1 \\ 0 & 0 \end{bmatrix}$ says $a_0 = a_1$, which gives $1 + t$. Check: $T(1 + t) = 2 + 2t = 2(1 + t)$.
+</Step>
+</Steps>
+
+In the basis $\mathcal E = \{1,\ 1 + t\}$, the matrix of $T$ is $\begin{bmatrix} 1 & 0 \\ 0 & 2 \end{bmatrix}$.
+</Solution>
+</Problem>
+
+An eigenvector here is a polynomial whose graph $T$ only stretches vertically, so the graph of $p$ and the graph of $T(p)$ cross the $t$-axis at the same point. Find both.
 
 <EigenPolynomialHunt matrix={[[1, 1], [0, 2]]} />
 
-The two eigenpolynomials are $1$ and $1 + t$, since $T(1) = 1$ and $T(1 + t) = 2 + 2t$. In the basis $\mathcal E = \{1,\ 1 + t\}$, the matrix of $T$ is $\begin{bmatrix} 1 & 0 \\ 0 & 2 \end{bmatrix}$.
+Some maps have no eigenvector basis. The derivative $\tfrac{d}{dt}$ on $\mathbb P_2$ has only the constants as eigenvectors, so no basis of three eigenvectors exists, and Day 31's chain $t^2 \to 2t \to 2$ is the best basis available.
 
 ## Powers and dynamical systems
 
-On Day 30, repeated multiplication swung a vector toward one eigenvector's line. The goal here is to predict that motion exactly without multiplying any matrices. In eigenvector coordinates, applying $A$ once multiplies coordinate $i$ by $\lambda_i$, so applying it $k$ times multiplies coordinate $i$ by $\lambda_i^k$. If $\mathbf x_0 = c_1\mathbf v_1 + c_2\mathbf v_2$, then
+On Day 30, repeated multiplication swung a vector toward one eigenvector's line. Eigen-coordinates let us predict that motion exactly without multiplying any matrices.
+
+<Problem>
+Keep $A = \begin{bmatrix} 1 & 2 \\ 1 & 0 \end{bmatrix}$ with $\yellow{\mathbf v_1} = (2, 1)$ for $\lambda = 2$ and $\blue{\mathbf v_2} = (-1, 1)$ for $\lambda = -1$. Let $\mathbf x_0 = (1, 2)$ and $\mathbf x_{k+1} = A\mathbf x_k$. Find $\mathbf x_3$ without multiplying by $A$ three times.
+
+<Solution>
+<Steps>
+<Step>
+Write $\mathbf x_0$ in the eigenvector basis. $c_1(2, 1) + c_2(-1, 1) = (1, 2)$ gives $2c_1 - c_2 = 1$ and $c_1 + c_2 = 2$. Adding them gives $3c_1 = 3$, so $c_1 = 1$ and $c_2 = 1$.
+</Step>
+<Step>
+Each step multiplies the first coordinate by $2$ and the second by $-1$. After three steps the coordinates are $(2^3 \cdot 1,\ (-1)^3 \cdot 1) = (8, -1)$.
+</Step>
+<Step>
+Convert back: $\mathbf x_3 = 8\yellow{\mathbf v_1} - \blue{\mathbf v_2} = (16, 8) - (-1, 1) = (17, 7)$.
+</Step>
+</Steps>
+
+Check the slow way: $A(1, 2) = (5, 1)$, then $A(5, 1) = (7, 5)$, then $A(7, 5) = (17, 7)$.
+</Solution>
+</Problem>
+
+<Concept title="Powers act one coordinate at a time">
+If $\mathbf x_0 = c_1\mathbf v_1 + c_2\mathbf v_2$ in an eigenvector basis, then
 
 $$
 \mathbf x_k = A^k\mathbf x_0 = c_1\lambda_1^k\,\mathbf v_1 + c_2\lambda_2^k\,\mathbf v_2, \qquad A^k = PD^kP^{-1}.
 $$
 
+In the long run, the eigenvalue with the largest absolute value decides where the system heads.
+</Concept>
+
 <Pair>
 <Figure src="orbit" alt="The purple-gray eigen-grid of v1 = (2, 1) and v2 = (−1, 1). Teal dots x0 through x4 zigzag across the yellow line through v1, joined by dashed segments, and a teal arrow points to x4 = (7, 5). Beside the plane, x0 = ¼v1 + v2, x1 = ½v1 − v2, x2 = v1 + v2, x3 = 2v1 − v2, x4 = 4v1 + v2, and A^k = PD^kP⁻¹." />
 
-With the video's matrix and $\mathbf x_0 = \tfrac14\yellow{\mathbf v_1} + \blue{\mathbf v_2}$, the yellow part doubles and the blue part flips at every step. The points jump back and forth across the line through $\yellow{\mathbf v_1}$, and because the yellow part keeps growing while the blue part stays the same size, the direction of $\mathbf x_k$ swings closer to that line each time. In the long run, the eigenvalue with the largest absolute value decides where the system heads.
+With $\mathbf x_0 = \tfrac14\yellow{\mathbf v_1} + \blue{\mathbf v_2}$, the yellow part doubles and the blue part flips at every step. The points jump back and forth across the line through $\yellow{\mathbf v_1}$. The yellow part keeps growing while the blue part stays the same size, so the direction of $\mathbf x_k$ swings closer to that line each time.
 </Pair>
 
 In the next widget the two eigenvectors are the same, but the eigenvalues are $1$ and $\tfrac12$. The $\blue{\mathbf v_2}$ part now halves at each step and dies out, so every orbit settles at $c_1\yellow{\mathbf v_1}$.
 
-Tomorrow asks which matrices always have an eigenvector basis at right angles, and Day 39 uses that basis to remove the cross terms from a quadratic form.
-
 <EigenOrbitSettle v1={[2, 1]} v2={[-1, 1]} lambdas={[1, 0.5]} target={[4, 2]} />
+
+Tomorrow asks which matrices always have an eigenvector basis at right angles, and Day 39 uses that basis to remove the cross terms from a quadratic form.
 
 ## Practice
 
-<Check>
-Let $A = \begin{bmatrix} 5 & -2 \\ 4 & -1 \end{bmatrix}$ and $\mathcal B = \{(1, 1), (1, 0)\}$. Find $[T]_{\mathcal B}$ for $T(\mathbf x) = A\mathbf x$ and enter its entries in reading order. (Modeled on Lay §5.4, Exercises 9–12.)
+### Warm-up
 
-<VectorAnswer answer={[3, 4, 0, 1]} labels={["top left", "top right", "bottom left", "bottom right"]} />
+<Check>
+In a basis $\mathcal B = \{\mathbf b_1, \mathbf b_2\}$, a map satisfies $T(\mathbf b_1) = 3\mathbf b_1 - 2\mathbf b_2$ and $T(\mathbf b_2) = 4\mathbf b_1 + 7\mathbf b_2$. Find $[T]_{\mathcal B}$. Enter it row by row. (Modeled on Lay §5.4, Example 1.)
+
+<VectorAnswer answer={[3, 4, -2, 7]} columns={2} />
 
 <Answer>
-Form $AP$ and row reduce $[\,P \ \ AP\,]$:
-
-$$
-\begin{aligned}
-AP &= \begin{bmatrix} 5 & -2 \\ 4 & -1 \end{bmatrix}\begin{bmatrix} 1 & 1 \\ 1 & 0 \end{bmatrix} = \begin{bmatrix} 3 & 5 \\ 3 & 4 \end{bmatrix} \\
-\left[\begin{array}{cc|cc} 1 & 1 & 3 & 5 \\ 1 & 0 & 3 & 4 \end{array}\right] &\sim \left[\begin{array}{cc|cc} 1 & 0 & 3 & 4 \\ 0 & 1 & 0 & 1 \end{array}\right]
-\end{aligned}
-$$
-
-So $[T]_{\mathcal B} = \begin{bmatrix} 3 & 4 \\ 0 & 1 \end{bmatrix}$. The first column is $(3, 0)$ because $(1, 1)$ is an eigenvector with $\lambda = 3$. The second vector $(1, 0)$ is not an eigenvector, so the matrix is not diagonal. Replacing it with the other eigenvector $(1, 2)$, which has $\lambda = 1$, gives $\operatorname{diag}(3, 1)$.
+Column $j$ holds the coordinates of $T(\mathbf b_j)$. The coordinates of $T(\mathbf b_1)$ are $(3, -2)$ and those of $T(\mathbf b_2)$ are $(4, 7)$, so $[T]_{\mathcal B} = \begin{bmatrix} 3 & 4 \\ -2 & 7 \end{bmatrix}$.
 </Answer>
 </Check>
 
 <Check>
-With $A = \begin{bmatrix} 1 & 2 \\ 1 & 0 \end{bmatrix}$ from the video and $\mathbf x_0 = (1, 2)$, compute $A^5\mathbf x_0$ without multiplying matrices.
+A matrix $A$ is similar to $\begin{bmatrix} 3 & 0 \\ 0 & -2 \end{bmatrix}$. Find the trace and determinant of $A$.
+
+<VectorAnswer answer={[1, -6]} labels={["trace", "det"]} />
+
+<Answer>
+Similar matrices describe one map, so they share trace and determinant. The diagonal matrix has trace $3 + (-2) = 1$ and determinant $3 \cdot (-2) = -6$.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="The columns of $P$ form a basis $\mathcal B$. Which product is the $\mathcal B$-matrix of $\mathbf x \mapsto A\mathbf x$?"
+  options={["$PAP^{-1}$", "$P^{-1}AP$", "$AP$"]}
+  answer={1}
+>
+Right to left, $P$ turns $\mathcal B$-coordinates into a vector, $A$ acts, and $P^{-1}$ turns the result back into $\mathcal B$-coordinates. So the matrix is $P^{-1}AP$. The product $AP$ gives the images $A\mathbf b_j$ in standard coordinates, which is only halfway there.
+</Choice>
+</Check>
+
+### Core
+
+<Check>
+Let $A = \begin{bmatrix} 2 & 1 \\ -1 & 4 \end{bmatrix}$ and $\mathcal B = \{(1, 1), (1, 0)\}$. Find $[T]_{\mathcal B}$ for $T(\mathbf x) = A\mathbf x$. Enter it row by row. (Modeled on Lay §5.4 #11.)
+
+<VectorAnswer answer={[3, -1, 0, 3]} columns={2} />
+
+<Hint>
+Compute $A\mathbf b_1$ and $A\mathbf b_2$, then write each as $c_1(1, 1) + c_2(1, 0)$. The second entry of each image gives $c_1$ right away.
+</Hint>
+
+<Answer>
+$A(1, 1) = (3, 3) = 3\mathbf b_1 + 0\mathbf b_2$, so column 1 is $(3, 0)$. $A(1, 0) = (2, -1)$. The second entry gives $c_1 = -1$, and then $-1 + c_2 = 2$ gives $c_2 = 3$. So column 2 is $(-1, 3)$ and
+
+$$
+[T]_{\mathcal B} = \begin{bmatrix} 3 & -1 \\ 0 & 3 \end{bmatrix}.
+$$
+
+The characteristic polynomial of $A$ is $\lambda^2 - 6\lambda + 9 = (\lambda - 3)^2$, and $A - 3I$ has rank 1. With only one eigenline, no basis makes this matrix diagonal, and a triangular matrix is the best you can do.
+</Answer>
+</Check>
+
+<Check>
+Let $A = \begin{bmatrix} 1 & 2 \\ 3 & 2 \end{bmatrix}$ and $\mathcal B = \{(2, 3), (-1, 1)\}$. Find $[T]_{\mathcal B}$. Enter it row by row.
+
+<VectorAnswer answer={[4, 0, 0, -1]} columns={2} />
+
+<Hint>
+Check whether each basis vector is an eigenvector before doing any row reduction.
+</Hint>
+
+<Answer>
+$A(2, 3) = (2 + 6,\ 6 + 6) = (8, 12) = 4(2, 3)$ and $A(-1, 1) = (-1 + 2,\ -3 + 2) = (1, -1) = -1(-1, 1)$. Both basis vectors are eigenvectors, so
+
+$$
+[T]_{\mathcal B} = \begin{bmatrix} 4 & 0 \\ 0 & -1 \end{bmatrix}.
+$$
+</Answer>
+</Check>
+
+<Check>
+With $A = \begin{bmatrix} 1 & 2 \\ 1 & 0 \end{bmatrix}$ and $\mathbf x_0 = (1, 2)$, compute $A^5\mathbf x_0$ without multiplying matrices.
 
 <VectorAnswer answer={[65, 31]} />
+
+<Hint>
+The lesson found $\mathbf x_0 = \mathbf v_1 + \mathbf v_2$. Raise each eigenvalue to the fifth power.
+</Hint>
 
 <Answer>
 In the eigenvector basis, $\mathbf x_0 = \mathbf v_1 + \mathbf v_2$ with $\mathbf v_1 = (2, 1)$ for $\lambda = 2$ and $\mathbf v_2 = (-1, 1)$ for $\lambda = -1$. So
@@ -112,9 +317,13 @@ $$
 </Check>
 
 <Check>
-Let $T: \mathbb P_1 \to \mathbb P_1$ be $T(a_0 + a_1t) = (a_0 + 4a_1) + 3a_1t$. Find the eigenvector of $T$ for $\lambda = 3$ whose $t$-coefficient is $1$, and enter its coefficients $a_0, a_1$. (Modeled on Lay §5.4, Exercise 7.)
+Let $T: \mathbb P_1 \to \mathbb P_1$ be $T(a_0 + a_1t) = (a_0 + 4a_1) + 3a_1t$. Find the eigenvector of $T$ for $\lambda = 3$ whose $t$-coefficient is $1$, and enter its coefficients $a_0, a_1$. (Modeled on Lay §5.4 #7.)
 
 <VectorAnswer answer={[2, 1]} labels={["a₀", "a₁"]} />
+
+<Hint>
+Write the matrix of $T$ in the basis $\{1, t\}$, subtract $3I$, and solve.
+</Hint>
 
 <Answer>
 In the basis $\{1, t\}$, $[T] = \begin{bmatrix} 1 & 4 \\ 0 & 3 \end{bmatrix}$, and
@@ -124,5 +333,75 @@ $$
 $$
 
 With $a_1 = 1$ the eigenvector is $2 + t$. Check: $T(2 + t) = 6 + 3t = 3(2 + t)$. Together with $T(1) = 1$, the basis $\{1,\ 2 + t\}$ makes the matrix of $T$ equal to $\operatorname{diag}(1, 3)$.
+</Answer>
+</Check>
+
+<Check>
+Let $T: \mathbb P_2 \to \mathbb P_2$ be $T(a_0 + a_1t + a_2t^2) = 2a_0 + (a_0 - a_1)t + (3a_1 + a_2)t^2$. Find the eigenvector for $\lambda = -1$ whose $t$-coefficient is $2$, and enter its coefficients $a_0, a_1, a_2$. (Modeled on Lay §5.4 #7.)
+
+<VectorAnswer answer={[0, 2, -3]} labels={["a₀", "a₁", "a₂"]} />
+
+<Hint>
+The matrix in $\{1, t, t^2\}$ is lower triangular. Subtract $-1$ from each diagonal entry, which means adding $1$.
+</Hint>
+
+<Answer>
+The columns are the coordinates of $T(1) = 2 + t$, $T(t) = -t + 3t^2$ and $T(t^2) = t^2$:
+
+$$
+[T] = \begin{bmatrix} 2 & 0 & 0 \\ 1 & -1 & 0 \\ 0 & 3 & 1 \end{bmatrix}, \qquad [T] + I = \begin{bmatrix} 3 & 0 & 0 \\ 1 & 0 & 0 \\ 0 & 3 & 2 \end{bmatrix}.
+$$
+
+The first row forces $a_0 = 0$, and the last row says $3a_1 + 2a_2 = 0$. With $a_1 = 2$ that gives $a_2 = -3$, so the eigenvector is $2t - 3t^2$. Check: $T(2t - 3t^2) = 0 + (0 - 2)t + (6 - 3)t^2 = -(2t - 3t^2)$.
+</Answer>
+</Check>
+
+### Challenge
+
+<Check>
+Let $A = \begin{bmatrix} 0.75 & 0.25 \\ 0.25 & 0.75 \end{bmatrix}$, with eigenvectors $(1, 1)$ for $\lambda = 1$ and $(1, -1)$ for $\lambda = \tfrac12$. Where does $\mathbf x_k = A^k\mathbf x_0$ settle as $k$ grows, for $\mathbf x_0 = (3, 1)$? (Modeled on Lay §5.2, Example 5.)
+
+<VectorAnswer answer={[2, 2]} />
+
+<Hint>
+Write $\mathbf x_0$ in the eigenvector basis and ask what happens to $\left(\tfrac12\right)^k$.
+</Hint>
+
+<Answer>
+$c_1(1, 1) + c_2(1, -1) = (3, 1)$ gives $c_1 + c_2 = 3$ and $c_1 - c_2 = 1$, so $c_1 = 2$ and $c_2 = 1$. Then
+
+$$
+\mathbf x_k = 2 \cdot 1^k\begin{bmatrix} 1 \\ 1 \end{bmatrix} + 1 \cdot \left(\tfrac12\right)^k\begin{bmatrix} 1 \\ -1 \end{bmatrix}.
+$$
+
+The second term halves every step and goes to $\mathbf 0$, so $\mathbf x_k$ settles at $2(1, 1) = (2, 2)$.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="A $3 \times 3$ matrix $A$ has eigenvalues $5$ and $-2$ only. Is there a basis in which $\mathbf x \mapsto A\mathbf x$ has a diagonal matrix? (Modeled on Lay §5.4 #18.)"
+  options={["Always", "Never", "It depends on the eigenspace of the repeated eigenvalue"]}
+  answer={2}
+>
+One of the two eigenvalues is a double root. A diagonal matrix needs three independent eigenvectors, which exist exactly when that eigenvalue's eigenspace is a plane. $\operatorname{diag}(5, 5, -2)$ works, while $\begin{bmatrix} 5 & 1 & 0 \\ 0 & 5 & 0 \\ 0 & 0 & -2 \end{bmatrix}$ has only a line of eigenvectors for $5$ and does not.
+</Choice>
+</Check>
+
+<Check>
+The trace satisfies $\operatorname{tr}(FG) = \operatorname{tr}(GF)$ for any $n \times n$ matrices $F$ and $G$. Use this to show that similar matrices have the same trace. (Modeled on Lay §5.4 #25.)
+
+<Hint>
+Write $A = PBP^{-1}$ and group it as $(PB)P^{-1}$.
+</Hint>
+
+<Answer>
+Suppose $A = PBP^{-1}$. Take $F = PB$ and $G = P^{-1}$. Then
+
+$$
+\operatorname{tr}A = \operatorname{tr}\big((PB)P^{-1}\big) = \operatorname{tr}\big(P^{-1}(PB)\big) = \operatorname{tr}\big((P^{-1}P)B\big) = \operatorname{tr}B.
+$$
+
+This matches the picture: $A$ and $B$ are one map in two coordinate systems, and the trace belongs to the map.
 </Answer>
 </Check>
