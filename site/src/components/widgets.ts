@@ -1,15 +1,15 @@
 import { AddressHunt, StaircaseBasis, TrimToBasis } from "@/components/interactive/basis";
 import { ChangeMatrixBuilder, SimilarityHunt, TwoAddresses } from "@/components/interactive/change-of-basis";
-import { CharacteristicSweep, EigenpairHunt } from "@/components/interactive/characteristic-equation";
-import { CofactorLinePicker, MultipleAreaScale, ReplacementShear } from "@/components/interactive/cofactor-expansion";
+import { CharacteristicSweep, EigenpairHunt, RepeatedRootSlider, TriangularPolyMatch } from "@/components/interactive/characteristic-equation";
+import { CofactorHunt, CofactorLinePicker, ColumnClearExpand, MultipleAreaScale, ReplacementShear } from "@/components/interactive/cofactor-expansion";
 import { ConsistencyLine, OutputReach, PivotPicker, RelationTwins, RowSlide } from "@/components/interactive/column-space";
 import { CoordinateFinder, PolynomialCoordinates } from "@/components/interactive/coordinates";
-import { CramerAreas, HeightStack, ProductAreaHunt } from "@/components/interactive/determinant-properties";
+import { CramerAreas, CramerParameterLines, EllipseAreaStretch, HeightStack, ProductAreaHunt } from "@/components/interactive/determinant-properties";
 import { AreaShearSlide, CornerToOrigin } from "@/components/interactive/determinants-as-area";
 import { DiagonalEntryMatch, DiagonalFactorSteps, EigenColumnHunt, EigenCoordinateTarget } from "@/components/interactive/diagonalization";
 import { BasisColumnBuilder, DiagonalBasisHunt, EigenOrbitSettle, EigenPolynomialHunt, TwoCoordinateMap } from "@/components/interactive/diagonalizing-transformations";
-import { IterateSwing, ShiftToSingular, TraceCurveMatch } from "@/components/interactive/eigenvalue-properties";
-import { DiagonalZeroHunt, EigenDirectionHunt, EigenGapHunt } from "@/components/interactive/eigenvectors";
+import { EigenWeightSplit, IterateSwing, PowerLineStretch, ShiftToSingular, TraceCurveMatch } from "@/components/interactive/eigenvalue-properties";
+import { DiagonalZeroHunt, EigenCandidatePicker, EigenDirectionHunt, EigenGapHunt, EigenLineCollapse } from "@/components/interactive/eigenvectors";
 import { BuildFromSteps, ElementaryMoves, InverseBuilder, RowRecipe } from "@/components/interactive/elementary";
 import { ChainCoordinates, JordanChainBuilder, MultiplicityGapSlider, NullPowerClimb, ShearRaySweep } from "@/components/interactive/generalized-eigenvectors";
 import { NormalizePair, QrWeightSliders, ShadowSubtractSlider, StraightenedTargetHunt, VanishingStepHunt } from "@/components/interactive/gram-schmidt";
@@ -51,10 +51,12 @@ export const widgets = {
   ChangeMatrixBuilder,
   CharacteristicSweep,
   ClosureHunt,
+  CofactorHunt,
   CofactorLinePicker,
   CollapseSlider,
   CollapsedDirectionHunt,
   ColumnBuilder,
+  ColumnClearExpand,
   ColumnSpanCheck,
   ColumnWeights,
   CombinationTarget,
@@ -66,6 +68,7 @@ export const widgets = {
   CornerToOrigin,
   CostCompare,
   CramerAreas,
+  CramerParameterLines,
   CrushAndMiss,
   DerivativeRoutes,
   DerivativeTarget,
@@ -77,15 +80,19 @@ export const widgets = {
   DifferenceExplorer,
   DifferenceInKernel,
   DotShadowHunt,
+  EigenCandidatePicker,
   EigenColumnHunt,
   EigenCoordinateTarget,
   EigenDirectionHunt,
   EigenDirectionSweep,
   EigenGapHunt,
+  EigenLineCollapse,
   EigenOrbitSettle,
   EigenPolynomialHunt,
+  EigenWeightSplit,
   EigenpairHunt,
   ElementaryMoves,
+  EllipseAreaStretch,
   EntryHunt,
   EqualDistanceTurn,
   EvaluationKernel,
@@ -129,6 +136,7 @@ export const widgets = {
   PolynomialCombiner,
   PolynomialCoordinates,
   PolynomialRecipe,
+  PowerLineStretch,
   PreimageHunt,
   ProductAreaHunt,
   ProductColumns,
@@ -143,6 +151,7 @@ export const widgets = {
   RankTally,
   RelationFinder,
   RelationTwins,
+  RepeatedRootSlider,
   ReplacementShear,
   ResidualBalance,
   ResidualSquaresFit,
@@ -185,6 +194,7 @@ export const widgets = {
   TraceCurveMatch,
   TransformExplorer,
   TranslationGap,
+  TriangularPolyMatch,
   TrimToBasis,
   TwoAddresses,
   TwoCoordinateMap,
