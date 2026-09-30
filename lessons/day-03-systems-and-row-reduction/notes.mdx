@@ -1,31 +1,108 @@
-Yesterday, asking whether $\mathbf b$ is in a span turned into a set of equations to solve, and so far we have no reliable way to solve them. Today's lesson is that method, called **row reduction**. Its goal is to turn the system into one so simple that you can read the solution straight off it, without ever changing which points are solutions. First we look at what a solution can look like, so we know what kind of answer to expect.
+Yesterday, asking whether $\pink{\vec b}$ is in a span turned into a set of equations to solve, and we solved each one with whatever trick fit. Bigger systems need a method that always works. Today's method is **row reduction**. Its goal is to turn a system into one so simple that you can read the solution straight off it, while never changing which points are solutions. First we look at what a solution can look like, so we know what kind of answer to expect.
 
-A **linear equation** in $x_1, \dots, x_n$ has the form $a_1x_1 + \cdots + a_nx_n = b$. A **linear system** is a few of these sharing the same unknowns, and a **solution** is a list of numbers that makes every equation true at once. With two unknowns, each equation is a line, so a solution is a point on both lines.
+Each section below opens with a problem. Try it before you open the walkthrough, even if you only get partway.
+
+## Three possible outcomes
+
+<Problem>
+Solve the system
 
 $$
 \begin{aligned}
 \yellow{x_1 - 2x_2} &\yellow{\;= -1} \\
-\blue{-x_1 + 3x_2} &\blue{\;= 3}
+\blue{-x_1 + 3x_2} &\blue{\;= 3.}
 \end{aligned}
 $$
 
+Then change the second equation to $-x_1 + 2x_2 = 3$ and solve again. Finally, try $-x_1 + 2x_2 = 1$.
+
+<VectorAnswer answer={[3, 2]} labels={["x₁", "x₂"]} />
+
+<Solution>
+The $x_1$ terms are $x_1$ and $-x_1$, so adding the two equations cancels them. That leaves $-2x_2 + 3x_2 = -1 + 3$, which is $x_2 = 2$. Putting $x_2 = 2$ into the first equation gives $x_1 - 4 = -1$, so $x_1 = 3$. The system has exactly one solution, $(3, 2)$.
+
+With the second equation changed to $-x_1 + 2x_2 = 3$, adding the equations gives $0 = 2$. Nothing can make $0$ equal $2$, so this system has no solution at all.
+
+With $-x_1 + 2x_2 = 1$, adding gives $0 = 0$, which is always true. The second equation is the first one multiplied by $-1$, so both describe the same line. Every point on that line is a solution, which means there are infinitely many.
+</Solution>
+</Problem>
+
 <Figure src="three-outcomes" alt="Three small planes, each with a yellow and a blue line. On the left the lines are parallel and never meet. In the middle they cross at one teal point, (3, 2). On the right the blue line lies on top of the yellow one, drawn as a single thick teal line." wide />
 
-Two lines can miss each other, cross once, or coincide. That is why every linear system has **no solution, exactly one, or infinitely many**. A system with at least one solution is **consistent**, and a system with none is **inconsistent**.
+Each equation in two unknowns is a line, and a solution is a point on both lines. The picture shows the three things two lines can do: miss each other, cross once, or coincide.
+
+<Concept title="How many solutions a system can have">
+A **linear equation** in $x_1, \dots, x_n$ can be written $a_1x_1 + \cdots + a_nx_n = b$. A **linear system** is a few of these sharing the same unknowns. A **solution** is a list of numbers that makes every equation true at once, and the **solution set** is the set of all solutions.
+
+Every linear system has **no solution, exactly one, or infinitely many**, just as in Problem 1. Two lines cannot share exactly two points. A system with at least one solution is **consistent**, and a system with none is **inconsistent**.
+</Concept>
+
+<Choice
+  question="Which of these equations is linear?"
+  options={["$x_1 x_2 = 4$", "$2x_1 - 7 = x_2$", "$x_2 = \\sqrt{x_1}$"]}
+  answer={1}
+>
+Moving terms around gives $2x_1 - x_2 = 7$, which has the form $a_1x_1 + a_2x_2 = b$. The other two multiply unknowns together or take a square root of one, so they are not linear.
+</Choice>
 
 ## The augmented matrix
 
-Only the numbers matter, so we write them in a grid. Row reduction works on this grid instead of the equations, which saves rewriting every $x_1$ and $x_2$ at each step. The **coefficient matrix** holds the coefficients of each variable in its own column. The **augmented matrix** adds the right-hand sides as a last column, set off by a bar.
+Solving means doing the same few moves many times. Writing every $x_1$ and $x_2$ at each step is slow, so we keep only the numbers.
+
+<Problem>
+Write the coefficients of this system in a grid, one row per equation and one column per unknown, and enter it row by row. Then add the right-hand sides as a fourth column.
 
 $$
-\left[\begin{array}{rr|r} \yellow{1} & \yellow{-2} & \yellow{-1} \\ \blue{-1} & \blue{3} & \blue{3} \end{array}\right]
+\begin{aligned}
+x_1 + 3x_2 - x_3 &= 4 \\
+2x_2 + x_3 &= 1 \\
+-x_1 + 4x_3 &= 2
+\end{aligned}
 $$
 
-A matrix with $m$ rows and $n$ columns is **$m \times n$**, rows first, so this one is $2 \times 3$. A variable missing from an equation contributes a $0$.
+<VectorAnswer answer={[1, 3, -1, 0, 2, 1, -1, 0, 4]} columns={3} />
+
+<Solution>
+Line up each variable in its own column. The first equation gives the row $1, 3, -1$. The second equation has no $x_1$, and a missing variable means a coefficient of $0$, so its row is $0, 2, 1$. The third equation has no $x_2$, so its row is $-1, 0, 4$.
+
+$$
+\begin{bmatrix} 1 & 3 & -1 \\ 0 & 2 & 1 \\ -1 & 0 & 4 \end{bmatrix}
+$$
+
+Adding the right-hand sides $4, 1, 2$ as a last column gives
+
+$$
+\left[\begin{array}{rrr|r} 1 & 3 & -1 & 4 \\ 0 & 2 & 1 & 1 \\ -1 & 0 & 4 & 2 \end{array}\right]
+$$
+
+The bar separates the coefficients from the right-hand sides. Each row still says one equation, and each column still belongs to one unknown.
+</Solution>
+</Problem>
+
+<Concept title="Coefficient and augmented matrices">
+The **coefficient matrix** holds the coefficients of each variable in its own column. The **augmented matrix** adds the right-hand sides as a last column. On Day 2 you built the same grid from a vector equation, with the vectors as columns.
+
+A matrix with $m$ rows and $n$ columns is **$m \times n$**, rows first. In Problem 2 the coefficient matrix is $3 \times 3$ and the augmented matrix is $3 \times 4$.
+</Concept>
 
 ## Row operations
 
-The goal is a system like $x_1 = 3$, $x_2 = 2$, where each equation hands you one unknown. To get there we need moves that change the equations but never the solutions. Three **elementary row operations** turn one augmented matrix into another, and on Day 8 each of them becomes a matrix of its own.
+The goal is a system like $x_1 = 3$, $x_2 = 2$, where each equation hands you one unknown. To get there we need moves that change the equations but never change the solutions.
+
+<Problem>
+Start from Problem 1's system, $x_1 - 2x_2 = -1$ and $-x_1 + 3x_2 = 3$, whose solution is $(3, 2)$. Replace the second equation by the sum of the two equations. Does $(3, 2)$ still satisfy both equations? Could the new system have a solution that the old one did not?
+
+<Solution>
+The sum of the equations is $(x_1 - x_1) + (-2x_2 + 3x_2) = -1 + 3$, which is $x_2 = 2$. The new system is $x_1 - 2x_2 = -1$ and $x_2 = 2$.
+
+The point $(3, 2)$ satisfies the first equation, which did not change, and it satisfies $x_2 = 2$. Any point on both old lines satisfies their sum, so no solution was lost.
+
+For the second question, run the move backward. Subtracting the first equation from $x_2 = 2$ gives back $-x_1 + 3x_2 = 3$. So any solution of the new system also satisfies the old one, and no solution was gained. The move is reversible, and that is why the solution set stayed the same.
+</Solution>
+</Problem>
+
+<Concept title="Three moves that keep every solution">
+The three **elementary row operations** change an augmented matrix without changing its solution set, because each one can be undone.
 
 $$
 \begin{array}{lll}
@@ -36,16 +113,17 @@ $$
 \end{array}
 $$
 
-Any point that satisfies the old rows also satisfies a new row built from them. Every operation can be undone, so the argument runs backward too, and no solution is ever gained or lost. Scaling by $0$ is not allowed because it cannot be undone. Two matrices are **row equivalent**, written $\sim$, when a sequence of row operations turns one into the other, and row-equivalent systems have the same solution set.
+Two matrices are **row equivalent**, written $\sim$, when a sequence of row operations turns one into the other. Row-equivalent systems have the same solution set. On Day 8 each of these operations becomes a matrix of its own.
+</Concept>
 
-In the picture, a replacement turns one line about the solution point. Try it below.
+In the picture, a replacement turns one line about the solution point. Use the sliders to make each row mention a single unknown.
 
 <RowReduceExplorer rows={[[1, -2, -1], [-1, 3, 3]]} solution={[3, 2]} />
 
 <Pair>
 <Figure src="pivot" alt="A plane with dashed yellow and blue lines for the original system, crossing at a teal point (3, 2). Solid lines show the final system, a vertical yellow line x1 = 3 and a horizontal blue line x2 = 2, crossing at the same point." />
 
-First $R_2 \leftarrow R_2 + R_1$ turns the blue line flat, then $R_1 \leftarrow R_1 + 2R_2$ stands the yellow line upright.
+The dashed lines are the original system. First $R_2 \leftarrow R_2 + R_1$ turns the blue line flat, and then $R_1 \leftarrow R_1 + 2R_2$ stands the yellow line upright.
 
 $$
 \begin{aligned}
@@ -54,13 +132,43 @@ $$
 &\sim \left[\begin{array}{rr|r} \yellow{1} & \yellow{0} & \yellow{3} \\ \blue{0} & \blue{1} & \blue{2} \end{array}\right]
 \end{aligned}
 $$
-
-The last matrix says $x_1 = 3$ and $x_2 = 2$.
 </Pair>
+
+<Warning>
+Scaling by $0$ is not allowed. It turns a row into $0 = 0$, which throws away an equation, and no operation can bring it back. Also watch which row changes: in $R_2 \leftarrow R_2 + 3R_1$, row 2 changes and row 1 stays as it was.
+</Warning>
+
+<Choice
+  question="Which operation undoes $R_3 \leftarrow R_3 - 4R_1$?"
+  options={["$R_1 \\leftarrow R_1 + 4R_3$", "$R_3 \\leftarrow R_3 + 4R_1$", "$R_3 \\leftarrow -\\tfrac14 R_3$"]}
+  answer={1}
+>
+The operation took $4R_1$ away from row 3 and left row 1 alone. Adding $4R_1$ back to row 3 restores it exactly.
+</Choice>
 
 ## Echelon form
 
-A bigger system needs a precise target to aim for. Echelon form is the halfway target, where you can already tell how many solutions there are, and reduced echelon form is the finish line, where you read the solutions off.
+We need to know when to stop. The next problem compares two possible end points.
+
+<Problem>
+Both matrices below are row equivalent to the same system. Read off the solution from each one.
+
+$$
+A = \left[\begin{array}{rrr|r} 1 & 2 & -1 & -3 \\ 0 & 1 & 3 & 8 \\ 0 & 0 & -6 & -18 \end{array}\right]
+\qquad
+B = \left[\begin{array}{rrr|r} 1 & 0 & 0 & 2 \\ 0 & 1 & 0 & -1 \\ 0 & 0 & 1 & 3 \end{array}\right]
+$$
+
+<VectorAnswer answer={[2, -1, 3]} labels={["x₁", "x₂", "x₃"]} />
+
+<Solution>
+Matrix $B$ is the easy one. Its rows say $x_1 = 2$, $x_2 = -1$ and $x_3 = 3$ directly.
+
+Matrix $A$ takes a little more work, but its shape helps. The last row mentions only $x_3$: it says $-6x_3 = -18$, so $x_3 = 3$. The middle row mentions only $x_2$ and $x_3$, so put in $x_3 = 3$: $x_2 + 9 = 8$, which gives $x_2 = -1$. The top row then gives $x_1 + 2(-1) - 3 = -3$, so $x_1 = 2$. Solving from the bottom up like this is called **back substitution**.
+
+Both give $(2, -1, 3)$. $A$ has a staircase of zeros in its lower left, which is enough to finish by back substitution. $B$ goes further, with a single $1$ in each column, so it needs no work at all.
+</Solution>
+</Problem>
 
 <Definition term="Echelon and reduced echelon form">
 The **leading entry** of a row is its leftmost nonzero entry. A matrix is in **echelon form** when it has these three properties.
@@ -80,23 +188,139 @@ It is in **reduced echelon form** when it also has these two.
 Every matrix is row equivalent to exactly one reduced echelon matrix.
 </Definition>
 
-The leading $1$s of the reduced form sit in **pivot positions**, and their columns are **pivot columns**. A variable whose column has a pivot is a **basic variable**. The rest are **free variables**, and they can take any value. Pivots come back often. On Days 12 and 13, counting them tells you whether the columns of a matrix span $\mathbb R^m$ and whether they are independent.
+In Problem 4, $A$ is in echelon form and $B$ is in reduced echelon form. Echelon form is the halfway target, where you can already tell how many solutions there are. Reduced echelon form is the finish line, where you read the solutions off.
 
-Here is a worked example, a fresh problem modeled on Lay §1.2, Example 4. The steps are $R_2 \leftarrow R_2 - 2R_1$ and $R_3 \leftarrow R_3 + R_1$ to clear column 1, then $R_3 \leftarrow R_3 - R_2$ to reach echelon form, then $R_1 \leftarrow R_1 - 3R_2$ to clear above the second pivot.
+<Choice
+  question="Is $\begin{bmatrix} 1 & 0 & 2 \\ 0 & 0 & 0 \\ 0 & 1 & 3 \end{bmatrix}$ in echelon form?"
+  options={["Yes, and it is reduced", "Yes, but it is not reduced", "No, it breaks property (1)", "No, it breaks property (3)"]}
+  answer={2}
+>
+The row of zeros sits above the nonzero row $0, 1, 3$. Property (1) says zero rows go to the bottom. Swapping rows 2 and 3 fixes it, and the result is in reduced echelon form.
+</Choice>
+
+<Warning>
+Only the reduced echelon form is unique. A matrix has many echelon forms, since scaling any row of $A$ above by $2$ gives another one. That is why we say *an* echelon form but *the* reduced echelon form.
+</Warning>
+
+## The row reduction algorithm
+
+Row reduction has two phases. The **forward phase** works down and to the right, making zeros below each leading entry until the matrix is in echelon form. The **backward phase** works up and to the left, scaling each leading entry to $1$ and making zeros above it.
+
+<Problem>
+Solve by row reduction.
 
 $$
 \begin{aligned}
-\left[\begin{array}{rrrr|r} 1 & -2 & 3 & 1 & 4 \\ 2 & -4 & 7 & 0 & 9 \\ -1 & 2 & -2 & -3 & -3 \end{array}\right]
-&\sim \left[\begin{array}{rrrr|r} 1 & -2 & 3 & 1 & 4 \\ 0 & 0 & 1 & -2 & 1 \\ 0 & 0 & 1 & -2 & 1 \end{array}\right] \\
-&\sim \left[\begin{array}{rrrr|r} 1 & -2 & 3 & 1 & 4 \\ 0 & 0 & 1 & -2 & 1 \\ 0 & 0 & 0 & 0 & 0 \end{array}\right] \\
-&\sim \left[\begin{array}{rrrr|r} \glow{1} & -2 & 0 & 7 & 1 \\ 0 & 0 & \glow{1} & -2 & 1 \\ 0 & 0 & 0 & 0 & 0 \end{array}\right]
+x_1 + 2x_2 - x_3 &= -3 \\
+2x_1 + 5x_2 + x_3 &= 2 \\
+-x_1 + x_2 + 4x_3 &= 9
 \end{aligned}
 $$
+
+<Solution>
+Each step below says which zero it makes and why that zero comes next.
+
+<Steps>
+<Step>
+Column 1 is the leftmost column, and its top entry $1$ is nonzero, so it serves as the first pivot. Clear the entries below it with $R_2 \leftarrow R_2 - 2R_1$ and $R_3 \leftarrow R_3 + R_1$:
+
+$$
+\left[\begin{array}{rrr|r} 1 & 2 & -1 & -3 \\ 2 & 5 & 1 & 2 \\ -1 & 1 & 4 & 9 \end{array}\right]
+\sim \left[\begin{array}{rrr|r} 1 & 2 & -1 & -3 \\ 0 & 1 & 3 & 8 \\ 0 & 3 & 3 & 6 \end{array}\right]
+$$
+
+For example, row 2 becomes $(2 - 2,\ 5 - 4,\ 1 + 2,\ 2 + 6) = (0, 1, 3, 8)$.
+</Step>
+<Step>
+Cover row 1 and repeat on the rows below it. The next pivot is the $1$ in row 2, column 2. Clear below it with $R_3 \leftarrow R_3 - 3R_2$, which gives row 3 as $(0,\ 3 - 3,\ 3 - 9,\ 6 - 24) = (0, 0, -6, -18)$:
+
+$$
+\sim \left[\begin{array}{rrr|r} 1 & 2 & -1 & -3 \\ 0 & 1 & 3 & 8 \\ 0 & 0 & -6 & -18 \end{array}\right]
+$$
+
+This is matrix $A$ from Problem 4, so the forward phase is done.
+</Step>
+<Step>
+Start the backward phase at the lowest pivot. Scale it to $1$ with $R_3 \leftarrow -\tfrac16 R_3$, which makes row 3 say $x_3 = 3$:
+
+$$
+\sim \left[\begin{array}{rrr|r} 1 & 2 & -1 & -3 \\ 0 & 1 & 3 & 8 \\ 0 & 0 & 1 & 3 \end{array}\right]
+$$
+</Step>
+<Step>
+Clear above that pivot with $R_2 \leftarrow R_2 - 3R_3$ and $R_1 \leftarrow R_1 + R_3$. Row 2 becomes $(0, 1, 0, 8 - 9) = (0, 1, 0, -1)$ and row 1 becomes $(1, 2, 0, -3 + 3) = (1, 2, 0, 0)$:
+
+$$
+\sim \left[\begin{array}{rrr|r} 1 & 2 & 0 & 0 \\ 0 & 1 & 0 & -1 \\ 0 & 0 & 1 & 3 \end{array}\right]
+$$
+</Step>
+<Step>
+Move one pivot up and to the left. Clear above the pivot in column 2 with $R_1 \leftarrow R_1 - 2R_2$, which makes row 1 $(1, 0, 0, 0 + 2) = (1, 0, 0, 2)$:
+
+$$
+\sim \left[\begin{array}{rrr|r} 1 & 0 & 0 & 2 \\ 0 & 1 & 0 & -1 \\ 0 & 0 & 1 & 3 \end{array}\right]
+$$
+
+The solution is $(2, -1, 3)$. Check it in the second original equation: $2(2) + 5(-1) + 3 = 2$.
+</Step>
+</Steps>
+</Solution>
+</Problem>
+
+<Concept title="The algorithm in five steps">
+The forward phase repeats steps 1 to 4, and the backward phase is step 5.
+
+**Step 1.** Find the leftmost column that is not all zeros. Its top position will hold a pivot.
+
+**Step 2.** If that position holds $0$, swap in a row that has a nonzero entry there.
+
+**Step 3.** Use replacements to make every entry below the pivot zero.
+
+**Step 4.** Cover that row and repeat steps 1 to 3 on the rows below it.
+
+**Step 5.** Starting from the lowest pivot and moving up, scale each pivot to $1$ and use replacements to make every entry above it zero.
+</Concept>
+
+Now run the algorithm yourself. This system starts with a $0$ in the top left, so step 2 is needed right away. The operation starts set to that swap.
+
+<RowReducer matrix={[[0, 1, 2, 3], [1, 2, 1, 4], [2, 5, 3, 9]]} solution={[4, -1, 2]} />
+
+<Warning>
+Finish the forward phase before you start clearing above pivots. Clearing upward too early creates extra arithmetic that the later steps undo. Also, do one replacement at a time: $R_1 \leftarrow R_1 - R_2$ and $R_2 \leftarrow R_2 - R_1$ done at once from the old rows can lose an equation.
+</Warning>
+
+## Pivots and free variables
+
+Sometimes the reduced form has fewer pivots than unknowns. Then some unknowns are not pinned down.
+
+<Problem>
+The augmented matrix of a system reduces to
+
+$$
+\left[\begin{array}{rrrr|r} 1 & -2 & 0 & 7 & 1 \\ 0 & 0 & 1 & -2 & 1 \\ 0 & 0 & 0 & 0 & 0 \end{array}\right].
+$$
+
+Describe every solution. Then give the solution with $x_2 = 0$ and $x_4 = 0$.
+
+<VectorAnswer answer={[1, 0, 1, 0]} labels={["x₁", "x₂", "x₃", "x₄"]} />
+
+<Solution>
+Turn the rows back into equations. Row 1 says $x_1 - 2x_2 + 7x_4 = 1$ and row 2 says $x_3 - 2x_4 = 1$. Row 3 says $0 = 0$, which is always true and adds no condition.
+
+Each nonzero row starts with a leading $1$, in column 1 and column 3. So solve row 1 for $x_1$ and row 2 for $x_3$:
+
+$$
+x_1 = 1 + 2x_2 - 7x_4, \qquad x_3 = 1 + 2x_4.
+$$
+
+Nothing restricts $x_2$ or $x_4$. You may choose them freely, and each choice gives one solution. With $x_2 = 0$ and $x_4 = 0$ you get $x_1 = 1$ and $x_3 = 1$, so the solution is $(1, 0, 1, 0)$. With $x_2 = 1$ and $x_4 = 0$ you get $(3, 1, 1, 0)$, another solution.
+</Solution>
+</Problem>
 
 <Pair>
 <Figure src="echelon" alt="The reduced matrix with orange boxes around the pivots in columns 1 and 3, an orange staircase under them, and the labels x2 and x4 in orange because their columns have no pivot." />
 
-The pivots are in columns 1 and 3, so $x_1$ and $x_3$ are basic and $x_2, x_4$ are free. Solve each row for its basic variable:
+The leading $1$s of the reduced form sit in **pivot positions**, and their columns are **pivot columns**. A variable whose column has a pivot is a **basic variable**. The others are **free variables**, and they can take any value.
 
 $$
 \begin{cases}
@@ -108,9 +332,42 @@ x_4 \text{ is free}
 $$
 </Pair>
 
-This list is the **general solution**. Each choice of $x_2$ and $x_4$ gives one solution, so there are infinitely many.
+<Concept title="The general solution">
+The list above is the **general solution**. It solves for each basic variable in terms of the free variables and lists every variable, including the free ones. The free variables act as **parameters**: each choice of their values gives one solution. Pivots come back often. On Days 12 and 13, counting them tells you whether the columns of a matrix span $\mathbb R^m$ and whether they are independent.
+</Concept>
+
+Pivot positions are the leading entries of any echelon form, so you do not need to finish the reduction to find them. Tap them in this echelon form.
+
+<PivotSpotter matrix={[[2, 4, -1, 3, 1, 5], [0, 0, 3, -6, 2, 1], [0, 0, 0, 0, -1, 4]]} />
+
+<Warning>
+A free variable is not zero. If a column of the coefficient part is all zeros, its variable has no pivot, so it is free and can be anything.
+</Warning>
 
 ## Existence and uniqueness
+
+An echelon form already tells you how many solutions there are, before the backward phase.
+
+<Problem>
+For the system $x_1 - 2x_2 = 3$, $\ 3x_1 + hx_2 = k$, find the values of $h$ and $k$ that give infinitely many solutions. Which values give no solution, and which give exactly one?
+
+<VectorAnswer answer={[-6, 9]} labels={["h", "k"]} />
+
+<Solution>
+Do one step of the forward phase and look at what is left. Clear the $3$ below the first pivot with $R_2 \leftarrow R_2 - 3R_1$. Row 2 becomes $(3 - 3,\ h + 6,\ k - 9)$:
+
+$$
+\left[\begin{array}{rr|r} 1 & -2 & 3 \\ 3 & h & k \end{array}\right]
+\sim \left[\begin{array}{rr|r} 1 & -2 & 3 \\ 0 & h + 6 & k - 9 \end{array}\right]
+$$
+
+Now read row 2 as the equation $(h + 6)x_2 = k - 9$.
+
+If $h \neq -6$, row 2 has a pivot, so $x_2$ is determined and there is exactly one solution, whatever $k$ is.
+
+If $h = -6$, row 2 says $0 = k - 9$. When $k \neq 9$ that equation is false, so there is no solution. When $k = 9$ it says $0 = 0$, so $x_2$ is free and there are infinitely many solutions.
+</Solution>
+</Problem>
 
 <Definition term="Existence and uniqueness theorem">
 A linear system is consistent exactly when an echelon form of its augmented matrix has no row
@@ -118,45 +375,193 @@ $\left[\begin{array}{ccc|c} 0 & \cdots & 0 & b \end{array}\right]$ with $b \neq 
 A consistent system has a unique solution when it has no free variables, and infinitely many when it has at least one.
 </Definition>
 
-A row $[\,0 \ \cdots \ 0 \mid b\,]$ says $0 = b$, which nothing satisfies. You can read the answer to both questions off an echelon form, before finishing the reduction. In the widget, one elimination step, $R_2 \leftarrow R_2 - 3R_1$, has already been done for you.
+A row $[\,0 \ \cdots \ 0 \mid b\,]$ says $0 = b$, which nothing satisfies. Below is Problem 7's system, with the elimination step already done in the lower readout. Watch how the blue line and the echelon row change together.
 
 <SolutionCountExplorer first={[1, -2, 3]} goal="many" />
+
+<Warning>
+A row of all zeros, $[\,0\ \ 0 \mid 0\,]$, says $0 = 0$ and restricts nothing. Only a row with zeros on the left and a nonzero number on the right means there is no solution.
+</Warning>
 
 Tomorrow, Day 4 packs a whole system into one equation, $A\mathbf x = \mathbf b$, and row reduction stays the way to solve it.
 
 ## Practice
 
+### Warm-up
+
 <Check>
-Solve by row reduction (modeled on Lay §1.1, #1).
+A system has $3$ equations in $5$ unknowns. What size is its augmented matrix?
 
-$$
-\begin{aligned} x_1 + 3x_2 &= 5 \\ 2x_1 + 7x_2 &= 12 \end{aligned}
-$$
-
-<VectorAnswer answer={[-1, 2]} labels={["x₁", "x₂"]} />
+<VectorAnswer answer={[3, 6]} labels={["rows", "columns"]} />
 
 <Answer>
-Use $R_2 \leftarrow R_2 - 2R_1$, then $R_1 \leftarrow R_1 - 3R_2$.
-
-$$
-\begin{aligned}
-\left[\begin{array}{rr|r} 1 & 3 & 5 \\ 2 & 7 & 12 \end{array}\right]
-&\sim \left[\begin{array}{rr|r} 1 & 3 & 5 \\ 0 & 1 & 2 \end{array}\right] \\
-&\sim \left[\begin{array}{rr|r} 1 & 0 & -1 \\ 0 & 1 & 2 \end{array}\right]
-\end{aligned}
-$$
-
-So $x_1 = -1$ and $x_2 = 2$. Check: $-1 + 3(2) = 5$ and $2(-1) + 7(2) = 12$.
+There is one row per equation, so $3$ rows. There is one column per unknown plus one for the right-hand sides, so $5 + 1 = 6$ columns. The augmented matrix is $3 \times 6$.
 </Answer>
 </Check>
 
 <Check>
-For the system $x_1 + 3x_2 = 2$, $\ 4x_1 + hx_2 = k$, find the values of $h$ and $k$ that give infinitely many solutions (modeled on Lay §1.2, #19).
+<Choice
+  question="Which matrix is in reduced echelon form? (Modeled on Lay §1.2 #1.)"
+  options={["$\\begin{bmatrix} 1 & 2 & 0 \\\\ 0 & 0 & 1 \\end{bmatrix}$", "$\\begin{bmatrix} 1 & 2 & 3 \\\\ 0 & 0 & 1 \\end{bmatrix}$", "$\\begin{bmatrix} 2 & 0 & 1 \\\\ 0 & 1 & 1 \\end{bmatrix}$"]}
+  answer={0}
+>
+In the first matrix the leading entries are $1$s in columns 1 and 3, and each is the only nonzero entry in its column. The second breaks property (5), because the $3$ sits above the leading $1$ in column 3. The third breaks property (4), because its first leading entry is $2$.
+</Choice>
+</Check>
+
+<Check>
+Solve by row reduction. (Modeled on Lay §1.1 #1.)
+
+$$
+\begin{aligned} x_1 + 4x_2 &= 6 \\ -3x_1 - 10x_2 &= -14 \end{aligned}
+$$
+
+<VectorAnswer answer={[-2, 2]} labels={["x₁", "x₂"]} />
+
+<Answer>
+Use $R_2 \leftarrow R_2 + 3R_1$, then $R_2 \leftarrow \tfrac12 R_2$, then $R_1 \leftarrow R_1 - 4R_2$.
+
+$$
+\left[\begin{array}{rr|r} 1 & 4 & 6 \\ -3 & -10 & -14 \end{array}\right]
+\sim \left[\begin{array}{rr|r} 1 & 4 & 6 \\ 0 & 2 & 4 \end{array}\right]
+\sim \left[\begin{array}{rr|r} 1 & 4 & 6 \\ 0 & 1 & 2 \end{array}\right]
+\sim \left[\begin{array}{rr|r} 1 & 0 & -2 \\ 0 & 1 & 2 \end{array}\right]
+$$
+
+So $x_1 = -2$ and $x_2 = 2$. Check: $-2 + 8 = 6$ and $6 - 20 = -14$.
+</Answer>
+</Check>
+
+### Core
+
+<Check>
+Solve by row reduction. (Modeled on Lay §1.1, Example 1.)
+
+$$
+\begin{aligned}
+x_1 + x_2 + 2x_3 &= 5 \\
+2x_1 + 3x_2 + x_3 &= -1 \\
+-x_1 + x_2 + 3x_3 &= 6
+\end{aligned}
+$$
+
+<VectorAnswer answer={[1, -2, 3]} labels={["x₁", "x₂", "x₃"]} />
+
+<Hint>
+Clear column 1 with $R_2 \leftarrow R_2 - 2R_1$ and $R_3 \leftarrow R_3 + R_1$. Then use row 2 to clear below its pivot.
+</Hint>
+
+<Answer>
+$$
+\begin{aligned}
+\left[\begin{array}{rrr|r} 1 & 1 & 2 & 5 \\ 2 & 3 & 1 & -1 \\ -1 & 1 & 3 & 6 \end{array}\right]
+&\sim \left[\begin{array}{rrr|r} 1 & 1 & 2 & 5 \\ 0 & 1 & -3 & -11 \\ 0 & 2 & 5 & 11 \end{array}\right] && R_2 - 2R_1,\ R_3 + R_1 \\
+&\sim \left[\begin{array}{rrr|r} 1 & 1 & 2 & 5 \\ 0 & 1 & -3 & -11 \\ 0 & 0 & 11 & 33 \end{array}\right] && R_3 - 2R_2
+\end{aligned}
+$$
+
+Row 3 says $11x_3 = 33$, so $x_3 = 3$. Row 2 gives $x_2 - 9 = -11$, so $x_2 = -2$. Row 1 gives $x_1 - 2 + 6 = 5$, so $x_1 = 1$. Check the third equation: $-1 - 2 + 9 = 6$.
+</Answer>
+</Check>
+
+<Check>
+Find the general solution of the system whose augmented matrix is $\left[\begin{array}{rrr|r} 1 & -2 & 3 & 5 \\ 2 & -4 & 5 & 7 \end{array}\right]$. Then enter the solution with $x_2 = 0$. (Modeled on Lay §1.2 #7.)
+
+<VectorAnswer answer={[-4, 0, 3]} labels={["x₁", "x₂", "x₃"]} />
+
+<Hint>
+After $R_2 \leftarrow R_2 - 2R_1$, the second row has its leading entry in column 3, so column 2 has no pivot.
+</Hint>
+
+<Answer>
+$$
+\left[\begin{array}{rrr|r} 1 & -2 & 3 & 5 \\ 2 & -4 & 5 & 7 \end{array}\right]
+\sim \left[\begin{array}{rrr|r} 1 & -2 & 3 & 5 \\ 0 & 0 & -1 & -3 \end{array}\right]
+\sim \left[\begin{array}{rrr|r} 1 & -2 & 0 & -4 \\ 0 & 0 & 1 & 3 \end{array}\right]
+$$
+
+The second step is $R_2 \leftarrow -R_2$ followed by $R_1 \leftarrow R_1 - 3R_2$. The pivots are in columns 1 and 3, so $x_2$ is free:
+
+$$
+\begin{cases} x_1 = -4 + 2x_2 \\ x_2 \text{ is free} \\ x_3 = 3 \end{cases}
+$$
+
+With $x_2 = 0$ the solution is $(-4, 0, 3)$.
+</Answer>
+</Check>
+
+<Check>
+For which $h$ is the system with augmented matrix $\left[\begin{array}{rr|r} 1 & h & 3 \\ 2 & 8 & 5 \end{array}\right]$ inconsistent? (Modeled on Lay §1.1 #19.)
+
+<VectorAnswer answer={[4]} labels={["h"]} prefix="h =" />
+
+<Hint>
+Do one replacement to reach echelon form, then ask when the second row reads $0 = $ a nonzero number.
+</Hint>
+
+<Answer>
+$R_2 \leftarrow R_2 - 2R_1$ gives the row $(0,\ 8 - 2h,\ 5 - 6) = (0,\ 8 - 2h,\ -1)$. When $h = 4$ this row says $0 = -1$, so the system is inconsistent. For every other $h$ the row has a pivot and the solution is unique.
+</Answer>
+</Check>
+
+<Check>
+Do the three lines $x_1 + x_2 = 3$, $\ 2x_1 - x_2 = 0$ and $x_1 - 2x_2 = -3$ pass through one common point? If so, enter it. (Modeled on Lay §1.1 #17.)
+
+<VectorAnswer answer={[1, 2]} labels={["x₁", "x₂"]} />
+
+<Hint>
+Row reduce the $3 \times 3$ augmented matrix and look for a row $[\,0\ \ 0 \mid b\,]$ with $b \neq 0$.
+</Hint>
+
+<Answer>
+$$
+\begin{aligned}
+\left[\begin{array}{rr|r} 1 & 1 & 3 \\ 2 & -1 & 0 \\ 1 & -2 & -3 \end{array}\right]
+&\sim \left[\begin{array}{rr|r} 1 & 1 & 3 \\ 0 & -3 & -6 \\ 0 & -3 & -6 \end{array}\right] && R_2 - 2R_1,\ R_3 - R_1 \\
+&\sim \left[\begin{array}{rr|r} 1 & 1 & 3 \\ 0 & -3 & -6 \\ 0 & 0 & 0 \end{array}\right] && R_3 - R_2
+\end{aligned}
+$$
+
+No row says $0 = b$ with $b \neq 0$, so the system is consistent. Row 2 gives $x_2 = 2$ and row 1 gives $x_1 = 1$. All three lines pass through $(1, 2)$.
+</Answer>
+</Check>
+
+<Check>
+Row reduce $\begin{bmatrix} 1 & 2 & 3 \\ 2 & 5 & 7 \\ 3 & 7 & 10 \end{bmatrix}$ to reduced echelon form and enter it row by row. (Modeled on Lay §1.2 #3.)
+
+<VectorAnswer answer={[1, 0, 1, 0, 1, 1, 0, 0, 0]} columns={3} />
+
+<Hint>
+After clearing column 1, rows 2 and 3 turn out to be equal.
+</Hint>
+
+<Answer>
+$$
+\begin{aligned}
+\begin{bmatrix} 1 & 2 & 3 \\ 2 & 5 & 7 \\ 3 & 7 & 10 \end{bmatrix}
+&\sim \begin{bmatrix} 1 & 2 & 3 \\ 0 & 1 & 1 \\ 0 & 1 & 1 \end{bmatrix} && R_2 - 2R_1,\ R_3 - 3R_1 \\
+&\sim \begin{bmatrix} 1 & 2 & 3 \\ 0 & 1 & 1 \\ 0 & 0 & 0 \end{bmatrix} && R_3 - R_2 \\
+&\sim \begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & 1 \\ 0 & 0 & 0 \end{bmatrix} && R_1 - 2R_2
+\end{aligned}
+$$
+
+The pivot columns are 1 and 2.
+</Answer>
+</Check>
+
+### Challenge
+
+<Check>
+For the system $x_1 + 3x_2 = 2$, $\ 4x_1 + hx_2 = k$, find the values of $h$ and $k$ that give infinitely many solutions. (Modeled on Lay §1.2 #19.)
 
 <VectorAnswer answer={[12, 8]} labels={["h", "k"]} />
 
+<Hint>
+Reach echelon form with one replacement. Infinitely many solutions needs a consistent system with a free variable.
+</Hint>
+
 <Answer>
-One replacement, $R_2 \leftarrow R_2 - 4R_1$, reaches echelon form.
+$R_2 \leftarrow R_2 - 4R_1$ reaches echelon form.
 
 $$
 \left[\begin{array}{rr|r} 1 & 3 & 2 \\ 4 & h & k \end{array}\right]
@@ -164,5 +569,29 @@ $$
 $$
 
 If $h \neq 12$, row 2 has a pivot and the solution is unique. If $h = 12$ and $k \neq 8$, row 2 says $0 = k - 8 \neq 0$, so there is no solution. If $h = 12$ and $k = 8$, row 2 is all zeros, $x_2$ is free, and there are infinitely many solutions.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="True or false: if a linear system has a free variable, then it has infinitely many solutions. (Modeled on Lay §1.2 #22.)"
+  options={["True", "False"]}
+  answer={1}
+>
+The system must also be consistent. The augmented matrix $\left[\begin{array}{rr|r} 1 & 1 & 0 \\ 0 & 0 & 1 \end{array}\right]$ has no pivot in column 2, so $x_2$ is free, but its second row says $0 = 1$. That system has no solutions at all.
+</Choice>
+</Check>
+
+<Check>
+Explain why "multiply a row by $0$" is not allowed as a row operation. Give a system where doing it would create solutions that the original system does not have.
+
+<Hint>
+Take a system with exactly one solution, turn one of its rows into zeros, and count the solutions of what is left.
+</Hint>
+
+<Answer>
+Every allowed operation can be undone, which is why it keeps the solution set the same. Multiplying a row by $0$ replaces it with $0 = 0$, and no operation can recover the original row from zeros, so the argument breaks down.
+
+For example, $x_1 + x_2 = 2$, $\ x_1 - x_2 = 0$ has the single solution $(1, 1)$. Multiplying row 2 by $0$ leaves only $x_1 + x_2 = 2$, which is also solved by $(2, 0)$, $(0, 2)$ and every other point on that line. Solutions were gained, so the new system is not equivalent to the old one.
 </Answer>
 </Check>
