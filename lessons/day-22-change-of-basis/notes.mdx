@@ -423,9 +423,11 @@ Row reducing $[\,P \mid AP\,]$ to $[\,I \mid C\,]$ solves $PC = AP$, so $C = P^{
 First $AP = \begin{bmatrix} 5 & -1 \\ 1 & 3 \end{bmatrix}\begin{bmatrix} 1 & 1 \\ 1 & 2 \end{bmatrix} = \begin{bmatrix} 4 & 3 \\ 4 & 7 \end{bmatrix}$. Then
 
 $$
-\left[\begin{array}{cc|cc} 1 & 1 & 4 & 3 \\ 1 & 2 & 4 & 7 \end{array}\right]
-\sim \left[\begin{array}{cc|cc} 1 & 1 & 4 & 3 \\ 0 & 1 & 0 & 4 \end{array}\right]
-\sim \left[\begin{array}{cc|cc} 1 & 0 & 4 & -1 \\ 0 & 1 & 0 & 4 \end{array}\right],
+\begin{aligned}
+&\left[\begin{array}{cc|cc} 1 & 1 & 4 & 3 \\ 1 & 2 & 4 & 7 \end{array}\right] \\
+&\sim \left[\begin{array}{cc|cc} 1 & 1 & 4 & 3 \\ 0 & 1 & 0 & 4 \end{array}\right] \\
+&\sim \left[\begin{array}{cc|cc} 1 & 0 & 4 & -1 \\ 0 & 1 & 0 & 4 \end{array}\right],
+\end{aligned}
 $$
 
 using $R_2 - R_1$ and then $R_1 - R_2$. So $[T]_{\mathcal B} = \begin{bmatrix} 4 & -1 \\ 0 & 4 \end{bmatrix}$. Check: $A\mathbf b_2 = (3, 7) = -\mathbf b_1 + 4\mathbf b_2$.
