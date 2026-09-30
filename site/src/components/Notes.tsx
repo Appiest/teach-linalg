@@ -6,7 +6,7 @@ import { VectorAnswer } from "@/components/interactive/answers";
 import { Choice, Step, Steps } from "@/components/interactive/walkthrough";
 import { Answer, Check, Concept, Definition, Hint, Problem, Solution, Warning } from "@/components/Walkthrough";
 import { TransformExplorer } from "@/components/interactive/transform";
-import { EntryHunt, SpanPainter } from "@/components/interactive/span";
+import { EntryHunt, LineSpanPicker, RowLinesMeet, SpanPainter } from "@/components/interactive/span";
 import { RowReduceExplorer, SolutionCountExplorer } from "@/components/interactive/systems";
 import { ColumnSpanCheck, MatrixVectorExplorer } from "@/components/interactive/matrix";
 import { PreimageHunt, ShapeMatch } from "@/components/interactive/transformations";
@@ -103,6 +103,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     VectorAnswer,
     SpanPainter,
     EntryHunt,
+    LineSpanPicker,
+    RowLinesMeet,
     RowReduceExplorer,
     SolutionCountExplorer,
     MatrixVectorExplorer,

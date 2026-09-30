@@ -1,4 +1,33 @@
-Yesterday's lesson ended with the combinations $a\,\yellow{\vec v} + b\,\blue{\vec w}$ covering the whole plane. That raises today's question: given a few vectors, which targets can their combinations reach? We name that set the span and learn to test whether a particular vector belongs to it. The test turns into a system of equations, and on Day 4 the same question becomes whether $A\mathbf x = \mathbf b$ has a solution.
+Yesterday ended with the combinations $a\,\yellow{\vec v} + b\,\blue{\vec w}$ covering the whole plane. That raises today's question: given a few vectors, which targets can their combinations reach? We give that set a name, the span, and learn to test whether one particular vector belongs to it. The test turns into a system of equations, which is why Day 3 teaches a method for solving systems and Day 4 rewrites the same question as $A\mathbf x = \mathbf b$.
+
+Each section below opens with a problem. Try it before you open the walkthrough, even if you only get partway. The box after the walkthrough names what you just did.
+
+## Span
+
+<Problem>
+Let $\yellow{\vec v} = \begin{bmatrix} 3 \\ 2 \end{bmatrix}$ and $\blue{\vec w} = \begin{bmatrix} -1 \\ 2 \end{bmatrix}$. Write down five different vectors of the form $a\,\yellow{\vec v} + b\,\blue{\vec w}$. Is the zero vector one of them? Is $\yellow{\vec v}$ itself?
+
+<Solution>
+We are free to pick any weights, so start with the easiest ones. Setting both weights to $0$ gives
+
+$$
+0\begin{bmatrix} 3 \\ 2 \end{bmatrix} + 0\begin{bmatrix} -1 \\ 2 \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \end{bmatrix},
+$$
+
+so the zero vector is reachable. Setting $a = 1$ and $b = 0$ gives $\yellow{\vec v}$ itself, and $a = 0$, $b = 1$ gives $\blue{\vec w}$.
+
+Two more come from using both vectors at once:
+
+$$
+\begin{aligned}
+1\begin{bmatrix} 3 \\ 2 \end{bmatrix} + 1\begin{bmatrix} -1 \\ 2 \end{bmatrix} &= \begin{bmatrix} 3 - 1 \\ 2 + 2 \end{bmatrix} = \begin{bmatrix} 2 \\ 4 \end{bmatrix} \\
+1\begin{bmatrix} 3 \\ 2 \end{bmatrix} - 1\begin{bmatrix} -1 \\ 2 \end{bmatrix} &= \begin{bmatrix} 3 + 1 \\ 2 - 2 \end{bmatrix} = \begin{bmatrix} 4 \\ 0 \end{bmatrix}
+\end{aligned}
+$$
+
+We could keep going forever, because every new pair of weights gives another vector. The list had two vectors, but the set of their combinations has infinitely many.
+</Solution>
+</Problem>
 
 <Definition term="Span">
 If $\vec v_1, \dots, \vec v_p$ are in $\mathbb{R}^n$, then $\operatorname{Span}\{\vec v_1, \dots, \vec v_p\}$ is the set of all linear combinations
@@ -10,103 +39,341 @@ $$
 where $c_1, \dots, c_p$ can be any scalars. We say the vectors **span** (or generate) this set.
 </Definition>
 
-Every span contains $\vec 0$, because all the weights can be zero. Every span also contains each $\vec v_i$ and all of its multiples, since $c\,\vec v_1 = c\,\vec v_1 + 0\,\vec v_2 + \cdots + 0\,\vec v_p$. The list $\{\vec v_1, \vec v_2\}$ holds just two vectors, but its span holds infinitely many as soon as one of them is nonzero.
+Problem 1 found three members that every span has. The zero vector is in every span, because all the weights can be $0$. Each $\vec v_i$ is in the span too, along with all of its multiples, since $c\,\vec v_1 = c\,\vec v_1 + 0\,\vec v_2 + \cdots + 0\,\vec v_p$.
 
-A span is also closed under addition. If $\vec x = c_1 \vec v_1 + c_2 \vec v_2$ and $\vec y = d_1 \vec v_1 + d_2 \vec v_2$, then
+<Warning>
+The braces in $\{\vec v_1, \vec v_2\}$ list two vectors, so that set has exactly two members. $\operatorname{Span}\{\vec v_1, \vec v_2\}$ is a different set. It holds every combination of the two, which means infinitely many vectors as soon as one of them is nonzero.
+</Warning>
 
-$$
-\begin{aligned}
-\vec x + \vec y &= c_1 \vec v_1 + c_2 \vec v_2 + d_1 \vec v_1 + d_2 \vec v_2 \\
-&= (c_1 + d_1)\,\vec v_1 + (c_2 + d_2)\,\vec v_2,
-\end{aligned}
-$$
-
-and the sums $c_i + d_i$ are scalars, so $\vec x + \vec y$ is another combination of $\vec v_1$ and $\vec v_2$.
+<Choice
+  question="Let $\vec a_1 = \begin{bmatrix} 1 \\ 0 \end{bmatrix}$ and $\vec a_2 = \begin{bmatrix} 0 \\ 1 \end{bmatrix}$. Which statement is true?"
+  options={["$\\begin{bmatrix} 5 \\\\ 7 \\end{bmatrix}$ is in the set $\\{\\vec a_1, \\vec a_2\\}$", "$\\begin{bmatrix} 5 \\\\ 7 \\end{bmatrix}$ is in $\\operatorname{Span}\\{\\vec a_1, \\vec a_2\\}$", "$\\operatorname{Span}\\{\\vec a_1, \\vec a_2\\}$ has two members"]}
+  answer={1}
+>
+The weights $5$ and $7$ give $5\vec a_1 + 7\vec a_2 = (5, 7)$, so $(5, 7)$ is in the span. It is not one of the two listed vectors, and the span has infinitely many members.
+</Choice>
 
 ## Two vectors in the plane
 
+Problem 1's vectors seemed to reach everywhere. Now we ask when two vectors can fail to reach a point.
+
+<Problem>
+Let $\yellow{\vec v} = \begin{bmatrix} 2 \\ 1 \end{bmatrix}$ and $\blue{\vec w} = \begin{bmatrix} -4 \\ -2 \end{bmatrix}$. Can a combination $a\,\yellow{\vec v} + b\,\blue{\vec w}$ reach $\begin{bmatrix} 1 \\ 3 \end{bmatrix}$?
+
+<Solution>
+Before solving anything, compare the two vectors. Each entry of $\blue{\vec w}$ is $-2$ times the matching entry of $\yellow{\vec v}$, since $-2 \cdot 2 = -4$ and $-2 \cdot 1 = -2$. So $\blue{\vec w} = -2\yellow{\vec v}$.
+
+That lets us rewrite every combination using $\yellow{\vec v}$ alone:
+
+$$
+a\,\yellow{\vec v} + b\,\blue{\vec w} = a\,\yellow{\vec v} + b(-2\yellow{\vec v}) = (a - 2b)\,\yellow{\vec v}.
+$$
+
+Every combination is a multiple of $\yellow{\vec v} = (2, 1)$, so its second entry is half of its first. The target $(1, 3)$ has second entry $3$, which is not half of $1$. No weights reach it.
+
+The span here is the line through the origin in the direction of $\yellow{\vec v}$. Adding $\blue{\vec w}$ gave us nothing new, because it already lay on that line.
+</Solution>
+</Problem>
+
+<Problem>
+Let $\yellow{\vec v} = \begin{bmatrix} 1 \\ 1 \end{bmatrix}$ and $\blue{\vec w} = \begin{bmatrix} 1 \\ -1 \end{bmatrix}$. Find weights that reach $\begin{bmatrix} 5 \\ 1 \end{bmatrix}$. Then find weights that reach any point $\begin{bmatrix} h \\ k \end{bmatrix}$.
+
+<VectorAnswer answer={[3, 2]} labels={["a", "b"]} />
+
+<Solution>
+We want $a\begin{bmatrix} 1 \\ 1 \end{bmatrix} + b\begin{bmatrix} 1 \\ -1 \end{bmatrix} = \begin{bmatrix} 5 \\ 1 \end{bmatrix}$. The left side is the single vector $\begin{bmatrix} a + b \\ a - b \end{bmatrix}$, and two vectors are equal when their entries match, so we need
+
+$$
+\begin{aligned}
+a + b &= 5 \\
+a - b &= 1.
+\end{aligned}
+$$
+
+Adding the two equations cancels $b$ and leaves $2a = 6$, so $a = 3$. Then the first equation gives $b = 5 - 3 = 2$.
+
+Nothing about the numbers $5$ and $1$ mattered. With a general target, the same two moves give $2a = h + k$ and $2b = h - k$, so
+
+$$
+a = \frac{h + k}{2}, \qquad b = \frac{h - k}{2}.
+$$
+
+These weights exist for every $h$ and $k$, so every point of the plane is in $\operatorname{Span}\{\yellow{\vec v}, \blue{\vec w}\}$.
+</Solution>
+</Problem>
+
 <Figure src="two-spans" alt="Two panels. On the left, v = (3, 2) and w = (−1, 2) with a slanted teal grid of combination lines that covers the plane. On the right, v = (3, 2) and w = (−1.5, −1), which points opposite v, and a single teal line through the origin along v." wide />
 
-Two vectors in $\mathbb{R}^2$ that point in different directions span all of $\mathbb{R}^2$. When one vector is a multiple of the other, every combination is a multiple of a single vector, so the span shrinks to a line through the origin.
+<Concept title="Two vectors span a line or the whole plane">
+In $\mathbb{R}^2$ the span of two vectors is one of three sets. It is the whole plane when the vectors point in different directions, as in Problem 3. It is a line through the origin when one vector is a multiple of the other, as in Problem 2. It is just $\{\vec 0\}$ when both vectors are zero.
 
-<SpanPainter v={[3, 2]} w={[-1, 2]} />
-
-The algebra says the same thing. Write $\yellow{\vec v} = (v_1, v_2)$ and $\blue{\vec w} = (w_1, w_2)$, and look for weights with $x_1 \yellow{\vec v} + x_2 \blue{\vec w} = (h, k)$. Eliminating one unknown at a time gives
+The same elimination as Problem 3 works for any $\yellow{\vec v} = (v_1, v_2)$ and $\blue{\vec w} = (w_1, w_2)$. It gives
 
 $$
 x_1 = \frac{w_2 h - w_1 k}{v_1 w_2 - v_2 w_1}, \qquad x_2 = \frac{v_1 k - v_2 h}{v_1 w_2 - v_2 w_1}.
 $$
 
-When $v_1 w_2 - v_2 w_1 \neq 0$, these weights exist for every target $(h, k)$, so the span is all of $\mathbb{R}^2$. For nonzero vectors, that number is zero exactly when $\blue{\vec w}$ is a multiple of $\yellow{\vec v}$. It comes back on Day 7 as the determinant of the matrix with columns $\yellow{\vec v}$ and $\blue{\vec w}$.
+In Problem 3 the bottom number is $1 \cdot (-1) - 1 \cdot 1 = -2$, and in Problem 2 it is $2 \cdot (-2) - 1 \cdot (-4) = 0$. Whenever $v_1 w_2 - v_2 w_1 \neq 0$, the weights exist for every target and the span is $\mathbb{R}^2$. For nonzero vectors, the number is zero exactly when $\blue{\vec w}$ is a multiple of $\yellow{\vec v}$. Day 7 names it the determinant, and Day 25 shows that it measures area.
+</Concept>
+
+Drag either arrow and watch the teal grid of combinations. The number $v_1 w_2 - v_2 w_1$ in the readout drops to $0$ at the moment the grid folds onto one line.
+
+<SpanPainter v={[3, 2]} w={[-1, 2]} />
+
+When the span is a line, you can tell whether a point is in it by asking whether the point is a multiple of $\yellow{\vec v}$. Try it on these dots.
+
+<LineSpanPicker v={[2, 1]} w={[-4, -2]} points={[[0, 0], [4, 2], [-2, -1], [-6, -3], [1, 2], [3, 1], [2, -1], [-4, -3]]} />
+
+<Warning>
+Two vectors do not always span a plane. If one is a multiple of the other, they span only a line, and if both are zero they span only the origin. Check for a multiple before you decide.
+</Warning>
 
 ## Membership as an equation
 
-The test should give a yes-or-no answer about one target vector and, when the answer is yes, the weights that reach it. Asking whether $\pink{\vec b}$ is in $\operatorname{Span}\{\vec a_1, \dots, \vec a_n\}$ is the same as asking whether the **vector equation** $x_1 \vec a_1 + \cdots + x_n \vec a_n = \pink{\vec b}$ has a solution. Matching the vectors entry by entry turns it into a linear system with one equation per entry. The **augmented matrix** of that system lists the vectors as its columns, in order: $[\,\vec a_1\ \cdots\ \vec a_n\ \ \pink{\vec b}\,]$. It drops the variable names and keeps only the numbers, because on Day 3 this is the form we row reduce to solve the system.
+Problems 2 and 3 both came down to matching entries and solving equations. This section turns that into a routine that works for any target.
 
-<Pair>
-<Figure src="reach-b" alt="The vectors v = (3, 2) and w = (−1, 2). From the tip of v, the arrow −2w runs down to the point (5, −2), which is the tip of the pink vector b = v − 2w, marked with an orange dot." />
+<Problem>
+Is $\pink{\vec b} = \begin{bmatrix} 5 \\ -2 \end{bmatrix}$ in $\operatorname{Span}\left\{\yellow{\begin{bmatrix} 3 \\ 2 \end{bmatrix}}, \blue{\begin{bmatrix} -1 \\ 2 \end{bmatrix}}\right\}$? If it is, find the weights.
+
+<VectorAnswer answer={[1, -2]} labels={["x₁", "x₂"]} />
+
+<Solution>
+The question asks whether some weights $x_1, x_2$ make a combination equal $\pink{\vec b}$. Write that down as one equation between vectors and solve it.
+
+<Steps>
+<Step>
+Write the **vector equation**, with the unknown weights in front of the vectors:
 
 $$
 x_1 \yellow{\begin{bmatrix} 3 \\ 2 \end{bmatrix}} + x_2 \blue{\begin{bmatrix} -1 \\ 2 \end{bmatrix}} = \pink{\begin{bmatrix} 5 \\ -2 \end{bmatrix}}
 $$
-
-$$
-\left[\begin{array}{cc|c} \yellow{3} & \blue{-1} & \pink{5} \\ \yellow{2} & \blue{2} & \pink{-2} \end{array}\right]
-$$
+</Step>
+<Step>
+Combine the left side into one vector. Its top entry is $3x_1 - x_2$ and its bottom entry is $2x_1 + 2x_2$. Matching entries gives one equation per row:
 
 $$
 \begin{aligned}
 3x_1 - x_2 &= 5 \\
-x_1 + x_2 &= -1 && \text{(row 2 halved)} \\
-4x_1 &= 4 && \text{(sum of the two)}
+2x_1 + 2x_2 &= -2
 \end{aligned}
 $$
+</Step>
+<Step>
+Row 2 has every number even, so halve it to get $x_1 + x_2 = -1$. Now the $x_2$ terms in the two rows are $-x_2$ and $+x_2$, and adding the rows cancels them: $4x_1 = 4$, so $x_1 = 1$.
+</Step>
+<Step>
+Put $x_1 = 1$ into $x_1 + x_2 = -1$ to get $x_2 = -2$. Check both original rows: $3(1) - (-2) = 5$ and $2(1) + 2(-2) = -2$.
+</Step>
+</Steps>
 
-So $x_1 = 1$ and $x_2 = -2$, which means $\pink{\vec b} = \yellow{\vec v} - 2\blue{\vec w}$.
+So $\pink{\vec b} = \yellow{\vec v} - 2\blue{\vec w}$, and $\pink{\vec b}$ is in the span.
+</Solution>
+</Problem>
+
+<Pair>
+<Figure src="reach-b" alt="The vectors v = (3, 2) and w = (−1, 2). From the tip of v, the arrow −2w runs down to the point (5, −2), which is the tip of the pink vector b = v − 2w, marked with an orange dot." />
+
+The picture shows the answer as a trip. Go once along $\yellow{\vec v}$ to $(3, 2)$, then go $-2$ times along $\blue{\vec w}$, which is $(2, -4)$. The trip ends at $(5, -2)$, the tip of $\pink{\vec b}$.
 </Pair>
+
+<Concept title="Membership is a system of equations">
+Asking whether $\pink{\vec b}$ is in $\operatorname{Span}\{\vec a_1, \dots, \vec a_n\}$ is the same as asking whether the vector equation
+
+$$
+x_1 \vec a_1 + x_2 \vec a_2 + \cdots + x_n \vec a_n = \pink{\vec b}
+$$
+
+has a solution. Matching entries turns it into a linear system with one equation per entry. If the system has a solution, the solution is the list of weights. If it has none, $\pink{\vec b}$ is not in the span.
+
+The **augmented matrix** of that system keeps only the numbers. Its columns are the vectors themselves, in order, so we write it $[\,\vec a_1\ \cdots\ \vec a_n\ \ \pink{\vec b}\,]$. For Problem 4 it is
+
+$$
+\left[\begin{array}{cc|c} \yellow{3} & \blue{-1} & \pink{5} \\ \yellow{2} & \blue{2} & \pink{-2} \end{array}\right].
+$$
+
+On Day 3 this grid of numbers is exactly what we row reduce to solve the system.
+</Concept>
+
+<Warning>
+The vectors go in as **columns**. The first row of the augmented matrix holds the first entry of every vector, $3, -1, 5$, which is the first equation. Writing $\yellow{(3, 2)}$ across the top row instead would describe a different system.
+</Warning>
+
+The translation also runs backward. The system $2x_1 - x_2 = 4$, $\ x_1 + 3x_2 = -5$ is the vector equation $x_1\begin{bmatrix} 2 \\ 1 \end{bmatrix} + x_2\begin{bmatrix} -1 \\ 3 \end{bmatrix} = \begin{bmatrix} 4 \\ -5 \end{bmatrix}$, because the coefficients of $x_1$ read down the rows form the first vector.
+
+<Choice
+  question="Which vector equation has the same solutions as the system $x_1 + 4x_2 = 7$, $\;3x_1 - 2x_2 = 0$?"
+  options={["$x_1\\begin{bmatrix} 1 \\\\ 4 \\end{bmatrix} + x_2\\begin{bmatrix} 3 \\\\ -2 \\end{bmatrix} = \\begin{bmatrix} 7 \\\\ 0 \\end{bmatrix}$", "$x_1\\begin{bmatrix} 1 \\\\ 3 \\end{bmatrix} + x_2\\begin{bmatrix} 4 \\\\ -2 \\end{bmatrix} = \\begin{bmatrix} 7 \\\\ 0 \\end{bmatrix}$", "$x_1\\begin{bmatrix} 1 \\\\ 3 \\end{bmatrix} + x_2\\begin{bmatrix} 4 \\\\ -2 \\end{bmatrix} = \\begin{bmatrix} 0 \\\\ 7 \\end{bmatrix}$"]}
+  answer={1}
+>
+The vector next to $x_1$ collects the coefficients of $x_1$ from each equation, top to bottom: $1$ and $3$. The vector next to $x_2$ collects $4$ and $-2$, and the right-hand sides $7$ and $0$ form the target.
+</Choice>
+
+Solve one more membership question with the sliders. Set up the two equations first, and then check your weights on the picture.
 
 <CombinationTarget v={[2, -1]} w={[2, 1]} target={[4, -4]} />
 
 ## A plane in space
 
-<Figure src="plane-in-space" alt="Three-dimensional axes with a teal plane through the origin spanned by u = (2, −1, 1) and v = (1, 2, 1). The pink vector to (4, 3, 3) ends on the plane at an orange dot. A second pink vector to (4, 3, −1) ends below the plane, joined to the dot by a dashed orange segment." wide />
+The same routine works in $\mathbb{R}^3$, with one new twist. Now there are three equations but still only two unknowns.
 
-In $\mathbb{R}^3$, two vectors that are not multiples of each other span a plane through the origin. Many vectors lie off that plane, and the system tells you which ones. With $\yellow{\vec u} = (2, -1, 1)$, $\blue{\vec v} = (1, 2, 1)$ and $\pink{\vec b} = (4, 3, h)$, the vector equation $x_1 \yellow{\vec u} + x_2 \blue{\vec v} = \pink{\vec b}$ has three rows:
+<Problem>
+Let $\yellow{\vec u} = \begin{bmatrix} 2 \\ -1 \\ 1 \end{bmatrix}$ and $\blue{\vec v} = \begin{bmatrix} 1 \\ 2 \\ 1 \end{bmatrix}$. Is $\pink{\vec b} = \begin{bmatrix} 4 \\ 3 \\ -1 \end{bmatrix}$ in $\operatorname{Span}\{\yellow{\vec u}, \blue{\vec v}\}$?
+
+<Solution>
+Write the vector equation $x_1\yellow{\vec u} + x_2\blue{\vec v} = \pink{\vec b}$ and match the three entries:
 
 $$
 \begin{aligned}
 2x_1 + x_2 &= 4 \\
 -x_1 + 2x_2 &= 3 \\
-x_1 + x_2 &= h
+x_1 + x_2 &= -1
 \end{aligned}
 $$
 
-Adding twice the second row to the first gives $5x_2 = 10$, so the first two rows force $x_2 = 2$ and $x_1 = 1$. The third row then holds only if $h = 3$. For $h = -1$ it reads $3 = -1$, so $(4, 3, -1)$ is not in the span. Always check every row, because two unknowns can satisfy two rows and still fail the third.
+Two unknowns are usually pinned down by two equations, so solve the first two and then test the third. Adding twice row 2 to row 1 cancels $x_1$, because $2x_1 + 2(-x_1) = 0$. That leaves $x_2 + 4x_2 = 4 + 6$, so $5x_2 = 10$ and $x_2 = 2$. Row 1 then gives $2x_1 + 2 = 4$, so $x_1 = 1$.
 
-The same test works in the plane. Below, $\blue{\vec w} = -2\yellow{\vec v}$, so the span is one line, and only one height $h$ puts $\pink{\vec b}$ on it.
+These are the only weights that satisfy rows 1 and 2. Row 3 asks for $x_1 + x_2 = -1$, but $1 + 2 = 3$. Row 3 fails, so no weights satisfy all three rows, and $\pink{\vec b}$ is not in the span.
+</Solution>
+</Problem>
+
+<Figure src="plane-in-space" alt="Three-dimensional axes with a teal plane through the origin spanned by u = (2, −1, 1) and v = (1, 2, 1). The pink vector to (4, 3, 3) ends on the plane at an orange dot. A second pink vector to (4, 3, −1) ends below the plane, joined to the dot by a dashed orange segment." wide />
+
+The figure shows why. The combinations of $\yellow{\vec u}$ and $\blue{\vec v}$ fill a flat plane through the origin. The point $(4, 3, -1)$ sits below that plane, while $(4, 3, 3)$ lies on it.
+
+<Problem>
+Keep $\yellow{\vec u}$ and $\blue{\vec v}$ from Problem 5. For which value of $h$ is $\begin{bmatrix} 4 \\ 3 \\ h \end{bmatrix}$ in $\operatorname{Span}\{\yellow{\vec u}, \blue{\vec v}\}$?
+
+<VectorAnswer answer={[3]} labels={["h"]} prefix="h =" />
+
+<Solution>
+The first two rows do not involve $h$, so they are the same as in Problem 5, and they still force $x_1 = 1$ and $x_2 = 2$. The third row now reads $x_1 + x_2 = h$, which says $1 + 2 = h$. It holds only when $h = 3$.
+
+Check the whole vector: $1\yellow{\vec u} + 2\blue{\vec v} = (2 + 2,\ -1 + 4,\ 1 + 2) = (4, 3, 3)$.
+</Solution>
+</Problem>
+
+<Concept title="Two vectors in space span a plane">
+In $\mathbb{R}^3$, two vectors that are not multiples of each other span a plane through the origin. Most points of space are off that plane. The system for $\pink{\vec b}$ has three equations and two unknowns, and a point is in the span only when one pair of weights satisfies all three at once.
+</Concept>
+
+Here is Problem 6 as a picture of the weights. Each row of the system is a line in the $(x_1, x_2)$ plane, and a pair of weights satisfies a row when it lies on that row's line. Rows 1 and 2 cross at $(1, 2)$. Slide $h$ and watch the pink third line.
+
+<RowLinesMeet u={[2, -1, 1]} v={[1, 2, 1]} b={[4, 3]} answer={3} solution={[1, 2]} min={-2} max={6} />
+
+<Warning>
+Check every row. With two unknowns and three equations, the first two rows almost always have a solution, and it is tempting to stop there and say yes. Problem 5 shows that the third row can still fail.
+</Warning>
+
+The same idea works in the plane with parallel vectors. Below, $\blue{\vec w} = -2\yellow{\vec v}$, so the span is one line, and only one height $h$ puts $\pink{\vec b}$ on it.
 
 <EntryHunt v={[2, 1]} w={[-4, -2]} x={4} answer={2} min={-3} max={4} />
 
-Each membership test today ended in a small system solved by hand, and larger systems need a method that always works. Tomorrow's lesson teaches that method, which is row reduction on the augmented matrix.
+## Closed under addition
+
+A span has one more useful property. Adding two vectors from a span never takes you out of it.
+
+<Problem>
+Let $\vec v_1 = \begin{bmatrix} 1 \\ 0 \\ 2 \end{bmatrix}$ and $\vec v_2 = \begin{bmatrix} 0 \\ 1 \\ -1 \end{bmatrix}$. Take $\vec x = 2\vec v_1 + \vec v_2$ and $\vec y = -\vec v_1 + 3\vec v_2$, which are both in $\operatorname{Span}\{\vec v_1, \vec v_2\}$. Find weights that write $\vec x + \vec y$ as a combination of $\vec v_1$ and $\vec v_2$.
+
+<VectorAnswer answer={[1, 4]} labels={["c₁", "c₂"]} />
+
+<Solution>
+One way is to compute both vectors and add them. $\vec x = (2, 0, 4) + (0, 1, -1) = (2, 1, 3)$ and $\vec y = (-1, 0, -2) + (0, 3, -3) = (-1, 3, -5)$, so $\vec x + \vec y = (1, 4, -2)$. Then we would still have to find the weights.
+
+A faster way is to add the combinations themselves and group the terms that share a vector:
+
+$$
+\begin{aligned}
+\vec x + \vec y &= (2\vec v_1 + \vec v_2) + (-\vec v_1 + 3\vec v_2) \\
+&= (2 - 1)\,\vec v_1 + (1 + 3)\,\vec v_2 \\
+&= 1\,\vec v_1 + 4\,\vec v_2.
+\end{aligned}
+$$
+
+Check: $(1, 0, 2) + (0, 4, -4) = (1, 4, -2)$, which matches. The weights of a sum are the sums of the weights.
+</Solution>
+</Problem>
+
+<Concept title="Sums stay in the span">
+If $\vec x = c_1 \vec v_1 + c_2 \vec v_2$ and $\vec y = d_1 \vec v_1 + d_2 \vec v_2$, then
+
+$$
+\vec x + \vec y = (c_1 + d_1)\,\vec v_1 + (c_2 + d_2)\,\vec v_2.
+$$
+
+The sums $c_i + d_i$ are ordinary numbers, so $\vec x + \vec y$ is another combination of $\vec v_1$ and $\vec v_2$. The same grouping works for any number of vectors, and scaling works the same way, since $k\vec x = (kc_1)\vec v_1 + (kc_2)\vec v_2$. On Day 11 these two facts make every span a **subspace**.
+</Concept>
+
+Each membership test today ended in a small system solved by hand. Larger systems need a method that always works, and tomorrow's lesson teaches it: row reduction on the augmented matrix.
 
 ## Practice
+
+### Warm-up
+
+<Check>
+Find the vector in $\operatorname{Span}\left\{\begin{bmatrix} 1 \\ -2 \\ 0 \end{bmatrix}, \begin{bmatrix} 3 \\ 1 \\ 4 \end{bmatrix}\right\}$ that uses the weights $2$ and $-1$. (Modeled on Lay §1.3 #15.)
+
+<VectorAnswer answer={[-1, -5, -4]} />
+
+<Answer>
+$$
+2\begin{bmatrix} 1 \\ -2 \\ 0 \end{bmatrix} - \begin{bmatrix} 3 \\ 1 \\ 4 \end{bmatrix} = \begin{bmatrix} 2 - 3 \\ -4 - 1 \\ 0 - 4 \end{bmatrix} = \begin{bmatrix} -1 \\ -5 \\ -4 \end{bmatrix}
+$$
+</Answer>
+</Check>
+
+<Check>
+Write the augmented matrix of the vector equation $x_1\begin{bmatrix} 1 \\ 4 \end{bmatrix} + x_2\begin{bmatrix} -2 \\ 3 \end{bmatrix} = \begin{bmatrix} 5 \\ -1 \end{bmatrix}$. Enter it row by row.
+
+<VectorAnswer answer={[1, -2, 5, 4, 3, -1]} columns={3} />
+
+<Answer>
+The three vectors become the three columns, in order:
+
+$$
+\left[\begin{array}{cc|c} 1 & -2 & 5 \\ 4 & 3 & -1 \end{array}\right]
+$$
+
+Row 1 is the equation $x_1 - 2x_2 = 5$ and row 2 is $4x_1 + 3x_2 = -1$.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="What is $\operatorname{Span}\left\{\begin{bmatrix} 2 \\ -4 \\ 6 \end{bmatrix}, \begin{bmatrix} -3 \\ 6 \\ -9 \end{bmatrix}\right\}$? (Modeled on Lay §1.3 #19.)"
+  options={["Only the origin", "A line through the origin", "A plane through the origin", "All of $\\mathbb{R}^3$"]}
+  answer={1}
+>
+The second vector is $-\tfrac32$ times the first, since $-\tfrac32 \cdot 2 = -3$, $-\tfrac32 \cdot (-4) = 6$ and $-\tfrac32 \cdot 6 = -9$. Every combination is therefore a multiple of $(2, -4, 6)$, so the span is the line through the origin and $(1, -2, 3)$.
+</Choice>
+</Check>
+
+### Core
 
 <Check>
 Let $\vec a_1 = \begin{bmatrix} 1 \\ 3 \\ -1 \end{bmatrix}$, $\vec a_2 = \begin{bmatrix} 2 \\ -1 \\ 4 \end{bmatrix}$ and $\vec b = \begin{bmatrix} -1 \\ 11 \\ -11 \end{bmatrix}$. Find weights with $x_1 \vec a_1 + x_2 \vec a_2 = \vec b$. (Modeled on Lay §1.3, Example 5.)
 
 <VectorAnswer answer={[3, -2]} labels={["x₁", "x₂"]} />
 
+<Hint>
+Write the three equations. Use the first to express $x_1$ in terms of $x_2$, substitute into the second, and then test the third.
+</Hint>
+
 <Answer>
-The system is $x_1 + 2x_2 = -1$, $3x_1 - x_2 = 11$ and $-x_1 + 4x_2 = -11$. The first row gives $x_1 = -1 - 2x_2$. Substituting into the second gives $-3 - 7x_2 = 11$, so $x_2 = -2$ and $x_1 = 3$.
+The system is $x_1 + 2x_2 = -1$, $\ 3x_1 - x_2 = 11$ and $-x_1 + 4x_2 = -11$. The first row gives $x_1 = -1 - 2x_2$. Substituting into the second gives $-3 - 6x_2 - x_2 = 11$, so $-7x_2 = 14$ and $x_2 = -2$. Then $x_1 = -1 + 4 = 3$.
 
 The third row must agree too, and it does: $-3 + 4(-2) = -11$. So $\vec b = 3\vec a_1 - 2\vec a_2$ is in $\operatorname{Span}\{\vec a_1, \vec a_2\}$.
 </Answer>
 </Check>
 
 <Check>
-Let $\vec v_1 = \begin{bmatrix} 1 \\ -2 \\ 3 \end{bmatrix}$, $\vec v_2 = \begin{bmatrix} 2 \\ 1 \\ -1 \end{bmatrix}$ and $\vec y = \begin{bmatrix} 4 \\ h \\ 5 \end{bmatrix}$. For what value of $h$ is $\vec y$ in $\operatorname{Span}\{\vec v_1, \vec v_2\}$? (Modeled on Lay §1.3, Exercise 17.)
+Let $\vec v_1 = \begin{bmatrix} 1 \\ -2 \\ 3 \end{bmatrix}$, $\vec v_2 = \begin{bmatrix} 2 \\ 1 \\ -1 \end{bmatrix}$ and $\vec y = \begin{bmatrix} 4 \\ h \\ 5 \end{bmatrix}$. For what value of $h$ is $\vec y$ in $\operatorname{Span}\{\vec v_1, \vec v_2\}$? (Modeled on Lay §1.3 #17.)
 
 <VectorAnswer answer={[-3]} labels={["h"]} prefix="h =" />
+
+<Hint>
+Two of the three rows do not contain $h$. Solve those two for the weights first.
+</Hint>
 
 <Answer>
 The first and third rows do not involve $h$:
@@ -118,6 +385,121 @@ x_1 + 2x_2 &= 4 \\
 \end{aligned}
 $$
 
-Adding twice the second row to the first gives $7x_1 = 14$, so $x_1 = 2$ and $x_2 = 1$. The second row then says $h = -2(2) + 1(1) = -3$. For any other $h$ that row is false, so $\vec y$ is in the span only when $h = -3$.
+Adding twice the second row to the first gives $7x_1 = 14$, so $x_1 = 2$, and then $x_2 = 1$. The second row says $-2x_1 + x_2 = h$, so $h = -4 + 1 = -3$. For any other $h$ that row is false, so $\vec y$ is in the span only when $h = -3$.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="Is $\begin{bmatrix} 1 \\ 5 \\ 2 \end{bmatrix}$ in $\operatorname{Span}\left\{\begin{bmatrix} 1 \\ 1 \\ 1 \end{bmatrix}, \begin{bmatrix} 1 \\ 3 \\ 2 \end{bmatrix}\right\}$? (Modeled on Lay §1.3, Example 6.)"
+  options={["Yes", "No"]}
+  answer={1}
+>
+The rows are $x_1 + x_2 = 1$, $\ x_1 + 3x_2 = 5$ and $x_1 + 2x_2 = 2$. Subtracting row 1 from row 2 gives $2x_2 = 4$, so $x_2 = 2$ and $x_1 = -1$. Row 3 would need $-1 + 4 = 2$, but $-1 + 4 = 3$. That contradiction means no weights work, so the vector is not in the span.
+</Choice>
+</Check>
+
+<Check>
+A workshop has two production lines. One hour on line A makes $4$ chairs and $1$ table. One hour on line B makes $2$ chairs and $3$ tables. Write a vector equation for running A for $x_1$ hours and B for $x_2$ hours to make $16$ chairs and $14$ tables, then solve it. (Modeled on Lay §1.3 #27.)
+
+<VectorAnswer answer={[2, 4]} labels={["x₁", "x₂"]} />
+
+<Hint>
+Each line's hourly output is a vector (chairs, tables). The total output is a linear combination of those two vectors.
+</Hint>
+
+<Answer>
+$$
+x_1\begin{bmatrix} 4 \\ 1 \end{bmatrix} + x_2\begin{bmatrix} 2 \\ 3 \end{bmatrix} = \begin{bmatrix} 16 \\ 14 \end{bmatrix}
+$$
+
+The rows are $4x_1 + 2x_2 = 16$ and $x_1 + 3x_2 = 14$. The first gives $x_2 = 8 - 2x_1$. Substituting, $x_1 + 24 - 6x_1 = 14$, so $-5x_1 = -10$ and $x_1 = 2$. Then $x_2 = 4$. Run line A for $2$ hours and line B for $4$ hours.
+</Answer>
+</Check>
+
+<Check>
+Let $\vec u = \begin{bmatrix} 1 \\ 2 \end{bmatrix}$ and $\vec v = \begin{bmatrix} 3 \\ -1 \end{bmatrix}$. Find the weights that reach $\begin{bmatrix} 7 \\ 0 \end{bmatrix}$. Then explain why $\operatorname{Span}\{\vec u, \vec v\} = \mathbb{R}^2$. (Modeled on Lay §1.3 #21.)
+
+<VectorAnswer answer={[1, 2]} labels={["x₁", "x₂"]} />
+
+<Hint>
+The second row, $2x_1 - x_2 = 0$, tells you $x_2$ in terms of $x_1$. For the second part, redo the elimination with a general target $(h, k)$.
+</Hint>
+
+<Answer>
+The rows are $x_1 + 3x_2 = 7$ and $2x_1 - x_2 = 0$. The second gives $x_2 = 2x_1$, so the first becomes $7x_1 = 7$. That gives $x_1 = 1$ and $x_2 = 2$.
+
+For a general target, the rows are $x_1 + 3x_2 = h$ and $2x_1 - x_2 = k$. Adding $3$ times row 2 to row 1 gives $7x_1 = h + 3k$, and subtracting $2$ times row 1 from row 2 gives $-7x_2 = k - 2h$. So
+
+$$
+x_1 = \frac{h + 3k}{7}, \qquad x_2 = \frac{2h - k}{7},
+$$
+
+and these exist for every $h$ and $k$. Every point is reachable, so the span is $\mathbb{R}^2$. The number $v_1 w_2 - v_2 w_1 = 1(-1) - 2(3) = -7$ is not zero, which says the same thing.
+</Answer>
+</Check>
+
+### Challenge
+
+<Check>
+Let $\vec v_1 = \begin{bmatrix} 1 \\ 0 \\ 1 \end{bmatrix}$, $\vec v_2 = \begin{bmatrix} 2 \\ 1 \\ 3 \end{bmatrix}$, $\vec v_3 = \begin{bmatrix} 0 \\ 1 \\ 1 \end{bmatrix}$ and $\vec y = \begin{bmatrix} 3 \\ 2 \\ h \end{bmatrix}$. For which $h$ is $\vec y$ in $\operatorname{Span}\{\vec v_1, \vec v_2, \vec v_3\}$? (Modeled on Lay §1.3, Practice Problem 2.)
+
+<VectorAnswer answer={[5]} labels={["h"]} prefix="h =" />
+
+<Hint>
+Three vectors in $\mathbb{R}^3$ do not always reach everything. Subtract row 1 from row 3 and compare the result with row 2.
+</Hint>
+
+<Answer>
+The rows are
+
+$$
+\begin{aligned}
+x_1 + 2x_2 &= 3 \\
+x_2 + x_3 &= 2 \\
+x_1 + 3x_2 + x_3 &= h.
+\end{aligned}
+$$
+
+Subtracting row 1 from row 3 gives $x_2 + x_3 = h - 3$. Row 2 says $x_2 + x_3 = 2$, so both can hold only when $h - 3 = 2$, which means $h = 5$.
+
+The reason is that $\vec v_3 = \vec v_2 - 2\vec v_1$, so the three vectors all lie in one plane. Having three vectors did not guarantee a third direction.
+</Answer>
+</Check>
+
+<Check>
+Suppose $\vec u$ and $\vec v$ are both in $\operatorname{Span}\{\vec w_1, \vec w_2, \vec w_3\}$. Show that $\vec u + \vec v$ is in that span too. (Modeled on Lay §1.3, Practice Problem 3.)
+
+<Hint>
+Being in the span means having weights. Write $\vec u$ and $\vec v$ with weights $c_1, c_2, c_3$ and $d_1, d_2, d_3$, add, and group.
+</Hint>
+
+<Answer>
+Since $\vec u$ and $\vec v$ are in the span, there are scalars with $\vec u = c_1\vec w_1 + c_2\vec w_2 + c_3\vec w_3$ and $\vec v = d_1\vec w_1 + d_2\vec w_2 + d_3\vec w_3$. Then
+
+$$
+\begin{aligned}
+\vec u + \vec v &= c_1\vec w_1 + c_2\vec w_2 + c_3\vec w_3 + d_1\vec w_1 + d_2\vec w_2 + d_3\vec w_3 \\
+&= (c_1 + d_1)\vec w_1 + (c_2 + d_2)\vec w_2 + (c_3 + d_3)\vec w_3.
+\end{aligned}
+$$
+
+Each $c_i + d_i$ is a scalar, so $\vec u + \vec v$ is a linear combination of $\vec w_1, \vec w_2, \vec w_3$, which is exactly what it means to be in their span.
+</Answer>
+</Check>
+
+<Check>
+For which $k$ is $\operatorname{Span}\left\{\begin{bmatrix} 2 \\ k \end{bmatrix}, \begin{bmatrix} 3 \\ 6 \end{bmatrix}\right\}$ only a line instead of all of $\mathbb{R}^2$?
+
+<VectorAnswer answer={[4]} labels={["k"]} prefix="k =" />
+
+<Hint>
+The span collapses to a line exactly when $v_1 w_2 - v_2 w_1 = 0$, which is when one vector is a multiple of the other.
+</Hint>
+
+<Answer>
+With $\vec v = (2, k)$ and $\vec w = (3, 6)$, the test number is $v_1 w_2 - v_2 w_1 = 2 \cdot 6 - k \cdot 3 = 12 - 3k$. It is zero when $k = 4$.
+
+Check: $(2, 4) = \tfrac23 (3, 6)$, so the two vectors lie on one line through the origin. For every other $k$ the test number is nonzero, and the span is all of $\mathbb{R}^2$.
 </Answer>
 </Check>
