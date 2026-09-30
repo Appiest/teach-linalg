@@ -40,7 +40,7 @@ import { BasisColumnBuilder, DiagonalBasisHunt, EigenOrbitSettle, EigenPolynomia
 import { DiagonalEntryMatch, DiagonalFactorSteps, EigenColumnHunt, EigenCoordinateTarget } from "@/components/interactive/diagonalization";
 import { CharacteristicSweep, EigenpairHunt } from "@/components/interactive/characteristic-equation";
 import { EigenDirectionSweep, ShadowStretchSum, SpectralEllipseBuilder, SymmetricPerpendicularHunt } from "@/components/interactive/symmetric-matrices";
-import { DotShadowHunt, RowPerpendicularHunt, UnitCircleScale } from "@/components/interactive/inner-products";
+import { DotShadowHunt, EqualDistanceTurn, OrthogonalWeights, RowPerpendicularHunt, UnitCircleScale } from "@/components/interactive/inner-products";
 import { LongestStretchHunt, RankCopyBudget, SvdEllipseMatch } from "@/components/interactive/singular-value-decomposition";
 import { LineFootHunt, NearestPlanePoint, ShadowSumBasis } from "@/components/interactive/orthogonal-projection";
 import { QrWeightSliders, ShadowSubtractSlider, StraightenedTargetHunt } from "@/components/interactive/gram-schmidt";
@@ -193,6 +193,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     DotShadowHunt,
     UnitCircleScale,
     RowPerpendicularHunt,
+    EqualDistanceTurn,
+    OrthogonalWeights,
     LongestStretchHunt,
     SvdEllipseMatch,
     RankCopyBudget,

@@ -6,7 +6,7 @@ import { hue, type Hue } from "./colors";
 import { columnTex, describeVector, Goal, Panel, Readout, Slider, Tex, Workbench } from "./controls";
 import { useSettled } from "./gesture";
 import { formatNumber, scale, texNumber, type Vec } from "./math";
-import { Arrow, Handle, Label, Plane, usePlane, type Bounds } from "./plane";
+import { Arrow, Handle, Label, Marker, Plane, usePlane, type Bounds } from "./plane";
 
 const SHADOW_BOUNDS: Bounds = { xMin: -5, xMax: 5, yMin: -4, yMax: 5 };
 const UNIT_BOUNDS: Bounds = { xMin: -3, xMax: 3, yMin: -3, yMax: 3 };
@@ -181,6 +181,112 @@ export function RowPerpendicularHunt({ rows = [[1, -2], [-2, 4]], start = [1, 1]
           <>
             <Readout tex={`A\\mathbf x = ${rowTex}${columnTex(x)} = ${columnTex(products)}`} />
             <Readout tex={`\\mathbf r_1\\cdot\\mathbf x = \\textcolor{${products[0] === 0 ? palette.teal : palette.text}}{${texNumber(products[0])}}, \\quad \\mathbf r_2\\cdot\\mathbf x = \\textcolor{${products[1] === 0 ? palette.teal : palette.text}}{${texNumber(products[1])}}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+const DISTANCE_BOUNDS: Bounds = { xMin: -5, xMax: 5, yMin: -4, yMax: 5 };
+const minus = (a: Vec, b: Vec): Vec => [a[0] - b[0], a[1] - b[1]];
+const plus = (a: Vec, b: Vec): Vec => [a[0] + b[0], a[1] + b[1]];
+const squaredLength = (a: Vec) => dot(a, a);
+
+function DistanceSegment({ from, to, color }: { from: Vec; to: Vec; color: Hue }) {
+  const { toSvg } = usePlane();
+  const [x1, y1] = toSvg(from);
+  const [x2, y2] = toSvg(to);
+  return <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={hue(color)} strokeWidth={2.5} strokeDasharray="2 6" strokeLinecap="round" />;
+}
+
+/** Drag w until the tip of v is equally far from w and from −w; that happens exactly when v·w = 0. */
+export function EqualDistanceTurn({ v, start = [1, 2] }: { v: Vec; start?: Vec }) {
+  const [w, setW] = useState<Vec>(start);
+  const { settled, gesture } = useSettled(pointKey(w));
+  const settledW = keyPoint(settled);
+  const solved = !isZero(settledW) && squaredLength(minus(v, settledW)) === squaredLength(plus(v, settledW));
+  const toW = squaredLength(minus(v, w));
+  const toMinusW = squaredLength(plus(v, w));
+  const opposite = scale(-1, w);
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Drag <Tex>{"\\mathbf w"}</Tex> until the tip of <Tex>{"\\mathbf v"}</Tex> is exactly as far from <Tex>{"\\mathbf w"}</Tex> as it is from <Tex>{"-\\mathbf w"}</Tex>. Keep <Tex>{"\\mathbf w"}</Tex> nonzero.</>}
+        success={<>The two squared distances match, which forces <Tex>{"\\mathbf v\\cdot\\mathbf w = 0"}</Tex>. The line through <Tex>{"\\mathbf w"}</Tex> now meets <Tex>{"\\mathbf v"}</Tex> at a right angle.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={DISTANCE_BOUNDS} label={`v is fixed at ${describeVector(v)}. w is at ${describeVector(w)}. The squared distance from v to w is ${formatNumber(toW)} and from v to minus w is ${formatNumber(toMinusW)}.`}>
+            {isZero(w) ? null : <LineThrough direction={w} color="blue" opacity={0.3} />}
+            <DistanceSegment from={v} to={w} color="blue" />
+            <DistanceSegment from={v} to={opposite} color="text" />
+            {solved ? <RightAngleMark first={v} second={settledW} /> : null}
+            <Arrow to={opposite} color="text" width={2.5} />
+            <Arrow to={v} color="yellow" />
+            <Arrow to={w} color="blue" />
+            <Label at={v} color="yellow">v</Label>
+            <Label at={w} color="blue">w</Label>
+            <Label at={opposite} color="text" dx={-30}>−w</Label>
+            <Handle at={w} onMove={setW} color="blue" label={`Tip of w, at ${describeVector(w)}`} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Readout tex={`\\textcolor{${palette.blue}}{\\|\\mathbf v - \\mathbf w\\|^2} = ${texNumber(toW)}`} />
+            <Readout tex={`\\|\\mathbf v + \\mathbf w\\|^2 = ${texNumber(toMinusW)}`} />
+            <Readout tex={`\\mathbf v\\cdot\\mathbf w = ${texNumber(dot(v, w))}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+const WEIGHT_BOUNDS: Bounds = { xMin: -4, xMax: 8, yMin: -3, yMax: 8 };
+
+/** Sliders for c₁ and c₂ rebuild y from an orthogonal pair; the right weights are the dot-product ratios. */
+export function OrthogonalWeights({ u1, u2, target }: { u1: Vec; u2: Vec; target: Vec }) {
+  const [c1, setC1] = useState(0);
+  const [c2, setC2] = useState(0);
+  const first = scale(c1, u1);
+  const result = plus(first, scale(c2, u2));
+  const { settled: solved, gesture } = useSettled(result[0] === target[0] && result[1] === target[1]);
+  const ratios = [u1, u2].map((u) => `\\frac{${texNumber(dot(target, u))}}{${texNumber(dot(u, u))}}`);
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Pick <Tex>{"c_1"}</Tex> and <Tex>{"c_2"}</Tex> so that <Tex>{"c_1\\mathbf u_1 + c_2\\mathbf u_2"}</Tex> lands on the ringed point <Tex>{"\\mathbf y"}</Tex>. The dashed drops show the shadows of <Tex>{"\\mathbf y"}</Tex> on the two lines.</>}
+        success={<>The weights are <Tex>{`c_1 = ${ratios[0]}`}</Tex> and <Tex>{`c_2 = ${ratios[1]}`}</Tex>, one dot-product ratio each. Each weight measures how far the shadow of <Tex>{"\\mathbf y"}</Tex> reaches along its own line.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={WEIGHT_BOUNDS} label={`Orthogonal vectors u1 at ${describeVector(u1)} and u2 at ${describeVector(u2)}. The combination is at ${describeVector(result)} and y is at ${describeVector(target)}.`}>
+            <LineThrough direction={u1} color="yellow" />
+            <LineThrough direction={u2} color="blue" />
+            <DropLine from={target} to={shadowFoot(u1, target)} />
+            <DropLine from={target} to={shadowFoot(u2, target)} />
+            <RightAngleMark first={u1} second={u2} />
+            {solved ? <Marker at={target} color="teal" /> : <Marker at={target} ring />}
+            <Arrow to={first} color="yellow" width={2.5} />
+            <Arrow from={first} to={result} color="blue" width={2.5} />
+            <Arrow to={result} color="teal" />
+            <Arrow to={u1} color="yellow" />
+            <Arrow to={u2} color="blue" />
+            <Label at={u1} color="yellow" dy={22}>u₁</Label>
+            <Label at={u2} color="blue" dx={-30}>u₂</Label>
+            <Label at={target} color="teal" dx={14}>y</Label>
+          </Plane>
+        }
+        readout={
+          <>
+            <Slider label="c_1" value={c1} onChange={setC1} min={-3} max={4} step={1} color={palette.yellow} />
+            <Slider label="c_2" value={c2} onChange={setC2} min={-3} max={4} step={1} color={palette.blue} />
+            <Readout tex={`${texNumber(c1)}${columnTex(u1, palette.yellow)} + ${texNumber(c2)}${columnTex(u2, palette.blue)} = ${columnTex(result, palette.teal)}`} />
           </>
         }
       />
