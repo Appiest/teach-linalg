@@ -38,7 +38,7 @@ import { IterateSwing, ShiftToSingular, TraceCurveMatch } from "@/components/int
 import { JordanChainBuilder, MultiplicityGapSlider, NullPowerClimb } from "@/components/interactive/generalized-eigenvectors";
 import { DiagonalBasisHunt, EigenOrbitSettle, EigenPolynomialHunt } from "@/components/interactive/diagonalizing-transformations";
 import { DiagonalFactorSteps, EigenCoordinateTarget } from "@/components/interactive/diagonalization";
-import { CharacteristicSweep, EigenpairHunt } from "@/components/interactive/characteristic-equation";
+import { CharacteristicSweep, EigenpairHunt, RepeatedRootSlider, TriangularPolyMatch } from "@/components/interactive/characteristic-equation";
 import { SpectralEllipseBuilder, SymmetricPerpendicularHunt } from "@/components/interactive/symmetric-matrices";
 import { DotShadowHunt, RowPerpendicularHunt, UnitCircleScale } from "@/components/interactive/inner-products";
 import { LongestStretchHunt, RankCopyBudget, SvdEllipseMatch } from "@/components/interactive/singular-value-decomposition";
@@ -186,6 +186,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     DiagonalFactorSteps,
     CharacteristicSweep,
     EigenpairHunt,
+    RepeatedRootSlider,
+    TriangularPolyMatch,
     SymmetricPerpendicularHunt,
     SpectralEllipseBuilder,
     DotShadowHunt,
