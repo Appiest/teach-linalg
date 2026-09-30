@@ -42,7 +42,7 @@ import { CharacteristicSweep, EigenpairHunt } from "@/components/interactive/cha
 import { SpectralEllipseBuilder, SymmetricPerpendicularHunt } from "@/components/interactive/symmetric-matrices";
 import { DotShadowHunt, RowPerpendicularHunt, UnitCircleScale } from "@/components/interactive/inner-products";
 import { LongestStretchHunt, RankCopyBudget, SvdEllipseMatch } from "@/components/interactive/singular-value-decomposition";
-import { LineFootHunt, NearestPlanePoint, ShadowSumBasis } from "@/components/interactive/orthogonal-projection";
+import { LineFootHunt, LineOnlyShadow, NearestPlanePoint, ShadowPreimageHunt, ShadowSumBasis } from "@/components/interactive/orthogonal-projection";
 import { QrWeightSliders, ShadowSubtractSlider, StraightenedTargetHunt } from "@/components/interactive/gram-schmidt";
 import { ProjectionRightAngle, ResidualSquaresFit } from "@/components/interactive/least-squares";
 import { QuadraticAxisTurner, QuadraticCircleMax, QuadraticSurfaceShaper } from "@/components/interactive/quadratic-forms";
@@ -191,6 +191,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     LineFootHunt,
     ShadowSumBasis,
     NearestPlanePoint,
+    LineOnlyShadow,
+    ShadowPreimageHunt,
     ShadowSubtractSlider,
     StraightenedTargetHunt,
     QrWeightSliders,
