@@ -11,7 +11,7 @@ import { RowReduceExplorer, SolutionCountExplorer } from "@/components/interacti
 import { ColumnSpanCheck, MatrixVectorExplorer } from "@/components/interactive/matrix";
 import { PreimageHunt, ShapeMatch } from "@/components/interactive/transformations";
 import { ClosureHunt, PolynomialCombiner } from "@/components/interactive/vector-spaces";
-import { CostCompare, LUBuilder, SubstitutionSolver } from "@/components/interactive/lu";
+import { CostCompare, LUBuilder, PivotFlattener, SubstitutionSolver, TwoTriangleSolve } from "@/components/interactive/lu";
 import { AdditionExplorer, CombinationTarget, DifferenceExplorer, GridWeights, ScaleExplorer, VectorExplorer } from "@/components/interactive/vectors";
 import { ColumnWeights, CommuteHunt, CompositionExplorer, ProductColumns, ZeroProductHunt } from "@/components/interactive/product";
 import { BuildFromSteps, ElementaryMoves, InverseBuilder, RowRecipe } from "@/components/interactive/elementary";
@@ -119,6 +119,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     LUBuilder,
     SubstitutionSolver,
     CostCompare,
+    TwoTriangleSolve,
+    PivotFlattener,
     ElementaryMoves,
     InverseBuilder,
     RowRecipe,
