@@ -239,7 +239,7 @@ before they have done an example of it.
   gives the learner a goal, lets them manipulate the math directly, and gives immediate visible feedback.
   - Place each widget right after the idea it exercises.
   - Existing widgets live in `site/src/components/interactive/` and are registered in
-    `site/src/components/Notes.tsx`:
+    `site/src/components/widgets.ts`:
     - `<VectorExplorer start goal />`
     - `<AdditionExplorer v w goal />`
     - `<ScaleExplorer vector target />`
@@ -253,7 +253,7 @@ before they have done an example of it.
     - `Panel`, `Workbench`, `Goal`, `Slider`, `Readout`, `Tex`, `RichText`, `columnTex`
 
     For example, a line whose span a handle sweeps, an eigenvector hunt, or a least-squares line you drag.
-    Register it in `Notes.tsx`.
+    Register it in `site/src/components/widgets.ts`.
   - Requirements for every widget:
     - handles work by mouse, touch and arrow keys
     - it has an accessible label
