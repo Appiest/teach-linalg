@@ -1,74 +1,255 @@
 On Day 25 the determinant of a $2 \times 2$ matrix was the factor by which it scales area, and the picture gave the formula $ad - bc$. That formula stops at $2 \times 2$, but the uses ahead need larger matrices. Day 29 finds the eigenvalues of $3 \times 3$ matrices by solving $\det(A - \lambda I) = 0$, and the test "$\det A \neq 0$ means invertible" only helps if you can compute $\det A$. Today builds every larger determinant out of $2 \times 2$ pieces, then finds a faster route through row reduction.
 
+Each section below opens with a problem. Try it before you open the walkthrough, even if you only get partway. Everything you need is either from Day 25 or from an earlier problem on this page.
+
 ## Minors and cofactors
 
-For an $n \times n$ matrix $A$, write $A_{ij}$ for the $(n-1) \times (n-1)$ **submatrix** left after deleting row $i$ and column $j$. Its determinant $\det A_{ij}$ is called a **minor**. The cofactor attaches a sign to that minor. Cofactors return on Day 27, where they assemble into a formula for $A^{-1}$.
+A $3 \times 3$ matrix hides nine $2 \times 2$ matrices inside it, one for each entry. We start by pulling one out.
 
-<Definition term="Cofactor">
-The $(i, j)$-**cofactor** of an $n \times n$ matrix $A$ is the number
-
-$$
-C_{ij} = (-1)^{i+j} \det A_{ij}.
-$$
-
-The sign $(-1)^{i+j}$ depends only on the position $(i, j)$, never on the entry itself. It follows a checkerboard that starts with $+$ in the top-left corner:
+<Problem>
+Take the matrix from the video,
 
 $$
-\begin{bmatrix} + & - & + & \cdots \\ - & + & - & \\ + & - & + & \\ \vdots & & & \ddots \end{bmatrix}
+A = \begin{bmatrix} 2 & 2 & 1 \\ 1 & 0 & 1 \\ 0 & -2 & -1 \end{bmatrix}.
 $$
-</Definition>
+
+Cross out row 2 and column 3. Four entries are left. Write them as a $2 \times 2$ matrix, keeping their positions, and find its determinant.
+
+<Solution>
+Row 2 is $(1, 0, 1)$ and column 3 is $(1, 1, -1)$ reading down. Crossing both out leaves the entries in rows 1 and 3 and columns 1 and 2:
+
+$$
+\begin{bmatrix} 2 & 2 & \cancel{1} \\ \cancel{1} & \cancel{0} & \cancel{1} \\ 0 & -2 & \cancel{-1} \end{bmatrix}
+\quad\longrightarrow\quad
+\begin{bmatrix} 2 & 2 \\ 0 & -2 \end{bmatrix}.
+$$
+
+The entries keep their relative places, so row 1 of the small matrix is $(2, 2)$ and row 2 is $(0, -2)$. Day 25's formula gives
+
+$$
+\begin{vmatrix} 2 & 2 \\ 0 & -2 \end{vmatrix} = 2 \cdot (-2) - 2 \cdot 0 = -4.
+$$
+
+The vertical bars are a common shorthand for "the determinant of this matrix."
+</Solution>
+</Problem>
+
+<Concept title="Minors and cofactors">
+Deleting row $i$ and column $j$ of an $n \times n$ matrix $A$ leaves an $(n-1) \times (n-1)$ **submatrix**, written $A_{ij}$. In the problem, $A_{23} = \begin{bmatrix} 2 & 2 \\ 0 & -2 \end{bmatrix}$. Its determinant, $\det A_{23} = -4$, is called a **minor**.
+
+The **cofactor** attaches a sign to the minor. The sign is $+$ or $-$ according to a checkerboard that starts with $+$ in the top-left corner, and position $(2, 3)$ lands on a $-$. So
+
+$$
+C_{23} = -\det A_{23} = -(-4) = 4.
+$$
+
+In symbols, the checkerboard sign is $(-1)^{i+j}$, and $C_{ij} = (-1)^{i+j}\det A_{ij}$. For $(2, 3)$, $(-1)^{5} = -1$.
+</Concept>
 
 <Figure src="checkerboard" alt="The matrix A with rows (2, 2, 1), (1, 0, 1) and (0, −2, −1). Row 2 and column 3 are dimmed, and a small plus or minus sign sits at the upper left of every entry in a checkerboard pattern, with the minus sign at position (2, 3) in orange. Beside it, A23 is the 2 by 2 matrix with rows (2, 2) and (0, −2), det A23 = 2·(−2) − 2·0 = −4, and C23 = (−1) to the power 2 + 3 times det A23 = 4." wide />
 
+Pick any entry to see its minor light up in blue and its cofactor computed. One position has cofactor $-1$. Find it.
+
+<CofactorHunt matrix={[[2, 2, 1], [1, 0, 1], [0, -2, -1]]} target={-1} />
+
+<Warning>
+The sign of a cofactor comes from the **position**, never from the entry. Position $(3, 2)$ always carries $-$, whether the entry sitting there is $5$, $0$ or $-2$. When the entry is itself negative, the two minus signs are separate and both count.
+</Warning>
+
+<Choice
+  question="In a $4 \times 4$ matrix, which sign does the checkerboard put at position $(4, 2)$?"
+  options={["$+$", "$-$"]}
+  answer={0}
+>
+$(-1)^{4+2} = (-1)^6 = +1$. You can also walk the checkerboard: row 4 starts with $-$ because row 1 starts with $+$ and each new row flips, so row 4 reads $-, +, -, +$, and column 2 is $+$.
+</Choice>
+
 ## Cofactor expansion
 
-The goal of cofactor expansion is to write one $n \times n$ determinant as a sum of $(n-1) \times (n-1)$ determinants, and to repeat that step until only $2 \times 2$ determinants remain.
+Cofactors are useful because a determinant can be rebuilt from them. We test that on a $2 \times 2$ matrix first, where we already know the answer.
 
-<Definition term="Cofactor expansion (Lay, Theorem 1)">
-The determinant of an $n \times n$ matrix $A$ can be computed along any row $i$ or down any column $j$:
+<Problem>
+Let $M = \begin{bmatrix} 3 & 1 \\ 1 & 2 \end{bmatrix}$ from Day 25, whose determinant is $3 \cdot 2 - 1 \cdot 1 = 5$. Find the cofactors $C_{11}$ and $C_{12}$. Then compute $3\,C_{11} + 1\,C_{12}$, which multiplies each entry of row 1 by its own cofactor.
+
+<Solution>
+For $C_{11}$, delete row 1 and column 1. The only entry left is $2$, and a $1 \times 1$ matrix has that entry as its determinant. Position $(1, 1)$ is $+$, so $C_{11} = 2$.
+
+For $C_{12}$, delete row 1 and column 2. The entry left is $1$, and position $(1, 2)$ is $-$, so $C_{12} = -1$.
+
+Now weight each cofactor by its entry:
 
 $$
-\begin{aligned}
-\det A &= a_{i1}C_{i1} + a_{i2}C_{i2} + \cdots + a_{in}C_{in} && \text{along row } i \\
-\det A &= a_{1j}C_{1j} + a_{2j}C_{2j} + \cdots + a_{nj}C_{nj} && \text{down column } j
-\end{aligned}
+3\,C_{11} + 1\,C_{12} = 3 \cdot 2 + 1 \cdot (-1) = 5.
+$$
+
+That is exactly $\det M$. Written with letters, $a\,C_{11} + b\,C_{12} = a\,d + b\,(-c) = ad - bc$, so the $2 \times 2$ formula is already a sum of entries times cofactors.
+</Solution>
+</Problem>
+
+The $2 \times 2$ case suggests a recipe for bigger matrices: go along a row, and multiply each entry by its cofactor. The goal is to write one $3 \times 3$ determinant as a sum of $2 \times 2$ determinants, which we know how to compute.
+
+<Problem>
+Use the recipe on $A = \begin{bmatrix} 2 & 2 & 1 \\ 1 & 0 & 1 \\ 0 & -2 & -1 \end{bmatrix}$ along row 1.
+
+<Solution>
+Row 1 holds the entries $2, 2, 1$, and the checkerboard signs above them are $+, -, +$. Take them one at a time.
+
+<Steps>
+<Step>
+Entry $a_{11} = 2$. Delete row 1 and column 1, which leaves $\begin{vmatrix} 0 & 1 \\ -2 & -1 \end{vmatrix} = 0 \cdot (-1) - 1 \cdot (-2) = 2$. The sign is $+$, so this term is $+2 \cdot 2 = 4$.
+</Step>
+<Step>
+Entry $a_{12} = 2$. Delete row 1 and column 2, which leaves $\begin{vmatrix} 1 & 1 \\ 0 & -1 \end{vmatrix} = 1 \cdot (-1) - 1 \cdot 0 = -1$. The sign is $-$, so this term is $-2 \cdot (-1) = 2$.
+</Step>
+<Step>
+Entry $a_{13} = 1$. Delete row 1 and column 3, which leaves $\begin{vmatrix} 1 & 0 \\ 0 & -2 \end{vmatrix} = 1 \cdot (-2) - 0 \cdot 0 = -2$. The sign is $+$, so this term is $+1 \cdot (-2) = -2$.
+</Step>
+<Step>
+Add the three terms: $\det A = 4 + 2 - 2 = 4$.
+</Step>
+</Steps>
+
+<Figure src="expansion" alt="The row 1 expansion of A written out. Row 1 of A is yellow and the signs plus, minus, plus above it are orange. Three lines show +2 times the determinant with rows (0, 1) and (−2, −1), which is +2(2) = 4, then −2 times the determinant with rows (1, 1) and (0, −1), which is −2(−1) = +2, then +1 times the determinant with rows (1, 0) and (0, −2), which is +1(−2) = −2. The sum reads det A = 4 + 2 − 2 = 4." />
+</Solution>
+</Problem>
+
+Nothing in the recipe said we had to use row 1. The next problem tries a column instead.
+
+<Problem>
+Compute $\det A$ for the same matrix by going down column 2, whose entries are $2, 0, -2$. Do you get $4$ again?
+
+<Solution>
+Column 2 has checkerboard signs $-, +, -$ from top to bottom.
+
+<Steps>
+<Step>
+Entry $a_{12} = 2$ with sign $-$. Its minor is $\begin{vmatrix} 1 & 1 \\ 0 & -1 \end{vmatrix} = -1$, so the term is $-2 \cdot (-1) = 2$.
+</Step>
+<Step>
+Entry $a_{22} = 0$ with sign $+$. A zero entry makes the whole term zero, so there is no need to compute its minor.
+</Step>
+<Step>
+Entry $a_{32} = -2$ with sign $-$. Its minor is $\begin{vmatrix} 2 & 1 \\ 1 & 1 \end{vmatrix} = 2 - 1 = 1$, so the term is $-(-2) \cdot 1 = 2$. The position's minus and the entry's minus cancel.
+</Step>
+<Step>
+Add: $\det A = 2 + 0 + 2 = 4$, the same as before, with one fewer minor to compute.
+</Step>
+</Steps>
+</Solution>
+</Problem>
+
+<Definition term="Cofactor expansion (Lay, Theorem 1)">
+The determinant of an $n \times n$ matrix $A$ can be computed along any row $i$,
+
+$$
+\det A = a_{i1}C_{i1} + a_{i2}C_{i2} + \cdots + a_{in}C_{in},
+$$
+
+or down any column $j$,
+
+$$
+\det A = a_{1j}C_{1j} + a_{2j}C_{2j} + \cdots + a_{nj}C_{nj}.
 $$
 </Definition>
 
-Every line gives the same number. If you unwind any expansion completely, it becomes the same signed sum of products, each taking exactly one entry from every row and every column, and the checkerboard signs are what keep those signs consistent from one line to the next. This is the video's matrix $A = \begin{bmatrix} 2 & 2 & 1 \\ 1 & 0 & 1 \\ 0 & -2 & -1 \end{bmatrix}$, expanded along row 1 and then down column 2:
+Every line gives the same number. If you unwind any expansion completely, you get the same signed sum of products, each taking exactly one entry from every row and every column. The checkerboard signs are what keep those signs consistent from one line to the next.
 
-$$
-\begin{aligned}
-\det A &= \glow{+}\,\yellow{2}\blue{\begin{vmatrix} 0 & 1 \\ -2 & -1 \end{vmatrix}} \glow{-}\,\yellow{2}\blue{\begin{vmatrix} 1 & 1 \\ 0 & -1 \end{vmatrix}} \glow{+}\,\yellow{1}\blue{\begin{vmatrix} 1 & 0 \\ 0 & -2 \end{vmatrix}} \\
-&= 2(2) - 2(-1) + 1(-2) = \teal{4} \\[4pt]
-\det A &= \glow{-}\,\yellow{2}\blue{\begin{vmatrix} 1 & 1 \\ 0 & -1 \end{vmatrix}} \glow{+}\,\yellow{0} \glow{-}\,\yellow{(-2)}\blue{\begin{vmatrix} 2 & 1 \\ 1 & 1 \end{vmatrix}} \\
-&= -2(-1) + 0 + 2(1) = \teal{4}
-\end{aligned}
-$$
-
-<Figure src="expansion" alt="The row 1 expansion of A written out. Row 1 of A is yellow and the signs plus, minus, plus above it are orange. Three lines show +2 times the determinant with rows (0, 1) and (−2, −1), which is +2(2) = 4, then −2 times the determinant with rows (1, 1) and (0, −1), which is −2(−1) = +2, then +1 times the determinant with rows (1, 0) and (0, −2), which is +1(−2) = −2. The sum reads det A = 4 + 2 − 2 = 4." wide />
-
-In the last term of the column expansion, the minus sign of position $(3, 2)$ meets the entry $-2$, and together they give $+2$. A zero entry makes its whole term zero, so you never compute its minor. That is why the best line to expand along is the one with the most zeros.
+Because a zero entry kills its whole term, the best line to expand along is the one with the most zeros. Try every line of this matrix and find the cheapest.
 
 <CofactorLinePicker matrix={[[3, 1, -2], [4, 0, 5], [1, 0, 2]]} />
 
-## Triangular matrices
+<Warning>
+Each term is the entry times its cofactor, $a_{ij}C_{ij}$. A common slip is to add up the cofactors alone and forget the entry in front. Another is to write $-2$ instead of $+2$ for a term like the last one above, by using only one of the two minus signs.
+</Warning>
 
-<Definition term="Triangular matrices (Lay, Theorem 2)">
-If $A$ is triangular, then $\det A$ is the product of the entries on its main diagonal.
-</Definition>
+## Zeros and triangular matrices
 
-Expand an upper triangular matrix down column 1. Every entry below the top one is $0$, so only $a_{11}C_{11}$ survives, and the minor $A_{11}$ is triangular again. Repeating the step peels off one diagonal entry at a time:
+A $4 \times 4$ expansion has four $3 \times 3$ minors, and each of those has three $2 \times 2$ minors. Zeros are what keep that from getting out of hand.
+
+<Problem>
+Compute $\det B$ for
 
 $$
-\begin{vmatrix} \yellow{3} & 1 & 4 \\ 0 & \yellow{2} & 5 \\ 0 & 0 & \yellow{-1} \end{vmatrix}
+B = \begin{bmatrix} 1 & 3 & 0 & 2 \\ 0 & 2 & 0 & 0 \\ 4 & 1 & 3 & -1 \\ 0 & 5 & 0 & 2 \end{bmatrix}.
+$$
+
+<Solution>
+Look for the line with the most zeros. Row 2 is $(0, 2, 0, 0)$, so expanding along it leaves one term.
+
+<Steps>
+<Step>
+The only nonzero entry of row 2 is $2$ at position $(2, 2)$, whose sign is $+$. Deleting row 2 and column 2 leaves a $3 \times 3$ minor:
+
+$$
+\det B = +2\begin{vmatrix} 1 & 0 & 2 \\ 4 & 3 & -1 \\ 0 & 0 & 2 \end{vmatrix}.
+$$
+</Step>
+<Step>
+Look for zeros again. Column 2 of the minor is $(0, 3, 0)$, and its only nonzero entry sits at position $(2, 2)$ with sign $+$:
+
+$$
+\begin{vmatrix} 1 & 0 & 2 \\ 4 & 3 & -1 \\ 0 & 0 & 2 \end{vmatrix} = +3\begin{vmatrix} 1 & 2 \\ 0 & 2 \end{vmatrix} = 3 \cdot (1 \cdot 2 - 2 \cdot 0) = 6.
+$$
+</Step>
+<Step>
+Put the pieces together: $\det B = 2 \cdot 6 = 12$. Choosing well meant computing one $2 \times 2$ determinant instead of twelve.
+</Step>
+</Steps>
+</Solution>
+</Problem>
+
+The same trick makes one kind of matrix almost free.
+
+<Problem>
+Compute $\begin{vmatrix} 3 & 1 & 4 \\ 0 & 2 & 5 \\ 0 & 0 & -1 \end{vmatrix}$.
+
+<Solution>
+Column 1 is $(3, 0, 0)$, so expand down it. Only the $3$ survives, with sign $+$:
+
+$$
+\begin{vmatrix} 3 & 1 & 4 \\ 0 & 2 & 5 \\ 0 & 0 & -1 \end{vmatrix}
 = 3\begin{vmatrix} 2 & 5 \\ 0 & -1 \end{vmatrix}
+= 3 \cdot \big(2 \cdot (-1) - 5 \cdot 0\big)
 = 3 \cdot 2 \cdot (-1) = -6.
 $$
 
+The minor was triangular again, so its determinant was just $2 \cdot (-1)$. The answer is the product of the diagonal entries, and every number above the diagonal dropped out.
+</Solution>
+</Problem>
+
+<Concept title="Triangular matrices">
+If every entry below the diagonal is zero, expanding down column 1 keeps only the top-left entry, and its minor is again triangular. Repeating that peels off one diagonal entry at a time. The same happens with every entry above the diagonal zero, using row 1. So the determinant of a triangular matrix is the product of its diagonal entries (Lay, Theorem 2):
+
+$$
+\begin{vmatrix} \yellow{3} & 1 & 4 \\ 0 & \yellow{2} & 5 \\ 0 & 0 & \yellow{-1} \end{vmatrix} = \yellow{3} \cdot \yellow{2} \cdot (\yellow{-1}) = -6.
+$$
+</Concept>
+
 ## Row operations
 
-A full cofactor expansion of an $n \times n$ matrix takes roughly $n!$ multiplications, which is already millions for $n = 10$. Row reduction is much cheaper, and each row operation changes the determinant in a way you can predict. The goal is to reach a triangular matrix, whose determinant is the product of its diagonal, while keeping track of how each step changed the determinant.
+A full cofactor expansion of an $n \times n$ matrix takes roughly $n!$ multiplications, which is already millions for $n = 10$. Row reduction is much cheaper, and it ends at a triangular matrix, whose determinant we can read off. The question is what each row operation does to the determinant along the way.
+
+<Problem>
+Start with $M = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$, where $\det M = 4 - 1 = 3$. Apply these three row operations one after another and compute the determinant after each: first $R_2 \leftarrow R_2 - R_1$, then swap the two rows, then $R_1 \leftarrow 2R_1$.
+
+<Solution>
+Do each operation on the current matrix and use $ad - bc$ each time.
+
+<Steps>
+<Step>
+$R_2 \leftarrow R_2 - R_1$ turns row 2 into $(1 - 2, 2 - 1) = (-1, 1)$. The matrix is $\begin{bmatrix} 2 & 1 \\ -1 & 1 \end{bmatrix}$, and its determinant is $2 \cdot 1 - 1 \cdot (-1) = 3$. The replacement changed nothing.
+</Step>
+<Step>
+Swapping the rows gives $\begin{bmatrix} -1 & 1 \\ 2 & 1 \end{bmatrix}$, with determinant $(-1) \cdot 1 - 1 \cdot 2 = -3$. The swap flipped the sign.
+</Step>
+<Step>
+$R_1 \leftarrow 2R_1$ gives $\begin{bmatrix} -2 & 2 \\ 2 & 1 \end{bmatrix}$, with determinant $(-2) \cdot 1 - 2 \cdot 2 = -6$. Doubling one row doubled the determinant.
+</Step>
+</Steps>
+
+The picture from Day 25 explains all three. The columns of $M$ build a parallelogram. A replacement shears it, which keeps the area. A swap reflects it, which reverses its orientation. Scaling a row stretches the plane in one direction, which scales the area by the same factor.
+</Solution>
+</Problem>
 
 <Definition term="Row operations and the determinant (Lay, Theorem 3)">
 Let $A$ be a square matrix, and let $B$ come from $A$ by one row operation.
@@ -80,79 +261,308 @@ Let $A$ be a square matrix, and let $B$ come from $A$ by one row operation.
 
 <Figure src="row-operations" alt="Four small planes in a row. The first shows the parallelogram of the columns of M = (2, 1; 1, 2) in yellow with det = 3. After R2 ← R2 − R1 the parallelogram is sheared below the axis, still yellow, with det = 3. After R1 ↔ R2 it is flipped over and pink, with det = −3. After R1 ← 2R1 it is stretched sideways and pink, with det = −6." wide />
 
-The pictures come from Day 25. A row operation on $M$ gives $EM$, and the columns of $EM$ are the columns of $M$ moved by the elementary matrix $E$. A replacement is a shear, which keeps area. A swap is a reflection, which flips orientation. Scaling a row by $k$ stretches the plane by $k$ in one direction.
+Drag the green tip to add a multiple of row 1 to row 2. The parallelogram shears, and its area stays the same the whole time.
 
 <ReplacementShear matrix={[[1, -1], [1, 2]]} />
 
-To compute a determinant, row reduce to a triangular matrix using replacements and swaps, then multiply the diagonal and flip the sign once for every swap. Here is the reduction from the video. The swap puts a minus sign in front, and the two replacements change nothing:
+So the plan for a big matrix is to row reduce to a triangular matrix using replacements and swaps, multiply the diagonal, and flip the sign once for every swap.
+
+<Problem>
+Compute $\det C$ by row reduction, where $C = \begin{bmatrix} 0 & 1 & 2 \\ 1 & 2 & 1 \\ 2 & 3 & 4 \end{bmatrix}$.
+
+<Solution>
+We want zeros below the diagonal. The top-left entry is $0$, so it cannot clear anything beneath it, and the first move has to bring a nonzero entry up.
+
+<Steps>
+<Step>
+Swap rows 1 and 2. A swap flips the sign, so a minus sign goes in front:
 
 $$
-\begin{aligned}
-\det B = \begin{vmatrix} 0 & 1 & 2 \\ 1 & 2 & 1 \\ 2 & 3 & 4 \end{vmatrix}
-&= -\begin{vmatrix} 1 & 2 & 1 \\ 0 & 1 & 2 \\ 2 & 3 & 4 \end{vmatrix} && R_1 \leftrightarrow R_2 \\
-&= -\begin{vmatrix} 1 & 2 & 1 \\ 0 & 1 & 2 \\ 0 & -1 & 2 \end{vmatrix} && R_3 \leftarrow R_3 - 2R_1 \\
-&= -\begin{vmatrix} 1 & 2 & 1 \\ 0 & 1 & 2 \\ 0 & 0 & 4 \end{vmatrix} && R_3 \leftarrow R_3 + R_2 \\
-&= -(1 \cdot 1 \cdot 4) = -4
-\end{aligned}
+\det C = -\begin{vmatrix} 1 & 2 & 1 \\ 0 & 1 & 2 \\ 2 & 3 & 4 \end{vmatrix}.
 $$
+</Step>
+<Step>
+Clear the $2$ in row 3 with $R_3 \leftarrow R_3 - 2R_1$. Row 3 becomes $(2 - 2, 3 - 4, 4 - 2) = (0, -1, 2)$. A replacement changes nothing:
 
-A triangular matrix is invertible exactly when none of its diagonal entries is zero, and row operations never turn a nonzero determinant into zero. So a square matrix $A$ is invertible if and only if $\det A \neq 0$. Day 29 applies this test to $A - \lambda I$ to find eigenvalues.
+$$
+\det C = -\begin{vmatrix} 1 & 2 & 1 \\ 0 & 1 & 2 \\ 0 & -1 & 2 \end{vmatrix}.
+$$
+</Step>
+<Step>
+Clear the $-1$ in row 3 with $R_3 \leftarrow R_3 + R_2$. Row 3 becomes $(0, 0, 4)$, and again nothing changes:
+
+$$
+\det C = -\begin{vmatrix} 1 & 2 & 1 \\ 0 & 1 & 2 \\ 0 & 0 & 4 \end{vmatrix}.
+$$
+</Step>
+<Step>
+The matrix is triangular, so multiply the diagonal: $\det C = -(1 \cdot 1 \cdot 4) = -4$.
+</Step>
+</Steps>
+</Solution>
+</Problem>
+
+You do not have to reduce all the way. A few replacements can clear one column down to a single entry, and then one cofactor expansion finishes the job. Try it here.
+
+<ColumnClearExpand matrix={[[1, 2, -1], [3, 5, 2], [-2, 1, 4]]} />
+
+<Warning>
+Only $R_i \leftarrow R_i + c\,R_j$ is free. The operation $R_i \leftarrow c\,R_i + R_j$ first scales row $i$ by $c$, so it multiplies the determinant by $c$. In the same way, if you divide a row by $2$ to make a pivot equal $1$, the new determinant is half the old one, and you have to multiply back by $2$ at the end.
+</Warning>
+
+Row reduction also settles invertibility. A triangular matrix has nonzero determinant exactly when none of its diagonal entries is zero, which is when every column has a pivot. Row operations never turn a nonzero determinant into zero, because they only multiply it by $1$, $-1$ or a nonzero $k$. So a square matrix $A$ is invertible if and only if $\det A \neq 0$ (Lay, Theorem 4). Day 29 applies this test to $A - \lambda I$ to find eigenvalues.
+
+<Choice
+  question="Is $\begin{bmatrix} 1 & 2 & 3 \\ 2 & 4 & 1 \\ 3 & 6 & 4 \end{bmatrix}$ invertible?"
+  options={["Yes", "No"]}
+  answer={1}
+>
+Column 2 is twice column 1, so the columns are linearly dependent and $\det = 0$. You can see it by row reduction too: $R_2 \leftarrow R_2 - 2R_1$ and $R_3 \leftarrow R_3 - 3R_1$ leave rows $(0, 0, -5)$ and $(0, 0, -5)$, and two equal rows reduce to a zero row.
+</Choice>
 
 ## Transposes and products
 
-Two more rules let you skip the arithmetic entirely. The rows of $A^T$ are the columns of $A$, so expanding $A^T$ along a row is the same computation as expanding $A$ down a column, and $\det A^T = \det A$. As a result, every rule above holds for columns as well as rows. For products, $\det(AB) = (\det A)(\det B)$, because $B$ scales area by $|\det B|$ and then $A$ scales the result by $|\det A|$. Day 27 proves the product rule. Sums have no such rule, and $\det(A + B)$ is usually not $\det A + \det B$.
+Two more rules let you skip the arithmetic entirely. The rows of $A^T$ are the columns of $A$, so expanding $A^T$ along row 1 is the same computation as expanding $A$ down column 1. That gives $\det A^T = \det A$, and it means every rule above for rows holds for columns too. Products have a rule of their own, which the next problem uncovers.
 
-Scaling the whole matrix scales every row. For an $n \times n$ matrix that is $n$ separate row scalings, so
+<Problem>
+Let $A = \begin{bmatrix} 2 & 1 \\ 1 & 3 \end{bmatrix}$ and $B = \begin{bmatrix} 1 & -1 \\ 2 & 1 \end{bmatrix}$. Compute $\det A$, $\det B$, $\det(AB)$ and $\det(A + B)$. Which of the last two can you predict from the first two?
+
+<Solution>
+First the two separate determinants: $\det A = 2 \cdot 3 - 1 \cdot 1 = 5$ and $\det B = 1 \cdot 1 - (-1) \cdot 2 = 3$.
+
+Next the product. Row 1 of $A$ times the columns of $B$ gives $(2 + 2, -2 + 1) = (4, -1)$, and row 2 gives $(1 + 6, -1 + 3) = (7, 2)$. So
+
+$$
+AB = \begin{bmatrix} 4 & -1 \\ 7 & 2 \end{bmatrix}, \qquad \det(AB) = 4 \cdot 2 - (-1) \cdot 7 = 15 = 5 \cdot 3.
+$$
+
+Finally the sum, $A + B = \begin{bmatrix} 3 & 0 \\ 3 & 4 \end{bmatrix}$, whose determinant is $12$. That is not $5 + 3 = 8$.
+
+The product matches $(\det A)(\det B)$ because $B$ scales every area by $3$ and then $A$ scales the result by $5$. Adding matrices has no such picture, and no rule predicts $\det(A + B)$.
+</Solution>
+</Problem>
+
+<Concept title="Transposes and products">
+For square matrices of the same size,
+
+$$
+\begin{gathered}
+\det A^T = \det A \\
+\det(AB) = (\det A)(\det B)
+\end{gathered}
+$$
+
+Day 27 proves the product rule. There is no rule for sums, and $\det(A + B)$ is usually not $\det A + \det B$.
+</Concept>
+
+Scaling the whole matrix is a special case worth doing slowly. The matrix $kA$ has every row of $A$ multiplied by $k$. For an $n \times n$ matrix that is $n$ separate row scalings, and each one multiplies the determinant by $k$, so
 
 $$
 \det(kA) = k^n \det A.
 $$
 
+For a $2 \times 2$ matrix, $\det(3A) = 9\det A$, because both sides of the parallelogram get 3 times longer. Find the $k$ that makes the area 4 times larger.
+
 <MultipleAreaScale matrix={[[1, -1], [1, 1]]} factor={4} />
 
-Tomorrow, on Day 27, we find the reason behind these rules in two properties of the determinant, and those properties also give a formula for solving $A\mathbf x = \mathbf b$ and a formula for $A^{-1}$.
+<Warning>
+$\det(kA)$ is not $k \det A$. For a $3 \times 3$ matrix with $\det A = 5$, $\det(2A) = 2^3 \cdot 5 = 40$, not $10$.
+</Warning>
+
+Tomorrow, on Day 27, we find the reason behind these rules in two properties of the determinant, and those properties also give a formula for solving $A\mathbf x = \mathbf b$ and a formula for $A^{-1}$ built from today's cofactors.
 
 ## Practice
 
-<Check>
-Compute $\det \begin{bmatrix} 2 & 0 & 1 \\ 3 & -1 & 4 \\ 1 & 5 & 0 \end{bmatrix}$ by expanding along row 1, then check it by expanding down column 2. (Modeled on Lay §3.1, Exercise 1.)
+### Warm-up
 
-<VectorAnswer answer={[-24]} labels={["the determinant"]} prefix="det =" />
+<Check>
+Let $A = \begin{bmatrix} 1 & 4 & 2 \\ 3 & -1 & 0 \\ 5 & 2 & 6 \end{bmatrix}$. Find the cofactor $C_{32}$.
+
+<VectorAnswer answer={[6]} labels={["C₃₂"]} prefix="C_{32} =" />
 
 <Answer>
-Along row 1 the middle entry is $0$, so only two minors are needed:
+Delete row 3 and column 2, which leaves $\begin{bmatrix} 1 & 2 \\ 3 & 0 \end{bmatrix}$ with determinant $1 \cdot 0 - 2 \cdot 3 = -6$. Position $(3, 2)$ has sign $(-1)^5 = -1$, so $C_{32} = -(-6) = 6$.
+</Answer>
+</Check>
 
+<Check>
+Compute $\det\begin{bmatrix} 2 & 0 & 0 & 0 \\ 5 & -1 & 0 & 0 \\ 3 & 7 & 3 & 0 \\ 1 & -4 & 2 & 2 \end{bmatrix}$.
+
+<VectorAnswer answer={[-12]} labels={["det"]} prefix="\det =" />
+
+<Answer>
+Every entry above the diagonal is zero, so the matrix is triangular and its determinant is the product of the diagonal: $2 \cdot (-1) \cdot 3 \cdot 2 = -12$.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="$\det A = 7$ for a $3 \times 3$ matrix $A$. You swap rows 1 and 3, then do $R_2 \leftarrow R_2 - 4R_1$. What is the new determinant?"
+  options={["$7$", "$-7$", "$-28$", "$28$"]}
+  answer={1}
+>
+The swap flips the sign to $-7$. The replacement adds a multiple of one row to another, so it changes nothing, and the answer stays $-7$.
+</Choice>
+</Check>
+
+### Core
+
+<Check>
+Compute $\det \begin{bmatrix} 3 & 1 & 0 \\ 2 & -2 & 1 \\ 4 & 0 & 5 \end{bmatrix}$ by expanding along row 1, then check it by expanding down column 2. (Modeled on Lay §3.1 #1.)
+
+<VectorAnswer answer={[-36]} labels={["det"]} prefix="\det =" />
+
+<Hint>
+Row 1 has a zero in position $(1, 3)$, so it needs two minors. Column 2 has a zero in position $(3, 2)$, and its signs are $-, +, -$.
+</Hint>
+
+<Answer>
 $$
 \begin{aligned}
-\det &= +2\begin{vmatrix} -1 & 4 \\ 5 & 0 \end{vmatrix} - 0 + 1\begin{vmatrix} 3 & -1 \\ 1 & 5 \end{vmatrix} = 2(-20) + 1(16) = -24 \\
-\det &= -0 + (-1)\begin{vmatrix} 2 & 1 \\ 1 & 0 \end{vmatrix} - 5\begin{vmatrix} 2 & 1 \\ 3 & 4 \end{vmatrix} = (-1)(-1) - 5(5) = -24
+\text{row 1:}\quad \det &= +3\begin{vmatrix} -2 & 1 \\ 0 & 5 \end{vmatrix} - 1\begin{vmatrix} 2 & 1 \\ 4 & 5 \end{vmatrix} + 0 = 3(-10) - 1(6) = -36 \\
+\text{column 2:}\quad \det &= -1\begin{vmatrix} 2 & 1 \\ 4 & 5 \end{vmatrix} + (-2)\begin{vmatrix} 3 & 0 \\ 4 & 5 \end{vmatrix} - 0 = -6 - 30 = -36
+\end{aligned}
+$$
+</Answer>
+</Check>
+
+<Check>
+Compute $\det \begin{bmatrix} 2 & 0 & 3 & 0 \\ 1 & -1 & 4 & 5 \\ 0 & 0 & -2 & 0 \\ 3 & 0 & 1 & 4 \end{bmatrix}$, choosing the line with the most zeros at each step. (Modeled on Lay §3.1 #9.)
+
+<VectorAnswer answer={[16]} labels={["det"]} prefix="\det =" />
+
+<Hint>
+Row 3 has a single nonzero entry. After that, look at column 2 of the $3 \times 3$ minor.
+</Hint>
+
+<Answer>
+Row 3 has only $-2$, at position $(3, 3)$ with sign $+$. In the $3 \times 3$ minor, column 2 has only $-1$, at position $(2, 2)$ with sign $+$:
+
+$$
+\det = -2\begin{vmatrix} 2 & 0 & 0 \\ 1 & -1 & 5 \\ 3 & 0 & 4 \end{vmatrix} = -2 \cdot (-1)\begin{vmatrix} 2 & 0 \\ 3 & 4 \end{vmatrix} = -2 \cdot (-1) \cdot 8 = 16.
+$$
+</Answer>
+</Check>
+
+<Check>
+Compute $\det \begin{bmatrix} 0 & 2 & 4 \\ 1 & 3 & -2 \\ 2 & 1 & 1 \end{bmatrix}$ by row reduction, saying what each operation does to the determinant. (Modeled on Lay §3.2 #5.)
+
+<VectorAnswer answer={[-30]} labels={["det"]} prefix="\det =" />
+
+<Hint>
+Start with a swap, since the top-left entry is $0$. Keep a running sign.
+</Hint>
+
+<Answer>
+$$
+\begin{aligned}
+\det &= -\begin{vmatrix} 1 & 3 & -2 \\ 0 & 2 & 4 \\ 2 & 1 & 1 \end{vmatrix} && R_1 \leftrightarrow R_2 \text{ flips the sign} \\
+&= -\begin{vmatrix} 1 & 3 & -2 \\ 0 & 2 & 4 \\ 0 & -5 & 5 \end{vmatrix} && R_3 \leftarrow R_3 - 2R_1 \text{ changes nothing} \\
+&= -\begin{vmatrix} 1 & 3 & -2 \\ 0 & 2 & 4 \\ 0 & 0 & 15 \end{vmatrix} && R_3 \leftarrow R_3 + \tfrac52 R_2 \text{ changes nothing} \\
+&= -(1 \cdot 2 \cdot 15) = -30
 \end{aligned}
 $$
 
-In the column expansion, position $(2, 2)$ carries $+$ and position $(3, 2)$ carries $-$.
+Row 3 in the third line is $(0, -5, 5) + \tfrac52(0, 2, 4) = (0, 0, 15)$.
 </Answer>
 </Check>
 
 <Check>
-Compute $\det \begin{bmatrix} 1 & 0 & 2 & 0 \\ 3 & -1 & 4 & 2 \\ 0 & 0 & 5 & 0 \\ 2 & 0 & 1 & 3 \end{bmatrix}$, choosing the line with the most zeros at each step. (Modeled on Lay §3.1, Exercise 9.)
-
-<VectorAnswer answer={[-15]} labels={["the determinant"]} prefix="det =" />
-
-<Answer>
-Row 3 has a single nonzero entry, $5$, at position $(3, 3)$, whose sign is $+$. In the $3 \times 3$ minor, column 2 has a single nonzero entry, $-1$, at position $(2, 2)$, whose sign is also $+$:
+Suppose $\begin{vmatrix} a & b & c \\ d & e & f \\ g & h & i \end{vmatrix} = 5$. Find the determinants of the three matrices below. (Modeled on Lay §3.2 #15–19.)
 
 $$
-\det = 5\begin{vmatrix} 1 & 0 & 0 \\ 3 & -1 & 2 \\ 2 & 0 & 3 \end{vmatrix} = 5 \cdot (-1)\begin{vmatrix} 1 & 0 \\ 2 & 3 \end{vmatrix} = 5 \cdot (-1) \cdot 3 = -15.
+P = \begin{bmatrix} a & b & c \\ d & e & f \\ -2g & -2h & -2i \end{bmatrix}
+$$
+
+$$
+Q = \begin{bmatrix} a & b & c \\ d + 3a & e + 3b & f + 3c \\ g & h & i \end{bmatrix}
+$$
+
+$$
+R = \begin{bmatrix} a & b & c \\ 3d + a & 3e + b & 3f + c \\ g & h & i \end{bmatrix}
+$$
+
+<VectorAnswer answer={[-10, 5, 15]} labels={["det P", "det Q", "det R"]} />
+
+<Hint>
+Name the row operation that turns the original matrix into each one. For $R$, it takes two operations.
+</Hint>
+
+<Answer>
+$P$ scales row 3 by $-2$, so $\det P = -2 \cdot 5 = -10$. $Q$ adds $3$ times row 1 to row 2, which is a replacement, so $\det Q = 5$. $R$ first scales row 2 by $3$ and then adds row 1 to it. The scaling multiplies by $3$ and the replacement changes nothing, so $\det R = 15$.
+</Answer>
+</Check>
+
+<Check>
+Let $A$ and $B$ be $3 \times 3$ matrices with $\det A = 2$ and $\det B = -3$. Find $\det(3A)$, $\det(AB^T)$ and $\det(A^TB^2)$. (Modeled on Lay §3.2 #39.)
+
+<VectorAnswer answer={[54, -6, 18]} labels={["det(3A)", "det(ABᵀ)", "det(AᵀB²)"]} />
+
+<Hint>
+$3A$ scales three rows. For the others, use the product rule and $\det M^T = \det M$.
+</Hint>
+
+<Answer>
+Scaling a $3 \times 3$ matrix by $3$ scales three rows, so $\det(3A) = 3^3 \cdot 2 = 54$. The transpose keeps the determinant, so $\det(AB^T) = (\det A)(\det B) = 2(-3) = -6$. Finally, $\det(A^TB^2) = (\det A)(\det B)(\det B) = 2 \cdot 9 = 18$.
+</Answer>
+</Check>
+
+### Challenge
+
+<Check>
+For which two values of $t$ is $\begin{bmatrix} t & 3 & 1 \\ 2 & t + 1 & 0 \\ 0 & 0 & 2 \end{bmatrix}$ not invertible? (Modeled on Lay §3.2 #21–26.)
+
+<VectorAnswer answer={[-3, 2]} labels={["smaller t", "larger t"]} />
+
+<Hint>
+Expand along row 3. The matrix fails to be invertible exactly when the determinant is $0$.
+</Hint>
+
+<Answer>
+Row 3 has a single nonzero entry, $2$, at position $(3, 3)$ with sign $+$:
+
+$$
+\det = 2\begin{vmatrix} t & 3 \\ 2 & t + 1 \end{vmatrix} = 2\big(t(t + 1) - 6\big) = 2(t^2 + t - 6) = 2(t + 3)(t - 2).
+$$
+
+The determinant is $0$ when $t = -3$ or $t = 2$, so those are the two values where the matrix is not invertible. For every other $t$ its columns are linearly independent.
+</Answer>
+</Check>
+
+<Check>
+Compute $\det \begin{bmatrix} 1 & 3 & 2 & -1 \\ 2 & 6 & 1 & 3 \\ -1 & -2 & 4 & 0 \\ 3 & 9 & 0 & 2 \end{bmatrix}$ by clearing column 1 with replacements and then expanding. (Modeled on Lay §3.2 #11.)
+
+<VectorAnswer answer={[-15]} labels={["det"]} prefix="\det =" />
+
+<Hint>
+Use $R_2 - 2R_1$, $R_3 + R_1$ and $R_4 - 3R_1$. Then look at column 1 of the $3 \times 3$ minor.
+</Hint>
+
+<Answer>
+The three replacements change nothing and leave rows $(0, 0, -3, 5)$, $(0, 1, 6, -1)$ and $(0, 0, -6, 5)$ under row 1. Expanding down column 1 leaves one term:
+
+$$
+\det = 1\begin{vmatrix} 0 & -3 & 5 \\ 1 & 6 & -1 \\ 0 & -6 & 5 \end{vmatrix}.
+$$
+
+Column 1 of this minor has only the $1$ at position $(2, 1)$, whose sign is $-$:
+
+$$
+\det = -1\begin{vmatrix} -3 & 5 \\ -6 & 5 \end{vmatrix} = -\big((-3)(5) - (5)(-6)\big) = -(-15 + 30) = -15.
 $$
 </Answer>
 </Check>
 
 <Check>
-Let $A$ and $B$ be $3 \times 3$ matrices with $\det A = 2$ and $\det B = -3$. Find $\det(3A)$, $\det(AB^T)$ and $\det(A^TB^2)$. (Modeled on Lay §3.2, Exercise 39.)
+A square matrix is **skew-symmetric** when $A^T = -A$, for example $\begin{bmatrix} 0 & 2 & -1 \\ -2 & 0 & 3 \\ 1 & -3 & 0 \end{bmatrix}$. Show that every $3 \times 3$ skew-symmetric matrix has determinant $0$.
 
-<VectorAnswer answer={[54, -6, 18]} labels={["det(3A)", "det(AB^T)", "det(A^T B^2)"]} />
+<Hint>
+Compute $\det A^T$ in two ways: once with the transpose rule, and once by writing $A^T = (-1)A$ and using the rule for $\det(kA)$.
+</Hint>
 
 <Answer>
-Scaling a $3 \times 3$ matrix by $3$ scales three rows, so $\det(3A) = 3^3 \cdot 2 = 54$. The transpose keeps the determinant, so $\det(AB^T) = (\det A)(\det B) = 2(-3) = -6$. Finally, $\det(A^TB^2) = (\det A)(\det B)^2 = 2 \cdot 9 = 18$.
+The transpose rule gives $\det A^T = \det A$. Since $A^T = (-1)A$ and $A$ is $3 \times 3$, the scaling rule gives $\det A^T = (-1)^3 \det A = -\det A$. Both are the same number, so $\det A = -\det A$, and therefore $\det A = 0$.
+
+The argument works for every odd size $n$, because $(-1)^n = -1$. For even $n$ it fails, and $\begin{bmatrix} 0 & 1 \\ -1 & 0 \end{bmatrix}$ has determinant $1$.
 </Answer>
 </Check>

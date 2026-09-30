@@ -33,7 +33,7 @@ import { ComplementLanding, RangeCollapse } from "@/components/interactive/image
 import { DiagonalZeroHunt, EigenDirectionHunt, EigenGapHunt } from "@/components/interactive/eigenvectors";
 import { AreaShearSlide, CornerToOrigin } from "@/components/interactive/determinants-as-area";
 import { CramerAreas, HeightStack, ProductAreaHunt } from "@/components/interactive/determinant-properties";
-import { CofactorLinePicker, MultipleAreaScale, ReplacementShear } from "@/components/interactive/cofactor-expansion";
+import { CofactorHunt, CofactorLinePicker, ColumnClearExpand, MultipleAreaScale, ReplacementShear } from "@/components/interactive/cofactor-expansion";
 import { IterateSwing, ShiftToSingular, TraceCurveMatch } from "@/components/interactive/eigenvalue-properties";
 import { JordanChainBuilder, MultiplicityGapSlider, NullPowerClimb } from "@/components/interactive/generalized-eigenvectors";
 import { DiagonalBasisHunt, EigenOrbitSettle, EigenPolynomialHunt } from "@/components/interactive/diagonalizing-transformations";
@@ -167,6 +167,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     CofactorLinePicker,
     ReplacementShear,
     MultipleAreaScale,
+    CofactorHunt,
+    ColumnClearExpand,
     TraceCurveMatch,
     ShiftToSingular,
     IterateSwing,
