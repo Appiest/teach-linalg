@@ -6,7 +6,7 @@ import { hue, type Hue } from "./colors";
 import { describeVector, Goal, Panel, Readout, Slider, Tex, Workbench } from "./controls";
 import { useSettled } from "./gesture";
 import { apply, formatNumber, texNumber, type Matrix2, type Vec } from "./math";
-import { Arrow, Handle, Label, Plane, usePlane, type Bounds } from "./plane";
+import { Arrow, Handle, Label, Marker, Plane, Segment, usePlane, type Bounds } from "./plane";
 
 const SYMMETRIC_BOUNDS: Bounds = { xMin: -6, xMax: 6, yMin: -5, yMax: 5 };
 const BUILDER_BOUNDS: Bounds = { xMin: -7, xMax: 7, yMin: -5, yMax: 5 };
@@ -245,6 +245,137 @@ export function SpectralEllipseBuilder({ target, start = [1, 0], stretches = [3,
             <Readout tex={`\\begin{aligned} &\\textcolor{${palette.yellow}}{\\lambda_1\\mathbf u_1\\mathbf u_1^T} + \\textcolor{${palette.blue}}{\\lambda_2\\mathbf u_2\\mathbf u_2^T} \\\\ &= \\textcolor{${palette.teal}}{${matrixTex(built)}} \\end{aligned}`} />
             <Readout tex={`\\text{target } A = ${matrixTex(target)}`} />
           </>
+        }
+      />
+    </Panel>
+  );
+}
+
+const SWEEP_STEP = 15;
+const SWEEP_ANGLES = Array.from({ length: 180 / SWEEP_STEP }, (_, index) => index * SWEEP_STEP);
+const SWEEP_BOUNDS: Bounds = { xMin: -5, xMax: 5, yMin: -4, yMax: 4 };
+const RAY_LENGTH = 2;
+
+const directionAt = (degrees: number): Vec => [Math.cos((degrees * Math.PI) / 180), Math.sin((degrees * Math.PI) / 180)];
+const cross = (first: Vec, second: Vec) => first[0] * second[1] - first[1] * second[0];
+const keepsLine = (matrix: Matrix2, direction: Vec) => Math.abs(cross(direction, apply(matrix, direction))) < 1e-9;
+const scaled = (c: number, v: Vec): Vec => [c * v[0], c * v[1]];
+const plus = (a: Vec, b: Vec): Vec => [a[0] + b[0], a[1] + b[1]];
+const dot = (a: Vec, b: Vec) => a[0] * b[0] + a[1] * b[1];
+
+function sweepTickColor(seen: boolean, eigen: boolean): string {
+  if (!seen) return "var(--palette-grid)";
+  return eigen ? hue("glow") : hue("text");
+}
+
+function SweepTicks({ matrix, visited }: { matrix: Matrix2; visited: number[] }) {
+  const { toSvg } = usePlane();
+  return (
+    <g aria-hidden>
+      {SWEEP_ANGLES.flatMap((degrees) => [degrees, degrees + 180]).map((degrees) => {
+        const direction = directionAt(degrees);
+        const [x1, y1] = toSvg(scaled(3.3, direction));
+        const [x2, y2] = toSvg(scaled(3.8, direction));
+        const color = sweepTickColor(visited.includes(degrees % 180), keepsLine(matrix, direction));
+        return <line key={degrees} x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} strokeWidth={4} strokeLinecap="round" />;
+      })}
+    </g>
+  );
+}
+
+/** Turn a direction and find every line the symmetric matrix keeps; the lines it finds meet at a right angle. */
+export function EigenDirectionSweep({ matrix, start = 90 }: { matrix: Matrix2; start?: number }) {
+  const [angle, setAngle] = useState(start);
+  const [visited, setVisited] = useState<number[]>([start]);
+  const eigenAngles = SWEEP_ANGLES.filter((degrees) => keepsLine(matrix, directionAt(degrees)));
+  const found = eigenAngles.filter((degrees) => visited.includes(degrees));
+  const { settled: solved, gesture } = useSettled(found.length === eigenAngles.length);
+  const direction = directionAt(angle);
+  const ray = scaled(RAY_LENGTH, direction);
+  const image = apply(matrix, ray);
+  const onLine = keepsLine(matrix, direction);
+  const turn = (value: number) => {
+    setAngle(value);
+    setVisited((current) => (current.includes(value) ? current : [...current, value]));
+  };
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Turn <Tex>{"\\mathbf u"}</Tex> until <Tex>{"A\\mathbf u"}</Tex> lands on the line through <Tex>{"\\mathbf u"}</Tex>. Find every such line; each one makes its ticks glow.</>}
+        success={<>You found both eigenlines, at {eigenAngles.join("° and ")}°. They are exactly {Math.abs((eigenAngles[1] ?? 0) - (eigenAngles[0] ?? 0))}° apart, as the theorem promises for a symmetric matrix.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={SWEEP_BOUNDS} label={`Direction u at ${angle} degrees and its image A u at ${describeVector(image)}.`}>
+            <UnitCircle />
+            {found.map((degrees) => <Eigenline key={degrees} direction={directionAt(degrees)} color={degrees === eigenAngles[0] ? "yellow" : "blue"} />)}
+            {found.length === 2 ? <RightAngleMark first={directionAt(found[0])} second={directionAt(found[1])} shown /> : null}
+            <SweepTicks matrix={matrix} visited={visited} />
+            <Arrow to={image} color="teal" />
+            <Arrow to={ray} color={onLine ? "yellow" : "text"} />
+            <Label at={image} color="teal">Au</Label>
+          </Plane>
+        }
+        readout={
+          <>
+            <Slider label="\theta" value={angle} onChange={turn} min={0} max={165} step={SWEEP_STEP} color={palette.text} />
+            <Readout tex={`A = ${matrixTex(matrix)}`} />
+            <div className="rounded-lg bg-surface-sunken px-4 py-3 text-meta text-text-muted">
+              Eigenlines found: <span className="tabular-nums">{found.length} of {eigenAngles.length}</span>
+            </div>
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+const SHADOW_BOUNDS: Bounds = { xMin: -3, xMax: 6, yMin: -3, yMax: 6 };
+
+function shadowOn(direction: Vec, x: Vec): Vec {
+  const u = unit(direction);
+  return scaled(dot(u, x), u);
+}
+
+/** Drag x; its shadows on the two eigenlines, stretched by their eigenvalues, add tip to tail to Ax. */
+export function ShadowStretchSum({ direction, lambdas, target, start = [1, 0] }: { direction: Vec; lambdas: [number, number]; target: Vec; start?: Vec }) {
+  const [x, setX] = useState<Vec>(start);
+  const other = turnQuarter(direction);
+  const imageOf = (point: Vec) => plus(scaled(lambdas[0], shadowOn(direction, point)), scaled(lambdas[1], shadowOn(other, point)));
+  const { settled, gesture } = useSettled(`${x[0]},${x[1]}`);
+  const settledImage = imageOf(settled.split(",").map(Number) as Vec);
+  const solved = Math.abs(settledImage[0] - target[0]) < 1e-6 && Math.abs(settledImage[1] - target[1]) < 1e-6;
+  const firstPiece = scaled(lambdas[0], shadowOn(direction, x));
+  const image = plus(firstPiece, scaled(lambdas[1], shadowOn(other, x)));
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Drag <Tex>{"\\mathbf x"}</Tex> until <Tex>{"A\\mathbf x"}</Tex> reaches the ring at <Tex>{`(${texNumber(target[0])}, ${texNumber(target[1])})`}</Tex>. The yellow piece is <Tex>{`${texNumber(lambdas[0])}`}</Tex> times the shadow on the yellow line, and the blue piece is <Tex>{`${texNumber(lambdas[1])}`}</Tex> times the shadow on the blue line.</>}
+        success={<>The two stretched shadows add up to <Tex>{"A\\mathbf x"}</Tex>. That is the spectral decomposition at work: each piece <Tex>{"\\lambda_j\\mathbf u_j\\mathbf u_j^T\\mathbf x"}</Tex> acts along one eigenline only.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={SHADOW_BOUNDS} label={`x at ${describeVector(x)} and A x at ${describeVector(image)}, built from two stretched shadows. Drag the tip of x or use the arrow keys.`}>
+            <Eigenline direction={direction} color="yellow" />
+            <Eigenline direction={other} color="blue" />
+            {solved ? <Marker at={target} color="teal" /> : <Marker at={target} ring />}
+            <Segment from={x} to={shadowOn(direction, x)} color="yellow" />
+            <Segment from={x} to={shadowOn(other, x)} color="blue" />
+            <Arrow to={firstPiece} color="yellow" width={3} />
+            <Arrow from={firstPiece} to={image} color="blue" width={3} />
+            <Arrow to={image} color="teal" />
+            <Arrow to={x} color="text" />
+            <Label at={x} color="text">x</Label>
+            <Label at={image} color="teal">Ax</Label>
+            <Handle at={x} onMove={setX} color="text" label={`Tip of x, at ${describeVector(x)}`} />
+          </Plane>
+        }
+        readout={
+          <Readout tex={`\\begin{aligned} A\\mathbf x &= \\textcolor{${palette.yellow}}{${texNumber(lambdas[0])}\\,\\mathbf u_1\\mathbf u_1^T\\mathbf x} + \\textcolor{${palette.blue}}{${texNumber(lambdas[1])}\\,\\mathbf u_2\\mathbf u_2^T\\mathbf x} \\\\ &= \\textcolor{${palette.teal}}{\\begin{bmatrix} ${texNumber(image[0])} \\\\ ${texNumber(image[1])} \\end{bmatrix}} \\end{aligned}`} />
         }
       />
     </Panel>

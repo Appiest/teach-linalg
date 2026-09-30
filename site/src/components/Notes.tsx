@@ -41,9 +41,9 @@ import { AreaShearSlide, CornerToOrigin } from "@/components/interactive/determi
 import { CramerAreas, HeightStack, ProductAreaHunt } from "@/components/interactive/determinant-properties";
 import { CofactorLinePicker, MultipleAreaScale, ReplacementShear } from "@/components/interactive/cofactor-expansion";
 import { IterateSwing, ShiftToSingular, TraceCurveMatch } from "@/components/interactive/eigenvalue-properties";
-import { JordanChainBuilder, MultiplicityGapSlider, NullPowerClimb } from "@/components/interactive/generalized-eigenvectors";
-import { DiagonalBasisHunt, EigenOrbitSettle, EigenPolynomialHunt } from "@/components/interactive/diagonalizing-transformations";
-import { DiagonalFactorSteps, EigenCoordinateTarget } from "@/components/interactive/diagonalization";
+import { ChainCoordinates, JordanChainBuilder, MultiplicityGapSlider, NullPowerClimb, ShearRaySweep } from "@/components/interactive/generalized-eigenvectors";
+import { BasisColumnBuilder, DiagonalBasisHunt, EigenOrbitSettle, EigenPolynomialHunt, TwoCoordinateMap } from "@/components/interactive/diagonalizing-transformations";
+import { DiagonalEntryMatch, DiagonalFactorSteps, EigenColumnHunt, EigenCoordinateTarget } from "@/components/interactive/diagonalization";
 import { CharacteristicSweep, EigenpairHunt } from "@/components/interactive/characteristic-equation";
 import { SpectralEllipseBuilder, SymmetricPerpendicularHunt } from "@/components/interactive/symmetric-matrices";
 import { DotShadowHunt, RowPerpendicularHunt, UnitCircleScale } from "@/components/interactive/inner-products";
@@ -52,6 +52,13 @@ import { LineFootHunt, LineOnlyShadow, NearestPlanePoint, ShadowPreimageHunt, Sh
 import { NormalizePair, QrWeightSliders, ShadowSubtractSlider, StraightenedTargetHunt, VanishingStepHunt } from "@/components/interactive/gram-schmidt";
 import { ParabolaFit, ProjectionRightAngle, ResidualBalance, ResidualSquaresFit } from "@/components/interactive/least-squares";
 import { LevelPointHunt, NegativeDirectionHunt, QuadraticAxisTurner, QuadraticCircleMax, QuadraticSurfaceShaper } from "@/components/interactive/quadratic-forms";
+import { EigenDirectionSweep, ShadowStretchSum, SpectralEllipseBuilder, SymmetricPerpendicularHunt } from "@/components/interactive/symmetric-matrices";
+import { DotShadowHunt, EqualDistanceTurn, OrthogonalWeights, RowPerpendicularHunt, UnitCircleScale } from "@/components/interactive/inner-products";
+import { LongestStretchHunt, RankCopyBudget, SvdEllipseMatch } from "@/components/interactive/singular-value-decomposition";
+import { LineFootHunt, NearestPlanePoint, ShadowSumBasis } from "@/components/interactive/orthogonal-projection";
+import { QrWeightSliders, ShadowSubtractSlider, StraightenedTargetHunt } from "@/components/interactive/gram-schmidt";
+import { ProjectionRightAngle, ResidualSquaresFit } from "@/components/interactive/least-squares";
+import { QuadraticAxisTurner, QuadraticCircleMax, QuadraticSurfaceShaper } from "@/components/interactive/quadratic-forms";
 import { assetPath, getNotesSource, type Lesson } from "@/lib/course";
 import { katexMacros } from "@/lib/katex-macros";
 
@@ -207,18 +214,28 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     MultiplicityGapSlider,
     JordanChainBuilder,
     NullPowerClimb,
+    ShearRaySweep,
+    ChainCoordinates,
     DiagonalBasisHunt,
     EigenOrbitSettle,
     EigenPolynomialHunt,
+    BasisColumnBuilder,
+    TwoCoordinateMap,
     EigenCoordinateTarget,
     DiagonalFactorSteps,
+    EigenColumnHunt,
+    DiagonalEntryMatch,
     CharacteristicSweep,
     EigenpairHunt,
     SymmetricPerpendicularHunt,
     SpectralEllipseBuilder,
+    EigenDirectionSweep,
+    ShadowStretchSum,
     DotShadowHunt,
     UnitCircleScale,
     RowPerpendicularHunt,
+    EqualDistanceTurn,
+    OrthogonalWeights,
     LongestStretchHunt,
     SvdEllipseMatch,
     RankCopyBudget,

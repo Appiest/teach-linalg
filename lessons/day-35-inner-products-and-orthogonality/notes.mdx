@@ -1,121 +1,320 @@
 Everything in the course so far has been built from adding and scaling vectors, and neither operation can tell you how long a vector is or whether two vectors are perpendicular. The rest of the course needs both. On Day 38 an equation $A\mathbf x = \mathbf b$ will have no solution, and you will look for the $\mathbf x$ that brings $A\mathbf x$ as close to $\mathbf b$ as possible, which is a question about distance. On Day 40 every matrix will turn out to send one set of perpendicular directions to another. Both rest on a single number, the dot product, which Day 34 borrowed early to show that a symmetric matrix has perpendicular eigenvectors. Today Day 1's vectors $\yellow{\mathbf v} = (3, 2)$ and $\blue{\mathbf w} = (-1, 2)$ come back to show what that number measures.
 
-The **dot product** (or **inner product**) of two vectors in $\mathbb R^n$ multiplies matching entries and adds the results, so it turns two vectors into a single number:
+Each section below opens with a problem. Try it before you open the walkthrough, even if you only get partway. The box after each walkthrough names the idea you just used.
+
+## The dot product
+
+<Problem>
+For $\yellow{\mathbf v} = (3, 2)$ and $\blue{\mathbf w} = (-1, 2)$, multiply matching entries and add: compute $\yellow{\mathbf v} \cdot \blue{\mathbf w}$ and $\blue{\mathbf w} \cdot \yellow{\mathbf v}$. Then compute $(2\yellow{\mathbf v}) \cdot \blue{\mathbf w}$.
+
+<Solution>
+Matching entries are the two first entries and the two second entries. So $\yellow{\mathbf v} \cdot \blue{\mathbf w} = (3)(-1) + (2)(2) = -3 + 4 = 1$.
+
+Swapping the order multiplies the same pairs, since $(-1)(3) = (3)(-1)$ and $(2)(2) = (2)(2)$. So $\blue{\mathbf w} \cdot \yellow{\mathbf v} = 1$ too.
+
+Doubling $\yellow{\mathbf v}$ gives $(6, 4)$, and $(6)(-1) + (4)(2) = -6 + 8 = 2$. Every product doubled, so the total doubled.
+</Solution>
+</Problem>
+
+<Concept title="Two vectors in, one number out">
+The **dot product** (or **inner product**) of two vectors in $\mathbb R^n$ multiplies matching entries and adds the results:
 
 $$
-\yellow{\mathbf v}\cdot\blue{\mathbf w} = \mathbf v^T\mathbf w = v_1w_1 + v_2w_2 + \cdots + v_nw_n, \qquad \yellow{\begin{bmatrix} 3 \\ 2 \end{bmatrix}}\cdot\blue{\begin{bmatrix} -1 \\ 2 \end{bmatrix}} = (3)(-1) + (2)(2) = 1.
+\begin{aligned}
+\mathbf v \cdot \mathbf w &= \mathbf v^T\mathbf w \\
+&= v_1w_1 + v_2w_2 + \cdots + v_nw_n.
+\end{aligned}
 $$
 
-Order does not matter, since $\mathbf u\cdot\mathbf v = \mathbf v\cdot\mathbf u$. The dot product also splits over sums, $(\mathbf u + \mathbf v)\cdot\mathbf w = \mathbf u\cdot\mathbf w + \mathbf v\cdot\mathbf w$, and pulls out scalars, $(c\mathbf u)\cdot\mathbf v = c(\mathbf u\cdot\mathbf v)$.
+As the problem showed, order does not matter and scalars pull out: $\mathbf u \cdot \mathbf v = \mathbf v \cdot \mathbf u$ and $(c\mathbf u) \cdot \mathbf v = c(\mathbf u \cdot \mathbf v)$. It also splits over sums, $(\mathbf u + \mathbf v) \cdot \mathbf w = \mathbf u \cdot \mathbf w + \mathbf v \cdot \mathbf w$.
+</Concept>
 
 ## Length and distance
 
-A vector dotted with itself is a sum of squares, so it is never negative. In $\mathbb R^2$ it is exactly the Pythagorean formula for the squared length of the arrow. The **length** (or **norm**) of $\mathbf v$ is therefore
+<Problem>
+Compute $\yellow{\mathbf v} \cdot \yellow{\mathbf v}$ for $\yellow{\mathbf v} = (3, 2)$. How does it compare with the length of the arrow from the Pythagorean theorem? Then find the length of $(1, -2, 2, 0)$ in $\mathbb R^4$.
 
-$$
-\|\mathbf v\| = \sqrt{\mathbf v\cdot\mathbf v} = \sqrt{v_1^2 + \cdots + v_n^2}, \qquad \|\yellow{\mathbf v}\| = \sqrt{3^2 + 2^2} = \sqrt{13}.
-$$
+<Solution>
+$\yellow{\mathbf v} \cdot \yellow{\mathbf v} = 3^2 + 2^2 = 13$. The arrow is the hypotenuse of a right triangle with legs $3$ and $2$, so Pythagoras gives its length as $\sqrt{3^2 + 2^2} = \sqrt{13}$. The dot product of a vector with itself is its squared length.
 
-Scaling multiplies length by the absolute value of the scalar, $\|c\mathbf v\| = |c|\,\|\mathbf v\|$. A **unit vector** has length 1, and dividing any nonzero $\mathbf v$ by $\|\mathbf v\|$ gives the unit vector pointing the same way. This step is called **normalizing** $\mathbf v$.
+In $\mathbb R^4$ there is no picture, so we use the same formula as the definition: $1 + 4 + 4 + 0 = 9$, and the length is $\sqrt9 = 3$.
+</Solution>
+</Problem>
+
+<Concept title="Length comes from the dot product">
+The **length** (or **norm**) of $\mathbf v$ is $\|\mathbf v\| = \sqrt{\mathbf v \cdot \mathbf v} = \sqrt{v_1^2 + \cdots + v_n^2}$. A **unit vector** has length 1, and dividing a nonzero $\mathbf v$ by $\|\mathbf v\|$ gives the unit vector pointing the same way. This step is called **normalizing** $\mathbf v$. For example, $(1, -2, 2, 0)$ normalizes to $\tfrac13(1, -2, 2, 0)$, and the check $\tfrac19 + \tfrac49 + \tfrac49 + 0 = 1$ needs no square root.
+</Concept>
+
+Normalize a vector by hand. Find the scalar that puts the tip on the unit circle.
 
 <UnitCircleScale vector={[3, 4]} start={0.5} />
 
-The **distance** between $\mathbf u$ and $\mathbf v$ is the length of their difference, $\operatorname{dist}(\mathbf u, \mathbf v) = \|\mathbf u - \mathbf v\|$. The tips of $\yellow{\mathbf v}$ and $\blue{\mathbf w}$ sit at the same height, and the formula agrees with the picture: $\yellow{\mathbf v} - \blue{\mathbf w} = (4, 0)$, so the distance between them is $4$.
+<Warning>
+Scaling multiplies length by the absolute value of the scalar: $\|c\mathbf v\| = |c|\,\|\mathbf v\|$. The vector $-2\mathbf v$ points the other way, but it is twice as long, not $-2$ times as long.
+</Warning>
+
+<Problem>
+How far apart are the tips of $\yellow{\mathbf v} = (3, 2)$ and $\blue{\mathbf w} = (-1, 2)$?
+
+<Solution>
+The arrow from the tip of $\blue{\mathbf w}$ to the tip of $\yellow{\mathbf v}$ is $\yellow{\mathbf v} - \blue{\mathbf w}$ (Day 1). Here that is $(3 - (-1),\ 2 - 2) = (4, 0)$, and its length is $\sqrt{16 + 0} = 4$.
+
+The picture agrees, since both tips sit at height $2$ and are $4$ apart sideways.
+</Solution>
+</Problem>
+
+The **distance** between $\mathbf u$ and $\mathbf v$ is the length of their difference, $\operatorname{dist}(\mathbf u, \mathbf v) = \|\mathbf u - \mathbf v\|$.
 
 ## The angle between two vectors
 
+<Problem>
+Let $\yellow{\mathbf v} = (3, 0)$. Compute $\yellow{\mathbf v} \cdot \blue{\mathbf w}$ for $\blue{\mathbf w} = (1, 2)$, $(0, 2)$ and $(-1, 1)$. What does the sign tell you about where $\blue{\mathbf w}$ points?
+
+<Solution>
+Only the first entries matter, because $\yellow{\mathbf v}$ has second entry $0$: the dot products are $3 \cdot 1 = 3$, then $3 \cdot 0 = 0$, then $3 \cdot (-1) = -3$.
+
+Drop a perpendicular from the tip of $\blue{\mathbf w}$ onto the $x$-axis, the line of $\yellow{\mathbf v}$. The foot lands at $1$, then $0$, then $-1$. That signed **shadow** is exactly what the dot product measured, times the length $3$ of $\yellow{\mathbf v}$. A positive shadow means $\blue{\mathbf w}$ leans the same way as $\yellow{\mathbf v}$, zero means it stands straight up, and a negative shadow means it leans backward.
+</Solution>
+</Problem>
+
 <Figure src="shadow" alt="Three copies of the same yellow vector v = (3, 2) with its faint line, and a blue vector w of length root 5 at 40, 90 and 140 degrees from v. A dashed drop runs from the tip of w to the line of v. At 40 degrees the shadow along v is a teal bar and v·w = 6.18. At 90 degrees there is no shadow, an orange right-angle mark sits at the origin, and v·w = 0.00. At 140 degrees the shadow is a pink bar pointing backward from the origin and v·w = −6.18." wide />
 
-Drop a perpendicular from the tip of $\blue{\mathbf w}$ onto the line through $\yellow{\mathbf v}$. The signed length of that shadow is $\|\mathbf w\|\cos\theta$, and the dot product is the length of $\yellow{\mathbf v}$ times that shadow:
+<Concept title="The dot product measures the angle">
+The signed shadow of $\mathbf w$ on the line of $\mathbf v$ has length $\|\mathbf w\|\cos\theta$, and the dot product is $\|\mathbf v\|$ times that shadow:
 
 $$
-\mathbf v\cdot\mathbf w = \|\mathbf v\|\,\|\mathbf w\|\cos\theta .
+\mathbf v \cdot \mathbf w = \|\mathbf v\|\,\|\mathbf w\|\cos\theta .
 $$
 
-The sign reads off the angle. A positive dot product means $\theta$ is acute, a negative one means $\theta$ is obtuse and the shadow points backward, and zero means a right angle. For Day 1's vectors, $\cos\theta = 1/(\sqrt{13}\sqrt5) \approx 0.124$, so $\theta \approx 82.9^\circ$, which is just short of perpendicular.
+A positive dot product means $\theta$ is acute, a negative one means $\theta$ is obtuse, and zero means a right angle. For Day 1's vectors, $\cos\theta = 1/(\sqrt{13}\sqrt5) \approx 0.124$, so $\theta \approx 82.9^\circ$, which is just short of perpendicular.
+</Concept>
+
+Make the shadow vanish. The shadow bar turns teal when it points along $\yellow{\mathbf v}$ and pink when it points backward.
 
 <DotShadowHunt v={[3, 2]} start={[-1, 2]} />
 
-<Definition term="Orthogonal vectors">
-Two vectors $\mathbf u$ and $\mathbf v$ in $\mathbb R^n$ are **orthogonal** if $\mathbf u\cdot\mathbf v = 0$. The zero vector is orthogonal to every vector.
+## Orthogonal vectors
 
-**Pythagorean Theorem.** $\mathbf u$ and $\mathbf v$ are orthogonal if and only if $\|\mathbf u + \mathbf v\|^2 = \|\mathbf u\|^2 + \|\mathbf v\|^2$.
-</Definition>
+A zero dot product gives a right angle in the plane. The next problem shows why the same test makes sense in $\mathbb R^n$, where there is no protractor.
+
+<Problem>
+Let $\yellow{\mathbf v} = (3, 2)$ and $\blue{\mathbf w} = (-2, 3)$. Compute $\yellow{\mathbf v} \cdot \blue{\mathbf w}$, then the squared distances $\|\yellow{\mathbf v} - \blue{\mathbf w}\|^2$ and $\|\yellow{\mathbf v} + \blue{\mathbf w}\|^2$.
+
+<Solution>
+$\yellow{\mathbf v} \cdot \blue{\mathbf w} = -6 + 6 = 0$.
+
+$\yellow{\mathbf v} - \blue{\mathbf w} = (5, -1)$, so $\|\yellow{\mathbf v} - \blue{\mathbf w}\|^2 = 25 + 1 = 26$. And $\yellow{\mathbf v} + \blue{\mathbf w} = (1, 5)$, so $\|\yellow{\mathbf v} + \blue{\mathbf w}\|^2 = 1 + 25 = 26$.
+
+The tip of $\yellow{\mathbf v}$ is equally far from $\blue{\mathbf w}$ and from $-\blue{\mathbf w}$. In a picture, that is exactly what it means for the line through $\blue{\mathbf w}$ to be perpendicular to $\yellow{\mathbf v}$. Also, $26 = 13 + 13 = \|\yellow{\mathbf v}\|^2 + \|\blue{\mathbf w}\|^2$, which is Pythagoras for the right triangle with legs $\yellow{\mathbf v}$ and $\blue{\mathbf w}$.
+</Solution>
+</Problem>
 
 <Pair>
 <Figure src="equal-distances" alt="Yellow v = (3, 2) with blue w at a right angle to it and gray −w pointing the opposite way. A blue dotted segment labelled ‖v − w‖ joins the tip of v to the tip of w, and a gray dotted segment labelled ‖v + w‖ joins the tip of v to the tip of −w. An orange right-angle mark sits between v and w." />
 
-The definition matches the picture for the following reason. The line through $\mathbf w$ is perpendicular to $\mathbf v$ exactly when the tip of $\mathbf v$ is as far from $\mathbf w$ as it is from $-\mathbf w$. Expanding both squared distances with the rules above gives
+<Concept title="Equal distances mean a right angle">
+Expanding both squared distances with the dot product rules gives
 
 $$
 \begin{aligned}
-\|\mathbf v - \mathbf w\|^2 &= \|\mathbf v\|^2 + \|\mathbf w\|^2 - 2\,\mathbf v\cdot\mathbf w, \\
-\|\mathbf v + \mathbf w\|^2 &= \|\mathbf v\|^2 + \|\mathbf w\|^2 + 2\,\mathbf v\cdot\mathbf w .
+\|\mathbf v - \mathbf w\|^2 &= \|\mathbf v\|^2 + \|\mathbf w\|^2 - 2\,\mathbf v \cdot \mathbf w, \\
+\|\mathbf v + \mathbf w\|^2 &= \|\mathbf v\|^2 + \|\mathbf w\|^2 + 2\,\mathbf v \cdot \mathbf w .
 \end{aligned}
 $$
 
-These agree only when $\mathbf v\cdot\mathbf w = 0$, and the second line then becomes the Pythagorean Theorem.
+These agree only when $\mathbf v \cdot \mathbf w = 0$, and then the second line is the Pythagorean theorem.
+</Concept>
 </Pair>
+
+<Definition term="Orthogonal vectors">
+Two vectors $\mathbf u$ and $\mathbf v$ in $\mathbb R^n$ are **orthogonal** if $\mathbf u \cdot \mathbf v = 0$. The zero vector is orthogonal to every vector.
+
+**Pythagorean Theorem.** $\mathbf u$ and $\mathbf v$ are orthogonal if and only if $\|\mathbf u + \mathbf v\|^2 = \|\mathbf u\|^2 + \|\mathbf v\|^2$.
+</Definition>
+
+Balance the two distances yourself and watch the dot product.
+
+<EqualDistanceTurn v={[3, 1]} start={[1, 2]} />
 
 ## Orthogonal complements
 
-If $W$ is a subspace of $\mathbb R^n$, its **orthogonal complement** $W^\perp$ is the set of all vectors orthogonal to every vector in $W$. Day 36 splits every vector into a piece in $W$ and a piece in $W^\perp$, and Day 38 finds its best approximate solutions by asking for an error that lies in $(\operatorname{Col}A)^\perp$. The complement is a subspace too, and to test a vector you only need to check it against a spanning set of $W$. The row–column rule for $A\mathbf x$ says that entry $i$ of $A\mathbf x$ is (row $i$)$\,\cdot\,\mathbf x$, so $A\mathbf x = \mathbf 0$ says exactly that $\mathbf x$ is orthogonal to every row:
+<Problem>
+Find every vector $\mathbf x = (x_1, x_2)$ that is orthogonal to $\yellow{\mathbf v} = (3, 2)$. Write the condition as a matrix equation.
+
+<Solution>
+The condition is $\yellow{\mathbf v} \cdot \mathbf x = 3x_1 + 2x_2 = 0$. That is one equation, which says $A\mathbf x = \mathbf 0$ for the $1 \times 2$ matrix $A = [\,3\ \ 2\,]$.
+
+Solve it as on Day 17: $x_1 = -\tfrac23 x_2$ with $x_2$ free. Taking $x_2 = 3$ gives $(-2, 3)$, so the answer is every multiple of $\blue{\mathbf u} = (-2, 3)$. That is the line through the origin perpendicular to $\yellow{\mathbf v}$.
+</Solution>
+</Problem>
+
+<Concept title="The perpendicular space is a null space">
+If $W$ is a subspace of $\mathbb R^n$, its **orthogonal complement** $W^\perp$ is the set of all vectors orthogonal to every vector in $W$. To test a vector you only need to check it against a spanning set of $W$. Put that spanning set into the rows of a matrix. Entry $i$ of $A\mathbf x$ is (row $i$)$\,\cdot\,\mathbf x$, so $A\mathbf x = \mathbf 0$ says exactly that $\mathbf x$ is orthogonal to every row:
 
 $$
-(\operatorname{Row}A)^\perp = \operatorname{Nul}A \qquad\text{and}\qquad (\operatorname{Col}A)^\perp = \operatorname{Nul}A^T .
+\begin{aligned}
+(\operatorname{Row}A)^\perp &= \operatorname{Nul}A, \\
+(\operatorname{Col}A)^\perp &= \operatorname{Nul}A^T .
+\end{aligned}
 $$
+
+By the rank theorem, $\dim W + \dim W^\perp = n$. In the problem, $1 + 1 = 2$.
+</Concept>
+
+Find a nonzero $\mathbf x$ that both rows send to zero.
 
 <RowPerpendicularHunt rows={[[1, -2], [-2, 4]]} start={[1, 1]} />
 
 <Pair>
 <Figure src="complement" alt="The yellow line W through v = (3, 2) and the blue line W-perp through u = (−2, 3) cross at the origin with an orange right-angle mark. Beside the grid, A = [3 2] and Nul A = (Row A)-perp." />
 
-The goal is a basis for $W^\perp$, and the identity $(\operatorname{Row}A)^\perp = \operatorname{Nul}A$ turns that into a problem you already know how to solve. Finding $W^\perp$ takes one null-space computation. Put a spanning set of $W$ in the rows of a matrix and solve $A\mathbf x = \mathbf 0$. With the rank theorem, $\dim W + \dim W^\perp = n$. In the video, $W$ is the line through $\yellow{\mathbf v}$, the matrix is $A = [\,3\ \ 2\,]$, and $W^\perp$ is the line through $\blue{\mathbf u} = (-2, 3)$, so $1 + 1 = 2$.
+Day 36 splits every vector into a piece in $W$ and a piece in $W^\perp$, and Day 38 finds its best approximate solutions by asking for an error that lies in $(\operatorname{Col}A)^\perp$.
 </Pair>
 
-Here is the same idea in $\mathbb R^4$, where no picture can help. Take $W$ to be spanned by the rows of $A = \begin{bmatrix} 1 & 2 & -1 & 3 \\ 2 & 4 & 1 & 0 \end{bmatrix}$:
+The same idea works in $\mathbb R^4$, where no picture can help.
+
+<Problem>
+Let $W$ be spanned by $(1, 2, -1, 3)$ and $(2, 4, 1, 0)$. Find a basis for $W^\perp$.
+
+<Solution>
+<Steps>
+<Step>
+Put the spanning vectors in the rows: $A = \begin{bmatrix} 1 & 2 & -1 & 3 \\ 2 & 4 & 1 & 0 \end{bmatrix}$. Then $W^\perp = \operatorname{Nul}A$.
+</Step>
+<Step>
+Row reduce. Subtract twice row 1 from row 2 to get $(0, 0, 3, -6)$, divide by $3$ to get $(0, 0, 1, -2)$, then add it to row 1: $A \sim \begin{bmatrix} 1 & 2 & 0 & 1 \\ 0 & 0 & 1 & -2 \end{bmatrix}$.
+</Step>
+<Step>
+Read off the solutions: $x_1 = -2x_2 - x_4$ and $x_3 = 2x_4$, with $x_2$ and $x_4$ free. Setting one free variable to 1 and the other to 0 gives $(-2, 1, 0, 0)$ and $(-1, 0, 2, 1)$.
+</Step>
+<Step>
+Check against a row: $(1, 2, -1, 3) \cdot (-1, 0, 2, 1) = -1 + 0 - 2 + 3 = 0$. The dimensions add up, since $2 + 2 = 4$.
+</Step>
+</Steps>
+</Solution>
+</Problem>
+
+<Warning>
+The spanning vectors go in the rows, and then you compute the null space. Also keep the pairs straight: $\operatorname{Nul}A$ is perpendicular to $\operatorname{Row}A$, not to $\operatorname{Col}A$.
+</Warning>
+
+## Orthogonal sets
+
+Perpendicular vectors make coordinates easy to find, because each dot product sees only one of them.
+
+<Problem>
+The vectors $\yellow{\mathbf u_1} = (2, 1)$ and $\blue{\mathbf u_2} = (-1, 2)$ are orthogonal. Write $\teal{\mathbf y} = (4, 7)$ as $c_1\yellow{\mathbf u_1} + c_2\blue{\mathbf u_2}$ without row reducing.
+
+<Solution>
+Dot both sides of $\teal{\mathbf y} = c_1\yellow{\mathbf u_1} + c_2\blue{\mathbf u_2}$ with $\yellow{\mathbf u_1}$. The rules split the right side into $c_1(\yellow{\mathbf u_1} \cdot \yellow{\mathbf u_1}) + c_2(\blue{\mathbf u_2} \cdot \yellow{\mathbf u_1})$, and the second term is $0$ because the vectors are orthogonal.
+
+That leaves $\teal{\mathbf y} \cdot \yellow{\mathbf u_1} = c_1(\yellow{\mathbf u_1} \cdot \yellow{\mathbf u_1})$, which is $8 + 7 = 15 = c_1 \cdot 5$. So $c_1 = 3$.
+
+Dotting with $\blue{\mathbf u_2}$ instead gives $-4 + 14 = 10 = c_2 \cdot 5$, so $c_2 = 2$. Check: $3(2, 1) + 2(-1, 2) = (4, 7)$.
+</Solution>
+</Problem>
+
+<Concept title="Each weight is one ratio">
+A set $\{\mathbf u_1, \dots, \mathbf u_p\}$ is an **orthogonal set** when every pair of different vectors in it has dot product $0$. If it is a basis for $W$ and $\mathbf y$ is in $W$, dotting $\mathbf y = c_1\mathbf u_1 + \cdots + c_p\mathbf u_p$ with $\mathbf u_j$ leaves only the $j$th term:
 
 $$
-\begin{aligned}
-A &\sim \begin{bmatrix} 1 & 2 & 0 & 1 \\ 0 & 0 & 1 & -2 \end{bmatrix} && x_1 = -2x_2 - x_4,\ \ x_3 = 2x_4 \\
-W^\perp = \operatorname{Nul}A &= \operatorname{Span}\left\{\begin{bmatrix} -2 \\ 1 \\ 0 \\ 0 \end{bmatrix}, \begin{bmatrix} -1 \\ 0 \\ 2 \\ 1 \end{bmatrix}\right\} && \text{free variables } x_2, x_4 \\
-(1, 2, -1, 3)\cdot(-1, 0, 2, 1) &= -1 + 0 - 2 + 3 = 0 && \text{check against a row}
-\end{aligned}
+c_j = \frac{\mathbf y \cdot \mathbf u_j}{\mathbf u_j \cdot \mathbf u_j}.
 $$
 
-The dimensions add up as they should, since $\dim W + \dim W^\perp = 2 + 2 = 4$.
+The same trick with $\mathbf y = \mathbf 0$ gives every $c_j = 0$, so an orthogonal set of nonzero vectors is automatically linearly independent.
+</Concept>
 
-## Orthogonal and orthonormal sets
+Rebuild $\teal{\mathbf y}$ with the sliders. The dashed drops show where the two ratios come from.
 
-A set $\{\mathbf u_1, \dots, \mathbf u_p\}$ is an **orthogonal set** when every pair of different vectors in it has dot product $0$. An orthogonal set of nonzero vectors is automatically linearly independent. If $\mathbf 0 = c_1\mathbf u_1 + \cdots + c_p\mathbf u_p$, dotting both sides with $\mathbf u_1$ kills every other term and leaves $0 = c_1(\mathbf u_1\cdot\mathbf u_1)$, so $c_1 = 0$, and the same works for every weight.
+<OrthogonalWeights u1={[2, 1]} u2={[-1, 2]} target={[4, 7]} />
 
 <Pair>
 <Figure src="orthogonal-weights" alt="Yellow v = (3, 2) and blue u = (−2, 3) with an orange right-angle mark between them. A blue arrow labelled −u runs from the tip of v down to the tip of teal y = v − u = (5, −1). Beside the grid, c1 = (y·v)/(v·v) = 13/13 = 1 and c2 = (y·u)/(u·u) = −13/13 = −1." />
 
-The same trick finds coordinates, and the goal here is to get the weights without row reducing anything. If $\{\mathbf u_1, \dots, \mathbf u_p\}$ is an orthogonal basis for $W$ and $\mathbf y$ is in $W$, dotting $\mathbf y = c_1\mathbf u_1 + \cdots + c_p\mathbf u_p$ with $\mathbf u_j$ leaves only the $j$th term:
-
-$$
-c_j = \frac{\mathbf y\cdot\mathbf u_j}{\mathbf u_j\cdot\mathbf u_j}.
-$$
-
-For $\teal{\mathbf y} = (5, -1)$ in the basis $\{\yellow{\mathbf v}, \blue{\mathbf u}\}$, the weights are $13/13 = 1$ and $-13/13 = -1$, with no row reduction. Day 36's projection formula is a sum of exactly these ratios, and Day 37's Gram–Schmidt process exists to turn any basis into an orthogonal one so that the ratios apply.
+The figure runs the same computation for $\teal{\mathbf y} = (5, -1)$ in the basis $\{\yellow{\mathbf v}, \blue{\mathbf u}\}$, where the weights are $13/13 = 1$ and $-13/13 = -1$. Day 36's projection formula is a sum of exactly these ratios, and Day 37's Gram–Schmidt process exists to turn any basis into an orthogonal one so that the ratios apply.
 </Pair>
 
-An **orthonormal set** is an orthogonal set of unit vectors, such as $\{\yellow{\mathbf v}/\sqrt{13},\ \blue{\mathbf u}/\sqrt{13}\}$. A matrix $U$ has orthonormal columns exactly when $U^TU = I$, because entry $(i, j)$ of $U^TU$ is the dot product of columns $i$ and $j$. Such a matrix keeps lengths and dot products, since $(U\mathbf x)\cdot(U\mathbf y) = \mathbf x^TU^TU\mathbf y = \mathbf x\cdot\mathbf y$. A square matrix with orthonormal columns is called an **orthogonal matrix**, and its inverse is $U^T$. Day 34's matrix $P$ of unit eigenvectors was one, and on Day 40 the singular value decomposition writes every matrix using two of them.
+<Warning>
+The ratio formula only works when the basis is orthogonal. For a basis like $(1, 0), (1, 1)$ it silently gives wrong weights, so check every pair first. With three vectors that means three checks.
+</Warning>
 
-Tomorrow the ratio $\frac{\mathbf y\cdot\mathbf u}{\mathbf u\cdot\mathbf u}$ gets a picture of its own, because it finds the point of a line or plane that sits closest to $\mathbf y$.
+## Orthonormal columns
+
+<Problem>
+Let $U = \begin{bmatrix} 0.6 & -0.8 \\ 0.8 & 0.6 \end{bmatrix}$. Check that its columns are unit vectors and orthogonal. Then compute $U\mathbf x$ for $\mathbf x = (1, 2)$ and compare the lengths of $\mathbf x$ and $U\mathbf x$.
+
+<Solution>
+Column 1 has squared length $0.36 + 0.64 = 1$, and so does column 2. Their dot product is $(0.6)(-0.8) + (0.8)(0.6) = -0.48 + 0.48 = 0$.
+
+$U\mathbf x = (0.6 - 1.6,\ 0.8 + 1.2) = (-1, 2)$. Its squared length is $1 + 4 = 5$, and $\mathbf x$ has squared length $1 + 4 = 5$ as well. $U$ turned the vector without stretching it.
+</Solution>
+</Problem>
+
+<Concept title="Orthonormal columns keep lengths">
+An **orthonormal set** is an orthogonal set of unit vectors. A matrix $U$ has orthonormal columns exactly when $U^TU = I$, because entry $(i, j)$ of $U^TU$ is the dot product of columns $i$ and $j$. Such a matrix keeps dot products, since $(U\mathbf x) \cdot (U\mathbf y) = \mathbf x^TU^TU\mathbf y = \mathbf x \cdot \mathbf y$, and so it keeps lengths and right angles too.
+
+A square matrix with orthonormal columns is an **orthogonal matrix**, and its inverse is $U^T$. Day 34's matrix $P$ of unit eigenvectors was one, and on Day 40 the singular value decomposition writes every matrix using two of them.
+</Concept>
+
+<Choice
+  question="Which matrix is an orthogonal matrix?"
+  options={["$\\begin{bmatrix} 1 & 1 \\\\ 1 & -1 \\end{bmatrix}$", "$\\begin{bmatrix} 0 & 1 \\\\ 1 & 0 \\end{bmatrix}$", "$\\begin{bmatrix} 1 & 0 \\\\ 0 & 1 \\\\ 0 & 0 \\end{bmatrix}$"]}
+  answer={1}
+>
+The swap matrix has columns $(0, 1)$ and $(1, 0)$, which are orthogonal unit vectors, and it is square. The first matrix has orthogonal columns of length $\sqrt2$, so they are not unit vectors. The last has orthonormal columns but is not square.
+</Choice>
+
+Tomorrow the ratio $\frac{\mathbf y \cdot \mathbf u}{\mathbf u \cdot \mathbf u}$ gets a picture of its own, because it finds the point of a line or plane that sits closest to $\mathbf y$.
 
 ## Practice
 
+### Warm-up
+
 <Check>
-Let $\mathbf u = (1, 1, 0)$ and $\mathbf v = (1, 0, 1)$. Find $\mathbf u\cdot\mathbf v$, $\|\mathbf u\|^2$ and $\operatorname{dist}(\mathbf u, \mathbf v)^2$, then the angle between them. (Modeled on Lay §6.1, Exercises 1–13.)
+Compute $(4, -1, 2) \cdot (1, 3, -2)$. (Modeled on Lay §6.1, Example 1.)
+
+<VectorAnswer answer={[-3]} />
+
+<Answer>
+$(4)(1) + (-1)(3) + (2)(-2) = 4 - 3 - 4 = -3$. The dot product is negative, so the angle between the vectors is obtuse.
+</Answer>
+</Check>
+
+<Check>
+Find the unit vector pointing the same way as $(-6, 8)$. (Modeled on Lay §6.1 #9.)
+
+<VectorAnswer answer={[-0.6, 0.8]} />
+
+<Answer>
+The length is $\sqrt{36 + 64} = \sqrt{100} = 10$. Dividing by $10$ gives $(-0.6, 0.8)$. Check: $0.36 + 0.64 = 1$.
+</Answer>
+</Check>
+
+<Check>
+Find the distance between $(9, -2)$ and $(1, 4)$. (Modeled on Lay §6.1 #13.)
+
+<VectorAnswer answer={[10]} />
+
+<Answer>
+The difference is $(9 - 1,\ -2 - 4) = (8, -6)$, and its length is $\sqrt{64 + 36} = \sqrt{100} = 10$.
+</Answer>
+</Check>
+
+### Core
+
+<Check>
+Let $\mathbf u = (1, 1, 0)$ and $\mathbf v = (1, 0, 1)$. Find $\mathbf u \cdot \mathbf v$, $\|\mathbf u\|^2$ and $\operatorname{dist}(\mathbf u, \mathbf v)^2$, then the angle between them. (Modeled on Lay §6.1 #1–13.)
 
 <VectorAnswer answer={[1, 2, 2]} labels={["u·v", "‖u‖²", "dist²"]} />
+
+<Hint>
+The squared distance is the dot product of $\mathbf u - \mathbf v$ with itself. For the angle, use $\cos\theta = \dfrac{\mathbf u \cdot \mathbf v}{\|\mathbf u\|\,\|\mathbf v\|}$.
+</Hint>
 
 <Answer>
 $$
 \begin{aligned}
-\mathbf u\cdot\mathbf v &= (1)(1) + (1)(0) + (0)(1) = 1 \\
+\mathbf u \cdot \mathbf v &= (1)(1) + (1)(0) + (0)(1) = 1 \\
 \|\mathbf u\|^2 &= 1 + 1 + 0 = 2, \qquad \|\mathbf v\|^2 = 1 + 0 + 1 = 2 \\
 \operatorname{dist}(\mathbf u, \mathbf v)^2 &= \|(0, 1, -1)\|^2 = 0 + 1 + 1 = 2 \\
 \cos\theta &= \frac{1}{\sqrt2\,\sqrt2} = \frac12, \qquad \theta = 60^\circ
@@ -127,17 +326,35 @@ All three sides of the triangle with corners $\mathbf 0$, $\mathbf u$ and $\math
 </Check>
 
 <Check>
-The vectors $\mathbf u_1 = (1, 1, 1)$, $\mathbf u_2 = (1, -1, 0)$ and $\mathbf u_3 = (1, 1, -2)$ form an orthogonal basis of $\mathbb R^3$. Write $\mathbf y = (2, 0, -1)$ as $c_1\mathbf u_1 + c_2\mathbf u_2 + c_3\mathbf u_3$. (Modeled on Lay §6.2, Exercise 9.)
+Let $\mathbf u = (1, -2, 3)$ and $\mathbf v = (4, 5, 2)$. Compute $\mathbf u \cdot \mathbf v$, $\|\mathbf u\|^2$, $\|\mathbf v\|^2$ and $\|\mathbf u + \mathbf v\|^2$ without using the Pythagorean theorem. (Modeled on Lay §6.1 #23.)
+
+<VectorAnswer answer={[0, 14, 45, 59]} labels={["u·v", "‖u‖²", "‖v‖²", "‖u+v‖²"]} />
+
+<Hint>
+Add the vectors first for the last one: $\mathbf u + \mathbf v = (5, 3, 5)$.
+</Hint>
+
+<Answer>
+$\mathbf u \cdot \mathbf v = 4 - 10 + 6 = 0$, $\|\mathbf u\|^2 = 1 + 4 + 9 = 14$ and $\|\mathbf v\|^2 = 16 + 25 + 4 = 45$. With $\mathbf u + \mathbf v = (5, 3, 5)$, $\|\mathbf u + \mathbf v\|^2 = 25 + 9 + 25 = 59$. Since $14 + 45 = 59$, the Pythagorean theorem holds, as it must for orthogonal vectors.
+</Answer>
+</Check>
+
+<Check>
+The vectors $\mathbf u_1 = (1, 1, 1)$, $\mathbf u_2 = (1, -1, 0)$ and $\mathbf u_3 = (1, 1, -2)$ form an orthogonal basis of $\mathbb R^3$. Write $\mathbf y = (2, 0, -1)$ as $c_1\mathbf u_1 + c_2\mathbf u_2 + c_3\mathbf u_3$. (Modeled on Lay §6.2 #9.)
 
 <VectorAnswer answer={[1 / 3, 1, 2 / 3]} labels={["c₁", "c₂", "c₃"]} />
 
+<Hint>
+Check that every pair is orthogonal, then use one ratio $\dfrac{\mathbf y \cdot \mathbf u_j}{\mathbf u_j \cdot \mathbf u_j}$ per weight.
+</Hint>
+
 <Answer>
-First check the three pairs: $\mathbf u_1\cdot\mathbf u_2 = 0$, $\mathbf u_1\cdot\mathbf u_3 = 1 + 1 - 2 = 0$ and $\mathbf u_2\cdot\mathbf u_3 = 1 - 1 + 0 = 0$. Then each weight is one ratio:
+First check the three pairs: $\mathbf u_1 \cdot \mathbf u_2 = 0$, $\mathbf u_1 \cdot \mathbf u_3 = 1 + 1 - 2 = 0$ and $\mathbf u_2 \cdot \mathbf u_3 = 1 - 1 + 0 = 0$. Then each weight is one ratio:
 
 $$
-c_1 = \frac{\mathbf y\cdot\mathbf u_1}{\mathbf u_1\cdot\mathbf u_1} = \frac{1}{3}, \qquad
-c_2 = \frac{\mathbf y\cdot\mathbf u_2}{\mathbf u_2\cdot\mathbf u_2} = \frac{2}{2} = 1, \qquad
-c_3 = \frac{\mathbf y\cdot\mathbf u_3}{\mathbf u_3\cdot\mathbf u_3} = \frac{4}{6} = \frac23 .
+c_1 = \frac{\mathbf y \cdot \mathbf u_1}{\mathbf u_1 \cdot \mathbf u_1} = \frac{1}{3}, \qquad
+c_2 = \frac{\mathbf y \cdot \mathbf u_2}{\mathbf u_2 \cdot \mathbf u_2} = \frac{2}{2} = 1, \qquad
+c_3 = \frac{\mathbf y \cdot \mathbf u_3}{\mathbf u_3 \cdot \mathbf u_3} = \frac{4}{6} = \frac23 .
 $$
 
 Check: $\tfrac13(1, 1, 1) + (1, -1, 0) + \tfrac23(1, 1, -2) = (2, 0, -1)$.
@@ -145,9 +362,13 @@ Check: $\tfrac13(1, 1, 1) + (1, -1, 0) + \tfrac23(1, 1, -2) = (2, 0, -1)$.
 </Check>
 
 <Check>
-Let $A = \begin{bmatrix} 1 & -1 & 2 \\ 2 & 0 & 1 \end{bmatrix}$. Find the vector spanning $(\operatorname{Row}A)^\perp$ whose first entry is $-1$. (Modeled on Lay §6.1, Exercise 26 and Theorem 3.)
+Let $A = \begin{bmatrix} 1 & -1 & 2 \\ 2 & 0 & 1 \end{bmatrix}$. Find the vector spanning $(\operatorname{Row}A)^\perp$ whose first entry is $-1$. (Modeled on Lay §6.1 #26 and Theorem 3.)
 
 <VectorAnswer answer={[-1, 3, 2]} />
+
+<Hint>
+$(\operatorname{Row}A)^\perp = \operatorname{Nul}A$. Row reduce $A$ and pick the free variable so that the first entry is $-1$.
+</Hint>
 
 <Answer>
 $(\operatorname{Row}A)^\perp = \operatorname{Nul}A$, so row reduce:
@@ -156,6 +377,60 @@ $$
 \begin{bmatrix} 1 & -1 & 2 \\ 2 & 0 & 1 \end{bmatrix} \sim \begin{bmatrix} 1 & 0 & \tfrac12 \\ 0 & 1 & -\tfrac32 \end{bmatrix}, \qquad x_1 = -\tfrac12 x_3,\ \ x_2 = \tfrac32 x_3 .
 $$
 
-Taking $x_3 = 2$ gives $(-1, 3, 2)$. It dots to zero with both rows: $(1, -1, 2)\cdot(-1, 3, 2) = -1 - 3 + 4 = 0$ and $(2, 0, 1)\cdot(-1, 3, 2) = -2 + 0 + 2 = 0$. The dimensions add up, since $2 + 1 = 3$.
+Taking $x_3 = 2$ gives $(-1, 3, 2)$. It dots to zero with both rows: $(1, -1, 2) \cdot (-1, 3, 2) = -1 - 3 + 4 = 0$ and $(2, 0, 1) \cdot (-1, 3, 2) = -2 + 0 + 2 = 0$. The dimensions add up, since $2 + 1 = 3$.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="Which set is orthogonal? (Modeled on Lay §6.2 #1.)"
+  options={["$(1, 2, -1),\\ (2, -1, 0),\\ (1, 2, 5)$", "$(1, 1, 1),\\ (1, -1, 0),\\ (1, 0, -1)$", "$(2, 1),\\ (1, 2)$"]}
+  answer={0}
+>
+Every pair in the first set dots to zero: $2 - 2 + 0 = 0$, $1 + 4 - 5 = 0$ and $2 - 2 + 0 = 0$. In the second set, $(1, -1, 0) \cdot (1, 0, -1) = 1$, so one pair fails. In the third, $(2, 1) \cdot (1, 2) = 4$.
+</Choice>
+</Check>
+
+### Challenge
+
+<Check>
+Find the number $c$ that makes $(1, c, 2)$ orthogonal to $(3, -1, 4)$.
+
+<VectorAnswer answer={[11]} labels={["c"]} prefix="c =" />
+
+<Hint>
+Write out the dot product as an expression in $c$ and set it equal to $0$.
+</Hint>
+
+<Answer>
+$(1, c, 2) \cdot (3, -1, 4) = 3 - c + 8 = 11 - c$. Setting it to $0$ gives $c = 11$. Check: $3 - 11 + 8 = 0$.
+</Answer>
+</Check>
+
+<Check>
+Let $U$ be a $2 \times 2$ matrix with orthonormal columns, and let $\mathbf x = (2, 1)$ and $\mathbf y = (-1, 3)$. Find $(U\mathbf x) \cdot (U\mathbf y)$ without knowing $U$. (Modeled on Lay §6.2, Theorem 7.)
+
+<VectorAnswer answer={[1]} />
+
+<Hint>
+Write the dot product as $(U\mathbf x)^T(U\mathbf y)$ and use $U^TU = I$.
+</Hint>
+
+<Answer>
+$(U\mathbf x) \cdot (U\mathbf y) = \mathbf x^TU^TU\mathbf y = \mathbf x^T\mathbf y = \mathbf x \cdot \mathbf y = -2 + 3 = 1$. A matrix with orthonormal columns keeps every dot product, so it keeps lengths and angles too.
+</Answer>
+</Check>
+
+<Check>
+Suppose $\mathbf u_1, \mathbf u_2, \mathbf u_3$ are nonzero and every pair is orthogonal. Show that they are linearly independent. (Modeled on Lay §6.2, Theorem 4.)
+
+<Hint>
+Start from $c_1\mathbf u_1 + c_2\mathbf u_2 + c_3\mathbf u_3 = \mathbf 0$ and dot both sides with $\mathbf u_1$.
+</Hint>
+
+<Answer>
+Suppose $c_1\mathbf u_1 + c_2\mathbf u_2 + c_3\mathbf u_3 = \mathbf 0$. Dot both sides with $\mathbf u_1$. The right side gives $0$. The left side splits into $c_1(\mathbf u_1 \cdot \mathbf u_1) + c_2(\mathbf u_2 \cdot \mathbf u_1) + c_3(\mathbf u_3 \cdot \mathbf u_1)$, and the last two dot products are $0$. So $c_1(\mathbf u_1 \cdot \mathbf u_1) = 0$.
+
+Since $\mathbf u_1 \ne \mathbf 0$, the number $\mathbf u_1 \cdot \mathbf u_1 = \|\mathbf u_1\|^2$ is positive, so $c_1 = 0$. Dotting with $\mathbf u_2$ and then $\mathbf u_3$ gives $c_2 = 0$ and $c_3 = 0$ the same way. The only relation is the trivial one, so the vectors are independent.
 </Answer>
 </Check>

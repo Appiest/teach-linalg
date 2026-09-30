@@ -5,7 +5,7 @@ import { palette } from "@/lib/palette.generated";
 import { hue, type Hue } from "./colors";
 import { columnTex, describeVector, Goal, Panel, Readout, Slider, Tex, Workbench } from "./controls";
 import { useSettled } from "./gesture";
-import { apply, nearlyEqual, scale, texNumber, type Matrix2, type Vec } from "./math";
+import { add, apply, nearlyEqual, scale, texNumber, type Matrix2, type Vec } from "./math";
 import { Arrow, Handle, Label, Marker, Plane, usePlane, type Bounds } from "./plane";
 
 const CHAIN_BOUNDS: Bounds = { xMin: -6, xMax: 6, yMin: -5, yMax: 5 };
@@ -263,6 +263,136 @@ export function NullPowerClimb({ matrix, lambda, multiplicity }: { matrix: Matri
           <DimensionSlots filled={Math.min(current, multiplicity)} places={multiplicity} color={current >= multiplicity ? "teal" : "yellow"} label={`${current} of ${multiplicity}`} />
         </CountRow>
       </div>
+    </Panel>
+  );
+}
+
+const SWEEP_STEP = 15;
+const SWEEP_ANGLES = Array.from({ length: 180 / SWEEP_STEP }, (_, index) => index * SWEEP_STEP);
+const SWEEP_BOUNDS: Bounds = { xMin: -5, xMax: 5, yMin: -4, yMax: 4 };
+const RAY_LENGTH = 2.5;
+
+const directionAt = (degrees: number): Vec => [Math.cos((degrees * Math.PI) / 180), Math.sin((degrees * Math.PI) / 180)];
+const cross = (first: Vec, second: Vec) => first[0] * second[1] - first[1] * second[0];
+const keepsLine = (matrix: Matrix2, direction: Vec) => Math.abs(cross(direction, apply(matrix, direction))) < 1e-9;
+
+function tickColor(seen: boolean, eigen: boolean): string {
+  if (!seen) return "var(--palette-grid)";
+  return eigen ? hue("glow") : hue("text");
+}
+
+/** One tick at each end of every line the sweep can visit; visited lines darken and eigenlines glow. */
+function SweepTicks({ matrix, visited }: { matrix: Matrix2; visited: number[] }) {
+  const { toSvg } = usePlane();
+  const ticks = SWEEP_ANGLES.flatMap((degrees) => [degrees, degrees + 180]);
+  return (
+    <g aria-hidden>
+      {ticks.map((degrees) => {
+        const direction = directionAt(degrees);
+        const [x1, y1] = toSvg(scale(3.3, direction));
+        const [x2, y2] = toSvg(scale(3.8, direction));
+        const color = tickColor(visited.includes(degrees % 180), keepsLine(matrix, direction));
+        return <line key={degrees} x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} strokeWidth={4} strokeLinecap="round" />;
+      })}
+    </g>
+  );
+}
+
+/** Sweep a direction through every line and watch where A keeps the arrow on its own line. */
+export function ShearRaySweep({ matrix, start = 90 }: { matrix: Matrix2; start?: number }) {
+  const [angle, setAngle] = useState(start);
+  const [visited, setVisited] = useState<number[]>([start]);
+  const { settled: solved, gesture } = useSettled(visited.length === SWEEP_ANGLES.length);
+  const direction = directionAt(angle);
+  const ray = scale(RAY_LENGTH, direction);
+  const image = apply(matrix, ray);
+  const onLine = keepsLine(matrix, direction);
+  const found = SWEEP_ANGLES.filter((degrees) => visited.includes(degrees) && keepsLine(matrix, directionAt(degrees))).length;
+  const turn = (value: number) => {
+    setAngle(value);
+    setVisited((current) => (current.includes(value) ? current : [...current, value]));
+  };
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Turn the blue arrow <Tex>{"\\mathbf u"}</Tex> through every angle from 0° to 165°. The ticks around the edge darken as you visit each line, and a tick glows when <Tex>{"A\\mathbf u"}</Tex> stays on the line through <Tex>{"\\mathbf u"}</Tex>.</>}
+        success={<>You visited every line through the origin, and only the horizontal one glows. The shear has a single eigenline, so it has one independent eigenvector even though <Tex>{"\\lambda = 1"}</Tex> is a double root.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={SWEEP_BOUNDS} label={`Direction u at ${angle} degrees and its image A u at ${describeVector(image)}.`}>
+            <LineThrough direction={direction} color={onLine ? "yellow" : "blue"} dashed={!onLine} />
+            <SweepTicks matrix={matrix} visited={visited} />
+            <Arrow to={image} color="teal" />
+            <Arrow to={ray} color="blue" />
+            <Label at={ray} color="blue" dx={-24}>u</Label>
+            <Label at={image} color="teal">Au</Label>
+            {onLine ? <Marker at={image} color="glow" /> : null}
+          </Plane>
+        }
+        readout={
+          <>
+            <Slider label="\theta" value={angle} onChange={turn} min={0} max={165} step={SWEEP_STEP} color={palette.blue} />
+            <Readout tex={`A${columnTex(ray, palette.blue)} = ${columnTex(image, palette.teal)}`} />
+            <CountRow label={`Lines visited: ${visited.length} of ${SWEEP_ANGLES.length}`}>
+              <span className="tabular-nums">Eigenlines: {found}</span>
+            </CountRow>
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+const COORDINATE_BOUNDS: Bounds = { xMin: -5, xMax: 8, yMin: -4, yMax: 4 };
+
+/** Weights of `target` in the basis (first, second), by Cramer's rule. */
+function weightsIn(first: Vec, second: Vec, target: Vec): Vec {
+  const area = cross(first, second);
+  return [cross(target, second) / area, cross(first, target) / area];
+}
+
+/** Sliders for a and b build a·v₁ + b·v₂; matching Av₂ reads off the second column of P⁻¹AP. */
+export function ChainCoordinates({ matrix, bottom, top }: { matrix: Matrix2; bottom: Vec; top: Vec }) {
+  const [a, setA] = useState(0);
+  const [b, setB] = useState(0);
+  const target = apply(matrix, top);
+  const partial = scale(a, bottom);
+  const result = add(partial, scale(b, top));
+  const { settled: solved, gesture } = useSettled(nearlyEqual(result, target));
+  const [weightA, weightB] = weightsIn(bottom, top, target);
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Pick weights <Tex>{"a"}</Tex> and <Tex>{"b"}</Tex> so that <Tex>{"a\\,\\mathbf v_1 + b\\,\\mathbf v_2"}</Tex> lands on the ringed point <Tex>{`A\\mathbf v_2 = ${columnTex(target)}`}</Tex>.</>}
+        success={<>You found <Tex>{`A\\mathbf v_2 = ${texNumber(weightA)}\\,\\mathbf v_1 + ${texNumber(weightB)}\\,\\mathbf v_2`}</Tex>. These weights form the second column of <Tex>{"P^{-1}AP"}</Tex>, and the <Tex>{texNumber(weightA)}</Tex> on top records the push down the chain.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={COORDINATE_BOUNDS} label={`Chain vectors v1 and v2. The combination a v1 + b v2 is at ${describeVector(result)} and the target A v2 is at ${describeVector(target)}.`}>
+            <LineThrough direction={bottom} color="yellow" dashed />
+            {solved ? <Marker at={target} color="teal" /> : <Marker at={target} ring />}
+            <Arrow to={partial} color="yellow" width={2.5} />
+            <Arrow from={partial} to={result} color="blue" width={2.5} />
+            <Arrow to={result} color="teal" />
+            <Arrow to={bottom} color="yellow" />
+            <Arrow to={top} color="blue" />
+            <Label at={bottom} color="yellow" dy={22}>v₁</Label>
+            <Label at={top} color="blue" dx={-8} dy={-14}>v₂</Label>
+          </Plane>
+        }
+        readout={
+          <>
+            <Slider label="a" value={a} onChange={setA} min={-3} max={3} step={1} color={palette.yellow} />
+            <Slider label="b" value={b} onChange={setB} min={-2} max={5} step={1} color={palette.blue} />
+            <Readout tex={`${texNumber(a)}${columnTex(bottom, palette.yellow)} + ${texNumber(b)}${columnTex(top, palette.blue)} = ${columnTex(result, palette.teal)}`} />
+          </>
+        }
+      />
     </Panel>
   );
 }

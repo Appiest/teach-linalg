@@ -296,3 +296,104 @@ export function EigenPolynomialHunt({ matrix }: { matrix: Matrix2 }) {
     </Panel>
   );
 }
+
+const COLUMN_BOUNDS: Bounds = { xMin: -4, xMax: 8, yMin: -4, yMax: 6 };
+const pairTex = (pair: Vec) => `(${texNumber(pair[0])}, ${texNumber(pair[1])})`;
+
+/** Sliders for the B-coordinates of A b_j: the weights that rebuild A b_j from b1 and b2 are column j of [T]_B. */
+export function BasisColumnBuilder({ matrix, b1, b2, column = 1 }: { matrix: Matrix2; b1: Vec; b2: Vec; column?: 0 | 1 }) {
+  const [a, setA] = useState(0);
+  const [b, setB] = useState(0);
+  const target = apply(matrix, column === 0 ? b1 : b2);
+  const partial = scale(a, b1);
+  const result = add(partial, scale(b, b2));
+  const { settled: solved, gesture } = useSettled(nearZero(result[0] - target[0]) && nearZero(result[1] - target[1]));
+  const answer = coordinates(b1, b2, target);
+  const name = `\\mathbf b_${column + 1}`;
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Pick weights so that <Tex>{`a\\,\\mathbf b_1 + b\\,\\mathbf b_2`}</Tex> lands on the ringed point <Tex>{`A${name} = ${pairTex(target)}`}</Tex>. Those weights are column {column + 1} of <Tex>{"[T]_{\\mathcal B}"}</Tex>.</>}
+        success={<>Column {column + 1} of <Tex>{"[T]_{\\mathcal B}"}</Tex> is <Tex>{pairTex(answer)}</Tex>, the coordinates of <Tex>{`A${name}`}</Tex> on the slanted grid. The standard entries <Tex>{pairTex(target)}</Tex> are a different description of the same arrow.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={COLUMN_BOUNDS} label={`Grid of b1 and b2. The combination a b1 + b b2 is at ${describeVector(result)} and the target A b${column + 1} is at ${describeVector(target)}.`}>
+            <BasisGrid b1={b1} b2={b2} color="text" opacity={0.18} />
+            {solved ? <Marker at={target} color="teal" /> : <Marker at={target} ring />}
+            <Arrow to={partial} color="yellow" width={2.5} />
+            <Arrow from={partial} to={result} color="blue" width={2.5} />
+            <Arrow to={result} color="teal" />
+            <Arrow to={b1} color="yellow" />
+            <Arrow to={b2} color="blue" />
+            <Label at={b1} color="yellow" dx={-26}>b₁</Label>
+            <Label at={b2} color="blue" dy={22}>b₂</Label>
+          </Plane>
+        }
+        readout={
+          <>
+            <Slider label="a" value={a} onChange={setA} min={-3} max={5} step={1} color={palette.yellow} />
+            <Slider label="b" value={b} onChange={setB} min={-3} max={3} step={1} color={palette.blue} />
+            <Readout tex={`${texNumber(a)}${columnTex(b1, palette.yellow)} + ${texNumber(b)}${columnTex(b2, palette.blue)} = ${columnTex(result, palette.teal)}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+const STANDARD_BOUNDS: Bounds = { xMin: -4, xMax: 5, yMin: -3, yMax: 4 };
+const EIGEN_BOUNDS: Bounds = { xMin: -3, xMax: 3, yMin: -3, yMax: 3 };
+
+/** One map in two coordinate systems: drag x on the standard plane and watch [x]_B go to D[x]_B on the eigen plane. */
+export function TwoCoordinateMap({ matrix, b1, b2, target }: { matrix: Matrix2; b1: Vec; b2: Vec; target: Vec }) {
+  const [x, setX] = useState<Vec>([1, 0]);
+  const lambdas: Vec = [basisMatrix(matrix, b1, b2)[0][0], basisMatrix(matrix, b1, b2)[1][1]];
+  const image = apply(matrix, x);
+  const weights = coordinates(b1, b2, x);
+  const imageWeights = coordinates(b1, b2, image);
+  const { settled, gesture } = useSettled(pointKey(x));
+  const settledImage = coordinates(b1, b2, apply(matrix, keyPoint(settled)));
+  const solved = nearZero(settledImage[0] - target[0]) && nearZero(settledImage[1] - target[1]);
+  const answerWeights: Vec = [target[0] / lambdas[0], target[1] / lambdas[1]];
+  const answerX = add(scale(answerWeights[0], b1), scale(answerWeights[1], b2));
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Drag <Tex>{"\\mathbf x"}</Tex> on the left until the eigen-coordinates of <Tex>{"A\\mathbf x"}</Tex>, shown on the right, reach the ring at <Tex>{pairTex(target)}</Tex>.</>}
+        success={<>On the left, <Tex>{pairTex(answerX)}</Tex> goes to <Tex>{pairTex(apply(matrix, answerX))}</Tex>. On the right, the same move reads <Tex>{`${pairTex(answerWeights)} \\mapsto ${pairTex(target)}`}</Tex>, which is just <Tex>D</Tex> scaling each coordinate.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={STANDARD_BOUNDS} label={`Standard coordinates. x at ${describeVector(x)} and A x at ${describeVector(image)}. Drag the tip of x or use the arrow keys.`}>
+            <BasisGrid b1={b1} b2={b2} color="text" opacity={0.18} />
+            <Arrow to={b1} color="yellow" width={2.5} />
+            <Arrow to={b2} color="blue" width={2.5} />
+            <Arrow to={image} color="teal" />
+            <Arrow to={x} color="text" />
+            <Label at={x} color="text">x</Label>
+            <Label at={image} color="teal" dy={22}>Ax</Label>
+            <Handle at={x} onMove={setX} color="text" label={`Tip of x, at ${describeVector(x)}`} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Plane bounds={EIGEN_BOUNDS} label={`Eigen-coordinates. [x]_B at ${describeVector(weights)} and [A x]_B at ${describeVector(imageWeights)}.`}>
+              {solved ? <Marker at={target} color="teal" /> : <Marker at={target} ring />}
+              <Arrow to={[1, 0]} color="yellow" width={2.5} />
+              <Arrow to={[0, 1]} color="blue" width={2.5} />
+              <Arrow to={imageWeights} color="teal" />
+              <Arrow to={weights} color="text" />
+            </Plane>
+            <Readout tex={`[\\mathbf x]_{\\mathcal B} = ${columnTex(weights)}`} />
+            <Readout tex={`[A\\mathbf x]_{\\mathcal B} = ${columnTex(imageWeights, palette.teal)}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
