@@ -27,7 +27,7 @@ import { InvertibilityCalls, StatementBoard } from "@/components/interactive/inv
 import { ChangeMatrixBuilder, SimilarityHunt, TwoAddresses } from "@/components/interactive/change-of-basis";
 import { FreeWeights, LandingHunt } from "@/components/interactive/null-space";
 import { DerivativeTarget, SharedDerivativeHunt, TranslationGap } from "@/components/interactive/linear-maps";
-import { PivotHunt, PolynomialRecipe, ThirdVectorHunt } from "@/components/interactive/span-revisited";
+import { ConsistencyHunt, GrowTheSpan, PivotHunt, PolynomialRecipe, ThirdVectorHunt } from "@/components/interactive/span-revisited";
 import { DifferenceInKernel, EvaluationKernel } from "@/components/interactive/kernel";
 import { ComplementLanding, RangeCollapse } from "@/components/interactive/image-range";
 import { DiagonalZeroHunt, EigenDirectionHunt, EigenGapHunt } from "@/components/interactive/eigenvectors";
@@ -154,6 +154,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     ThirdVectorHunt,
     PivotHunt,
     PolynomialRecipe,
+    ConsistencyHunt,
+    GrowTheSpan,
     DifferenceInKernel,
     EvaluationKernel,
     RangeCollapse,

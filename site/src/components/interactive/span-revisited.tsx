@@ -3,9 +3,10 @@
 import { createContext, useContext, useId, useState } from "react";
 import { palette } from "@/lib/palette.generated";
 import { hue, type Hue } from "./colors";
-import { columnTex, Goal, Panel, Readout, Slider, Tex, Workbench } from "./controls";
+import { columnTex, describeVector, Goal, Panel, Readout, Slider, Tex, Workbench } from "./controls";
 import { useSettled } from "./gesture";
-import { texNumber } from "./math";
+import { add, nearlyEqual, scale, texNumber, type Vec } from "./math";
+import { Arrow, Handle, Label, Marker, Plane, usePlane, type Bounds } from "./plane";
 
 type Vec3 = [number, number, number];
 
@@ -237,7 +238,8 @@ function matrixTex(rows: Rows, pivots: [number, number][]): string {
   const isPivot = (r: number, c: number) => pivots.some(([pr, pc]) => pr === r && pc === c);
   const cell = (entry: number, r: number, c: number) =>
     isPivot(r, c) ? `\\fcolorbox{${palette.glow}}{transparent}{$${texNumber(entry)}$}` : texNumber(entry);
-  return `\\begin{bmatrix} ${rows.map((row, r) => row.map((entry, c) => cell(entry, r, c)).join(" & ")).join(" \\\\ ")} \\end{bmatrix}`;
+  const rowHeight = `\\vphantom{\\fcolorbox{${palette.glow}}{transparent}{$0$}}`;
+  return `\\begin{bmatrix} ${rows.map((row, r) => row.map((entry, c) => cell(entry, r, c)).join(" & ") + rowHeight).join(" \\\\ ")} \\end{bmatrix}`;
 }
 
 const transpose = (columns: Vec3[]): Rows => [0, 1, 2].map((r) => columns.map((column) => column[r]));
@@ -391,6 +393,131 @@ export function PolynomialRecipe({ basis, target }: { basis: [Coefficients, Coef
             ))}
             <Readout tex={`\\begin{aligned} ${basis.map((p, i) => `\\textcolor{${BASIS_COLORS[i]}}{\\mathbf p_${i + 1}} &= \\textcolor{${BASIS_COLORS[i]}}{${polynomialTex(p)}}`).join(" \\\\ ")} \\end{aligned}`} />
             <Readout tex={`\\begin{aligned} &${recipe} \\\\ &= \\textcolor{${palette.teal}}{${polynomialTex(result)}} \\end{aligned}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+const FLAT_BOUNDS: Bounds = { xMin: -5, xMax: 5, yMin: -5, yMax: 5 };
+const LINE_REACH = 20;
+
+function SpanLine({ direction, lit }: { direction: Vec; lit: boolean }) {
+  const { toSvg } = usePlane();
+  const [x1, y1] = toSvg(scale(-LINE_REACH, direction));
+  const [x2, y2] = toSvg(scale(LINE_REACH, direction));
+  return <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="var(--palette-purple-gray)" strokeWidth={lit ? 7 : 4} strokeOpacity={lit ? 0.75 : 0.45} strokeLinecap="round" aria-hidden />;
+}
+
+function WholePlaneTint() {
+  const { toSvg } = usePlane();
+  const [x1, y1] = toSvg([FLAT_BOUNDS.xMin, FLAT_BOUNDS.yMax]);
+  const [x2, y2] = toSvg([FLAT_BOUNDS.xMax, FLAT_BOUNDS.yMin]);
+  return <rect x={x1} y={y1} width={x2 - x1} height={y2 - y1} fill="var(--palette-purple-gray)" fillOpacity={0.16} aria-hidden />;
+}
+
+const cross2 = (a: Vec, b: Vec) => a[0] * b[1] - a[1] * b[0];
+
+const entryTex = (value: number, color: string) => `\\textcolor{${color}}{${texNumber(value)}}`;
+
+/**
+ * Two parallel columns in R^2 span only a line. The learner drags b and watches the last entry of the
+ * reduced augmented matrix, which is zero exactly when b is reachable.
+ */
+export function ConsistencyHunt({ a1, a2, start }: { a1: Vec; a2: Vec; start: Vec }) {
+  const [b, setB] = useState<Vec>(start);
+  const multiplier = a1[1] / a1[0];
+  const leftover = b[1] - multiplier * b[0];
+  const reachable = Math.abs(leftover) < 1e-9 && (b[0] !== 0 || b[1] !== 0);
+  const { settled: solved, gesture } = useSettled(reachable);
+  const leftoverColor = Math.abs(leftover) < 1e-9 ? palette.teal : palette.glow;
+  const augmented = `\\left[\\begin{array}{cc|c} ${entryTex(a1[0], palette.yellow)} & ${entryTex(a2[0], palette.blue)} & ${entryTex(b[0], palette.teal)} \\\\ ${entryTex(a1[1], palette.yellow)} & ${entryTex(a2[1], palette.blue)} & ${entryTex(b[1], palette.teal)} \\end{array}\\right]`;
+  const reduced = `\\sim \\left[\\begin{array}{cc|c} ${texNumber(a1[0])} & ${texNumber(a2[0])} & ${texNumber(b[0])} \\\\ 0 & 0 & ${entryTex(leftover, leftoverColor)} \\end{array}\\right]`;
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Drag <Tex>{"\\mathbf b"}</Tex> to a point other than <Tex>{"\\mathbf 0"}</Tex> where <Tex>{"x_1\\mathbf a_1 + x_2\\mathbf a_2 = \\mathbf b"}</Tex> has a solution. Watch the orange entry in the last row.</>}
+        success={<>That <Tex>{"\\mathbf b"}</Tex> is reachable. The last row reads <Tex>{"0 = 0"}</Tex> only when <Tex>{"\\mathbf b"}</Tex> lies on the line through <Tex>{"\\mathbf a_1"}</Tex>, so that line is the whole span.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={FLAT_BOUNDS} label={`The columns a1 and a2 lie on one line. The target b is at ${describeVector(b)}. Drag b or use the arrow keys.`}>
+            <SpanLine direction={a1} lit={solved} />
+            <Arrow to={a2} color="blue" />
+            <Arrow to={a1} color="yellow" />
+            <Arrow to={b} color="teal" width={2.5} />
+            {solved ? <Marker at={b} color="teal" ring /> : null}
+            <Label at={a1} color="yellow">a₁</Label>
+            <Label at={a2} color="blue">a₂</Label>
+            <Label at={b} color="teal" dx={14} dy={22}>b</Label>
+            <Handle at={b} onMove={setB} color="teal" label={`Tip of target b, at ${describeVector(b)}`} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Readout tex={augmented} />
+            <Readout tex={reduced} />
+            <p className="text-meta text-text-muted">
+              The second row is <Tex>{`R_2 ${multiplier < 0 ? "+" : "-"} ${texNumber(Math.abs(multiplier))}R_1`}</Tex>. It clears both columns of <Tex>A</Tex> because <Tex>{"\\mathbf a_2"}</Tex> is a multiple of <Tex>{"\\mathbf a_1"}</Tex>.
+            </p>
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+/**
+ * v1 is fixed and v2 starts as a multiple of it, so the span is a line and the ringed target is out of reach.
+ * The learner drags v2 off the line to grow the span to the whole plane, then finds weights.
+ */
+export function GrowTheSpan({ v1, start, target }: { v1: Vec; start: Vec; target: Vec }) {
+  const [v2, setV2] = useState<Vec>(start);
+  const [c1, setC1] = useState(1);
+  const [c2, setC2] = useState(1);
+  const first = scale(c1, v1);
+  const result = add(first, scale(c2, v2));
+  const flat = cross2(v1, v2) === 0;
+  const { settled: solved, gesture } = useSettled(nearlyEqual(result, target));
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Make <Tex>{"c_1\\mathbf v_1 + c_2\\mathbf v_2"}</Tex> land on the ringed point. While <Tex>{"\\mathbf v_2"}</Tex> lies on the line of <Tex>{"\\mathbf v_1"}</Tex> no weights can do it, so first drag <Tex>{"\\mathbf v_2"}</Tex> somewhere new.</>}
+        success={<>Reached. Moving <Tex>{"\\mathbf v_2"}</Tex> off the line grew the span from a line to the whole plane, and the new span contains the target.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={FLAT_BOUNDS} label={`Vector v1 is fixed. Vector v2 is at ${describeVector(v2)}, and the span is ${flat ? "a line" : "the whole plane"}. Drag v2 or use the arrow keys.`}>
+            {flat ? <SpanLine direction={v1} lit={false} /> : <WholePlaneTint />}
+            <Marker at={target} color={solved ? "teal" : "glow"} ring />
+            <Arrow to={first} color="yellow" width={2} dashed />
+            <Arrow from={first} to={result} color="blue" width={2} dashed />
+            <Arrow to={result} color="teal" />
+            <Arrow to={v1} color="yellow" />
+            <Arrow to={v2} color="blue" />
+            <Label at={v1} color="yellow" dy={22}>v₁</Label>
+            <Label at={v2} color="blue">v₂</Label>
+            <Handle at={v2} onMove={setV2} color="blue" label={`Tip of vector v2, at ${describeVector(v2)}`} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Slider label="c_1" value={c1} onChange={setC1} min={-4} max={4} step={0.5} color={palette.yellow} />
+            <Slider label="c_2" value={c2} onChange={setC2} min={-4} max={4} step={0.5} color={palette.blue} />
+            <Readout tex={`${texNumber(c1)}${columnTex(v1, palette.yellow)} + ${texNumber(c2)}${columnTex(v2, palette.blue)} = ${columnTex(result, palette.teal)}`} />
+            <div className="grid rounded-lg bg-surface-sunken px-4 py-3 text-meta">
+              <span className={`[grid-area:1/1] ${flat ? "swap-shown" : "swap-hidden"}`} aria-hidden={!flat}>
+                The span is the line through <Tex>{"\\mathbf v_1"}</Tex>.
+              </span>
+              <span className={`[grid-area:1/1] ${flat ? "swap-hidden" : "swap-shown"}`} aria-hidden={flat}>
+                The span is the whole plane.
+              </span>
+            </div>
           </>
         }
       />
