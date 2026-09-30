@@ -260,3 +260,111 @@ export function ShiftToSingular({ matrix, eigenvalues, min = -8, max = 8 }: { ma
     </Panel>
   );
 }
+
+/** base^k as TeX, writing negative powers as fractions so 2^-3 reads 1/8 instead of a rounded decimal. */
+function powerValueTex(base: number, k: number): string {
+  const value = base ** k;
+  if (Number.isInteger(value)) return texNumber(value);
+  const sign = value < 0 ? "-" : "";
+  return `${sign}\\tfrac{1}{${texNumber(Math.abs(1 / value))}}`;
+}
+
+function powerLineTex(pair: Eigenpair, k: number, color: string, name: string): string {
+  const base = pair.value < 0 ? `(${texNumber(pair.value)})` : texNumber(pair.value);
+  const vector = `\\textcolor{${color}}{\\mathbf ${name}}`;
+  return `A^{${k}}${vector} = ${base}^{${k}}${vector} = ${powerValueTex(pair.value, k)}\\,${vector}`;
+}
+
+function powerWithFactor(value: number, factor: number, min: number, max: number): number {
+  const candidates = Array.from({ length: max - min + 1 }, (_, index) => min + index);
+  return candidates.find((k) => Math.abs(value ** k - factor) < 1e-9) ?? min;
+}
+
+/** Slide the power k: each eigenvector of A stays on its line and is scaled by its own eigenvalue to the k, negative k included. */
+export function PowerLineStretch({ pairs, factor = 0.25, min = -3, max = 2 }: { pairs: [Eigenpair, Eigenpair]; factor?: number; min?: number; max?: number }) {
+  const [k, setK] = useState(1);
+  const answer = powerWithFactor(pairs[0].value, factor, min, max);
+  const { settled: solved, gesture } = useSettled(k === answer);
+  const images = pairs.map((pair): Vec => [pair.value ** k * pair.vector[0], pair.value ** k * pair.vector[1]]);
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Choose the power <Tex>{"k"}</Tex> so that <Tex>{"A^k"}</Tex> shrinks the yellow eigenvector to <Tex>{powerValueTex(1 / factor, -1)}</Tex> of its length.</>}
+        success={<>At <Tex>{`k = ${answer}`}</Tex>, <Tex>{`A^{${answer}} = (A^{-1})^{${-answer}}`}</Tex> multiplies the yellow line by <Tex>{powerValueTex(pairs[0].value, answer)}</Tex> and the blue line by <Tex>{powerValueTex(pairs[1].value, answer)}</Tex>. The eigenvectors never moved off their lines.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={SWING_BOUNDS} label={`The yellow and blue eigenvector lines, with each eigenvector and its image under A to the power ${k}.`}>
+            <LineThroughOrigin direction={pairs[0].vector} color="yellow" bold={false} />
+            <LineThroughOrigin direction={pairs[1].vector} color="blue" bold={false} />
+            <Arrow to={pairs[0].vector} color="text" width={2} dashed />
+            <Arrow to={pairs[1].vector} color="text" width={2} dashed />
+            <Arrow to={images[0]} color={solved ? "teal" : "yellow"} width={4.5} />
+            <Arrow to={images[1]} color="blue" width={4.5} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Slider label="k" value={k} onChange={setK} min={min} max={max} step={1} color={palette.glow} />
+            <Readout tex={powerLineTex(pairs[0], k, palette.yellow, "v_1")} />
+            <Readout tex={powerLineTex(pairs[1], k, palette.blue, "v_2")} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+const combine = (c: Vec, first: Vec, second: Vec): Vec => [c[0] * first[0] + c[1] * second[0], c[0] * first[1] + c[1] * second[1]];
+
+const signedTex = (value: number) => `${value < 0 ? "-" : "+"} ${texNumber(Math.abs(value))}`;
+
+function iterateFormulaTex(weights: Vec, pairs: [Eigenpair, Eigenpair]): string {
+  const term = (pair: Eigenpair, color: string, name: string) => {
+    const base = pair.value < 0 ? `(${texNumber(pair.value)})` : texNumber(pair.value);
+    return `\\cdot ${base}^k\\,\\textcolor{${color}}{\\mathbf ${name}}`;
+  };
+  return `\\mathbf x_k = ${texNumber(weights[0])} ${term(pairs[0], palette.yellow, "v_1")} ${signedTex(weights[1])} ${term(pairs[1], palette.blue, "v_2")}`;
+}
+
+/** Slide the weights until c1 v1 + c2 v2 reaches the start x0; those weights are all it takes to write every A^k x0. */
+export function EigenWeightSplit({ pairs, target }: { pairs: [Eigenpair, Eigenpair]; target: Vec }) {
+  const [c1, setC1] = useState(1);
+  const [c2, setC2] = useState(0);
+  const [v1, v2] = [pairs[0].vector, pairs[1].vector];
+  const first: Vec = [c1 * v1[0], c1 * v1[1]];
+  const sum = combine([c1, c2], v1, v2);
+  const answer = eigenWeights(target, v1, v2);
+  const { settled: solved, gesture } = useSettled(Math.abs(sum[0] - target[0]) < 1e-9 && Math.abs(sum[1] - target[1]) < 1e-9);
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Split the start <Tex>{`\\mathbf x_0 = ${columnTex(target)}`}</Tex> into eigenvector pieces: choose <Tex>{"c_1"}</Tex> and <Tex>{"c_2"}</Tex> so that <Tex>{"c_1\\mathbf v_1 + c_2\\mathbf v_2"}</Tex> lands on the ring.</>}
+        success={<>With <Tex>{`c_1 = ${texNumber(answer[0])}`}</Tex> and <Tex>{`c_2 = ${texNumber(answer[1])}`}</Tex>, every later step is known at once: <Tex>{iterateFormulaTex(answer, pairs)}</Tex>.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={SWING_BOUNDS} label={`The yellow piece c1 v1 and the blue piece c2 v2 added tip to tail, reaching ${describeVector(sum)}. The ring marks x0 at ${describeVector(target)}.`}>
+            <LineThroughOrigin direction={v1} color="yellow" bold={false} />
+            <LineThroughOrigin direction={v2} color="blue" bold={false} />
+            <Marker at={target} color={solved ? "teal" : "glow"} ring />
+            <Arrow to={first} color="yellow" width={4} />
+            <Arrow from={first} to={sum} color="blue" width={4} />
+            <Arrow to={sum} color="teal" width={solved ? 5 : 3} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Slider label="c_1" value={c1} onChange={setC1} min={-3} max={4} step={0.5} color={palette.yellow} />
+            <Slider label="c_2" value={c2} onChange={setC2} min={-3} max={3} step={0.5} color={palette.blue} />
+            <Readout tex={`${texNumber(c1)}${columnTex(v1, palette.yellow)} ${signedTex(c2)}${columnTex(v2, palette.blue)} = ${columnTex(sum, palette.teal)}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}

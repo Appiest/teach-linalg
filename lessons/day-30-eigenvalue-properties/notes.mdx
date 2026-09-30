@@ -1,102 +1,263 @@
 Yesterday's lesson found eigenvalues as the roots of $\det(A - \lambda I) = 0$. Today asks what those numbers tell you once you have them. Without any row reduction, the eigenvalues of $A$ give its trace and determinant. They also give the eigenvalues of $A^2$, $A^{-1}$ and $A + cI$, and they predict where $A^k\mathbf x$ points once $k$ is large. That last fact is the reason the course studies eigenvalues at all, and Days 32 and 33 build on it to compute powers of a matrix quickly. The video uses $A = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$, which stretches the $\yellow{\text{yellow line}}$ through $(1, 1)$ by $3$ and the $\blue{\text{blue line}}$ through $(1, -1)$ by $1$.
 
+Each section below opens with a problem. Try it before you open the walkthrough, even if you only get partway. Most of them need nothing more than $A\mathbf v = \lambda\mathbf v$ and a little algebra.
+
 ## Trace and determinant
+
+<Problem>
+The video's matrix $A = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$ has eigenvalues $\yellow 3$ and $\blue 1$. Add the diagonal entries of $A$ and compute $\det A$. How do these two numbers compare with the eigenvalues?
+
+<Solution>
+The diagonal entries add to $2 + 2 = 4$, and the eigenvalues add to $3 + 1 = 4$.
+
+The determinant is $2 \cdot 2 - 1 \cdot 1 = 3$, and the eigenvalues multiply to $3 \cdot 1 = 3$.
+
+To see why, expand the characteristic polynomial for any $2 \times 2$ matrix and compare it with its factored form. Expanding gives
+
+$$
+\det\begin{bmatrix} a - \lambda & b \\ c & d - \lambda \end{bmatrix} = \lambda^2 - (a + d)\lambda + (ad - bc).
+$$
+
+If the eigenvalues are $\lambda_1$ and $\lambda_2$, the same polynomial factors as
+
+$$
+(\lambda - \lambda_1)(\lambda - \lambda_2) = \lambda^2 - (\lambda_1 + \lambda_2)\lambda + \lambda_1\lambda_2.
+$$
+
+The two lines are the same polynomial, so their middle coefficients match, $a + d = \lambda_1 + \lambda_2$, and their constant terms match, $ad - bc = \lambda_1\lambda_2$.
+</Solution>
+</Problem>
+
+<Figure src="trace-determinant" alt="The matrix A = [2 1; 1 2] with its diagonal entries in orange, beside three lines: tr A = 2 + 2 = 3 + 1, det A = 2·2 − 1·1 = 3·1, and det(A − λI) = λ² − 4λ + 3, with the 4 and the 3 in orange. The eigenvalue 3 is yellow and the eigenvalue 1 is blue." wide />
 
 <Definition term="Trace">
 The **trace** of a square matrix is the sum of its diagonal entries, $\operatorname{tr}A = a_{11} + a_{22} + \cdots + a_{nn}$. If $A$ is $n \times n$ with eigenvalues $\lambda_1, \dots, \lambda_n$, listed with their multiplicities, then
 
 $$
-\operatorname{tr}A = \lambda_1 + \lambda_2 + \cdots + \lambda_n, \qquad \det A = \lambda_1 \lambda_2 \cdots \lambda_n.
+\begin{gathered}
+\operatorname{tr}A = \lambda_1 + \lambda_2 + \cdots + \lambda_n \\
+\det A = \lambda_1 \lambda_2 \cdots \lambda_n
+\end{gathered}
 $$
 </Definition>
 
-<Figure src="trace-determinant" alt="The matrix A = [2 1; 1 2] with its diagonal entries in orange, beside three lines: tr A = 2 + 2 = 3 + 1, det A = 2·2 − 1·1 = 3·1, and det(A − λI) = λ² − 4λ + 3, with the 4 and the 3 in orange. The eigenvalue 3 is yellow and the eigenvalue 1 is blue." wide />
-
-The count has to include repeated eigenvalues, and complex ones too when the characteristic polynomial has no real roots. For a $2 \times 2$ matrix you can see both facts by expanding the characteristic polynomial and comparing it with its factored form:
-
-$$
-\begin{aligned}
-\det\begin{bmatrix} a - \lambda & b \\ c & d - \lambda \end{bmatrix} &= \lambda^2 - (a + d)\lambda + (ad - bc) = \lambda^2 - (\operatorname{tr}A)\lambda + \det A, \\
-(\lambda - \lambda_1)(\lambda - \lambda_2) &= \lambda^2 - (\lambda_1 + \lambda_2)\lambda + \lambda_1\lambda_2.
-\end{aligned}
-$$
-
-The two lines are the same polynomial, so their middle coefficients match and their constant terms match. For any size, setting $\lambda = 0$ in $\det(A - \lambda I) = (\lambda_1 - \lambda)\cdots(\lambda_n - \lambda)$ gives $\det A = \lambda_1 \cdots \lambda_n$ directly.
+The count has to include repeated eigenvalues, and complex ones too when the characteristic polynomial has no real roots. For any size, setting $\lambda = 0$ in $\det(A - \lambda I) = (\lambda_1 - \lambda)\cdots(\lambda_n - \lambda)$ gives $\det A = \lambda_1 \cdots \lambda_n$ directly.
 
 <Pair>
 <Figure src="area-triples" alt="Two grids side by side. On the left, a small yellow parallelogram sits on the arrows (1, 1) and (1, −1) along the yellow and blue lines, labelled area = 2. After an arrow labelled A, the grid is slanted and the parallelogram is three times as long along the yellow line, labelled area = 6." />
 
-The determinant also has a picture. Build a box on one eigenvector from each line. $A$ triples the yellow side and keeps the blue side, so the box's area grows by $3 \cdot 1 = 3$. Since $A$ scales every area by $\det A$, that means $\det A = 3$.
+The determinant also has a picture. Build a box on one eigenvector from each line. $A$ triples the yellow side and keeps the blue side, so the box's area grows by $3 \cdot 1 = 3$. Since $A$ scales every area by $\det A$ (Day 27), that means $\det A = 3$.
 </Pair>
+
+For a $2 \times 2$ matrix, the trace and determinant pin down the characteristic polynomial $\lambda^2 - (\operatorname{tr}A)\lambda + \det A$. Find two roots whose curve matches it.
 
 <TraceCurveMatch matrix={[[5, -2], [1, 2]]} start={[0, 1]} />
 
-Here is a worked example with $A = \begin{bmatrix} 3 & 1 & 1 \\ 1 & 3 & 1 \\ 1 & 1 & 3 \end{bmatrix}$, for which $2$ is an eigenvalue with a two-dimensional eigenspace. That means $2$ appears at least twice in the list, and the trace finds the last eigenvalue:
+The trace is especially handy when you already know all but one eigenvalue.
+
+<Problem>
+Day 29 showed that $A = \begin{bmatrix} 3 & 1 & 1 \\ 1 & 3 & 1 \\ 1 & 1 & 3 \end{bmatrix}$ has the eigenvalue $2$ twice. Find the third eigenvalue without factoring anything, then check it with the determinant. (Modeled on Lay §5.1, Example 4.)
+
+<Solution>
+The trace is $3 + 3 + 3 = 9$, and it equals the sum of all three eigenvalues:
 
 $$
-\begin{aligned}
-\operatorname{tr}A = 3 + 3 + 3 &= 2 + 2 + \lambda_3 \\
-\lambda_3 &= 5 \\
-\text{check: } \det A = 3(9 - 1) - 1(3 - 1) + 1(1 - 3) &= 20 = 2 \cdot 2 \cdot 5.
-\end{aligned}
+2 + 2 + \lambda_3 = 9, \qquad \lambda_3 = 5.
 $$
 
-Every row of this $A$ adds up to $5$, so $A(1, 1, 1) = 5(1, 1, 1)$ confirms the answer. (Modeled on Lay §5.1, Example 4.)
+For the check, the determinant should be the product $2 \cdot 2 \cdot 5 = 20$. Expanding along row 1,
+
+$$
+\det A = 3(9 - 1) - 1(3 - 1) + 1(1 - 3) = 24 - 2 - 2 = 20.
+$$
+
+The two agree. Every row of $A$ also adds up to $5$, so $A(1, 1, 1) = 5(1, 1, 1)$ confirms the answer a third way.
+</Solution>
+</Problem>
+
+<Warning>
+Count repeated eigenvalues as often as they repeat. Writing $2 + 5 = 9 - \lambda$ with $2$ counted once gives the wrong third eigenvalue.
+</Warning>
 
 ## Powers and shifts
 
-If $A\mathbf v = \lambda\mathbf v$, then applying $A$ again, inverting it, or adding a multiple of $I$ keeps $\mathbf v$ on its line and only changes the factor:
+Once you know $A\mathbf v = \lambda\mathbf v$, several related matrices act on the same $\mathbf v$ in a predictable way.
+
+<Problem>
+For the video's $A$, the vector $\yellow{\mathbf v} = (1, 1)$ satisfies $A\mathbf v = 3\mathbf v$. Without writing down $A^2$, $A^{-1}$ or $A - 2I$, find $A^2\mathbf v$, $A^{-1}\mathbf v$ and $(A - 2I)\mathbf v$.
+
+<Solution>
+<Steps>
+<Step>
+For $A^2\mathbf v$, apply $A$ twice. The first application gives $3\mathbf v$, and the second multiplies by $3$ again: $A^2\mathbf v = A(3\mathbf v) = 3A\mathbf v = 9\mathbf v = (9, 9)$.
+</Step>
+<Step>
+For $A^{-1}\mathbf v$, start from $A\mathbf v = 3\mathbf v$ and apply $A^{-1}$ to both sides. That gives $\mathbf v = 3A^{-1}\mathbf v$, so $A^{-1}\mathbf v = \tfrac13\mathbf v = (\tfrac13, \tfrac13)$.
+</Step>
+<Step>
+For $(A - 2I)\mathbf v$, distribute: $A\mathbf v - 2\mathbf v = 3\mathbf v - 2\mathbf v = 1\mathbf v = (1, 1)$.
+</Step>
+</Steps>
+
+In all three, $\mathbf v$ stays an eigenvector, and only the factor changes: $3^2$, $\tfrac13$ and $3 - 2$.
+</Solution>
+</Problem>
+
+<Concept title="Same eigenvectors, new eigenvalues">
+If $A\mathbf v = \lambda\mathbf v$, then
 
 $$
-\begin{aligned}
-A^2\mathbf v &= A(\lambda\mathbf v) = \lambda A\mathbf v = \lambda^2\mathbf v, \quad\text{and so } A^k\mathbf v = \lambda^k\mathbf v, \\
-\mathbf v = A^{-1}(\lambda\mathbf v) &\;\Rightarrow\; A^{-1}\mathbf v = \tfrac{1}{\lambda}\mathbf v \quad (\lambda \ne 0 \text{ because } A \text{ is invertible}), \\
-(A + cI)\mathbf v &= \lambda\mathbf v + c\mathbf v = (\lambda + c)\mathbf v.
-\end{aligned}
+\begin{gathered}
+A^k\mathbf v = \lambda^k\mathbf v \\
+A^{-1}\mathbf v = \tfrac{1}{\lambda}\mathbf v \\
+(A + cI)\mathbf v = (\lambda + c)\mathbf v \\
+(cA)\mathbf v = (c\lambda)\mathbf v
+\end{gathered}
 $$
+
+The rule for $A^{-1}$ needs $A$ to be invertible, and then $\lambda \ne 0$ by Day 28, so $\tfrac{1}{\lambda}$ makes sense.
+</Concept>
 
 <Figure src="same-lines" alt="Three grids labelled A, A inverse and A − 2I. Each shows the same yellow line through (1, 1) and blue line through (1, −1), with faint arrows at (1.5, 1.5) and (1.5, −1.5) and bright arrows where each matrix sends them. The stretch factors read ×3 and ×1 under A, ×1/3 and ×1 under A inverse, and ×1 and ×−1 under A − 2I, where the blue arrow points the other way." wide />
 
-The eigenvectors never change in these three cases. The rule only runs one way, though. An eigenvector of $A$ is always an eigenvector of $A^2$, but $A^2$ can have extra ones: the swap matrix $\begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$ has only two eigenlines, while its square is $I$, for which every nonzero vector is an eigenvector.
+Here $A$ doubles the yellow line and flips the blue one. Slide the power $k$, including negative powers, which mean powers of $A^{-1}$.
+
+<PowerLineStretch pairs={[{ vector: [2, 2], value: 2 }, { vector: [2, -2], value: -1 }]} factor={0.25} min={-3} max={1} />
+
+The shift rule makes a clean invertibility test. $A + cI$ fails to be invertible exactly when one of its eigenvalues, $\lambda + c$, is zero.
 
 <ShiftToSingular matrix={[[1, 6], [5, 2]]} eigenvalues={[7, -4]} />
 
+<Warning>
+These rules only run one way, and only for one matrix at a time. An eigenvector of $A$ is always an eigenvector of $A^2$, but $A^2$ can have extra ones: the swap matrix $\begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$ has only two eigenlines, while its square is $I$, for which every nonzero vector is an eigenvector. Also, the eigenvalues of $A + B$ are usually not sums of eigenvalues of $A$ and $B$.
+</Warning>
+
 ## Similar matrices
 
-On Day 22, $B = P^{-1}AP$ described the same map as $A$ in the basis made of the columns of $P$. Matrices related this way are called **similar**, and they share the numbers that depend only on the map.
+On Day 22, $B = P^{-1}AP$ described the same map as $A$ in the basis made of the columns of $P$. Matrices related this way are called **similar**. Since they describe the same map, we expect them to share whatever depends only on the map.
+
+<Problem>
+Let $A = \begin{bmatrix} 1 & 2 \\ 0 & 3 \end{bmatrix}$ and $P = \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$. Compute $B = P^{-1}AP$. Compare the eigenvalues, trace and determinant of $A$ and $B$.
+
+<Solution>
+Day 7's formula gives $P^{-1} = \begin{bmatrix} 1 & -1 \\ 0 & 1 \end{bmatrix}$, since $\det P = 1$. Multiply from the right first:
+
+$$
+\begin{aligned}
+AP &= \begin{bmatrix} 1 & 2 \\ 0 & 3 \end{bmatrix}\begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix} = \begin{bmatrix} 1 & 3 \\ 0 & 3 \end{bmatrix} \\
+P^{-1}(AP) &= \begin{bmatrix} 1 & -1 \\ 0 & 1 \end{bmatrix}\begin{bmatrix} 1 & 3 \\ 0 & 3 \end{bmatrix} = \begin{bmatrix} 1 & 0 \\ 0 & 3 \end{bmatrix}
+\end{aligned}
+$$
+
+Both $A$ and $B$ are triangular with diagonal $1, 3$, so both have eigenvalues $1$ and $3$, trace $4$ and determinant $3$. The matrix $B$ is simpler because the second column of $P$, $(1, 1)$, happens to be an eigenvector of $A$ for $\lambda = 3$. Day 32 makes that choice on purpose.
+</Solution>
+</Problem>
 
 <Definition term="Theorem">
 If $B = P^{-1}AP$ for an invertible $P$, then $A$ and $B$ have the same characteristic polynomial. So they have the same eigenvalues with the same multiplicities, and the same trace and determinant.
 </Definition>
 
-The proof writes $\lambda I$ as $P^{-1}(\lambda I)P$ so that $P^{-1}$ and $P$ can be pulled out, then uses $\det(P^{-1})\det P = \det I = 1$:
+The proof writes $\lambda I$ as $P^{-1}(\lambda I)P$ so that $P^{-1}$ and $P$ can be pulled out, then uses Day 27's product rule and $\det(P^{-1})\det P = \det I = 1$:
 
 $$
-\det(B - \lambda I) = \det\bigl(P^{-1}(A - \lambda I)P\bigr) = \det(P^{-1})\det(A - \lambda I)\det P = \det(A - \lambda I).
+\begin{aligned}
+\det(B - \lambda I) &= \det\bigl(P^{-1}(A - \lambda I)P\bigr) \\
+&= \det(P^{-1})\det(A - \lambda I)\det P \\
+&= \det(A - \lambda I).
+\end{aligned}
 $$
 
-The reverse does not hold. The matrices $\begin{bmatrix} 2 & 1 \\ 0 & 2 \end{bmatrix}$ and $2I$ both have characteristic polynomial $(\lambda - 2)^2$, but $P^{-1}(2I)P = 2I$ for every $P$, so the only matrix similar to $2I$ is $2I$ itself. Row reduction does not preserve eigenvalues either, because a row operation multiplies $A$ on one side only. On Day 33 this theorem lets you study a map in whichever basis makes its matrix simplest without changing its eigenvalues.
+<Warning>
+The reverse does not hold. The matrices $\begin{bmatrix} 2 & 1 \\ 0 & 2 \end{bmatrix}$ and $2I$ both have characteristic polynomial $(\lambda - 2)^2$, but $P^{-1}(2I)P = 2I$ for every $P$, so the only matrix similar to $2I$ is $2I$ itself. Row reduction does not preserve eigenvalues either, because a row operation multiplies $A$ on one side only.
+</Warning>
+
+On Day 33 this theorem lets you study a map in whichever basis makes its matrix simplest without changing its eigenvalues.
 
 ## Independent eigenvectors
+
+The last section of this lesson splits a vector into eigenvector pieces, and that only works when the eigenvectors form a basis. The next problem shows why eigenvectors for different eigenvalues can never line up.
+
+<Problem>
+Suppose $A\mathbf v_1 = 3\mathbf v_1$ and $A\mathbf v_2 = \mathbf v_2$ with both vectors nonzero, and suppose $c_1\mathbf v_1 + c_2\mathbf v_2 = \mathbf 0$. Show that $c_1 = c_2 = 0$.
+
+<Solution>
+We want to get rid of one vector so that we can read off one weight. Multiplying by $A$ changes the two pieces by different factors, which is the natural lever.
+
+<Steps>
+<Step>
+Apply $A$ to the equation: $3c_1\mathbf v_1 + c_2\mathbf v_2 = \mathbf 0$.
+</Step>
+<Step>
+Subtract the original equation $c_1\mathbf v_1 + c_2\mathbf v_2 = \mathbf 0$. The $\mathbf v_2$ terms cancel and leave $2c_1\mathbf v_1 = \mathbf 0$.
+</Step>
+<Step>
+Since $\mathbf v_1 \ne \mathbf 0$, $c_1 = 0$. Then the original equation says $c_2\mathbf v_2 = \mathbf 0$, and since $\mathbf v_2 \ne \mathbf 0$, $c_2 = 0$.
+</Step>
+</Steps>
+
+The factor $2$ in the second step is $3 - 1$, the difference of the eigenvalues. The argument works whenever that difference is not zero.
+</Solution>
+</Problem>
 
 <Definition term="Theorem">
 Eigenvectors $\mathbf v_1, \dots, \mathbf v_r$ that belong to distinct eigenvalues $\lambda_1, \dots, \lambda_r$ are linearly independent.
 </Definition>
 
-For two eigenvectors, suppose $c_1\mathbf v_1 + c_2\mathbf v_2 = \mathbf 0$. Applying $A$ gives $c_1\lambda_1\mathbf v_1 + c_2\lambda_2\mathbf v_2 = \mathbf 0$, and subtracting $\lambda_2$ times the first equation leaves $c_1(\lambda_1 - \lambda_2)\mathbf v_1 = \mathbf 0$. Since $\lambda_1 \ne \lambda_2$ and $\mathbf v_1 \ne \mathbf 0$, $c_1 = 0$, and then $c_2\mathbf v_2 = \mathbf 0$ forces $c_2 = 0$. The general proof repeats this step on the first vector that would depend on the earlier ones. One consequence is that an $n \times n$ matrix has at most $n$ distinct eigenvalues, since $\mathbb R^n$ holds at most $n$ independent vectors. Day 32 uses this theorem to show that an $n \times n$ matrix with $n$ distinct eigenvalues can be diagonalized.
+The general proof repeats the problem's step on the first vector that would depend on the earlier ones. One consequence is that an $n \times n$ matrix has at most $n$ distinct eigenvalues, since $\mathbb R^n$ holds at most $n$ independent vectors. Day 32 uses this theorem to show that an $n \times n$ matrix with $n$ distinct eigenvalues can be diagonalized.
+
+<Choice
+  question="A $3 \times 3$ matrix has eigenvalues $1$, $2$ and $5$. Must its three eigenvectors form a basis of $\mathbb R^3$?"
+  options={["Yes", "No, they could lie in a plane"]}
+  answer={0}
+>
+The three eigenvalues are distinct, so one eigenvector for each gives three independent vectors in $\mathbb R^3$, which is a basis. The converse fails, though: $I$ has only the eigenvalue $1$, yet every basis is made of its eigenvectors.
+</Choice>
 
 ## Repeated multiplication
+
+The goal here is to find $A^k\mathbf x_0$ without multiplying by $A$ a full $k$ times. The trick is to split the start into eigenvector pieces, since each piece only gets scaled.
+
+<Problem>
+For the video's $A$, find $A^k\mathbf x_0$ for $\mathbf x_0 = (1, 0)$. Which line does $A^k\mathbf x_0$ point along when $k$ is large?
+
+<Solution>
+<Steps>
+<Step>
+Split $\mathbf x_0$ into eigenvectors. We need $c_1(1, 1) + c_2(1, -1) = (1, 0)$, so $c_1 + c_2 = 1$ and $c_1 - c_2 = 0$. That gives $c_1 = c_2 = \tfrac12$.
+</Step>
+<Step>
+Apply $A^k$ to each piece separately. The yellow piece gets $3^k$ and the blue piece gets $1^k = 1$:
+
+$$
+A^k\mathbf x_0 = \tfrac12 \cdot 3^k\yellow{\begin{bmatrix} 1 \\ 1 \end{bmatrix}} + \tfrac12\blue{\begin{bmatrix} 1 \\ -1 \end{bmatrix}}.
+$$
+</Step>
+<Step>
+For $k = 2$ this is $\tfrac92(1, 1) + \tfrac12(1, -1) = (5, 4)$. Multiplying directly, $A(1, 0) = (2, 1)$ and $A(2, 1) = (5, 4)$, which agrees.
+</Step>
+<Step>
+The yellow piece triples at every step while the blue piece stays the same size. So for large $k$ the yellow piece dominates, and $A^k\mathbf x_0$ points almost exactly along the yellow line through $(1, 1)$.
+</Step>
+</Steps>
+</Solution>
+</Problem>
+
+Try the first step yourself with a different start.
+
+<EigenWeightSplit pairs={[{ vector: [1, 1], value: 3 }, { vector: [1, -1], value: 1 }]} target={[2, 4]} />
 
 <Pair>
 <Figure src="swing" alt="The yellow line through (1, 1) and the blue line through (1, −1). Seven teal arrows of equal length fan out from the origin: x0 points right along the x-axis, x1 and x2 point higher, and the later ones crowd against the yellow line, where the last arrow ends in an orange dot." />
 
-The goal here is to find $A^k\mathbf x_0$ without multiplying by $A$ a full $k$ times. When $\mathbf v_1, \mathbf v_2$ are independent eigenvectors, every start splits as $\mathbf x_0 = c_1\mathbf v_1 + c_2\mathbf v_2$, and each piece picks up its own power:
+<Concept title="Iterates follow the biggest eigenvalue">
+When $\mathbf v_1, \mathbf v_2$ are independent eigenvectors, every start splits as $\mathbf x_0 = c_1\mathbf v_1 + c_2\mathbf v_2$, and each piece picks up its own power:
 
 $$
 \mathbf x_k = A^k\mathbf x_0 = c_1\lambda_1^k\yellow{\mathbf v_1} + c_2\lambda_2^k\blue{\mathbf v_2}.
 $$
 
-In the video $\mathbf x_0 = (1, 0) = \tfrac12\yellow{(1, 1)} + \tfrac12\blue{(1, -1)}$, so $\mathbf x_k = \tfrac12 3^k\yellow{\mathbf v_1} + \tfrac12\blue{\mathbf v_2}$. The yellow piece triples at every step and the blue piece stays the same size, so $\mathbf x_k$ turns toward the line of the eigenvalue with the largest absolute value.
+So $\mathbf x_k$ turns toward the line of the eigenvalue with the largest absolute value, unless the start has no piece on that line.
+</Concept>
 </Pair>
 
 <IterateSwing matrix={[[2, 1], [1, 2]]} pairs={[{ vector: [1, 1], value: 3 }, { vector: [1, -1], value: 1 }]} start={[1, 0]} />
@@ -105,16 +266,55 @@ This split needs a full basis of eigenvectors. Tomorrow, Day 31 asks what happen
 
 ## Practice
 
+### Warm-up
+
 <Check>
-A $3 \times 3$ matrix $A$ has eigenvalues $2$, $-1$ and $3$. Find $\operatorname{tr}A$, $\det A$ and $\det(A + 4I)$. (Modeled on Lay §5.2, Exercise 19.)
+Find the eigenvalues of $\begin{bmatrix} 5 & -2 \\ 1 & 2 \end{bmatrix}$ from its trace and determinant alone. Enter the smaller one first.
+
+<VectorAnswer answer={[3, 4]} labels={["λ₁", "λ₂"]} />
+
+<Answer>
+The trace is $7$ and the determinant is $10 + 2 = 12$, so the characteristic polynomial is $\lambda^2 - 7\lambda + 12 = (\lambda - 3)(\lambda - 4)$. Two numbers that add to $7$ and multiply to $12$ are $3$ and $4$.
+</Answer>
+</Check>
+
+<Check>
+$A\mathbf v = 4\mathbf v$ for a nonzero $\mathbf v$ and an invertible $A$. By what factor do $A^2$, $A^{-1}$ and $A - 3I$ multiply $\mathbf v$?
+
+<VectorAnswer answer={[16, 0.25, 1]} labels={["A²", "A⁻¹", "A − 3I"]} />
+
+<Answer>
+$A^2\mathbf v = 4^2\mathbf v = 16\mathbf v$, $A^{-1}\mathbf v = \tfrac14\mathbf v$, and $(A - 3I)\mathbf v = (4 - 3)\mathbf v = \mathbf v$.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="$A$ and $B$ are similar. Which of these must they share?"
+  options={["Their eigenvectors", "Their eigenvalues", "Their first columns", "Their reduced echelon forms"]}
+  answer={1}
+>
+Similar matrices have the same characteristic polynomial, so they share eigenvalues, trace and determinant. Their eigenvectors usually differ: if $A\mathbf v = \lambda\mathbf v$, then the matching eigenvector of $B = P^{-1}AP$ is $P^{-1}\mathbf v$.
+</Choice>
+</Check>
+
+### Core
+
+<Check>
+A $3 \times 3$ matrix $A$ has eigenvalues $2$, $-1$ and $3$. Find $\operatorname{tr}A$, $\det A$ and $\det(A + 4I)$. (Modeled on Lay §5.2 #19.)
 
 <VectorAnswer answer={[4, -6, 126]} labels={["tr A", "det A", "det(A + 4I)"]} />
+
+<Hint>
+The eigenvalues of $A + 4I$ are the eigenvalues of $A$ shifted by $4$.
+</Hint>
 
 <Answer>
 $$
 \begin{aligned}
-\operatorname{tr}A &= 2 + (-1) + 3 = 4, \qquad \det A = 2 \cdot (-1) \cdot 3 = -6, \\
-\text{eigenvalues of } A + 4I &: 6,\ 3,\ 7, \qquad \det(A + 4I) = 6 \cdot 3 \cdot 7 = 126.
+\operatorname{tr}A &= 2 + (-1) + 3 = 4 \\
+\det A &= 2 \cdot (-1) \cdot 3 = -6 \\
+\det(A + 4I) &= 6 \cdot 3 \cdot 7 = 126
 \end{aligned}
 $$
 
@@ -123,9 +323,13 @@ The same reasoning gives the eigenvalues $4, 1, 9$ for $A^2$ and $\tfrac12, -1, 
 </Check>
 
 <Check>
-Find $\det A$ and $\det B$ for $A = \begin{bmatrix} 1 & 2 \\ 0 & 3 \end{bmatrix}$ and $B = \begin{bmatrix} 2 & 0 \\ 1 & 2 \end{bmatrix}$. Can $A$ and $B$ be similar? (Modeled on Lay §5.2, Exercise 24.)
+Find $\det A$ and $\det B$ for $A = \begin{bmatrix} 1 & 2 \\ 0 & 3 \end{bmatrix}$ and $B = \begin{bmatrix} 2 & 0 \\ 1 & 2 \end{bmatrix}$. Can $A$ and $B$ be similar? (Modeled on Lay §5.2 #24.)
 
 <VectorAnswer answer={[3, 4]} labels={["det A", "det B"]} />
+
+<Hint>
+Both matrices are triangular. Similar matrices share their determinant.
+</Hint>
 
 <Answer>
 Both matrices are triangular, so $\det A = 1 \cdot 3 = 3$ and $\det B = 2 \cdot 2 = 4$. Similar matrices have equal determinants, so $A$ and $B$ are not similar, even though both have trace $4$. Their eigenvalues also differ: $A$ has $1$ and $3$, while $B$ has $2$ twice.
@@ -133,9 +337,27 @@ Both matrices are triangular, so $\det A = 1 \cdot 3 = 3$ and $\det B = 2 \cdot 
 </Check>
 
 <Check>
-Let $A = \begin{bmatrix} 1 & 2 \\ 2 & 1 \end{bmatrix}$, with eigenvalue $3$ on $(1, 1)$ and $-1$ on $(1, -1)$, and let $\mathbf x_0 = (3, 1)$. Use the eigenvectors to find $\mathbf x_3 = A^3\mathbf x_0$. (Modeled on Lay §5.2, Exercise 25.)
+A $3 \times 3$ matrix has eigenvalues $2$ and $-1$ and one more, and its trace is $5$. Find the third eigenvalue and $\det A$.
+
+<VectorAnswer answer={[4, -8]} labels={["λ₃", "det A"]} />
+
+<Hint>
+The trace is the sum of all three eigenvalues, and the determinant is their product.
+</Hint>
+
+<Answer>
+$2 + (-1) + \lambda_3 = 5$ gives $\lambda_3 = 4$. Then $\det A = 2 \cdot (-1) \cdot 4 = -8$.
+</Answer>
+</Check>
+
+<Check>
+Let $A = \begin{bmatrix} 1 & 2 \\ 2 & 1 \end{bmatrix}$, with eigenvalue $3$ on $(1, 1)$ and $-1$ on $(1, -1)$, and let $\mathbf x_0 = (3, 1)$. Use the eigenvectors to find $\mathbf x_3 = A^3\mathbf x_0$. (Modeled on Lay §5.2 #25.)
 
 <VectorAnswer answer={[53, 55]} />
+
+<Hint>
+First write $(3, 1) = c_1(1, 1) + c_2(1, -1)$. Then each piece gets its own eigenvalue cubed.
+</Hint>
 
 <Answer>
 $$
@@ -147,5 +369,71 @@ $$
 $$
 
 Check by multiplying three times: $(3, 1) \to (5, 7) \to (19, 17) \to (53, 55)$. The blue piece keeps flipping sign but never grows, so $\mathbf x_k$ lines up with $(1, 1)$.
+</Answer>
+</Check>
+
+<Check>
+Let $A = \begin{bmatrix} 0.8 & 0.4 \\ 0.2 & 0.6 \end{bmatrix}$, which has eigenvalue $1$ on $(2, 1)$ and eigenvalue $0.4$ on $(1, -1)$. For $\mathbf x_0 = (1, 2)$, find $\mathbf x_1 = A\mathbf x_0$ and the vector that $\mathbf x_k$ approaches as $k$ grows. (Modeled on Lay §5.2 #25.)
+
+<VectorAnswer answer={[1.6, 1.4, 2, 1]} labels={["x₁ top", "x₁ bottom", "limit top", "limit bottom"]} />
+
+<Hint>
+Split $(1, 2)$ into the two eigenvectors. What happens to $0.4^k$ when $k$ is large?
+</Hint>
+
+<Answer>
+Solve $c_1(2, 1) + c_2(1, -1) = (1, 2)$: the equations $2c_1 + c_2 = 1$ and $c_1 - c_2 = 2$ add to $3c_1 = 3$, so $c_1 = 1$ and $c_2 = -1$. Then
+
+$$
+\mathbf x_k = 1^k\begin{bmatrix} 2 \\ 1 \end{bmatrix} - 0.4^k\begin{bmatrix} 1 \\ -1 \end{bmatrix}.
+$$
+
+At $k = 1$, $\mathbf x_1 = (2 - 0.4,\ 1 + 0.4) = (1.6, 1.4)$, which matches $A(1, 2)$. As $k$ grows, $0.4^k \to 0$, so $\mathbf x_k \to (2, 1)$. The eigenvalue $1$ piece survives and the smaller piece fades away.
+</Answer>
+</Check>
+
+### Challenge
+
+<Check>
+Let $N = \begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix}$. Both $N$ and $N^T$ have only the eigenvalue $0$. Find the eigenvalues of $N + N^T$, smaller first.
+
+<VectorAnswer answer={[-1, 1]} labels={["λ₁", "λ₂"]} />
+
+<Hint>
+Write out $N + N^T$. You have seen it before in Day 28's reflection problem.
+</Hint>
+
+<Answer>
+$N + N^T = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$, the reflection across $y = x$. Its trace is $0$ and its determinant is $-1$, so $\lambda^2 - 1 = 0$ and the eigenvalues are $-1$ and $1$. The eigenvalues of a sum are not the sums of the eigenvalues, which would all be $0$ here.
+</Answer>
+</Check>
+
+<Check>
+Show that if $A^2$ is the zero matrix, then the only eigenvalue $A$ can have is $0$. (Modeled on Lay §5.1 #26.)
+
+<Hint>
+Start from $A\mathbf x = \lambda\mathbf x$ with $\mathbf x \ne \mathbf 0$ and apply $A$ once more.
+</Hint>
+
+<Answer>
+Suppose $A\mathbf x = \lambda\mathbf x$ with $\mathbf x \ne \mathbf 0$. The power rule gives $A^2\mathbf x = \lambda^2\mathbf x$. But $A^2$ is the zero matrix, so $\lambda^2\mathbf x = \mathbf 0$. Since $\mathbf x \ne \mathbf 0$, $\lambda^2 = 0$, so $\lambda = 0$. The matrix $N$ from the previous check is an example: $N^2 = 0$ and its only eigenvalue is $0$.
+</Answer>
+</Check>
+
+<Check>
+Suppose $A = QR$ with $Q$ invertible. Show that $RQ$ is similar to $A$, so $RQ$ has the same eigenvalues as $A$. (Modeled on Lay §5.2 #23.)
+
+<Hint>
+Solve $A = QR$ for $R$, then substitute into $RQ$.
+</Hint>
+
+<Answer>
+Multiplying $A = QR$ on the left by $Q^{-1}$ gives $R = Q^{-1}A$. Then
+
+$$
+RQ = Q^{-1}AQ,
+$$
+
+which is $P^{-1}AP$ with $P = Q$. So $RQ$ is similar to $A$ and has the same characteristic polynomial. Computer programs find eigenvalues by repeating this swap many times, because each step keeps the eigenvalues while making the matrix closer to triangular.
 </Answer>
 </Check>

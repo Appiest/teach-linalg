@@ -243,3 +243,165 @@ export function MultipleAreaScale({ matrix = [[1, -1], [1, 1]], factor = 4 }: { 
     </Panel>
   );
 }
+
+type Position = [number, number];
+
+const cofactorOf = (matrix: Matrix3, row: number, column: number) => signOf(row, column) * det(minorOf(matrix, row, column));
+const samePosition = (a: Position, b: Position) => a[0] === b[0] && a[1] === b[1];
+
+function positionWithCofactor(matrix: Matrix3, target: number): Position {
+  const cells = INDICES.flatMap((row) => INDICES.map((column): Position => [row, column]));
+  return cells.find(([row, column]) => cofactorOf(matrix, row, column) === target) ?? [0, 0];
+}
+
+function vmatrixTex([[a, b], [c, d]]: Matrix2): string {
+  return `\\begin{vmatrix} ${texNumber(a)} & ${texNumber(b)} \\\\ ${texNumber(c)} & ${texNumber(d)} \\end{vmatrix}`;
+}
+
+function cofactorTex(matrix: Matrix3, [row, column]: Position): string {
+  const minor = det(minorOf(matrix, row, column));
+  const sign = `\\textcolor{${palette.glow}}{${signOf(row, column) > 0 ? "+" : "-"}}`;
+  const shownMinor = `(${texNumber(minor)})`;
+  const minorTex = `\\textcolor{${palette.blue}}{${vmatrixTex(minorOf(matrix, row, column))}}`;
+  return `C_{${row + 1}${column + 1}} = ${sign}${minorTex} = ${sign}${shownMinor} = ${texNumber(cofactorOf(matrix, row, column))}`;
+}
+
+function huntCellClass(picked: boolean, crossed: boolean, solved: boolean): string {
+  if (picked && solved) return "ring-2 ring-[var(--palette-teal)] bg-[color-mix(in_oklab,var(--palette-teal)_18%,transparent)]";
+  if (picked) return "ring-2 ring-[var(--palette-yellow)] bg-[color-mix(in_oklab,var(--palette-yellow)_14%,transparent)]";
+  if (crossed) return "text-text-muted opacity-40 line-through";
+  return "bg-[color-mix(in_oklab,var(--palette-blue)_16%,transparent)] hover:bg-[color-mix(in_oklab,var(--palette-blue)_26%,transparent)]";
+}
+
+function HuntCell({ value, position, picked, crossed, solved, onPick }: {
+  value: number; position: Position; picked: boolean; crossed: boolean; solved: boolean; onPick: () => void;
+}) {
+  const [row, column] = position;
+  return (
+    <button
+      type="button"
+      aria-pressed={picked}
+      aria-label={`Row ${row + 1}, column ${column + 1}, entry ${texNumber(value)}`}
+      onClick={onPick}
+      className={`relative grid size-14 place-items-center rounded-md text-lg tabular-nums transition-colors duration-200 ${huntCellClass(picked, crossed, solved)}`}
+    >
+      <span className="absolute left-1.5 top-0.5 text-sm text-[var(--palette-glow)]">{signOf(row, column) > 0 ? "+" : "−"}</span>
+      <Tex>{texNumber(value)}</Tex>
+    </button>
+  );
+}
+
+/** Pick an entry to delete its row and column, and find the position whose signed minor matches the target cofactor. */
+export function CofactorHunt({ matrix, target }: { matrix: Matrix3; target: number }) {
+  const [picked, setPicked] = useState<Position>([0, 0]);
+  const answer = positionWithCofactor(matrix, target);
+  const { settled: solved, gesture } = useSettled(samePosition(picked, answer));
+  const crossed = ([row, column]: Position) => row === picked[0] || column === picked[1];
+  const answerMinor = det(minorOf(matrix, answer[0], answer[1]));
+  const answerSign = signOf(answer[0], answer[1]) > 0 ? "+" : "-";
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Pick an entry to delete its row and column. Find the position whose cofactor is <Tex>{`C_{ij} = ${texNumber(target)}`}</Tex>.</>}
+        success={<>Position <Tex>{`(${answer[0] + 1}, ${answer[1] + 1})`}</Tex> works. Its minor is <Tex>{texNumber(answerMinor)}</Tex>, and the <Tex>{answerSign}</Tex> sign from the checkerboard makes the cofactor <Tex>{texNumber(target)}</Tex>.</>}
+      />
+      <div className="grid items-center gap-5 md:grid-cols-[auto_1fr]">
+        <div role="group" aria-label="Entries of A. Pick one to delete its row and column." className="mx-auto grid w-fit grid-cols-3 gap-1.5 rounded-lg bg-surface-sunken p-3">
+          {matrix.map((values, row) =>
+            values.map((value, column) => {
+              const position: Position = [row, column];
+              const isPicked = samePosition(position, picked);
+              return (
+                <HuntCell
+                  key={`${row}-${column}`}
+                  value={value}
+                  position={position}
+                  picked={isPicked}
+                  crossed={!isPicked && crossed(position)}
+                  solved={solved}
+                  onPick={() => setPicked(position)}
+                />
+              );
+            }),
+          )}
+        </div>
+        <div className="min-w-0">
+          <Readout tex={cofactorTex(matrix, picked)} />
+        </div>
+      </div>
+    </Panel>
+  );
+}
+
+const CLEAR_REACH = 4;
+
+function clearedMatrix(matrix: Matrix3, multiples: [number, number]): Matrix3 {
+  const [top, second, third] = matrix;
+  const addTop = (row: number[], c: number) => row.map((value, k) => value + c * top[k]) as [number, number, number];
+  return [top, addTop(second, multiples[0]), addTop(third, multiples[1])];
+}
+
+function replacementStepTex(row: number, c: number): string {
+  if (c === 0) return `R_${row} \\leftarrow R_${row}`;
+  const size = Math.abs(c) === 1 ? "" : texNumber(Math.abs(c));
+  return `R_${row} \\leftarrow R_${row} ${c < 0 ? "-" : "+"} ${size}R_1`;
+}
+
+function columnOneExpansionTex(matrix: Matrix3): string {
+  const terms = INDICES.map((row) => termTex(matrix, row, 0)).join(" ");
+  return `\\det = ${terms} = \\textcolor{${palette.teal}}{${texNumber(det3(matrix))}}`;
+}
+
+function clearCellTone(matrix: Matrix3, row: number, column: number, solved: boolean): string {
+  const teal = "bg-[color-mix(in_oklab,var(--palette-teal)_18%,transparent)] text-text";
+  if (column !== 0) return "text-text-muted";
+  if (solved || (row > 0 && matrix[row][0] === 0)) return teal;
+  return "bg-[color-mix(in_oklab,var(--palette-yellow)_16%,transparent)] text-text";
+}
+
+function ClearCells({ matrix, solved }: { matrix: Matrix3; solved: boolean }) {
+  return (
+    <div aria-hidden className="mx-auto grid w-fit grid-cols-3 gap-1.5 rounded-lg bg-surface-sunken p-3">
+      {matrix.map((values, row) =>
+        values.map((value, column) => (
+          <div key={`${row}-${column}`} className={`grid h-12 w-14 place-items-center rounded-md text-lg tabular-nums transition-colors duration-300 ${clearCellTone(matrix, row, column, solved)}`}>
+            <Tex>{texNumber(value)}</Tex>
+          </div>
+        )),
+      )}
+    </div>
+  );
+}
+
+/** Two row replacements clear column 1 below its top entry. The determinant stays put while its expansion shrinks to one term. */
+export function ColumnClearExpand({ matrix }: { matrix: Matrix3 }) {
+  const [c2, setC2] = useState(0);
+  const [c3, setC3] = useState(0);
+  const current = clearedMatrix(matrix, [c2, c3]);
+  const { settled: solved, gesture } = useSettled(current[1][0] === 0 && current[2][0] === 0);
+  const pivot = matrix[0][0];
+  const finalMinor = det(minorOf(clearedMatrix(matrix, [-matrix[1][0] / pivot, -matrix[2][0] / pivot]), 0, 0));
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Add multiples of row 1 to rows 2 and 3 until column 1 reads <Tex>{`${texNumber(pivot)}, 0, 0`}</Tex> from top to bottom. Watch the determinant as you go.</>}
+        success={<>Column 1 has one nonzero entry, so expanding down it takes one <Tex>{"2 \\times 2"}</Tex> determinant: <Tex>{`${texNumber(pivot)} \\cdot (${texNumber(finalMinor)}) = ${texNumber(det3(matrix))}`}</Tex>. The replacements never changed the answer.</>}
+      />
+      <div className="grid items-start gap-5 md:grid-cols-[auto_1fr]">
+        <ClearCells matrix={current} solved={solved} />
+        <div className="min-w-0 space-y-4">
+          <Slider label="c_2" value={c2} onChange={setC2} min={-CLEAR_REACH} max={CLEAR_REACH} step={1} color={palette.yellow} />
+          <Slider label="c_3" value={c3} onChange={setC3} min={-CLEAR_REACH} max={CLEAR_REACH} step={1} color={palette.blue} />
+          <Readout tex={`${replacementStepTex(2, c2)} \\qquad ${replacementStepTex(3, c3)}`} />
+        </div>
+      </div>
+      <div className="mt-5">
+        <Readout tex={columnOneExpansionTex(current)} />
+      </div>
+    </Panel>
+  );
+}

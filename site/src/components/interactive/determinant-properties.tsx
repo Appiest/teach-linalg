@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { palette } from "@/lib/palette.generated";
-import { describeVector, Goal, Panel, Readout, Tex, Workbench } from "./controls";
+import { describeVector, Goal, Panel, Readout, Slider, Tex, Workbench } from "./controls";
 import { useSettled } from "./gesture";
 import { add, apply, det, nearlyEqual, scale, texNumber, type Matrix2, type Vec } from "./math";
-import { Arrow, boundsAround, Handle, Label, Marker, Plane, Segment, usePlane } from "./plane";
+import { Arrow, boundsAround, DEFAULT_BOUNDS, Handle, Label, Marker, Plane, Segment, usePlane, type Bounds } from "./plane";
 import type { Hue } from "./colors";
 import { hue } from "./colors";
 
@@ -178,6 +178,121 @@ export function CramerAreas({ a1 = [2, 1], a2 = [-1, 2], target = [-1, 2], start
             <Readout tex={`${texNumber(detA)}\\,x_1 = \\det[\\,${bTex}\\;\\;\\mathbf a_2\\,] = ${texNumber(areas[0])}`} />
             <Readout tex={`${texNumber(detA)}\\,x_2 = \\det[\\,\\mathbf a_1\\;\\;${bTex}\\,] = ${texNumber(areas[1])}`} />
             <Readout tex={`\\mathbf x = (${texNumber(x[0])},\\ ${texNumber(x[1])})`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+/** The part of the line n·p = r that crosses the window, walking along whichever axis the line is less steep against. */
+function lineAcross(normal: Vec, r: number, bounds: Bounds): [Vec, Vec] {
+  if (Math.abs(normal[1]) >= Math.abs(normal[0])) {
+    const yAt = (x: number) => (r - normal[0] * x) / normal[1];
+    return [[bounds.xMin, yAt(bounds.xMin)], [bounds.xMax, yAt(bounds.xMax)]];
+  }
+  const xAt = (y: number) => (r - normal[1] * y) / normal[0];
+  return [[xAt(bounds.yMin), bounds.yMin], [xAt(bounds.yMax), bounds.yMax]];
+}
+
+function EquationLine({ normal, r, color }: { normal: Vec; r: number; color: Hue }) {
+  const { bounds } = usePlane();
+  if (normal[0] === 0 && normal[1] === 0) return null;
+  const [from, to] = lineAcross(normal, r, bounds);
+  return <Segment from={from} to={to} color={color} dashed={false} />;
+}
+
+function equationTex(first: number, second: number, r: number, color: string): string {
+  const sign = second < 0 ? "-" : "+";
+  return colored(color, `${texNumber(first)}\\,x_1 ${sign} ${texNumber(Math.abs(second))}\\,x_2 = ${texNumber(r)}`);
+}
+
+function cramerSolutionTex(s: number, off: number, rhs: Vec): string {
+  const detA = s * s - off * off;
+  if (detA === 0) return `\\mathbf x: \\text{ none}`;
+  const x1 = (rhs[0] * s - off * rhs[1]) / detA;
+  const x2 = (s * rhs[1] - off * rhs[0]) / detA;
+  return `\\mathbf x = (${texNumber(x1)},\\ ${texNumber(x2)})`;
+}
+
+/** Slide the parameter s in the system s x1 + off x2 = r1, off x1 + s x2 = r2 and find where Cramer's rule has no answer. */
+export function CramerParameterLines({ off = 2, rhs = [3, 1] }: { off?: number; rhs?: Vec }) {
+  const [s, setS] = useState(0);
+  const detA = s * s - off * off;
+  const { settled: solved, gesture } = useSettled(detA === 0);
+  const meets = detA !== 0;
+  const point: Vec = meets ? [(rhs[0] * s - off * rhs[1]) / detA, (s * rhs[1] - off * rhs[0]) / detA] : [0, 0];
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Slide <Tex>{"s"}</Tex> to find a value where Cramer&apos;s rule breaks down.</>}
+        success={<>At <Tex>{`s = \\pm ${texNumber(off)}`}</Tex> the determinant <Tex>{`s^2 - ${texNumber(off * off)}`}</Tex> is <Tex>{"0"}</Tex>. The two lines are parallel and never meet, so there is no solution for Cramer&apos;s formula to give.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={DEFAULT_BOUNDS} label={`The lines of the two equations with s = ${s}. ${meets ? "They cross at one point." : "They are parallel."}`}>
+            <EquationLine normal={[s, off]} r={rhs[0]} color="yellow" />
+            <EquationLine normal={[off, s]} r={rhs[1]} color="blue" />
+            {meets ? <Marker at={point} color="teal" /> : null}
+          </Plane>
+        }
+        readout={
+          <>
+            <Slider label="s" value={s} onChange={setS} min={-4} max={4} step={0.5} color={palette.glow} />
+            <Readout tex={equationTex(s, off, rhs[0], palette.yellow)} />
+            <Readout tex={equationTex(off, s, rhs[1], palette.blue)} />
+            <Readout tex={`\\det A = s^2 - ${texNumber(off * off)} = ${texNumber(detA)}`} />
+            <Readout tex={cramerSolutionTex(s, off, rhs)} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+function StretchedShapes({ corner, solved }: { corner: Vec; solved: boolean }) {
+  const { toSvg, unit } = usePlane();
+  const [cx, cy] = toSvg([0, 0]);
+  const [a, b] = corner;
+  const fill = solved ? hue("teal") : hue("yellow");
+  const rectangle: Vec[] = [[0, 0], [a, 0], [a, b], [0, b]];
+  return (
+    <g>
+      <circle cx={cx} cy={cy} r={unit} fill="none" stroke={hue("text")} strokeOpacity={0.6} strokeWidth={2} strokeDasharray="5 5" />
+      <ellipse cx={cx} cy={cy} rx={Math.abs(a) * unit} ry={Math.abs(b) * unit} fill={fill} fillOpacity={0.18} stroke={fill} strokeWidth={2} />
+      <polygon points={rectangle.map((point) => toSvg(point).join(",")).join(" ")} fill={fill} fillOpacity={0.3} />
+      <DashedOutline corners={UNIT_SQUARE} color="text" />
+    </g>
+  );
+}
+
+/** Drag the corner (a, b) of the stretch diag(a, b): the unit square and the unit disk both grow by |ab|. */
+export function EllipseAreaStretch({ target = 6 }: { target?: number }) {
+  const [corner, setCorner] = useState<Vec>([1, 1]);
+  const factor = Math.abs(corner[0] * corner[1]);
+  const { settled: solved, gesture } = useSettled(factor === target);
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Drag the corner to set <Tex>{"A = \\begin{bmatrix} a & 0 \\\\ 0 & b \\end{bmatrix}"}</Tex> so that the ellipse has area <Tex>{`${texNumber(target)}\\pi`}</Tex>.</>}
+        success={<>Any <Tex>{"a"}</Tex> and <Tex>{"b"}</Tex> with <Tex>{`|ab| = ${texNumber(target)}`}</Tex> work. The square grew from <Tex>{"1"}</Tex> to <Tex>{texNumber(target)}</Tex> and the disk from <Tex>{"\\pi"}</Tex> to <Tex>{`${texNumber(target)}\\pi`}</Tex>, because <Tex>{"A"}</Tex> scales every area by <Tex>{"|\\det A|"}</Tex>.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={DEFAULT_BOUNDS} label={`The dashed unit disk and unit square, and their images under the stretch with a = ${corner[0]} and b = ${corner[1]}.`}>
+            <StretchedShapes corner={corner} solved={solved} />
+            <Handle at={corner} onMove={setCorner} color="glow" label={`Corner of the stretched square, at ${describeVector(corner)}`} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Readout tex={`\\det A = ${texNumber(corner[0])} \\cdot ${texNumber(corner[1])} = ${texNumber(corner[0] * corner[1])}`} />
+            <Readout tex={`\\text{square: } 1 \\to ${texNumber(factor)}`} />
+            <Readout tex={`\\text{disk: } \\pi \\to ${texNumber(factor)}\\pi`} />
           </>
         }
       />

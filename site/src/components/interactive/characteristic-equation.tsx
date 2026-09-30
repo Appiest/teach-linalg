@@ -245,3 +245,143 @@ export function EigenpairHunt({ matrix, start = [2, 0], lambdaStart = 0, min = -
     </Panel>
   );
 }
+
+type Curve = { poly: (x: number) => number; color: Hue; dashed?: boolean };
+type GraphWindow = { min: number; max: number; yMin: number; yMax: number };
+
+const GRAPH = { width: 420, height: 260, pad: 16 };
+
+/** Graphs of polynomials over a fixed window, so the picture never rescales while a slider moves. */
+function FixedGraph({ curves, view, roots, label }: { curves: Curve[]; view: GraphWindow; roots: { at: number; color: Hue }[]; label: string }) {
+  const { min, max, yMin, yMax } = view;
+  const toX = (x: number) => GRAPH.pad + ((x - min) / (max - min)) * (GRAPH.width - 2 * GRAPH.pad);
+  const toY = (y: number) => GRAPH.pad + ((yMax - y) / (yMax - yMin)) * (GRAPH.height - 2 * GRAPH.pad);
+  const samples = stepsBetween(min, max, (max - min) / 160);
+  const pathOf = (poly: (x: number) => number) =>
+    samples.map((x, index) => `${index === 0 ? "M" : "L"}${toX(x).toFixed(1)},${toY(Math.max(yMin - 5, Math.min(yMax + 5, poly(x)))).toFixed(1)}`).join(" ");
+  const ticks = stepsBetween(Math.ceil(min), Math.floor(max), 1);
+  return (
+    <svg viewBox={`0 0 ${GRAPH.width} ${GRAPH.height}`} role="img" aria-label={label} className="block h-auto w-full overflow-hidden rounded-media bg-surface-sunken">
+      {ticks.map((tick) => (
+        <g key={tick}>
+          <line x1={toX(tick)} x2={toX(tick)} y1={GRAPH.pad} y2={GRAPH.height - GRAPH.pad} stroke="var(--palette-grid)" strokeOpacity={0.35} />
+          <text x={toX(tick)} y={toY(0) + 18} textAnchor="middle" fontSize={13} fill="var(--palette-text-muted)">{formatNumber(tick)}</text>
+        </g>
+      ))}
+      <line x1={GRAPH.pad} x2={GRAPH.width - GRAPH.pad} y1={toY(0)} y2={toY(0)} stroke="var(--palette-axis)" strokeWidth={1.5} />
+      {curves.map((curve, index) => (
+        <path key={index} d={pathOf(curve.poly)} fill="none" stroke={hue(curve.color)} strokeWidth={curve.dashed ? 2 : 3} strokeDasharray={curve.dashed ? "7 6" : undefined} strokeOpacity={curve.dashed ? 0.7 : 1} />
+      ))}
+      {roots.map((root) => (
+        <circle key={root.at} cx={toX(root.at)} cy={toY(0)} r={8} fill="none" stroke={hue(root.color)} strokeWidth={2.5} />
+      ))}
+    </svg>
+  );
+}
+
+function realRootsOfShiftedSquare(center: number, h: number): number[] {
+  if (h < 0) return [];
+  if (h === 0) return [center];
+  return [center - Math.sqrt(h), center + Math.sqrt(h)];
+}
+
+function rootsTex(roots: number[]): string {
+  if (roots.length === 0) return "\\text{no real } \\lambda";
+  if (roots.length === 1) return `\\lambda = ${texNumber(roots[0])} \\text{ twice}`;
+  return `\\lambda = ${roots.map((root) => texNumber(root)).join(",\\ ")}`;
+}
+
+/** Slide the lower-left entry h of [[c, 1], [h, c]]: two real eigenvalues merge into one repeated root, then leave the real line. */
+export function RepeatedRootSlider({ center = 3, start = 4 }: { center?: number; start?: number }) {
+  const [h, setH] = useState(start);
+  const roots = realRootsOfShiftedSquare(center, h);
+  const { settled: solved, gesture } = useSettled(h === 0);
+  const poly = (lambda: number) => (center - lambda) ** 2 - h;
+  const view: GraphWindow = { min: center - 3, max: center + 3, yMin: -5, yMax: 6 };
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Slide <Tex>{"h"}</Tex> until the matrix has one eigenvalue repeated twice, so the graph touches the axis without crossing it.</>}
+        success={<>At <Tex>{"h = 0"}</Tex> the polynomial is <Tex>{`(${texNumber(center)} - \\lambda)^2`}</Tex>, so <Tex>{`\\lambda = ${texNumber(center)}`}</Tex> has multiplicity 2. Push <Tex>{"h"}</Tex> below zero and the graph lifts off the axis, leaving no real eigenvalues.</>}
+      />
+      <Workbench
+        plane={
+          <FixedGraph
+            curves={[{ poly, color: solved ? "teal" : "yellow" }]}
+            view={view}
+            roots={roots.map((at) => ({ at, color: "glow" }))}
+            label={`Graph of det(A − λI) for h = ${h}. Real eigenvalues: ${roots.length === 0 ? "none" : roots.map((root) => formatNumber(root)).join(" and ")}.`}
+          />
+        }
+        readout={
+          <>
+            <Slider label="h" value={h} onChange={setH} min={-3} max={4} step={1} color={palette.glow} />
+            <Readout tex={`A = \\begin{bmatrix} ${texNumber(center)} & 1 \\\\ ${texNumber(h)} & ${texNumber(center)} \\end{bmatrix}`} />
+            <Readout tex={rootsTex(roots)} />
+          </>
+        }
+      />
+      <div className="mt-5">
+        <Readout tex={`\\det(A - \\lambda I) = (${texNumber(center)} - \\lambda)^2 ${h < 0 ? "+" : "-"} ${texNumber(Math.abs(h))}`} />
+      </div>
+    </Panel>
+  );
+}
+
+const productOfFactors = (diagonal: number[]) => (lambda: number) => diagonal.reduce((total, entry) => total * (entry - lambda), 1);
+const sortedKey = (values: number[]) => [...values].sort((a, b) => a - b).join(",");
+
+function triangularTex(diagonal: number[]): string {
+  const glow = (value: number) => `\\textcolor{${palette.glow}}{${texNumber(value)}}`;
+  const [a, b, c] = diagonal;
+  return `T = \\begin{bmatrix} ${glow(a)} & 2 & -1 \\\\ 0 & ${glow(b)} & 4 \\\\ 0 & 0 & ${glow(c)} \\end{bmatrix}`;
+}
+
+function factorsTex(diagonal: number[]): string {
+  return diagonal.map((entry) => `(${texNumber(entry)} - \\lambda)`).join("");
+}
+
+/** Set the diagonal of a triangular matrix until its characteristic polynomial matches the dashed target graph. */
+export function TriangularPolyMatch({ target = [1, 3, 3], start = [0, 1, 2] }: { target?: number[]; start?: number[] }) {
+  const [diagonal, setDiagonal] = useState<number[]>(start);
+  const { settled: solved, gesture } = useSettled(sortedKey(diagonal) === sortedKey(target));
+  const setEntry = (index: number) => (value: number) => setDiagonal((current) => current.map((entry, i) => (i === index ? value : entry)));
+  const view: GraphWindow = { min: -1.5, max: 5.5, yMin: -12, yMax: 12 };
+  const colors = [palette.yellow, palette.blue, palette.teal];
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Set the diagonal of <Tex>{"T"}</Tex> so that the graph of <Tex>{"\\det(T - \\lambda I)"}</Tex> matches the dashed curve.</>}
+        success={<>The diagonal is <Tex>{[...target].sort((a, b) => a - b).map((value) => texNumber(value)).join(",\\ ")}</Tex> in some order. The repeated entry is a root of multiplicity 2, where the curve touches the axis and turns back.</>}
+      />
+      <Workbench
+        plane={
+          <FixedGraph
+            curves={[
+              { poly: productOfFactors(target), color: "text", dashed: true },
+              { poly: productOfFactors(diagonal), color: solved ? "teal" : "yellow" },
+            ]}
+            view={view}
+            roots={[...new Set(diagonal)].map((at) => ({ at, color: "glow" }))}
+            label={`The dashed target graph and the graph of det(T − λI) for diagonal entries ${diagonal.join(", ")}.`}
+          />
+        }
+        readout={
+          <>
+            {diagonal.map((entry, index) => (
+              <Slider key={index} label={`t_{${index + 1}${index + 1}}`} value={entry} onChange={setEntry(index)} min={-1} max={5} step={1} color={colors[index]} />
+            ))}
+            <Readout tex={triangularTex(diagonal)} />
+          </>
+        }
+      />
+      <div className="mt-5">
+        <Readout tex={`\\det = ${factorsTex(diagonal)}`} />
+      </div>
+    </Panel>
+  );
+}

@@ -1,69 +1,219 @@
 Day 25 read $\det A$ as the signed area of the parallelogram built from the columns of $A$, and Day 26 computed determinants by cofactor expansion and listed how each row operation changes them. Day 26 stated those rules without saying why they hold, and today supplies the reasons. The reasons matter because the next unit leans on the rules: Day 29 finds eigenvalues by solving $\det(A - \lambda I) = 0$, and Day 30 uses the product rule to show that similar matrices share their eigenvalues. Two properties do all the work, and from them follow the product rule $\det(AB) = \det A\,\det B$, a formula for solving systems, a formula for $A^{-1}$, and volumes in $\mathbb R^3$.
 
+Each section below opens with a problem. Try it before you open the walkthrough, even if you only get partway. The walkthroughs use Day 26's rules freely, and today's job is to see where those rules come from.
+
 ## The two rules
 
-This section looks for two properties strong enough to prove every row rule from Day 26, and the picture of area as base times height suggests both. Hold the first column $\green{\mathbf a_1}$ fixed along the base. The area of the parallelogram is base times height, so $\det[\,\green{\mathbf a_1}\ \ \mathbf x\,]$ depends only on how high $\mathbf x$ sits above the line of $\green{\mathbf a_1}$. Heights scale when $\mathbf x$ scales, and the heights of $\yellow{\mathbf u}$ and $\blue{\mathbf v}$ add when the vectors add. A tip below the base has negative height, which is why the area has to carry a sign.
+We look for two properties strong enough to prove every row rule from Day 26. The picture of area as base times height suggests both, so we start there.
+
+<Problem>
+Hold the first column fixed at $\green{\mathbf a_1} = \begin{bmatrix} 3 \\ 0 \end{bmatrix}$. Compute $\det[\,\green{\mathbf a_1}\ \ \mathbf x\,]$ for $\mathbf x = \yellow{\mathbf u} = \begin{bmatrix} 1 \\ 1 \end{bmatrix}$, for $\mathbf x = \blue{\mathbf v} = \begin{bmatrix} -2 \\ 2 \end{bmatrix}$ and for $\mathbf x = \yellow{\mathbf u} + \blue{\mathbf v}$. Then compute it for $\mathbf x = 2\yellow{\mathbf u}$. What do you notice?
+
+<Solution>
+With $\green{\mathbf a_1}$ as the first column, $\det\begin{bmatrix} 3 & x_1 \\ 0 & x_2 \end{bmatrix} = 3x_2 - x_1 \cdot 0 = 3x_2$. Only the second entry of $\mathbf x$ matters.
+
+- For $\yellow{\mathbf u}$, $x_2 = 1$, so the determinant is $3$.
+- For $\blue{\mathbf v}$, $x_2 = 2$, so it is $6$.
+- For $\yellow{\mathbf u} + \blue{\mathbf v} = \begin{bmatrix} -1 \\ 3 \end{bmatrix}$, $x_2 = 3$, so it is $9 = 3 + 6$.
+- For $2\yellow{\mathbf u} = \begin{bmatrix} 2 \\ 2 \end{bmatrix}$, $x_2 = 2$, so it is $6 = 2 \cdot 3$.
+
+The determinant of the sum is the sum of the determinants, and doubling the column doubles the determinant. In the picture, $\green{\mathbf a_1}$ is the base, and the area is the base times the height of $\mathbf x$ above it. Heights add when vectors add, and they scale when vectors scale.
+</Solution>
+</Problem>
 
 <Figure src="heights" alt="A green base a1 = (3, 0) with three parallelograms on it: a yellow one for u = (1, 1), a blue one for v = (−2, 2) and a teal one for u + v = (−1, 3). Two bars on the right stack a yellow bar of height 1 and a blue bar of height 2 beside a teal bar of height 3, under the equation 9 = 3 + 6." wide />
 
+Drag $\mathbf x$ until its determinant with $\green{\mathbf a_1}$ equals the sum. Several tips work, and they all sit at the same height.
+
 <HeightStack base={3} u={[1, 1]} v={[-2, 2]} start={[2, 1]} />
+
+A tip below the base has negative height, which is why the area has to carry a sign for these sums to work out.
 
 <Definition term="Multilinear and alternating">
 The determinant of an $n \times n$ matrix is **multilinear**: if every column except column $j$ is held fixed, then $T(\mathbf x) = \det[\,\mathbf a_1\ \cdots\ \mathbf x\ \cdots\ \mathbf a_n\,]$ is a linear function of $\mathbf x$, so
 
 $$
-T(c\,\mathbf x) = c\,T(\mathbf x), \qquad T(\mathbf u + \mathbf v) = T(\mathbf u) + T(\mathbf v).
+\begin{gathered}
+T(c\,\mathbf x) = c\,T(\mathbf x) \\
+T(\mathbf u + \mathbf v) = T(\mathbf u) + T(\mathbf v)
+\end{gathered}
 $$
 
 It is also **alternating**: swapping two columns multiplies the determinant by $-1$. Because $\det A^T = \det A$, both rules hold for rows as well.
 </Definition>
 
-Linearity comes straight from cofactor expansion. Expanding down column $j$ gives $\det A = x_1C_{1j} + \cdots + x_nC_{nj}$, and none of the cofactors $C_{ij}$ involve column $j$. Two consequences explain Day 26's row rules. If two rows are equal, swapping them leaves $A$ unchanged but flips the sign, so $\det A = -\det A$ and $\det A = 0$. Row replacement then costs nothing, because linearity in row $i$ splits off a matrix with two equal rows:
+Linearity comes straight from cofactor expansion. Expanding down column $j$ gives $\det A = x_1C_{1j} + \cdots + x_nC_{nj}$, and none of the cofactors $C_{ij}$ involve column $j$. So the determinant is a fixed combination of the entries of $\mathbf x$, just as $3x_2$ was in the problem.
+
+<Warning>
+Multilinear means linear in **one** column at a time, with the others frozen. It does not make $\det(A + B) = \det A + \det B$, because adding two matrices changes every column at once. It also does not make $\det(2A) = 2\det A$, because $2A$ doubles every column.
+</Warning>
+
+The two rules explain Day 26's row rules. The next two problems derive the one that looked most surprising, that replacement changes nothing.
+
+<Problem>
+Without expanding, explain why $\det\begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 1 & 2 & 3 \end{bmatrix}$ must be $0$.
+
+<Solution>
+Rows 1 and 3 are equal. Swap them. The matrix does not change at all, so its determinant does not change either.
+
+The alternating rule says a swap multiplies the determinant by $-1$. So the same number $D$ satisfies $D = -D$. Adding $D$ to both sides gives $2D = 0$, so $D = 0$.
+
+The same argument works for any square matrix with two equal rows.
+</Solution>
+</Problem>
+
+<Problem>
+Let $M = \begin{bmatrix} 2 & 1 \\ 1 & 3 \end{bmatrix}$, so $\det M = 6 - 1 = 5$. The replacement $R_1 \leftarrow R_1 + 4R_2$ gives $\begin{bmatrix} 6 & 13 \\ 1 & 3 \end{bmatrix}$. Use linearity in row 1 to explain why its determinant is still $5$, then check by computing it.
+
+<Solution>
+Row 1 of the new matrix is a sum, $(2, 1) + 4(1, 3)$. Linearity in row 1, with row 2 held fixed, splits the determinant into two pieces:
 
 $$
+\begin{vmatrix} 6 & 13 \\ 1 & 3 \end{vmatrix}
+= \begin{vmatrix} 2 & 1 \\ 1 & 3 \end{vmatrix} + 4\begin{vmatrix} 1 & 3 \\ 1 & 3 \end{vmatrix}
+= 5 + 4 \cdot 0 = 5.
+$$
+
+The second piece has two equal rows, so the previous problem makes it $0$. Checking directly, $6 \cdot 3 - 13 \cdot 1 = 18 - 13 = 5$.
+</Solution>
+</Problem>
+
+<Concept title="Every row rule from two properties">
+The same split works for any replacement $R_i \leftarrow R_i + c\,R_k$:
+
+$$
+\begin{aligned}
 \det\begin{bmatrix} \mathbf r_i + c\,\mathbf r_k \\ \mathbf r_k \end{bmatrix}
-= \det\begin{bmatrix} \mathbf r_i \\ \mathbf r_k \end{bmatrix} + c\,\det\begin{bmatrix} \mathbf r_k \\ \mathbf r_k \end{bmatrix}
-= \det\begin{bmatrix} \mathbf r_i \\ \mathbf r_k \end{bmatrix} + 0.
+&= \det\begin{bmatrix} \mathbf r_i \\ \mathbf r_k \end{bmatrix} + c\,\det\begin{bmatrix} \mathbf r_k \\ \mathbf r_k \end{bmatrix} \\
+&= \det\begin{bmatrix} \mathbf r_i \\ \mathbf r_k \end{bmatrix} + 0.
+\end{aligned}
 $$
 
-The other rows are left out of the display because they never change. A function with these two rules and value 1 at $I$ has to be $\det$, since row reducing any matrix computes it by exactly the same bookkeeping.
+The other rows are left out of the display because they never change. Scaling a row by $k$ multiplies the determinant by $k$, which is linearity again, and a swap flips the sign, which is the alternating rule. In fact any function with these two properties and value $1$ at $I$ has to be $\det$, since row reducing a matrix computes it by exactly the same bookkeeping.
+</Concept>
 
 ## The product rule
 
-Day 26 listed $\det(AB) = \det A\,\det B$ without proof. This section aims to show why the area factor of two maps done in a row is the product of their separate factors.
+Day 26 listed $\det(AB) = \det A\,\det B$ without proof. This section shows why the area factor of two maps done in a row is the product of their separate factors.
+
+<Problem>
+Let $A = \begin{bmatrix} 2 & 1 \\ -1 & 1 \end{bmatrix}$ and $B = \begin{bmatrix} 1 & 1 \\ 0 & 2 \end{bmatrix}$. The unit square has area $1$. What is the area after applying $B$? After then applying $A$? Check your answer against $\det(AB)$.
+
+<Solution>
+$\det B = 1 \cdot 2 - 1 \cdot 0 = 2$, so $B$ turns the unit square into a parallelogram of area $2$.
+
+$\det A = 2 \cdot 1 - 1 \cdot (-1) = 3$, and $A$ multiplies **every** area by $3$, including the parallelogram $B$ just made. So the final area is $3 \cdot 2 = 6$.
+
+Doing $B$ and then $A$ is the single map $AB$:
+
+$$
+AB = \begin{bmatrix} 2 \cdot 1 + 1 \cdot 0 & 2 \cdot 1 + 1 \cdot 2 \\ -1 \cdot 1 + 1 \cdot 0 & -1 \cdot 1 + 1 \cdot 2 \end{bmatrix} = \begin{bmatrix} 2 & 4 \\ -1 & 1 \end{bmatrix}
+$$
+
+and $\det(AB) = 2 \cdot 1 - 4 \cdot (-1) = 6$.
+
+The two routes agree because each factor scales area and the scalings pile up by multiplication.
+</Solution>
+</Problem>
 
 <Pair>
 <Figure src="product" alt="Three small grids. The yellow unit square of area 1 goes to a yellow parallelogram of area 2 under B, marked times 2, and then to a teal parallelogram of area 6 under A, marked times 3." />
 
-The map $\mathbf x \mapsto B\mathbf x$ scales every area by $|\det B|$, and $A$ then scales every area by $|\det A|$, including the parallelogram $B$ just made. The single map $AB$ does both at once, so $|\det AB| = |\det A|\,|\det B|$. Orientation flips combine the same way signs multiply, since two flips cancel.
+The map $\mathbf x \mapsto B\mathbf x$ scales every area by $|\det B|$, and $A$ then scales every area by $|\det A|$. The single map $AB$ does both at once, so $|\det AB| = |\det A|\,|\det B|$. Orientation flips combine the same way signs multiply, since two flips cancel.
 </Pair>
+
+Now $A$ is fixed with $\det A = 3$. Shape $B$ so that the product lands on $-6$.
 
 <ProductAreaHunt a={[[2, 1], [-1, 1]]} target={-6} />
 
-The picture gives the reason, and elementary matrices give the proof. Day 26's row rules say $\det(EA) = (\det E)(\det A)$ for every elementary matrix $E$. If $A$ is not invertible, neither is $AB$, and both sides are 0. Otherwise Day 8 writes $A = E_p \cdots E_1$, and
+The picture gives the reason, and elementary matrices give the proof. The goal of the proof is to peel $A$ apart into row operations, whose effect on a determinant we already know.
+
+<Steps>
+<Step>
+Day 26's row rules say $\det(EM) = (\det E)(\det M)$ for every elementary matrix $E$ and square matrix $M$, since $EM$ is $M$ after one row operation and $\det E$ is $1$, $-1$ or $k$.
+</Step>
+<Step>
+If $A$ is not invertible, neither is $AB$, and both sides of $\det(AB) = \det A\,\det B$ are $0$.
+</Step>
+<Step>
+Otherwise Day 8 writes $A = E_p \cdots E_1$ as a product of elementary matrices. Peel them off one at a time:
 
 $$
 \begin{aligned}
 \det(AB) &= \det(E_p E_{p-1} \cdots E_1 B) \\
 &= (\det E_p)\,\det(E_{p-1} \cdots E_1 B) \\
-&= (\det E_p)(\det E_{p-1}) \cdots (\det E_1)\,\det B \\
-&= \det(E_p \cdots E_1)\,\det B = \det A\,\det B.
+&= (\det E_p)(\det E_{p-1}) \cdots (\det E_1)\,\det B.
 \end{aligned}
 $$
+</Step>
+<Step>
+The same chain with $B = I$ says $(\det E_p) \cdots (\det E_1) = \det A$. So $\det(AB) = \det A\,\det B$.
+</Step>
+</Steps>
 
-The same chain with $B = I$ gives the last line. Short consequences follow. From $AA^{-1} = I$ we get $\det A^{-1} = 1/\det A$. Writing $rA = (rI)A$ gives $\det(rA) = r^n\det A$ for an $n \times n$ matrix, so the determinant is not linear in the whole matrix at once.
+The product rule turns many questions into one-line arguments. Try these before reading on.
+
+<Problem>
+Suppose $\det A = 4$ for a $3 \times 3$ matrix $A$. Find $\det A^{-1}$ and $\det(5A)$. Then show that if some square matrix satisfies $M^2 = I$, its determinant must be $1$ or $-1$.
+
+<Solution>
+For the inverse, start from $AA^{-1} = I$ and take determinants of both sides. The product rule gives $\det A \cdot \det A^{-1} = \det I = 1$, so $\det A^{-1} = \tfrac14$.
+
+For $5A$, write it as a product, $5A = (5I)A$. The matrix $5I$ is diagonal with three $5$'s, so its determinant is $5^3 = 125$, and $\det(5A) = 125 \cdot 4 = 500$.
+
+For $M^2 = I$, take determinants again: $(\det M)(\det M) = \det I = 1$. The only real numbers whose square is $1$ are $1$ and $-1$.
+</Solution>
+</Problem>
+
+<Concept title="Consequences of the product rule">
+For $n \times n$ matrices,
+
+$$
+\begin{gathered}
+\det A^{-1} = \frac{1}{\det A} \\
+\det(rA) = r^n \det A \\
+\det(PAP^{-1}) = \det A
+\end{gathered}
+$$
+
+The last one holds because $(\det P)(\det A)(\det P^{-1}) = (\det P)(\det P^{-1})(\det A)$, since numbers commute even though matrices do not. Day 30 uses it to show that similar matrices share their eigenvalues.
+</Concept>
 
 ## Cramer's rule
 
-Row reduction solves for all the unknowns together. Cramer's rule aims for something different: a formula that gives each unknown on its own as a ratio of two determinants, which shows exactly how the solution depends on $\mathbf b$ and on the entries of $A$.
+Row reduction solves for all the unknowns together. Cramer's rule gives each unknown on its own as a ratio of two determinants, which shows exactly how the solution depends on $\mathbf b$ and on the entries of $A$. We find it by computing some areas for a system we can already solve.
 
-Write $A_i(\mathbf b)$ for the matrix $A$ with column $i$ replaced by $\mathbf b$. If $\yellow{\mathbf b} = x_1\green{\mathbf a_1} + x_2\red{\mathbf a_2}$, then multilinearity in column 1 gives $\det[\,\yellow{\mathbf b}\ \ \red{\mathbf a_2}\,] = x_1\det[\,\green{\mathbf a_1}\ \ \red{\mathbf a_2}\,] + x_2\det[\,\red{\mathbf a_2}\ \ \red{\mathbf a_2}\,] = x_1 \det A$. In the picture, stretching $\green{\mathbf a_1}$ by $x_1$ multiplies the area by $x_1$, and adding $x_2\red{\mathbf a_2}$ is a shear that keeps it.
+<Problem>
+The system $2x_1 - x_2 = 3$, $x_1 + 2x_2 = 4$ from the video has solution $x_1 = 2$, $x_2 = 1$ (check it). Its columns are $\green{\mathbf a_1} = (2, 1)$ and $\red{\mathbf a_2} = (-1, 2)$, and its right side is $\yellow{\mathbf b} = (3, 4)$. Compute $\det A$, $\det[\,\yellow{\mathbf b}\ \ \red{\mathbf a_2}\,]$ and $\det[\,\green{\mathbf a_1}\ \ \yellow{\mathbf b}\,]$. How do they relate to $x_1$ and $x_2$?
+
+<Solution>
+First the check: $2(2) - 1 = 3$ and $2 + 2(1) = 4$. Now the three determinants:
+
+$$
+\begin{aligned}
+\det A &= \begin{vmatrix} 2 & -1 \\ 1 & 2 \end{vmatrix} = 4 + 1 = 5 \\
+\det[\,\yellow{\mathbf b}\ \ \red{\mathbf a_2}\,] &= \begin{vmatrix} \yellow 3 & -1 \\ \yellow 4 & 2 \end{vmatrix} = 6 + 4 = 10 = 2 \cdot 5 \\
+\det[\,\green{\mathbf a_1}\ \ \yellow{\mathbf b}\,] &= \begin{vmatrix} 2 & \yellow 3 \\ 1 & \yellow 4 \end{vmatrix} = 8 - 3 = 5 = 1 \cdot 5
+\end{aligned}
+$$
+
+Putting $\yellow{\mathbf b}$ in place of column $i$ multiplied the determinant by exactly $x_i$.
+
+Multilinearity explains why. The solution says $\yellow{\mathbf b} = x_1\green{\mathbf a_1} + x_2\red{\mathbf a_2}$. Split column 1:
+
+$$
+\det[\,\yellow{\mathbf b}\ \ \red{\mathbf a_2}\,] = x_1\det[\,\green{\mathbf a_1}\ \ \red{\mathbf a_2}\,] + x_2\det[\,\red{\mathbf a_2}\ \ \red{\mathbf a_2}\,] = x_1 \det A + 0.
+$$
+
+The second piece has two equal columns, so it vanishes. Dividing by $\det A$ recovers $x_1$.
+</Solution>
+</Problem>
 
 <Pair>
 <Figure src="cramer" alt="Green a1 = (2, 1), red a2 = (−1, 2) and yellow b = (3, 4). A green parallelogram of a1 and a2 has area 5, and a larger yellow parallelogram of b and a2 has area 10. An orange dashed line runs from 2a1 to b parallel to a2, showing the shear." />
 
 <Definition term="Cramer's rule">
-Let $A$ be an invertible $n \times n$ matrix. For any $\mathbf b$ in $\mathbb R^n$, the unique solution of $A\mathbf x = \mathbf b$ has entries
+Write $A_i(\mathbf b)$ for $A$ with column $i$ replaced by $\mathbf b$. If $A$ is an invertible $n \times n$ matrix, then for any $\mathbf b$ in $\mathbb R^n$ the unique solution of $A\mathbf x = \mathbf b$ has entries
 
 $$
 x_i = \frac{\det A_i(\mathbf b)}{\det A}, \qquad i = 1, \dots, n.
@@ -71,78 +221,303 @@ $$
 </Definition>
 </Pair>
 
-Here is the system from the video, $2x_1 - x_2 = 3$ and $x_1 + 2x_2 = 4$:
-
-$$
-\begin{aligned}
-\det A &= \det\begin{bmatrix} 2 & -1 \\ 1 & 2 \end{bmatrix} = 4 + 1 = 5 \\
-x_1 &= \frac{1}{5}\det\begin{bmatrix} \yellow{3} & -1 \\ \yellow{4} & 2 \end{bmatrix} = \frac{6 + 4}{5} = 2 \\
-x_2 &= \frac{1}{5}\det\begin{bmatrix} 2 & \yellow{3} \\ 1 & \yellow{4} \end{bmatrix} = \frac{8 - 3}{5} = 1
-\end{aligned}
-$$
+In the picture, stretching $\green{\mathbf a_1}$ by $x_1$ multiplies the area by $x_1$, and adding $x_2\red{\mathbf a_2}$ is a shear that keeps it. Drag $\yellow{\mathbf b}$ and read the solution off the two shaded areas.
 
 <CramerAreas a1={[2, 1]} a2={[-1, 2]} target={[-1, 2]} start={[3, 4]} />
 
-Column $j$ of $A^{-1}$ solves $A\mathbf x = \mathbf e_j$, so Cramer's rule also gives a formula for the inverse. Expanding $\det A_i(\mathbf e_j)$ down column $i$ leaves just the cofactor $C_{ji}$. The **adjugate** $\operatorname{adj} A$ is the matrix of cofactors, transposed, so its $(i, j)$ entry is $C_{ji}$, and
+Cramer's rule shines when the system has a letter in it, because it writes the answer as a formula in that letter.
+
+<Problem>
+For which values of $s$ does the system $s\,x_1 + 2x_2 = 3$, $2x_1 + s\,x_2 = 1$ have a unique solution? For those $s$, write $x_1$ and $x_2$ as formulas in $s$. (Modeled on Lay §3.3 #7.)
+
+<Solution>
+Cramer's rule divides by $\det A$, so find that first:
 
 $$
-A^{-1} = \frac{1}{\det A}\operatorname{adj} A, \qquad
-\operatorname{adj}\begin{bmatrix} a & b \\ c & d \end{bmatrix} = \begin{bmatrix} d & -b \\ -c & a \end{bmatrix}.
+\det A = \begin{vmatrix} s & 2 \\ 2 & s \end{vmatrix} = s^2 - 4 = (s - 2)(s + 2).
 $$
 
-For $2 \times 2$ matrices this is Day 7's formula. A good self-check for larger matrices is $(\operatorname{adj} A)A = (\det A)I$, which fails if you forget the transpose. Both formulas are for understanding and small cases. For a large system, each determinant costs about as much as solving the system by row reduction.
+The solution is unique exactly when $\det A \neq 0$, which is when $s \neq 2$ and $s \neq -2$. For those $s$, replace one column at a time with $\mathbf b = (3, 1)$:
+
+$$
+x_1 = \frac{1}{s^2 - 4}\begin{vmatrix} 3 & 2 \\ 1 & s \end{vmatrix} = \frac{3s - 2}{s^2 - 4}, \qquad
+x_2 = \frac{1}{s^2 - 4}\begin{vmatrix} s & 3 \\ 2 & 1 \end{vmatrix} = \frac{s - 6}{s^2 - 4}.
+$$
+
+As a check, $s = 0$ gives $x_1 = \tfrac12$ and $x_2 = \tfrac32$, and indeed $2x_2 = 3$ and $2x_1 = 1$.
+</Solution>
+</Problem>
+
+Each equation is a line, and the solution is where the two lines cross. Slide $s$ and watch the crossing point move, then find where it disappears.
+
+<CramerParameterLines off={2} rhs={[3, 1]} />
+
+<Warning>
+In $A_i(\mathbf b)$, the vector $\mathbf b$ replaces a **column** of $A$, never a row. Also check $\det A \neq 0$ before using the formula, because it divides by $\det A$.
+</Warning>
+
+## The adjugate
+
+Column $j$ of $A^{-1}$ is the solution of $A\mathbf x = \mathbf e_j$, so Cramer's rule can build the inverse one column at a time. We try it on a $2 \times 2$ matrix whose inverse we can check with Day 7's formula.
+
+<Problem>
+Let $A = \begin{bmatrix} 2 & 5 \\ 1 & 3 \end{bmatrix}$, so $\det A = 6 - 5 = 1$. Use Cramer's rule on $A\mathbf x = \mathbf e_1$ to find the first column of $A^{-1}$.
+
+<Solution>
+Here $\mathbf e_1 = (1, 0)$. Replace each column of $A$ by $\mathbf e_1$ in turn:
+
+$$
+x_1 = \frac{1}{1}\begin{vmatrix} 1 & 5 \\ 0 & 3 \end{vmatrix} = 3, \qquad
+x_2 = \frac{1}{1}\begin{vmatrix} 2 & 1 \\ 1 & 0 \end{vmatrix} = -1.
+$$
+
+So the first column of $A^{-1}$ is $(3, -1)$. Day 7's formula gives $A^{-1} = \begin{bmatrix} 3 & -5 \\ -1 & 2 \end{bmatrix}$, which agrees.
+
+Look at what each determinant turned into. In the first one, expanding down column 1 leaves the $3$, which is the cofactor $C_{11}$. In the second, expanding down column 2 leaves $-1$, which is the cofactor $C_{12}$. The first column of $A^{-1}$ is made of cofactors from the first **row** of $A$.
+</Solution>
+</Problem>
+
+<Concept title="The adjugate">
+The pattern holds in general: entry $(i, j)$ of $A^{-1}$ is $C_{ji}/\det A$, with the subscripts swapped. The **adjugate** $\operatorname{adj} A$ is the matrix of cofactors, transposed, so its $(i, j)$ entry is $C_{ji}$, and
+
+$$
+\begin{gathered}
+A^{-1} = \frac{1}{\det A}\operatorname{adj} A \\
+\operatorname{adj}\begin{bmatrix} a & b \\ c & d \end{bmatrix} = \begin{bmatrix} d & -b \\ -c & a \end{bmatrix}
+\end{gathered}
+$$
+
+For $2 \times 2$ matrices this is Day 7's formula.
+</Concept>
+
+<Problem>
+Find $\operatorname{adj} A$ and $\det A$ for $A = \begin{bmatrix} 1 & 2 & 0 \\ 0 & 1 & 3 \\ 2 & 0 & 1 \end{bmatrix}$.
+
+<Solution>
+There are nine cofactors to find, then one transpose, then a check.
+
+<Steps>
+<Step>
+Row 1 of cofactors. $C_{11} = +\begin{vmatrix} 1 & 3 \\ 0 & 1 \end{vmatrix} = 1$, $C_{12} = -\begin{vmatrix} 0 & 3 \\ 2 & 1 \end{vmatrix} = -(0 - 6) = 6$, and $C_{13} = +\begin{vmatrix} 0 & 1 \\ 2 & 0 \end{vmatrix} = -2$.
+</Step>
+<Step>
+Row 2. $C_{21} = -\begin{vmatrix} 2 & 0 \\ 0 & 1 \end{vmatrix} = -2$, $C_{22} = +\begin{vmatrix} 1 & 0 \\ 2 & 1 \end{vmatrix} = 1$, and $C_{23} = -\begin{vmatrix} 1 & 2 \\ 2 & 0 \end{vmatrix} = -(0 - 4) = 4$.
+</Step>
+<Step>
+Row 3. $C_{31} = +\begin{vmatrix} 2 & 0 \\ 1 & 3 \end{vmatrix} = 6$, $C_{32} = -\begin{vmatrix} 1 & 0 \\ 0 & 3 \end{vmatrix} = -3$, and $C_{33} = +\begin{vmatrix} 1 & 2 \\ 0 & 1 \end{vmatrix} = 1$.
+</Step>
+<Step>
+Transpose, so that the cofactors of row 1 become column 1:
+
+$$
+\operatorname{adj} A = \begin{bmatrix} 1 & -2 & 6 \\ 6 & 1 & -3 \\ -2 & 4 & 1 \end{bmatrix}.
+$$
+</Step>
+<Step>
+Expanding across row 1 gives $\det A = 1(1) + 2(6) + 0(-2) = 13$. As a check, $(\operatorname{adj} A)A$ should be $13I$. Its top-left entry is $1 \cdot 1 + (-2) \cdot 0 + 6 \cdot 2 = 13$ and its top-middle entry is $1 \cdot 2 + (-2) \cdot 1 + 6 \cdot 0 = 0$, as expected. So $A^{-1} = \tfrac{1}{13}\operatorname{adj} A$.
+</Step>
+</Steps>
+</Solution>
+</Problem>
+
+<Warning>
+Forgetting the transpose is the classic slip. Putting $C_{ij}$ in position $(i, j)$ gives the cofactor matrix, which is not the adjugate. The check $(\operatorname{adj} A)A = (\det A)I$ catches it. Both Cramer's rule and the adjugate are for understanding and small cases, because for a large system each determinant costs about as much as solving the system by row reduction.
+</Warning>
 
 ## Volume
 
-Three columns in $\mathbb R^3$ build a slanted box called a **parallelepiped**, and its volume is $|\det A|$. For a diagonal matrix the solid is an ordinary box with volume $|abc|$. Column replacement slides one face within its own plane, which keeps the height and the volume, just as the shear kept the area in the plane. Those moves reduce any $A$ to a diagonal matrix without changing $|\det A|$.
+Three columns in $\mathbb R^3$ build a slanted box called a **parallelepiped**. Its volume is $|\det A|$, for the same reason the area was $|\det A|$ in the plane.
+
+<Problem>
+Find the volume of the parallelepiped with edges $\green{(3, 0, 0)}$, $\red{(1, 2, 0)}$ and $\pink{(1, 1, 2)}$ from the origin.
+
+<Solution>
+Put the edges in the columns of a matrix. It turns out to be triangular, so its determinant is the product of the diagonal:
+
+$$
+\det\begin{bmatrix} \green 3 & \red 1 & \pink 1 \\ \green 0 & \red 2 & \pink 1 \\ \green 0 & \red 0 & \pink 2 \end{bmatrix} = 3 \cdot 2 \cdot 2 = 12.
+$$
+
+The volume is $12$. The picture explains the product. Column replacement slides one face within its own plane, which keeps the height and the volume, just as the shear kept the area in the plane. Sliding the faces straightens the solid into a $3 \times 2 \times 2$ box, whose volume is $12$.
+</Solution>
+</Problem>
 
 <Figure src="volume" alt="A teal parallelepiped with a green edge (3, 0, 0), a red edge (1, 2, 0) and a pink edge (1, 1, 2), drawn over the faint outline of the 3 by 2 by 2 box it was sheared from. Beside it, the matrix with those columns and volume = |det A| = 12." wide />
 
-The same reasoning scales every region. If $T(\mathbf x) = A\mathbf x$, then the area (or volume) of $T(S)$ is $|\det A|$ times the area (or volume) of $S$. For example, $\begin{bmatrix} a & 0 \\ 0 & b \end{bmatrix}$ carries the unit disk onto the ellipse $x_1^2/a^2 + x_2^2/b^2 = 1$, so the ellipse has area $ab \cdot \pi$. Day 30 applies this scaling to a box built on eigenvectors to show that $\det A$ is the product of the eigenvalues.
+The same reasoning scales every region, even a curved one. The map $A$ sends each small grid square to a parallelogram $|\det A|$ times as large, so it multiplies the area of any region by $|\det A|$.
+
+<Problem>
+Find the area inside the ellipse $\dfrac{x^2}{9} + \dfrac{y^2}{4} = 1$.
+
+<Solution>
+The goal is to see the ellipse as a stretched circle, since we know the area of a circle.
+
+The matrix $A = \begin{bmatrix} 3 & 0 \\ 0 & 2 \end{bmatrix}$ sends a point $(u, v)$ on the unit circle to $(x, y) = (3u, 2v)$. Then $\tfrac{x^2}{9} + \tfrac{y^2}{4} = u^2 + v^2 = 1$, so $A$ carries the unit disk exactly onto the region inside the ellipse.
+
+The unit disk has area $\pi$ and $\det A = 6$, so the ellipse has area $6\pi$.
+</Solution>
+</Problem>
+
+<Concept title="Area and volume scaling">
+If $T(\mathbf x) = A\mathbf x$ and $S$ is a region of finite area in $\mathbb R^2$, then
+
+$$
+\text{area of } T(S) = |\det A| \cdot \text{area of } S.
+$$
+
+The same holds for volume when $A$ is $3 \times 3$ and $S$ is a solid in $\mathbb R^3$.
+
+For the ellipse above, $6\pi = |6| \cdot \pi$.
+</Concept>
+
+Stretch the square and the disk together. Both areas grow by the same factor.
+
+<EllipseAreaStretch target={6} />
+
+Day 30 applies this scaling to a box built on eigenvectors to show that $\det A$ is the product of the eigenvalues.
 
 This lesson closes the unit on determinants. Tomorrow, Day 28 asks which directions a matrix only stretches, and Day 29 then uses $\det(A - \lambda I) = 0$ to find how much it stretches them.
 
 ## Practice
 
-<Check>
-Use Cramer's rule to solve $2x_1 + 5x_2 = 1$ and $x_1 + 3x_2 = 4$. (Modeled on Lay §3.3, Exercises 1–6.)
+### Warm-up
 
-<VectorAnswer answer={[-17, 7]} labels={["x₁", "x₂"]} />
+<Check>
+Hold $\mathbf a_1$ fixed and suppose $\det[\,\mathbf a_1\ \ \mathbf u\,] = 4$ and $\det[\,\mathbf a_1\ \ \mathbf v\,] = -1$. Find $\det[\,\mathbf a_1\ \ \mathbf u + \mathbf v\,]$ and $\det[\,\mathbf a_1\ \ 3\mathbf u\,]$.
+
+<VectorAnswer answer={[3, 12]} labels={["u + v", "3u"]} />
+
+<Answer>
+Linearity in the second column gives $4 + (-1) = 3$ for the sum and $3 \cdot 4 = 12$ for the multiple.
+</Answer>
+</Check>
+
+<Check>
+A $3 \times 3$ matrix has $\det A = -2$. Find $\det A^{-1}$ and $\det A^3$.
+
+<VectorAnswer answer={[-0.5, -8]} labels={["det A⁻¹", "det A³"]} />
+
+<Answer>
+$\det A^{-1} = 1/\det A = -\tfrac12$, and $\det A^3 = (\det A)^3 = (-2)^3 = -8$ by the product rule used twice.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="Which matrix is $\operatorname{adj}\begin{bmatrix} 4 & 1 \\ 3 & 2 \end{bmatrix}$?"
+  options={["$\\begin{bmatrix} 2 & -3 \\\\ -1 & 4 \\end{bmatrix}$", "$\\begin{bmatrix} 2 & -1 \\\\ -3 & 4 \\end{bmatrix}$", "$\\begin{bmatrix} 4 & -1 \\\\ -3 & 2 \\end{bmatrix}$"]}
+  answer={1}
+>
+The cofactors are $C_{11} = 2$, $C_{12} = -3$, $C_{21} = -1$ and $C_{22} = 4$. The adjugate puts $C_{ji}$ in position $(i, j)$, so row 1 is $(C_{11}, C_{21}) = (2, -1)$ and row 2 is $(C_{12}, C_{22}) = (-3, 4)$. The first option is the cofactor matrix without the transpose.
+</Choice>
+</Check>
+
+### Core
+
+<Check>
+Use Cramer's rule to solve $3x_1 + 4x_2 = 2$, $x_1 + 2x_2 = 0$. (Modeled on Lay §3.3 #1.)
+
+<VectorAnswer answer={[2, -1]} labels={["x₁", "x₂"]} />
+
+<Hint>
+$\det A = 3 \cdot 2 - 4 \cdot 1$. Replace column 1 by $(2, 0)$ for $x_1$ and column 2 by $(2, 0)$ for $x_2$.
+</Hint>
 
 <Answer>
 $$
 \begin{aligned}
-\det A &= \det\begin{bmatrix} 2 & 5 \\ 1 & 3 \end{bmatrix} = 6 - 5 = 1 \\
-x_1 &= \det\begin{bmatrix} 1 & 5 \\ 4 & 3 \end{bmatrix} = 3 - 20 = -17 \\
-x_2 &= \det\begin{bmatrix} 2 & 1 \\ 1 & 4 \end{bmatrix} = 8 - 1 = 7
+\det A &= \begin{vmatrix} 3 & 4 \\ 1 & 2 \end{vmatrix} = 6 - 4 = 2 \\
+x_1 &= \frac12\begin{vmatrix} 2 & 4 \\ 0 & 2 \end{vmatrix} = \frac{4}{2} = 2 \\
+x_2 &= \frac12\begin{vmatrix} 3 & 2 \\ 1 & 0 \end{vmatrix} = \frac{-2}{2} = -1
 \end{aligned}
 $$
 
-Check: $2(-17) + 5(7) = 1$ and $-17 + 3(7) = 4$.
+Check: $3(2) + 4(-1) = 2$ and $2 + 2(-1) = 0$.
 </Answer>
 </Check>
 
 <Check>
-Let $A = \begin{bmatrix} 1 & 2 & 0 \\ 0 & 1 & 3 \\ 2 & 0 & 1 \end{bmatrix}$. Find $\det A$ and the top-right entry of $A^{-1}$ using the adjugate. (Modeled on Lay §3.3, Exercises 11–16.)
+Use Cramer's rule to solve $x_1 + 2x_2 = 4$, $x_2 - x_3 = 1$, $2x_1 + x_3 = 3$. (Modeled on Lay §3.3 #5.)
 
-<VectorAnswer answer={[13, 0.46153846153846156]} labels={["det A", "top right"]} />
+<VectorAnswer answer={[1.3333333333333333, 1.3333333333333333, 0.3333333333333333]} labels={["x₁", "x₂", "x₃"]} />
+
+<Hint>
+The coefficient matrix is $\begin{bmatrix} 1 & 2 & 0 \\ 0 & 1 & -1 \\ 2 & 0 & 1 \end{bmatrix}$. Its determinant is negative. You can type a fraction such as 4/3 as an answer.
+</Hint>
 
 <Answer>
-The nine cofactors are $C_{11} = 1$, $C_{12} = 6$, $C_{13} = -2$, $C_{21} = -2$, $C_{22} = 1$, $C_{23} = 4$, $C_{31} = 6$, $C_{32} = -3$ and $C_{33} = 1$. Expanding across row 1 gives $\det A = 1(1) + 2(6) + 0(-2) = 13$. Transposing the cofactors gives
+Expanding across row 1, $\det A = 1(1 - 0) - 2(0 + 2) + 0 = -3$. Replacing each column by $\mathbf b = (4, 1, 3)$ in turn:
 
 $$
-\operatorname{adj} A = \begin{bmatrix} 1 & -2 & 6 \\ 6 & 1 & -3 \\ -2 & 4 & 1 \end{bmatrix},
-\qquad A^{-1} = \frac{1}{13}\operatorname{adj} A.
+\begin{aligned}
+\det A_1(\mathbf b) &= \begin{vmatrix} 4 & 2 & 0 \\ 1 & 1 & -1 \\ 3 & 0 & 1 \end{vmatrix} = 4(1) - 2(1 + 3) + 0 = -4 \\
+\det A_2(\mathbf b) &= \begin{vmatrix} 1 & 4 & 0 \\ 0 & 1 & -1 \\ 2 & 3 & 1 \end{vmatrix} = 1(1 + 3) - 4(0 + 2) + 0 = -4 \\
+\det A_3(\mathbf b) &= \begin{vmatrix} 1 & 2 & 4 \\ 0 & 1 & 1 \\ 2 & 0 & 3 \end{vmatrix} = 1(3 - 0) - 2(0 - 2) + 4(0 - 2) = -1
+\end{aligned}
 $$
 
-The top-right entry is $C_{31}/13 = 6/13$. As a check, $(\operatorname{adj} A)A = 13I$. The parallelepiped with edges $(1, 0, 2)$, $(2, 1, 0)$ and $(0, 3, 1)$ uses the rows of $A$ as edges, so its volume is $|\det A^T| = 13$.
+So $x_1 = \tfrac{-4}{-3} = \tfrac43$, $x_2 = \tfrac43$ and $x_3 = \tfrac{-1}{-3} = \tfrac13$. Check the first equation: $\tfrac43 + \tfrac83 = 4$.
 </Answer>
 </Check>
 
 <Check>
-Let $A$ and $B$ be $3 \times 3$ matrices with $\det A = 2$ and $\det B = -3$. Find $\det(2A)$, $\det(A^{-1}B)$ and $\det(B^TA)$. (Modeled on Lay §3.2, Exercises 31–36.)
+Find $\det A$ and $\operatorname{adj} A$ for $A = \begin{bmatrix} 1 & 0 & 2 \\ 2 & 1 & 0 \\ 0 & 1 & 3 \end{bmatrix}$. Enter the adjugate row by row. (Modeled on Lay §3.3 #11.)
+
+<VectorAnswer answer={[7]} labels={["det A"]} prefix="\det A =" />
+
+<VectorAnswer answer={[3, 2, -2, -6, 3, 4, 2, -1, 1]} columns={3} />
+
+<Hint>
+Compute all nine cofactors, then put $C_{ji}$ in row $i$, column $j$. Check with $(\operatorname{adj} A)A = (\det A)I$.
+</Hint>
+
+<Answer>
+The cofactors are
+
+$$
+\begin{aligned}
+C_{11} &= 3, & C_{12} &= -6, & C_{13} &= 2, \\
+C_{21} &= 2, & C_{22} &= 3, & C_{23} &= -1, \\
+C_{31} &= -2, & C_{32} &= 4, & C_{33} &= 1.
+\end{aligned}
+$$
+
+Across row 1, $\det A = 1(3) + 0(-6) + 2(2) = 7$. Transposing,
+
+$$
+\operatorname{adj} A = \begin{bmatrix} 3 & 2 & -2 \\ -6 & 3 & 4 \\ 2 & -1 & 1 \end{bmatrix}, \qquad A^{-1} = \frac17\operatorname{adj} A.
+$$
+
+Check one entry: row 1 of $\operatorname{adj} A$ times column 1 of $A$ is $3 + 4 + 0 = 7$.
+</Answer>
+</Check>
+
+<Check>
+Find the volume of the parallelepiped with one corner at the origin and edges $(2, 0, 1)$, $(1, 3, 0)$ and $(0, 1, 4)$. (Modeled on Lay §3.3 #23.)
+
+<VectorAnswer answer={[25]} labels={["volume"]} prefix="\text{volume} =" />
+
+<Hint>
+Put the edges in the columns of a $3 \times 3$ matrix and take the absolute value of its determinant.
+</Hint>
+
+<Answer>
+$$
+\det\begin{bmatrix} 2 & 1 & 0 \\ 0 & 3 & 1 \\ 1 & 0 & 4 \end{bmatrix} = 2(12 - 0) - 1(0 - 1) + 0 = 24 + 1 = 25.
+$$
+
+The volume is $|25| = 25$.
+</Answer>
+</Check>
+
+<Check>
+Let $A$ and $B$ be $3 \times 3$ matrices with $\det A = 2$ and $\det B = -3$. Find $\det(2A)$, $\det(A^{-1}B)$ and $\det(B^TA)$. (Modeled on Lay §3.2 #31–36.)
 
 <VectorAnswer answer={[16, -1.5, -6]} labels={["det(2A)", "det(A⁻¹B)", "det(BᵀA)"]} />
+
+<Hint>
+Use $\det(rA) = r^n\det A$, the product rule, $\det A^{-1} = 1/\det A$ and $\det B^T = \det B$.
+</Hint>
 
 <Answer>
 $$
@@ -152,7 +527,61 @@ $$
 \det(B^TA) &= \det B^T\,\det A = (-3)(2) = -6
 \end{aligned}
 $$
+</Answer>
+</Check>
 
-The first uses $\det(rA) = r^n\det A$ with $n = 3$, and the last two use the product rule together with $\det A^{-1} = 1/\det A$ and $\det B^T = \det B$.
+### Challenge
+
+<Check>
+The system $s\,x_1 + 4x_2 = 2$, $x_1 + s\,x_2 = 1$ has a unique solution for all but two values of $s$. Find those two values $s_1 < s_2$, and find $x_1$ when $s = 3$. (Modeled on Lay §3.3 #7–10.)
+
+<VectorAnswer answer={[-2, 2, 0.4]} labels={["s₁", "s₂", "x₁"]} />
+
+<Hint>
+Find $\det A$ as a polynomial in $s$ first. Then use Cramer's rule for $x_1$ and simplify before plugging in.
+</Hint>
+
+<Answer>
+$\det A = s^2 - 4$, which is $0$ at $s = -2$ and $s = 2$. Otherwise
+
+$$
+x_1 = \frac{1}{s^2 - 4}\begin{vmatrix} 2 & 4 \\ 1 & s \end{vmatrix} = \frac{2s - 4}{s^2 - 4} = \frac{2(s - 2)}{(s - 2)(s + 2)} = \frac{2}{s + 2}.
+$$
+
+At $s = 3$, $x_1 = \tfrac25 = 0.4$. Check with $x_2 = \tfrac{1}{s + 2} = 0.2$: $3(0.4) + 4(0.2) = 2$ and $0.4 + 3(0.2) = 1$.
+</Answer>
+</Check>
+
+<Check>
+Find the area of the triangle with corners $(1, 1)$, $(4, 2)$ and $(2, 5)$. (Modeled on Lay §3.3 #29–30.)
+
+<VectorAnswer answer={[5.5]} labels={["area"]} prefix="\text{area} =" />
+
+<Hint>
+Slide the triangle so one corner sits at the origin, which does not change its area. A triangle is half of a parallelogram.
+</Hint>
+
+<Answer>
+Subtract $(1, 1)$ from every corner. The triangle now has corners $\mathbf 0$, $(3, 1)$ and $(1, 4)$. The parallelogram on those two vectors has area $\left|\det\begin{bmatrix} 3 & 1 \\ 1 & 4 \end{bmatrix}\right| = |12 - 1| = 11$, and the triangle is half of it, so its area is $5.5$.
+</Answer>
+</Check>
+
+<Check>
+Let $A$ and $P$ be $n \times n$ matrices with $P$ invertible. Show that $\det(PAP^{-1}) = \det A$. (Modeled on Lay §3.2 #34.)
+
+<Hint>
+Use the product rule twice, then remember that determinants are ordinary numbers.
+</Hint>
+
+<Answer>
+$$
+\begin{aligned}
+\det(PAP^{-1}) &= (\det P)(\det A)(\det P^{-1}) && \text{product rule, twice} \\
+&= (\det P)(\det P^{-1})(\det A) && \text{numbers commute} \\
+&= \det(PP^{-1})\,\det A = \det I \cdot \det A = \det A && \text{product rule again}
+\end{aligned}
+$$
+
+The matrices $P$, $A$ and $P^{-1}$ need not commute, but their determinants do. Day 30 uses this to show that similar matrices have the same eigenvalues.
 </Answer>
 </Check>
