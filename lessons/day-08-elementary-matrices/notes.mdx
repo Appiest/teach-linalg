@@ -1,4 +1,38 @@
-On Day 3 you used three row operations to solve systems, and yesterday you met $A^{-1}$, the matrix that undoes $A$. Yesterday's formula only works for $2 \times 2$ matrices, so today asks how to find the inverse of a matrix of any size, and the answer connects those two ideas. Each row operation is itself a matrix, and running row reduction on $A$ and $I$ side by side computes $A^{-1}$.
+On Day 3 you used three row operations to solve systems, and yesterday you met $A^{-1}$, the matrix that undoes $A$. Yesterday's formula only works for $2 \times 2$ matrices, so today asks how to find the inverse of a matrix of any size. The answer connects those two ideas: each row operation is itself a matrix, and running row reduction on $A$ and $I$ side by side computes $A^{-1}$.
+
+Each section below opens with a problem. Try it before you open the walkthrough, even if you only get partway. You will need Day 6's row rule, $\text{row}_i(EA) = \text{row}_i(E)\,A$, more than once.
+
+## Elementary matrices
+
+<Problem>
+Start with the identity $I = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}$ and do the row operation "subtract 2 times row 1 from row 2". Call the result $E$. Then compute $EA$ for $A = \begin{bmatrix} 1 & 3 \\ 2 & 7 \end{bmatrix}$ and enter it row by row. How does it compare with doing the same row operation to $A$ directly?
+
+<VectorAnswer answer={[1, 3, 0, 1]} columns={2} />
+
+<Solution>
+Row 1 of $I$ stays $(1, 0)$. Row 2 becomes $(0, 1) - 2(1, 0) = (-2, 1)$. So
+
+$$
+E = \begin{bmatrix} 1 & 0 \\ \glow{-2} & \glow{1} \end{bmatrix}.
+$$
+
+To compute $EA$ we use Day 6's row rule, which says each row of $EA$ is a row of $E$ times $A$. A row times $A$ is a combination of the rows of $A$, with the row's entries as weights.
+
+<Steps>
+<Step>
+Row 1 of $E$ is $(1, 0)$, so row 1 of $EA$ is $1\cdot(1, 3) + 0\cdot(2, 7) = (1, 3)$. Row 1 of $A$ is unchanged.
+</Step>
+<Step>
+Row 2 of $E$ is $(-2, 1)$, so row 2 of $EA$ is $-2\cdot(1, 3) + 1\cdot(2, 7) = (-2 + 2,\; -6 + 7) = (0, 1)$.
+</Step>
+<Step>
+So $EA = \begin{bmatrix} 1 & 3 \\ 0 & 1 \end{bmatrix}$. Doing "subtract 2 times row 1 from row 2" to $A$ directly gives the same matrix.
+</Step>
+</Steps>
+
+Row 2 of $E$ is a recipe that says "take $-2$ of row 1 and $1$ of row 2". Multiplying by $E$ follows that recipe on whatever matrix sits to its right.
+</Solution>
+</Problem>
 
 <Definition term="Elementary matrix">
 An **elementary matrix** is a matrix you get by doing one elementary row operation to an identity matrix. There is one kind for each row operation: replacement, interchange and scaling.
@@ -6,56 +40,134 @@ An **elementary matrix** is a matrix you get by doing one elementary row operati
 If you do a row operation to an $m \times n$ matrix $A$, the result is $EA$, where $E$ is the $m \times m$ elementary matrix made by doing the same operation to $I_m$.
 </Definition>
 
-## Elementary matrices
-
 Writing a row operation as a matrix turns row reduction into ordinary matrix algebra. Day 9 uses that to factor $A = LU$, and Day 26 uses it to track how each row operation changes a determinant.
 
-Start with $I$ and subtract 2 times row 1 from row 2. The result is an elementary matrix $E$. Multiplying any matrix by $E$ on the left does the same row operation to it:
+Try writing a recipe yourself. The picture draws each row of $A = \begin{bmatrix} 1 & 2 \\ 3 & 5 \end{bmatrix}$ as an arrow, and row 2 of $E$ says how much of each to mix.
 
-$$
-\begin{bmatrix} 1 & 0 \\ \glow{-2} & \glow{1} \end{bmatrix}
-\begin{bmatrix} a & b \\ c & d \end{bmatrix}
-=
-\begin{bmatrix} a & b \\ \glow{c - 2a} & \glow{d - 2b} \end{bmatrix}
-$$
+<RowRecipe a={[[1, 2], [3, 5]]} target={[0, -1]} />
 
-The reason is the row rule from Day 6. Row $i$ of $EA$ is row $i$ of $E$ times $A$, so row $i$ of $E$ is a recipe that says how much of each row of $A$ to mix together. Row 2 of this $E$ is $(-2, 1)$, which asks for $-2R_1 + R_2$. Watch the order, too: $EA$ changes the rows of $A$, while $AE$ would change its columns.
+<Choice
+  question="Which row operation does $E = \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ -4 & 0 & 1 \end{bmatrix}$ perform?"
+  options={["$R_1 \\leftarrow R_1 - 4R_3$", "$R_3 \\leftarrow R_3 - 4R_1$", "$R_3 \\leftarrow -4R_3$", "$R_1 \\leftrightarrow R_3$"]}
+  answer={1}
+>
+Rows 1 and 2 of $E$ match $I$, so they leave rows 1 and 2 alone. Row 3 of $E$ is $(-4, 0, 1)$, which is the recipe $-4R_1 + R_3$. So $E$ replaces row 3 by row 3 minus 4 times row 1.
+</Choice>
 
-As a transformation of the plane, each elementary matrix is a simple move. The widget shows the grid after $E$, and its columns are where $\green{\hat\imath}$ and $\red{\hat\jmath}$ land.
+As a transformation of the plane, each $2 \times 2$ elementary matrix is a simple move. The widget shows the grid after $E$, and its columns are where $\green{\hat\imath}$ and $\red{\hat\jmath}$ land.
 
 <ElementaryMoves target={[1, -2]} />
 
 <Figure src="three-kinds" alt="Three small grids. On the left, a replacement matrix E with rows (1, 0) and (−2, 1) shears the grid so the green arrow points down to (1, −2); its inverse has +2 in the corner. In the middle, the swap matrix reflects the grid across the line y = x and is its own inverse. On the right, scaling row 1 by 2 stretches the grid sideways, and the inverse scales row 1 by one half." wide />
 
-Every row operation can be undone by another row operation of the same kind, so **every elementary matrix is invertible**, and its inverse is elementary too. You can write the inverse down without any computation. A replacement is undone by flipping the sign of the multiple, a swap undoes itself, and scaling by $c$ is undone by scaling by $\tfrac1c$. That is also why scaling by $0$ is not allowed.
+<Warning>
+The elementary matrix goes on the left. $EA$ changes the rows of $A$, while $AE$ changes its columns. For example, with the swap $E = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$, the product $\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}E = \begin{bmatrix} 2 & 1 \\ 4 & 3 \end{bmatrix}$ swaps the columns instead of the rows.
+</Warning>
+
+## Undoing a row operation
+
+<Problem>
+Which row operation undoes "subtract 2 times row 1 from row 2"? Write its elementary matrix $F$, enter it row by row, and check that $FE = I$ for the $E$ of Problem 1.
+
+<VectorAnswer answer={[1, 0, 2, 1]} columns={2} />
+
+<Solution>
+Subtracting $2R_1$ from row 2 is undone by adding $2R_1$ back. Doing "add 2 times row 1 to row 2" to $I$ gives
+
+$$
+F = \begin{bmatrix} 1 & 0 \\ 2 & 1 \end{bmatrix}.
+$$
+
+Now check with the row rule. Row 1 of $FE$ is row 1 of $E$, which is $(1, 0)$. Row 2 of $FE$ is $2\cdot(1, 0) + 1\cdot(-2, 1) = (0, 1)$. So $FE = I$, and in the same way $EF = I$. That makes $F = E^{-1}$.
+</Solution>
+</Problem>
+
+<Concept title="Every elementary matrix is invertible">
+Every row operation can be undone by another row operation of the same kind, so every elementary matrix has an inverse that is elementary too. You can write it down without any computation.
+
+- A replacement is undone by flipping the sign of the multiple: $\begin{bmatrix} 1 & 0 \\ -2 & 1 \end{bmatrix}^{-1} = \begin{bmatrix} 1 & 0 \\ 2 & 1 \end{bmatrix}$.
+- A swap undoes itself.
+- Scaling a row by $c$ is undone by scaling it by $\tfrac1c$. That is why scaling by $0$ is not a row operation.
+</Concept>
+
+<Choice
+  question="What is the inverse of the elementary matrix for $R_3 \leftarrow R_3 - 4R_1$?"
+  options={["The matrix for $R_3 \\leftarrow R_3 + 4R_1$", "The matrix for $R_3 \\leftarrow R_3 - \\tfrac14 R_1$", "The matrix for $R_3 \\leftarrow R_3 + \\tfrac14 R_1$", "It has no inverse"]}
+  answer={0}
+>
+Taking away $4R_1$ is undone by putting $4R_1$ back. Only a scaling uses a reciprocal. In the matrix, the $-4$ in row 3, column 1 becomes $+4$.
+</Choice>
 
 ## Inverting by row reduction
 
-On Day 3, row reduction aimed for reduced echelon form so you could read off the solution. For an invertible square matrix that form is $I$, so here the goal is to reduce $A$ all the way to $I$ while keeping a record of the steps, because their product turns out to be $A^{-1}$.
+On Day 3, row reduction aimed for reduced echelon form so you could read off the solution. For an invertible square matrix that form is $I$. Here the goal is to reduce $A$ all the way to $I$ while keeping a record of the steps, because their product turns out to be $A^{-1}$.
+
+<Problem>
+Reduce $A = \begin{bmatrix} 1 & 3 \\ 2 & 7 \end{bmatrix}$ to $I$ with two row replacements. Write the elementary matrix for each step, and multiply them together, putting the later step on the left. Enter the product row by row.
+
+<VectorAnswer answer={[7, -3, -2, 1]} columns={2} />
+
+<Solution>
+Problem 1 already did the first step. $E_1$ is "subtract 2 times row 1 from row 2", and it turned $A$ into $\begin{bmatrix} 1 & 3 \\ 0 & 1 \end{bmatrix}$.
+
+To finish, we clear the $3$ above the second pivot. $E_2$ is "subtract 3 times row 2 from row 1", which gives row 1 as $(1, 3) - 3(0, 1) = (1, 0)$ and leaves $I$. Its matrix is $I$ with that step done to it:
+
+$$
+E_1 = \begin{bmatrix} 1 & 0 \\ -2 & 1 \end{bmatrix}, \qquad E_2 = \begin{bmatrix} 1 & -3 \\ 0 & 1 \end{bmatrix}.
+$$
+
+$E_1$ acts first, so the product is $E_2E_1$. By the row rule, row 1 is $1\cdot(1, 0) - 3\cdot(-2, 1) = (7, -3)$, and row 2 is $0\cdot(1, 0) + 1\cdot(-2, 1) = (-2, 1)$:
+
+$$
+E_2E_1 = \begin{bmatrix} 7 & -3 \\ -2 & 1 \end{bmatrix}.
+$$
+
+Day 7's formula gives $A^{-1} = \frac{1}{7 - 6}\begin{bmatrix} 7 & -3 \\ -2 & 1 \end{bmatrix}$, the same matrix. The product of the steps that reduce $A$ to $I$ is $A^{-1}$.
+</Solution>
+</Problem>
 
 <Definition term="Theorem 7">
 An $n \times n$ matrix $A$ is invertible if and only if it is row equivalent to $I_n$. In that case, any sequence of row operations that reduces $A$ to $I_n$ also turns $I_n$ into $A^{-1}$.
 </Definition>
 
-Suppose row operations $E_1, \dots, E_p$ reduce $A$ to $I$, so $E_p \cdots E_1 A = I$. Multiplying both sides on the right by $A^{-1}$ gives $E_p \cdots E_1 = A^{-1}$. So the product of the steps is the inverse. To collect that product, write $I$ next to $A$ and do every operation to the whole row of $[\,A \;\; I\,]$. When the left half reaches $I$, the right half is $E_p \cdots E_1 I = A^{-1}$.
+The reason is the same as in Problem 3. If $E_p \cdots E_1 A = I$, multiplying both sides on the right by $A^{-1}$ gives $E_p \cdots E_1 = A^{-1}$. To collect that product without multiplying matrices, write $I$ next to $A$ and do every operation to the whole row of $[\,A \;\; I\,]$. When the left half reaches $I$, the right half is $E_p \cdots E_1 I = A^{-1}$.
 
-Here is the example from the video, with $A = \begin{bmatrix} \green{2} & \red{1} \\ \green{1} & \red{1} \end{bmatrix}$:
+Here is the example from the video, with $A = \begin{bmatrix} \green{2} & \red{1} \\ \green{1} & \red{1} \end{bmatrix}$. Each step says which entry it is trying to fix.
+
+<Steps>
+<Step>
+We want a $1$ in the top-left corner, and row 2 already starts with $1$, so swap the rows ($E_1$: $R_1 \leftrightarrow R_2$).
 
 $$
-\begin{aligned}
 \left[\begin{array}{rr|rr} \green{2} & \red{1} & 1 & 0 \\ \green{1} & \red{1} & 0 & 1 \end{array}\right]
-&\sim \left[\begin{array}{rr|rr} \green{1} & \red{1} & 0 & 1 \\ \green{2} & \red{1} & 1 & 0 \end{array}\right] && E_1:\ R_1 \leftrightarrow R_2 \\
-&\sim \left[\begin{array}{rr|rr} \green{1} & \red{1} & 0 & 1 \\ \green{0} & \red{-1} & 1 & -2 \end{array}\right] && E_2:\ R_2 \leftarrow R_2 - 2R_1 \\
-&\sim \left[\begin{array}{rr|rr} \green{1} & \red{1} & 0 & 1 \\ \green{0} & \red{1} & -1 & 2 \end{array}\right] && E_3:\ R_2 \leftarrow -R_2 \\
-&\sim \left[\begin{array}{rr|rr} \green{1} & \red{0} & \teal{1} & \teal{-1} \\ \green{0} & \red{1} & \teal{-1} & \teal{2} \end{array}\right] && E_4:\ R_1 \leftarrow R_1 - R_2
-\end{aligned}
+\sim \left[\begin{array}{rr|rr} \green{1} & \red{1} & 0 & 1 \\ \green{2} & \red{1} & 1 & 0 \end{array}\right]
 $$
-
-So $A^{-1}$ is the teal block, and one multiplication checks it:
+</Step>
+<Step>
+Clear the $2$ below the pivot by subtracting 2 times row 1 from row 2 ($E_2$). Row 2 becomes $(2, 1, 1, 0) - 2(1, 1, 0, 1) = (0, -1, 1, -2)$.
 
 $$
-\begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}\teal{\begin{bmatrix} 1 & -1 \\ -1 & 2 \end{bmatrix}} = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}
+\sim \left[\begin{array}{rr|rr} \green{1} & \red{1} & 0 & 1 \\ \green{0} & \red{-1} & 1 & -2 \end{array}\right]
 $$
+</Step>
+<Step>
+Turn the $-1$ into a pivot of $1$ by scaling row 2 by $-1$ ($E_3$).
+
+$$
+\sim \left[\begin{array}{rr|rr} \green{1} & \red{1} & 0 & 1 \\ \green{0} & \red{1} & -1 & 2 \end{array}\right]
+$$
+</Step>
+<Step>
+Clear the $1$ above the second pivot by subtracting row 2 from row 1 ($E_4$). Row 1 becomes $(1, 1, 0, 1) - (0, 1, -1, 2) = (1, 0, 1, -1)$.
+
+$$
+\sim \left[\begin{array}{rr|rr} \green{1} & \red{0} & \teal{1} & \teal{-1} \\ \green{0} & \red{1} & \teal{-1} & \teal{2} \end{array}\right]
+$$
+</Step>
+<Step>
+The left half is $I$, so the teal block is $A^{-1}$. Check with one multiplication: $\begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}\teal{\begin{bmatrix} 1 & -1 \\ -1 & 2 \end{bmatrix}} = \begin{bmatrix} 2 - 1 & -2 + 2 \\ 1 - 1 & -1 + 2 \end{bmatrix} = I$.
+</Step>
+</Steps>
 
 <Figure src="inverse-steps" alt="The augmented matrix [A | I] after each of the four steps, joined by arrows labelled E1 to E4. Under each matrix, a small grid shows the left half as a transformation: it starts slanted, reflects, shears, flips and ends as the square grid. The final right half, (1, −1; −1, 2), is teal." wide />
 
@@ -63,60 +175,292 @@ Try it yourself on a different matrix. The slider sets the number $c$ that the b
 
 <InverseBuilder matrix={[[0, 2], [1, 1]]} />
 
+<Warning>
+Do every operation to the whole row of $[\,A \;\; I\,]$, both halves at once. If you change only the left half, the right half stops recording the steps and will not be $A^{-1}$.
+</Warning>
+
 ## Products of elementary matrices
 
-Run the four steps backwards, last one first, and the square grid turns back into the grid of $A$. In symbols, $E_4E_3E_2E_1A = I$ gives
+The reduction steps take $A$ to $I$. Running them backwards, last one first, should take $I$ back to $A$.
+
+<Problem>
+In Problem 3, $E_2E_1A = I$. Write $A$ as a product of two elementary matrices, and check your answer by multiplying.
+
+<Solution>
+We want $A$ alone, so we remove $E_2$ first, because it sits farthest to the left. Multiply both sides on the left by $E_2^{-1}$, then by $E_1^{-1}$:
 
 $$
-A = E_1^{-1}E_2^{-1}E_3^{-1}E_4^{-1},
+E_1A = E_2^{-1} \quad\Longrightarrow\quad A = E_1^{-1}E_2^{-1}.
 $$
 
-and every factor is elementary. The same argument works for any invertible matrix, and a product of elementary matrices is always invertible because each factor is. So **$A$ is invertible exactly when it is a product of elementary matrices.** Day 27 uses this fact to prove that $\det(AB) = (\det A)(\det B)$.
+Each inverse flips the sign of its multiple, so
+
+$$
+A = \begin{bmatrix} 1 & 0 \\ 2 & 1 \end{bmatrix}\begin{bmatrix} 1 & 3 \\ 0 & 1 \end{bmatrix} = \begin{bmatrix} 1 & 3 \\ 2 & 3\cdot 2 + 1 \end{bmatrix} = \begin{bmatrix} 1 & 3 \\ 2 & 7 \end{bmatrix}.
+$$
+
+The order is the reverse of the reduction, with $E_1^{-1}$ on the left. It matches Day 7's socks and shoes rule.
+</Solution>
+</Problem>
 
 <Figure src="product-steps" alt="Five small grids from left to right: the square grid I, then the grid after E4 inverse, after E3 inverse E4 inverse, after E2 inverse E3 inverse E4 inverse, and finally the slanted grid of A = E1 inverse E2 inverse E3 inverse E4 inverse." wide />
 
-If $A$ is not invertible, row reduction tells you. For $B = \begin{bmatrix} 1 & 2 \\ 1 & 2 \end{bmatrix}$ the step $R_2 \leftarrow R_2 - R_1$ gives the row $[\,0 \;\; 0 \mid -1 \;\; 1\,]$. A zero row on the left can never become a row of $I$, so you can stop there: $B$ has no inverse. Geometrically, $B$ flattens the plane onto a line, and no sequence of invertible moves can unflatten it.
+Now do the same with the video's four steps. Each button applies one undo move to the grid.
 
-You can also get a single column of $A^{-1}$ on its own. Because $AA^{-1} = I$, column $j$ of $A^{-1}$ is the solution of $A\mathbf x = \mathbf e_j$, so you row reduce $[\,A \;\; \mathbf e_j\,]$ instead of the whole $[\,A \;\; I\,]$.
+<BuildFromSteps />
+
+<Concept title="Invertible means a product of elementary matrices">
+If $E_p \cdots E_1A = I$, then $A = E_1^{-1}E_2^{-1}\cdots E_p^{-1}$, and every factor is elementary. In the other direction, a product of elementary matrices is always invertible, because each factor is. So **$A$ is invertible exactly when it is a product of elementary matrices.** Geometrically, every invertible move of the plane is a chain of shears, swaps and stretches. Day 27 uses this fact to prove that $\det(AB) = (\det A)(\det B)$.
+</Concept>
+
+## When there is no inverse
+
+<Problem>
+Try to row reduce $[\,B \;\; I\,]$ for $B = \begin{bmatrix} 1 & 2 \\ 1 & 2 \end{bmatrix}$. What goes wrong?
+
+<Solution>
+The natural first step clears the $1$ below the first pivot by subtracting row 1 from row 2:
+
+$$
+\left[\begin{array}{rr|rr} 1 & 2 & 1 & 0 \\ 1 & 2 & 0 & 1 \end{array}\right]
+\sim \left[\begin{array}{rr|rr} 1 & 2 & 1 & 0 \\ 0 & 0 & -1 & 1 \end{array}\right]
+$$
+
+The left half now has a row of zeros. Every later row operation only mixes the rows $(1, 2)$ and $(0, 0)$, so every row it can produce is a multiple of $(1, 2)$. The row $(0, 1)$ of $I$ is not such a multiple, so the left half can never become $I$. By Theorem 7, $B$ has no inverse, and we can stop here. Its determinant $1 \cdot 2 - 2 \cdot 1 = 0$ agrees.
+</Solution>
+</Problem>
+
+A zero row on the left is the signal to stop. Geometrically, $B$ flattens the plane onto a line, and no sequence of invertible moves can unflatten it.
+
+## One column of the inverse
+
+Sometimes you need only part of $A^{-1}$. Because $AA^{-1} = I$, column $j$ of $A^{-1}$ is the vector that $A$ sends to $\mathbf e_j$, which is exactly what Day 7 found with the pink columns.
+
+<Problem>
+For $A = \begin{bmatrix} 1 & 3 \\ 2 & 7 \end{bmatrix}$, find the second column of $A^{-1}$ by row reducing $[\,A \;\; \mathbf e_2\,]$.
+
+<VectorAnswer answer={[-3, 1]} />
+
+<Solution>
+The second column solves $A\mathbf x = \mathbf e_2 = (0, 1)$, so we row reduce $A$ with only that one column beside it, using the same two steps as Problem 3:
+
+$$
+\left[\begin{array}{rr|r} 1 & 3 & 0 \\ 2 & 7 & 1 \end{array}\right]
+\sim \left[\begin{array}{rr|r} 1 & 3 & 0 \\ 0 & 1 & 1 \end{array}\right]
+\sim \left[\begin{array}{rr|r} 1 & 0 & -3 \\ 0 & 1 & 1 \end{array}\right]
+$$
+
+The second column of $A^{-1}$ is $(-3, 1)$, which matches the second column of the $A^{-1}$ found in Problem 3.
+</Solution>
+</Problem>
 
 Tomorrow the same record of steps, stopped at an echelon form instead of at $I$, gives the factorization $A = LU$, which solves $A\mathbf x = \mathbf b$ quickly for many different $\mathbf b$.
 
 ## Practice
 
-<Check>
-Find the inverse of $A = \begin{bmatrix} 1 & 3 \\ 2 & 7 \end{bmatrix}$ by row reducing $[\,A \;\; I\,]$ (modeled on Lay §2.2, #29). Enter its entries row by row.
+### Warm-up
 
-<VectorAnswer answer={[7, -3, -2, 1]} labels={["row 1, col 1", "row 1, col 2", "row 2, col 1", "row 2, col 2"]} />
+<Check>
+Write the $3 \times 3$ elementary matrix for $R_3 \leftarrow R_3 + 5R_1$, row by row.
+
+<VectorAnswer answer={[1, 0, 0, 0, 1, 0, 5, 0, 1]} columns={3} />
 
 <Answer>
-$$
-\begin{aligned}
-\left[\begin{array}{rr|rr} 1 & 3 & 1 & 0 \\ 2 & 7 & 0 & 1 \end{array}\right]
-&\sim \left[\begin{array}{rr|rr} 1 & 3 & 1 & 0 \\ 0 & 1 & -2 & 1 \end{array}\right] && R_2 \leftarrow R_2 - 2R_1 \\
-&\sim \left[\begin{array}{rr|rr} 1 & 0 & 7 & -3 \\ 0 & 1 & -2 & 1 \end{array}\right] && R_1 \leftarrow R_1 - 3R_2
-\end{aligned}
-$$
+Do the operation to $I_3$. Rows 1 and 2 stay the same, and row 3 becomes $(0, 0, 1) + 5(1, 0, 0) = (5, 0, 1)$:
 
-So $A^{-1} = \begin{bmatrix} 7 & -3 \\ -2 & 1 \end{bmatrix}$. The two steps are $E_1 = \begin{bmatrix} 1 & 0 \\ -2 & 1 \end{bmatrix}$ and $E_2 = \begin{bmatrix} 1 & -3 \\ 0 & 1 \end{bmatrix}$, so $A = E_1^{-1}E_2^{-1} = \begin{bmatrix} 1 & 0 \\ 2 & 1 \end{bmatrix}\begin{bmatrix} 1 & 3 \\ 0 & 1 \end{bmatrix}$.
+$$
+\begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 5 & 0 & 1 \end{bmatrix}
+$$
 </Answer>
 </Check>
 
 <Check>
-Let $A = \begin{bmatrix} 1 & 0 & 2 \\ 2 & 1 & 3 \\ 0 & -1 & 2 \end{bmatrix}$. Find the third column of $A^{-1}$ without computing the other two (modeled on Lay §2.2, #35).
+Write the inverse of $\begin{bmatrix} 1 & -6 \\ 0 & 1 \end{bmatrix}$, row by row, without computing.
 
-<VectorAnswer answer={[-2, 1, 1]} />
+<VectorAnswer answer={[1, 6, 0, 1]} columns={2} />
 
 <Answer>
-The third column of $A^{-1}$ solves $A\mathbf x = \mathbf e_3$, so row reduce $[\,A \;\; \mathbf e_3\,]$.
+The matrix performs $R_1 \leftarrow R_1 - 6R_2$. Its inverse puts the $6R_2$ back, $R_1 \leftarrow R_1 + 6R_2$, which is $\begin{bmatrix} 1 & 6 \\ 0 & 1 \end{bmatrix}$.
+</Answer>
+</Check>
 
+<Check>
+<Choice
+  question="Which row operation does $\begin{bmatrix} 0 & 0 & 1 \\ 0 & 1 & 0 \\ 1 & 0 & 0 \end{bmatrix}$ perform?"
+  options={["It swaps rows 1 and 2", "It swaps rows 1 and 3", "It reverses the signs of rows 1 and 3", "It is not an elementary matrix"]}
+  answer={1}
+>
+Row 1 of the matrix is $(0, 0, 1)$, which picks out row 3, and row 3 is $(1, 0, 0)$, which picks out row 1. Row 2 is unchanged. So it swaps rows 1 and 3, and it is the identity with those two rows swapped.
+</Choice>
+
+<Answer>
+Row $i$ of $E$ says which rows of $A$ build row $i$ of $EA$. Here row 1 of $EA$ is row 3 of $A$, and row 3 of $EA$ is row 1 of $A$.
+</Answer>
+</Check>
+
+### Core
+
+<Check>
+Find the inverse of $A = \begin{bmatrix} 2 & 5 \\ 1 & 3 \end{bmatrix}$ by row reducing $[\,A \;\; I\,]$, and enter it row by row. (Modeled on Lay §2.2 #29.)
+
+<VectorAnswer answer={[3, -5, -1, 2]} columns={2} />
+
+<Hint>
+Swapping the rows first puts a $1$ in the top-left corner and avoids fractions.
+</Hint>
+
+<Answer>
 $$
 \begin{aligned}
-\left[\begin{array}{rrr|r} 1 & 0 & 2 & 0 \\ 2 & 1 & 3 & 0 \\ 0 & -1 & 2 & 1 \end{array}\right]
-&\sim \left[\begin{array}{rrr|r} 1 & 0 & 2 & 0 \\ 0 & 1 & -1 & 0 \\ 0 & 0 & 1 & 1 \end{array}\right] && R_2 \leftarrow R_2 - 2R_1,\ R_3 \leftarrow R_3 + R_2 \\
-&\sim \left[\begin{array}{rrr|r} 1 & 0 & 0 & -2 \\ 0 & 1 & 0 & 1 \\ 0 & 0 & 1 & 1 \end{array}\right] && R_2 \leftarrow R_2 + R_3,\ R_1 \leftarrow R_1 - 2R_3
+\left[\begin{array}{rr|rr} 2 & 5 & 1 & 0 \\ 1 & 3 & 0 & 1 \end{array}\right]
+&\sim \left[\begin{array}{rr|rr} 1 & 3 & 0 & 1 \\ 2 & 5 & 1 & 0 \end{array}\right] && R_1 \leftrightarrow R_2 \\
+&\sim \left[\begin{array}{rr|rr} 1 & 3 & 0 & 1 \\ 0 & -1 & 1 & -2 \end{array}\right] && R_2 \leftarrow R_2 - 2R_1 \\
+&\sim \left[\begin{array}{rr|rr} 1 & 3 & 0 & 1 \\ 0 & 1 & -1 & 2 \end{array}\right] && R_2 \leftarrow -R_2 \\
+&\sim \left[\begin{array}{rr|rr} 1 & 0 & 3 & -5 \\ 0 & 1 & -1 & 2 \end{array}\right] && R_1 \leftarrow R_1 - 3R_2
 \end{aligned}
 $$
 
-The third column is $(-2, 1, 1)$. Check: $A\begin{bmatrix} -2 \\ 1 \\ 1 \end{bmatrix} = \begin{bmatrix} -2 + 2 \\ -4 + 1 + 3 \\ -1 + 2 \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}$.
+So $A^{-1} = \begin{bmatrix} 3 & -5 \\ -1 & 2 \end{bmatrix}$. Day 7's formula agrees, since $\det A = 6 - 5 = 1$.
+</Answer>
+</Check>
+
+<Check>
+Let $A = \begin{bmatrix} 1 & 2 & 0 \\ 0 & 1 & 3 \\ 4 & -1 & 2 \end{bmatrix}$ and let $E$ be the elementary matrix for $R_3 \leftarrow R_3 - 4R_1$. Find row 3 of $EA$. (Modeled on Lay §2.2 #28.)
+
+<VectorAnswer answer={[0, -9, 2]} labels={["entry 1", "entry 2", "entry 3"]} />
+
+<Hint>
+Row 3 of $E$ is $(-4, 0, 1)$. Use it as weights on the rows of $A$.
+</Hint>
+
+<Answer>
+$$
+\text{row}_3(EA) = -4\begin{bmatrix} 1 & 2 & 0 \end{bmatrix} + \begin{bmatrix} 4 & -1 & 2 \end{bmatrix} = \begin{bmatrix} 0 & -9 & 2 \end{bmatrix}
+$$
+
+Rows 1 and 2 of $EA$ are the same as in $A$. This is exactly the result of doing the row operation to $A$ directly.
+</Answer>
+</Check>
+
+<Check>
+Let $A = \begin{bmatrix} 1 & 0 & 2 \\ 2 & 1 & 3 \\ 0 & -1 & 2 \end{bmatrix}$. Find the third column of $A^{-1}$ without computing the other two. (Modeled on Lay §2.2 #35.)
+
+<VectorAnswer answer={[-2, 1, 1]} />
+
+<Hint>
+The third column of $A^{-1}$ solves $A\mathbf x = \mathbf e_3$. Row reduce $[\,A \;\; \mathbf e_3\,]$.
+</Hint>
+
+<Answer>
+$$
+\begin{aligned}
+\left[\begin{array}{rrr|r} 1 & 0 & 2 & 0 \\ 2 & 1 & 3 & 0 \\ 0 & -1 & 2 & 1 \end{array}\right]
+&\sim \left[\begin{array}{rrr|r} 1 & 0 & 2 & 0 \\ 0 & 1 & -1 & 0 \\ 0 & 0 & 1 & 1 \end{array}\right] \\
+&\sim \left[\begin{array}{rrr|r} 1 & 0 & 0 & -2 \\ 0 & 1 & 0 & 1 \\ 0 & 0 & 1 & 1 \end{array}\right]
+\end{aligned}
+$$
+
+The first step used $R_2 \leftarrow R_2 - 2R_1$ and then $R_3 \leftarrow R_3 + R_2$. The second used $R_2 \leftarrow R_2 + R_3$ and $R_1 \leftarrow R_1 - 2R_3$. The third column is $(-2, 1, 1)$. Check: $A\begin{bmatrix} -2 \\ 1 \\ 1 \end{bmatrix} = \begin{bmatrix} -2 + 2 \\ -4 + 1 + 3 \\ -1 + 2 \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}$.
+</Answer>
+</Check>
+
+<Check>
+Find the full inverse of the same $A = \begin{bmatrix} 1 & 0 & 2 \\ 2 & 1 & 3 \\ 0 & -1 & 2 \end{bmatrix}$, row by row. (Modeled on Lay §2.2 #31.)
+
+<VectorAnswer answer={[5, -2, -2, -4, 2, 1, -2, 1, 1]} columns={3} />
+
+<Hint>
+Use the same four row operations as the previous check, but carry all three columns of $I$ along.
+</Hint>
+
+<Answer>
+$$
+\begin{aligned}
+\left[\begin{array}{rrr|rrr} 1 & 0 & 2 & 1 & 0 & 0 \\ 2 & 1 & 3 & 0 & 1 & 0 \\ 0 & -1 & 2 & 0 & 0 & 1 \end{array}\right]
+&\sim \left[\begin{array}{rrr|rrr} 1 & 0 & 2 & 1 & 0 & 0 \\ 0 & 1 & -1 & -2 & 1 & 0 \\ 0 & 0 & 1 & -2 & 1 & 1 \end{array}\right] \\
+&\sim \left[\begin{array}{rrr|rrr} 1 & 0 & 0 & 5 & -2 & -2 \\ 0 & 1 & 0 & -4 & 2 & 1 \\ 0 & 0 & 1 & -2 & 1 & 1 \end{array}\right]
+\end{aligned}
+$$
+
+The first line used $R_2 \leftarrow R_2 - 2R_1$ and then $R_3 \leftarrow R_3 + R_2$. The second used $R_2 \leftarrow R_2 + R_3$ and $R_1 \leftarrow R_1 - 2R_3$. The third column matches the previous check.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="Is $\begin{bmatrix} 1 & 2 & 3 \\ 2 & 5 & 7 \\ 1 & 1 & 2 \end{bmatrix}$ invertible? (Modeled on Lay §2.2 #32.)"
+  options={["Yes", "No"]}
+  answer={1}
+>
+After $R_2 \leftarrow R_2 - 2R_1$ and $R_3 \leftarrow R_3 - R_1$, the rows are $(1, 2, 3)$, $(0, 1, 1)$ and $(0, -1, -1)$. Then $R_3 \leftarrow R_3 + R_2$ gives a zero row, so the matrix cannot reach $I$ and has no inverse.
+</Choice>
+
+<Hint>
+Row reduce and watch for a zero row on the left.
+</Hint>
+
+<Answer>
+$$
+\begin{bmatrix} 1 & 2 & 3 \\ 2 & 5 & 7 \\ 1 & 1 & 2 \end{bmatrix}
+\sim \begin{bmatrix} 1 & 2 & 3 \\ 0 & 1 & 1 \\ 0 & -1 & -1 \end{bmatrix}
+\sim \begin{bmatrix} 1 & 2 & 3 \\ 0 & 1 & 1 \\ 0 & 0 & 0 \end{bmatrix}
+$$
+
+Row 3 of the original matrix is row 2 minus row 1, which is why a zero row appears.
+</Answer>
+</Check>
+
+### Challenge
+
+<Check>
+The row operations $E_1$: $R_2 \leftarrow R_2 + 3R_1$ and then $E_2$: $R_1 \leftarrow R_1 - 2R_2$ reduce a $2 \times 2$ matrix $A$ to $I$. Find $A$, row by row.
+
+<VectorAnswer answer={[1, 2, -3, -5]} columns={2} />
+
+<Hint>
+From $E_2E_1A = I$, the matrix is $A = E_1^{-1}E_2^{-1}$. Write each inverse by flipping the sign of its multiple.
+</Hint>
+
+<Answer>
+$$
+\begin{aligned}
+A = E_1^{-1}E_2^{-1} &= \begin{bmatrix} 1 & 0 \\ -3 & 1 \end{bmatrix}\begin{bmatrix} 1 & 2 \\ 0 & 1 \end{bmatrix} \\
+&= \begin{bmatrix} 1 & 2 \\ -3 & -6 + 1 \end{bmatrix} = \begin{bmatrix} 1 & 2 \\ -3 & -5 \end{bmatrix}
+\end{aligned}
+$$
+
+Check: $R_2 + 3R_1$ turns row 2 into $(-3 + 3, -5 + 6) = (0, 1)$. Then $R_1 - 2R_2$ turns row 1 into $(1, 0)$.
+</Answer>
+</Check>
+
+<Check>
+The inverse of $\begin{bmatrix} 1 & 0 & 0 \\ 1 & 1 & 0 \\ 1 & 1 & 1 \end{bmatrix}$ is $\begin{bmatrix} 1 & 0 & 0 \\ -1 & 1 & 0 \\ 0 & -1 & 1 \end{bmatrix}$. Guess the last row of the inverse of the $4 \times 4$ matrix with $1$s on and below the diagonal and $0$s above it. (Modeled on Lay §2.2 #33.)
+
+<VectorAnswer answer={[0, 0, -1, 1]} labels={["entry 1", "entry 2", "entry 3", "entry 4"]} />
+
+<Hint>
+Row reducing the lower-triangular matrix of $1$s takes one step per row: subtract the row above. What does each of those steps record in the right half?
+</Hint>
+
+<Answer>
+The pattern is $1$s on the diagonal and $-1$s just below it, so the last row is $(0, 0, -1, 1)$. To see why, call the $4 \times 4$ matrix $A$ and the guess $B$. Row 4 of $BA$ is $-\text{row}_3(A) + \text{row}_4(A) = -(1, 1, 1, 0) + (1, 1, 1, 1) = (0, 0, 0, 1)$, which is row 4 of $I$. Each row of $B$ subtracts the row above it, and every row of $A$ differs from the one above by a single $1$.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="Row operations reduce $A = \begin{bmatrix} 2 & 0 \\ 0 & 1 \end{bmatrix}$ to $I$. Do the same row operations reduce $A^{-1}$ to $I$? (Modeled on Lay §2.2 #10.)"
+  options={["Yes, always", "No"]}
+  answer={1}
+>
+The only step needed is "scale row 1 by $\tfrac12$". Applied to $A^{-1} = \begin{bmatrix} \tfrac12 & 0 \\ 0 & 1 \end{bmatrix}$, it gives $\begin{bmatrix} \tfrac14 & 0 \\ 0 & 1 \end{bmatrix}$, not $I$. The steps multiply out to $A^{-1}$, so applying them to $A^{-1}$ gives $A^{-1}A^{-1}$, which is $I$ only in special cases.
+</Choice>
+
+<Hint>
+Multiply out what the steps do. If $E_p \cdots E_1 = A^{-1}$, what is $E_p \cdots E_1 A^{-1}$?
+</Hint>
+
+<Answer>
+$E_p \cdots E_1 A^{-1} = A^{-1}A^{-1}$. To reduce $A^{-1}$ to $I$ you need steps whose product is $(A^{-1})^{-1} = A$ instead.
 </Answer>
 </Check>

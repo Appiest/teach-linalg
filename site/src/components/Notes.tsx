@@ -14,7 +14,7 @@ import { ClosureHunt, PolynomialCombiner } from "@/components/interactive/vector
 import { CostCompare, LUBuilder, SubstitutionSolver } from "@/components/interactive/lu";
 import { AdditionExplorer, CombinationTarget, DifferenceExplorer, GridWeights, ScaleExplorer, VectorExplorer } from "@/components/interactive/vectors";
 import { ColumnWeights, CommuteHunt, CompositionExplorer, ProductColumns, ZeroProductHunt } from "@/components/interactive/product";
-import { ElementaryMoves, InverseBuilder } from "@/components/interactive/elementary";
+import { BuildFromSteps, ElementaryMoves, InverseBuilder, RowRecipe } from "@/components/interactive/elementary";
 import { DeterminantSlider, InverseColumnsHunt, SameLanding, SingularHunt, UndoOrder } from "@/components/interactive/inverse";
 import { CoordinateFinder, PolynomialCoordinates } from "@/components/interactive/coordinates";
 import { QuadrantEscape, ShiftedLineTest } from "@/components/interactive/subspaces";
@@ -121,6 +121,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     CostCompare,
     ElementaryMoves,
     InverseBuilder,
+    RowRecipe,
+    BuildFromSteps,
     InverseColumnsHunt,
     SingularHunt,
     UndoOrder,
