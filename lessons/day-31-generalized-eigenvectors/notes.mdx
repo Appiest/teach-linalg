@@ -1,30 +1,115 @@
-Day 28 found eigenvectors one line at a time, and Day 29 found every eigenvalue as a root of $\det(A - \lambda I)$. Day 30 showed that different eigenvalues give independent eigenvectors, but a repeated root gets no such promise. It raises a question those lessons left open: does a root counted twice always come with two independent eigenvectors? The shear $S = \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$ from Day 5 says no, and today builds what takes the missing eigenvector's place. The question matters now because Day 32 builds a basis out of eigenvectors, and a matrix that runs short of them needs a substitute before any such basis exists.
+Day 28 found eigenvectors one line at a time, and Day 29 found every eigenvalue as a root of $\det(A - \lambda I)$. Day 30 showed that different eigenvalues give independent eigenvectors, but a repeated root gets no such promise. Today asks whether a root counted twice always comes with two independent eigenvectors. The shear $S = \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$ from Day 5 says no, so we build what takes the missing eigenvector's place. This matters now because Day 32 builds a basis out of eigenvectors, and a matrix that runs short of them needs a substitute before any such basis exists.
 
-<Figure src="one-eigenline" alt="A square patch of grid sheared into a parallelogram by S = [1 1; 0 1]. Twelve gray arrows from the origin have tipped over toward the right and faded. Only the two horizontal arrows stay on their own line, which is drawn in yellow and labelled λ = 1, with an orange dot on each tip." wide />
+Each section below opens with a problem. Try it before you open the walkthrough, even if you only get partway. The box after each walkthrough names the idea you just used.
 
 ## Two multiplicities
 
-To tell whether a matrix has enough eigenvectors, count each eigenvalue in two ways and compare the counts. The shear's characteristic polynomial is $\det(S - \lambda I) = (1 - \lambda)^2$, so $\lambda = 1$ is a double root. Yet $S - I = \begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix}$ has rank 1, so its null space is only the line through $\green{\mathbf e_1}$. Every other direction gets tipped over, because the shear slides each point sideways by its height.
+<Problem>
+Let $S = \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$. Find its eigenvalues and every eigenvector. How many independent eigenvectors does $S$ have?
+
+<Solution>
+We want the eigenvalues first, because each eigenvalue tells us which null space to search for eigenvectors.
+
+<Steps>
+<Step>
+Subtract $\lambda$ down the diagonal and take the determinant. The matrix is triangular, so the determinant is the product of the diagonal entries: $\det(S - \lambda I) = (1 - \lambda)(1 - \lambda) = (1 - \lambda)^2$.
+</Step>
+<Step>
+The only root is $\lambda = 1$, and it appears twice. So $\lambda = 1$ is a double root.
+</Step>
+<Step>
+The eigenvectors for $\lambda = 1$ are the nonzero solutions of $(S - I)\mathbf x = \mathbf 0$. Here $S - I = \begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix}$, so the system says $0x_1 + 1x_2 = 0$, which means $x_2 = 0$ and $x_1$ is free.
+</Step>
+<Step>
+Every eigenvector is $x_1\begin{bmatrix} 1 \\ 0 \end{bmatrix}$ with $x_1 \ne 0$. They all lie on one line, the $x$-axis, so $S$ has only one independent eigenvector.
+</Step>
+</Steps>
+
+The root was counted twice, but the eigenvectors fill only a line. Two independent eigenvectors would be needed for a basis of $\mathbb R^2$, and the shear has only one.
+</Solution>
+</Problem>
+
+The picture explains why. The shear slides each point sideways by its height, so every arrow that is not horizontal tips over toward the right. Only arrows on the $x$-axis have zero height, so only they stay on their own line.
+
+<Figure src="one-eigenline" alt="A square patch of grid sheared into a parallelogram by S = [1 1; 0 1]. Twelve gray arrows from the origin have tipped over toward the right and faded. Only the two horizontal arrows stay on their own line, which is drawn in yellow and labelled λ = 1, with an orange dot on each tip." wide />
+
+Check it for yourself. Sweep a direction through every line in the plane and see which lines the shear keeps.
+
+<ShearRaySweep matrix={[[1, 1], [0, 1]]} start={90} />
+
+<Problem>
+The matrices $A = \begin{bmatrix} 2 & 1 \\ 0 & 2 \end{bmatrix}$ and $2I = \begin{bmatrix} 2 & 0 \\ 0 & 2 \end{bmatrix}$ have the same characteristic polynomial. Find it. Then find the dimension of the eigenspace for $\lambda = 2$ in each matrix.
+
+<Solution>
+Both matrices are triangular, so each characteristic polynomial is the product of the diagonal entries of the shifted matrix: $(2 - \lambda)(2 - \lambda) = (\lambda - 2)^2$. In both, $\lambda = 2$ is a double root.
+
+Now count eigenvectors, which means finding the null space of each shifted matrix. The eigenspace dimension is the number of free variables, and that is $n$ minus the rank.
+
+$$
+A - 2I = \begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix} \text{ has rank } 1, \qquad 2I - 2I = \begin{bmatrix} 0 & 0 \\ 0 & 0 \end{bmatrix} \text{ has rank } 0.
+$$
+
+So the eigenspace of $A$ has dimension $2 - 1 = 1$, and the eigenspace of $2I$ has dimension $2 - 0 = 2$. Every nonzero vector is an eigenvector of $2I$.
+
+The two matrices share a characteristic polynomial, but their eigenspaces have different sizes. The polynomial alone cannot tell you how many eigenvectors there are.
+</Solution>
+</Problem>
+
+<Concept title="Count each eigenvalue in two ways">
+An eigenvalue can be counted as a root of the characteristic polynomial, and it can be counted by the size of its eigenspace. For the shear, $\lambda = 1$ counts $2$ as a root and $1$ as an eigenspace dimension. When the second count is smaller, that eigenvalue is short of eigenvectors.
+
+You find the second count by row reducing, since $\dim\operatorname{Nul}(A - \lambda I) = n - \operatorname{rank}(A - \lambda I)$. You never read it off the exponent in the polynomial.
+</Concept>
 
 <Definition term="Algebraic and geometric multiplicity">
 Let $\lambda$ be an eigenvalue of an $n \times n$ matrix $A$. Its **algebraic multiplicity** is its multiplicity as a root of the characteristic polynomial. Its **geometric multiplicity** is $\dim \operatorname{Nul}(A - \lambda I)$, the dimension of its eigenspace. The geometric multiplicity is always at least 1 and at most the algebraic multiplicity (Lay §5.3, Theorem 7a). A matrix is **defective** when some eigenvalue has geometric multiplicity smaller than its algebraic multiplicity.
 </Definition>
 
-The geometric multiplicity is $n - \operatorname{rank}(A - \lambda I)$, so you find it by row reducing, never by reading exponents off the polynomial. Since eigenvectors for different eigenvalues are independent (Day 30), a defective matrix has too few independent eigenvectors to form a basis of $\mathbb R^n$. On Day 32 this count decides which matrices can be diagonalized. Being defective has nothing to do with being invertible: $S$ has determinant 1 and is defective, while $\begin{bmatrix} 0 & 0 \\ 0 & 1 \end{bmatrix}$ is singular and not defective.
+Eigenvectors for different eigenvalues are independent (Day 30), so the only way to run short is inside one eigenspace. A defective matrix therefore has too few independent eigenvectors to form a basis of $\mathbb R^n$. On Day 32 this count decides which matrices can be diagonalized.
+
+The second problem also shows that $A$ and $2I$ are not similar. For every invertible $P$, the product $P^{-1}(2I)P = 2P^{-1}P = 2I$, so the only matrix similar to $2I$ is $2I$ itself. Similar matrices share their characteristic polynomial (Day 30), but sharing a polynomial is not enough to make two matrices similar.
+
+Slide the corner entry and watch the two counts. The algebraic multiplicity never changes, while the geometric multiplicity jumps only at one value.
 
 <MultiplicityGapSlider lambda={2} start={1} />
 
-The matrices $\begin{bmatrix} 2 & 1 \\ 0 & 2 \end{bmatrix}$ and $2I$ share the characteristic polynomial $(\lambda - 2)^2$, but they are not similar. Every $P^{-1}(2I)P$ equals $2I$ again, so nothing else is similar to $2I$. The characteristic polynomial records the algebraic multiplicities only, and the eigenspace dimensions carry information it misses.
+<Warning>
+Being defective has nothing to do with being invertible. The shear $S$ has determinant $1$, so it is invertible, and it is defective. The matrix $\begin{bmatrix} 0 & 0 \\ 0 & 1 \end{bmatrix}$ is singular, and it is not defective, since its eigenvalues $0$ and $1$ each have a one-dimensional eigenspace.
+</Warning>
+
+<Choice
+  question="Which matrix is defective?"
+  options={["$\\begin{bmatrix} 3 & 0 \\\\ 0 & 3 \\end{bmatrix}$", "$\\begin{bmatrix} 3 & 0 \\\\ 0 & 5 \\end{bmatrix}$", "$\\begin{bmatrix} 3 & 0 \\\\ 4 & 3 \\end{bmatrix}$", "$\\begin{bmatrix} 0 & 0 \\\\ 0 & 0 \\end{bmatrix}$"]}
+  answer={2}
+>
+The third matrix has the double eigenvalue $3$, and $\begin{bmatrix} 0 & 0 \\ 4 & 0 \end{bmatrix}$ has rank 1, so its eigenspace is only a line. The first and last matrices are multiples of $I$, so every nonzero vector is an eigenvector. The second has two different eigenvalues, each with its own eigenline.
+</Choice>
 
 ## Jordan chains
 
-What we want here is a second vector that completes the basis and still belongs to the eigenvalue. When eigenvectors run short, apply $A - \lambda I$ to a vector that is not an eigenvector. For the shear, take $\blue{\mathbf v_2} = (1, 2)$. The push from $\blue{\mathbf v_2}$ to $S\blue{\mathbf v_2} = (3, 2)$ is $(S - I)\blue{\mathbf v_2} = (2, 0)$, which lies on the eigenline, and one more push sends it to $\mathbf 0$.
+The shear needs a second basis vector that still belongs to $\lambda = 1$. An eigenvector is sent to $\mathbf 0$ by $S - I$. So the next best thing is a vector that $S - I$ sends onto an eigenvector.
+
+<Problem>
+Let $\blue{\mathbf v_2} = \begin{bmatrix} 1 \\ 2 \end{bmatrix}$. Compute $(S - I)\blue{\mathbf v_2}$. Then apply $S - I$ to the result.
+
+<Solution>
+$S - I = \begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix}$ copies the second entry into the first slot and puts $0$ below it. Applying it once gives
+
+$$
+(S - I)\begin{bmatrix} 1 \\ 2 \end{bmatrix} = \begin{bmatrix} 0 \cdot 1 + 1 \cdot 2 \\ 0 \cdot 1 + 0 \cdot 2 \end{bmatrix} = \begin{bmatrix} 2 \\ 0 \end{bmatrix}.
+$$
+
+The result lies on the $x$-axis, which is the eigenline. Call it $\yellow{\mathbf v_1} = (2, 0)$. Applying $S - I$ again gives $(0 \cdot 2 + 1 \cdot 0,\ 0) = (0, 0)$, because $\yellow{\mathbf v_1}$ is an eigenvector.
+
+In the picture, $S\blue{\mathbf v_2} = (3, 2)$, and $(S - I)\blue{\mathbf v_2} = S\blue{\mathbf v_2} - \blue{\mathbf v_2}$ is the push from $\blue{\mathbf v_2}$ to $S\blue{\mathbf v_2}$. The shear pushes every point parallel to the eigenline, so the push always lands on it.
+</Solution>
+</Problem>
 
 <Pair>
 <Figure src="chain" alt="The sheared patch with the yellow eigenline along the x-axis. The blue arrow v2 = (1, 2) and the teal arrow S v2 = (3, 2) are joined at their tips by a pink arrow labelled (S − I)v2. A yellow arrow v1 = (2, 0) of the same length lies on the eigenline with an orange dot on its tip. A panel reads v2 → v1 → 0, each arrow labelled S − I." />
 
 <Definition term="Generalized eigenvector and Jordan chain">
-A nonzero $\mathbf v$ is a **generalized eigenvector** of $A$ for $\lambda$ if $(A - \lambda I)^k\mathbf v = \mathbf 0$ for some $k \ge 1$. A **Jordan chain** is a list $\mathbf v_k, \dots, \mathbf v_1$ with $\mathbf v_{j-1} = (A - \lambda I)\mathbf v_j$ and $\mathbf v_1 \ne \mathbf 0$, $(A - \lambda I)\mathbf v_1 = \mathbf 0$:
+A nonzero $\mathbf v$ is a **generalized eigenvector** of $A$ for $\lambda$ if $(A - \lambda I)^k\mathbf v = \mathbf 0$ for some $k \ge 1$. A **Jordan chain** is a list $\mathbf v_k, \dots, \mathbf v_1$ with $\mathbf v_{j-1} = (A - \lambda I)\mathbf v_j$, $\mathbf v_1 \ne \mathbf 0$ and $(A - \lambda I)\mathbf v_1 = \mathbf 0$:
 
 $$
 \blue{\mathbf v_2} \xrightarrow{\;A - \lambda I\;} \yellow{\mathbf v_1} \xrightarrow{\;A - \lambda I\;} \mathbf 0.
@@ -32,79 +117,228 @@ $$
 </Definition>
 </Pair>
 
-The bottom of every chain is an ordinary eigenvector. The vectors of a chain are linearly independent: applying $(A - \lambda I)^{k-1}$ to a dependence relation kills every term except the one with $\mathbf v_k$, so its weight is 0, and the same step repeats down the chain.
+The bottom of every chain is an ordinary eigenvector. The vectors of a chain are also linearly independent. To see it for two vectors, suppose $c_1\yellow{\mathbf v_1} + c_2\blue{\mathbf v_2} = \mathbf 0$. Applying $A - \lambda I$ kills the $\yellow{\mathbf v_1}$ term and turns $\blue{\mathbf v_2}$ into $\yellow{\mathbf v_1}$, leaving $c_2\yellow{\mathbf v_1} = \mathbf 0$, so $c_2 = 0$ and then $c_1 = 0$. Longer chains work the same way, one step at a time.
 
-For a $2 \times 2$ matrix with a double eigenvalue $\lambda$, the matrix $N = A - \lambda I$ has trace 0 and determinant 0, and every $2 \times 2$ matrix satisfies $N^2 - (\operatorname{tr}N)N + (\det N)I = 0$. So $N^2 = 0$, and any $\blue{\mathbf v_2}$ off the eigenline starts a chain of length 2. Here is the recipe with $A = \begin{bmatrix} 5 & 1 \\ -1 & 3 \end{bmatrix}$:
+<Problem>
+Let $A = \begin{bmatrix} 5 & 1 \\ -1 & 3 \end{bmatrix}$. Find its eigenvalue, compute $(A - \lambda I)^2$, and build a Jordan chain starting from $\blue{\mathbf v_2} = \begin{bmatrix} 1 \\ 0 \end{bmatrix}$.
+
+<Solution>
+The recipe has three moves: find $\lambda$, push $\blue{\mathbf v_2}$ down once, and check that the result is an eigenvector.
+
+<Steps>
+<Step>
+Find the eigenvalue. The characteristic polynomial is $(5 - \lambda)(3 - \lambda) - (1)(-1) = \lambda^2 - 8\lambda + 15 + 1 = \lambda^2 - 8\lambda + 16 = (\lambda - 4)^2$. So $\lambda = 4$ is a double root.
+</Step>
+<Step>
+Form $N = A - 4I = \begin{bmatrix} 1 & 1 \\ -1 & -1 \end{bmatrix}$. Its second row is $-1$ times its first, so its rank is 1 and the eigenspace is the single line $x_1 + x_2 = 0$, through $(1, -1)$. The matrix is defective.
+</Step>
+<Step>
+Square $N$ to see how many pushes it takes to reach $\mathbf 0$: $N^2 = \begin{bmatrix} 1 \cdot 1 + 1 \cdot (-1) & 1 \cdot 1 + 1 \cdot (-1) \\ -1 \cdot 1 + (-1)(-1) & -1 \cdot 1 + (-1)(-1) \end{bmatrix} = \begin{bmatrix} 0 & 0 \\ 0 & 0 \end{bmatrix}$. Every vector reaches $\mathbf 0$ within two pushes.
+</Step>
+<Step>
+Push $\blue{\mathbf v_2}$ once: $\yellow{\mathbf v_1} = N\begin{bmatrix} 1 \\ 0 \end{bmatrix} = \begin{bmatrix} 1 \\ -1 \end{bmatrix}$, the first column of $N$.
+</Step>
+<Step>
+Check that $\yellow{\mathbf v_1}$ is an eigenvector: $N\yellow{\mathbf v_1} = \begin{bmatrix} 1 - 1 \\ -1 + 1 \end{bmatrix} = \mathbf 0$. The chain is $\blue{(1, 0)} \to \yellow{(1, -1)} \to \mathbf 0$.
+</Step>
+</Steps>
+
+$N^2 = 0$ was no accident. $N$ has trace $1 + (-1) = 0$ and determinant $-1 + 1 = 0$, and every $2 \times 2$ matrix satisfies $N^2 - (\operatorname{tr}N)N + (\det N)I = 0$. With both numbers zero, that identity says $N^2 = 0$.
+</Solution>
+</Problem>
+
+<Concept title="Push down the chain">
+For a $2 \times 2$ matrix with a double eigenvalue $\lambda$, the matrix $N = A - \lambda I$ has trace $0$ and determinant $0$, so $N^2 = 0$. Pick any $\blue{\mathbf v_2}$ off the eigenline and push it once:
 
 $$
-\begin{aligned}
-\det(A - \lambda I) &= (5 - \lambda)(3 - \lambda) + 1 = (\lambda - 4)^2 \\
-A - 4I &= \begin{bmatrix} 1 & 1 \\ -1 & -1 \end{bmatrix}, \qquad \operatorname{rank} = 1 \\
-\blue{\mathbf v_2} = \begin{bmatrix} 1 \\ 0 \end{bmatrix} \quad &\Rightarrow \quad \yellow{\mathbf v_1} = (A - 4I)\blue{\mathbf v_2} = \begin{bmatrix} 1 \\ -1 \end{bmatrix} \\
-(A - 4I)\yellow{\mathbf v_1} &= \begin{bmatrix} 1 - 1 \\ -1 + 1 \end{bmatrix} = \mathbf 0
-\end{aligned}
+\yellow{\mathbf v_1} = (A - \lambda I)\blue{\mathbf v_2}.
 $$
 
-Both multiplicities show up: $\lambda = 4$ is a double root, and its eigenspace is the single line through $(1, -1)$. The direction of the chain matters. You start at the top with $\blue{\mathbf v_2}$ and push down, because pushing an eigenvector gives $\mathbf 0$.
+Then $(A - \lambda I)\yellow{\mathbf v_1} = N^2\blue{\mathbf v_2} = \mathbf 0$, so $\yellow{\mathbf v_1}$ is an eigenvector and $\blue{\mathbf v_2} \to \yellow{\mathbf v_1} \to \mathbf 0$ is a chain of length 2.
+</Concept>
+
+Try it with $A = \begin{bmatrix} 2 & 1 \\ -1 & 0 \end{bmatrix}$, whose double eigenvalue is $\lambda = 1$. Different starting vectors give different pushes, but every push lands on the same eigenline.
 
 <JordanChainBuilder matrix={[[2, 1], [-1, 0]]} lambda={1} target={[2, -2]} start={[1, 0]} />
 
+<Warning>
+The chain runs downward. You start at the top with $\blue{\mathbf v_2}$ and compute $\yellow{\mathbf v_1} = (A - \lambda I)\blue{\mathbf v_2}$. Pushing an eigenvector gives $\mathbf 0$, so $\blue{\mathbf v_2} = (A - \lambda I)\yellow{\mathbf v_1}$ is always wrong. For the same reason, $\blue{\mathbf v_2}$ must be chosen off the eigenline, or its push is $\mathbf 0$ and no chain starts.
+</Warning>
+
 ## Longer chains
 
-The goal is still a basis, now built from chains whose lengths add up to each eigenvalue's algebraic multiplicity. In larger matrices a chain can need more pushes, and $\dim \operatorname{Nul}(A - \lambda I)^k$ counts how many independent vectors $k$ pushes can finish. These dimensions grow with $k$ and stop exactly at the algebraic multiplicity. The null space where they stop is the **generalized eigenspace** of $\lambda$. For $A = \begin{bmatrix} 1 & 1 & 0 \\ -1 & 3 & 0 \\ -3 & 3 & -1 \end{bmatrix}$, whose characteristic polynomial is $-(\lambda - 2)^2(\lambda + 1)$, watch the dimension for $\lambda = 2$ climb.
+In a $3 \times 3$ matrix, a chain can need more pushes. The number that tells you when to stop is the algebraic multiplicity, and the tool is the null space of a power of $A - \lambda I$.
+
+<Problem>
+Let $A = \begin{bmatrix} 1 & 1 & 0 \\ -1 & 3 & 0 \\ -3 & 3 & -1 \end{bmatrix}$, whose characteristic polynomial is $-(\lambda - 2)^2(\lambda + 1)$. Find $\dim\operatorname{Nul}(A - 2I)$ and $\dim\operatorname{Nul}(A - 2I)^2$. Then find a chain of length 2 for $\lambda = 2$.
+
+<Solution>
+The eigenvalue $2$ has algebraic multiplicity 2, so we want two independent vectors that belong to it. First see how many ordinary eigenvectors there are.
+
+<Steps>
+<Step>
+Form $N = A - 2I = \begin{bmatrix} -1 & 1 & 0 \\ -1 & 1 & 0 \\ -3 & 3 & -3 \end{bmatrix}$. The first two rows are equal, and the third row is not a multiple of them, so the rank is 2. That leaves $\dim\operatorname{Nul}N = 3 - 2 = 1$, which is one eigenvector short.
+</Step>
+<Step>
+The eigenvector solves $-x_1 + x_2 = 0$ and $-3x_1 + 3x_2 - 3x_3 = 0$. The first gives $x_2 = x_1$, and then the second gives $x_3 = 0$. So $\yellow{\mathbf v_1} = (1, 1, 0)$.
+</Step>
+<Step>
+Square $N$. Its rows come out as $(0, 0, 0)$, $(0, 0, 0)$ and $(9, -9, 9)$, so $N^2$ has rank 1 and $\dim\operatorname{Nul}N^2 = 3 - 1 = 2$. That matches the algebraic multiplicity, so two pushes are enough.
+</Step>
+<Step>
+To get the top of the chain, solve $N\mathbf w = \yellow{\mathbf v_1}$. The equations are $-w_1 + w_2 = 1$ and $-3w_1 + 3w_2 - 3w_3 = 0$. The second says $w_3 = w_2 - w_1 = 1$. Taking $w_1 = 0$ gives $w_2 = 1$, so $\blue{\mathbf v_2} = (0, 1, 1)$.
+</Step>
+<Step>
+Check: $N\blue{\mathbf v_2} = (0 + 1 + 0,\ 0 + 1 + 0,\ 0 + 3 - 3) = (1, 1, 0) = \yellow{\mathbf v_1}$.
+</Step>
+</Steps>
+
+The other eigenvalue, $\lambda = -1$, has the eigenvector $(0, 0, 1)$, since the third column of $A$ is $(0, 0, -1)$. Together with the chain, that makes three independent vectors.
+</Solution>
+</Problem>
+
+<Concept title="Raise the power until the null space stops growing">
+The dimensions of $\operatorname{Nul}(A - \lambda I)^k$ grow as $k$ grows, and they stop exactly at the algebraic multiplicity of $\lambda$. In the problem above they went $1, 2$ and stopped at $2$. The null space where they stop is the **generalized eigenspace** of $\lambda$. To build a chain, pick the top vector inside the last null space but outside the one before it, then push down.
+</Concept>
+
+Raise $k$ for the matrix from the problem and watch the null space fill up.
 
 <NullPowerClimb matrix={[[1, 1, 0], [-1, 3, 0], [-3, 3, -1]]} lambda={2} multiplicity={2} />
 
-To build the chain, pick $\blue{\mathbf v_2}$ in $\operatorname{Nul}(A - 2I)^2$ but outside $\operatorname{Nul}(A - 2I)$. Here $\blue{\mathbf v_2} = (0, 1, 1)$ gives $(A - 2I)\blue{\mathbf v_2} = (1, 1, 0) = \yellow{\mathbf v_1}$, and $(0, 0, 1)$ is the eigenvector for $\lambda = -1$. Differentiation on polynomials of degree at most 2 is a chain of length 3, since $t^2 \to 2t \to 2 \to 0$, and there $\dim\operatorname{Nul}$ climbs $1, 2, 3$.
+A chain can be longer than 2. Differentiation on polynomials of degree at most 2 sends $t^2 \to 2t \to 2 \to 0$, which is a chain of length 3 for the eigenvalue $0$. There $\dim\operatorname{Nul}$ climbs $1, 2, 3$, because one derivative kills the constants, two kill every line $a + bt$, and three kill everything.
 
 <Figure src="squash" alt="Three small planes joined by arrows labelled S − I. In the first, a square patch of grid holds the blue arrow v2 = (1, 2) and the yellow arrow v1 = (2, 0). In the second, the patch has collapsed onto a thick blue segment on the yellow eigenline, and the blue arrow now lies where v1 was. In the third, everything has shrunk to an orange ring at the origin." wide />
 
 ## Jordan form
 
-The chains were built to serve as a basis, and in that basis the matrix of $A$ is as close to diagonal as $A$ allows. Unpacking the chain gives two equations about $A$:
+The chains were built to serve as a basis. The last question is what $A$ looks like when we use that basis, which Day 22 answers with $P^{-1}AP$.
+
+<Problem>
+Keep $A = \begin{bmatrix} 5 & 1 \\ -1 & 3 \end{bmatrix}$ with its chain $\blue{\mathbf v_2} = (1, 0)$ and $\yellow{\mathbf v_1} = (1, -1)$. Write $A\yellow{\mathbf v_1}$ and $A\blue{\mathbf v_2}$ as combinations of $\yellow{\mathbf v_1}$ and $\blue{\mathbf v_2}$. Then find $P^{-1}AP$ for $P = \begin{bmatrix} \yellow{\mathbf v_1} & \blue{\mathbf v_2} \end{bmatrix}$.
+
+<Solution>
+Day 22 says column $j$ of $P^{-1}AP$ holds the coordinates of $A\mathbf v_j$ in the basis $\yellow{\mathbf v_1}, \blue{\mathbf v_2}$. So we only need those two combinations.
+
+$\yellow{\mathbf v_1}$ is an eigenvector for $4$, so $A\yellow{\mathbf v_1} = 4\yellow{\mathbf v_1} + 0\blue{\mathbf v_2}$. Check: $A(1, -1) = (5 - 1,\ -1 - 3) = (4, -4)$.
+
+For $\blue{\mathbf v_2}$, rearrange the chain equation $(A - 4I)\blue{\mathbf v_2} = \yellow{\mathbf v_1}$ into $A\blue{\mathbf v_2} = 4\blue{\mathbf v_2} + \yellow{\mathbf v_1}$. Check: $A(1, 0) = (5, -1)$, and $4(1, 0) + (1, -1) = (5, -1)$.
+
+The coordinates $(4, 0)$ and $(1, 4)$ become the columns:
 
 $$
-A\yellow{\mathbf v_1} = \lambda\yellow{\mathbf v_1}, \qquad A\blue{\mathbf v_2} = 1\,\yellow{\mathbf v_1} + \lambda\blue{\mathbf v_2}.
+P^{-1}AP = \begin{bmatrix} \yellow{4} & \blue{1} \\ \yellow{0} & \blue{4} \end{bmatrix}.
 $$
 
-With $P = \begin{bmatrix} \yellow{\mathbf v_1} & \blue{\mathbf v_2} \end{bmatrix}$, Day 22 says column $j$ of $P^{-1}AP$ holds the coordinates of $A\mathbf v_j$ in the basis $\yellow{\mathbf v_1}, \blue{\mathbf v_2}$. Reading those coordinates off the two equations gives
+The eigenvalue sits on the diagonal, as it would for a diagonal matrix. The extra 1 above the diagonal records that $A$ scales $\blue{\mathbf v_2}$ by $4$ and then adds one copy of $\yellow{\mathbf v_1}$.
+</Solution>
+</Problem>
+
+Find the second column yourself. The weights that rebuild $A\blue{\mathbf v_2}$ from the two chain vectors are exactly that column.
+
+<ChainCoordinates matrix={[[5, 1], [-1, 3]]} bottom={[1, -1]} top={[1, 0]} />
+
+<Concept title="A chain turns into a Jordan block">
+For any chain $\blue{\mathbf v_2} \to \yellow{\mathbf v_1} \to \mathbf 0$, the two equations $A\yellow{\mathbf v_1} = \lambda\yellow{\mathbf v_1}$ and $A\blue{\mathbf v_2} = 1\,\yellow{\mathbf v_1} + \lambda\blue{\mathbf v_2}$ give, for $P = \begin{bmatrix} \yellow{\mathbf v_1} & \blue{\mathbf v_2} \end{bmatrix}$,
 
 $$
 P^{-1}AP = \begin{bmatrix} \yellow{\lambda} & \blue{1} \\ \yellow{0} & \blue{\lambda} \end{bmatrix}.
 $$
 
-The 1 above the diagonal is the push: $A$ scales $\blue{\mathbf v_2}$ by $\lambda$ and adds one copy of $\yellow{\mathbf v_1}$. For the worked example above, $P = \begin{bmatrix} 1 & 1 \\ -1 & 0 \end{bmatrix}$ gives $P^{-1}AP = \begin{bmatrix} 4 & 1 \\ 0 & 4 \end{bmatrix}$.
+List the chain from the bottom up. With the order reversed, the 1 moves below the diagonal.
+</Concept>
 
 <Definition term="Jordan form (stated without proof)">
 A **Jordan block** $J_k(\lambda)$ is the $k \times k$ matrix with $\lambda$ on the diagonal, 1 directly above it, and 0 everywhere else. If the characteristic polynomial of $A$ factors into linear factors, then $A$ is similar to a block diagonal matrix $J$ of Jordan blocks, its **Jordan form**. For each eigenvalue, the number of blocks equals the geometric multiplicity and the block sizes add up to the algebraic multiplicity. The columns of $P$ are Jordan chains, each listed from $\mathbf v_1$ up.
 </Definition>
 
-For the $3 \times 3$ matrix above, $P = \begin{bmatrix} 0 & 1 & 0 \\ 0 & 1 & 1 \\ 1 & 0 & 1 \end{bmatrix}$ lists $(0, 0, 1)$, then $\yellow{\mathbf v_1}$, then $\blue{\mathbf v_2}$, and $P^{-1}AP = \begin{bmatrix} -1 & 0 & 0 \\ 0 & 2 & 1 \\ 0 & 0 & 2 \end{bmatrix}$ has a block of size 1 and a block of size 2. Tomorrow covers the case with no chains at all, where every block has size 1 and $J$ is diagonal. Day 33 comes back to a Jordan chain as the best basis for a map that has too few eigenvectors.
+For the $3 \times 3$ matrix from the previous section, $P = \begin{bmatrix} 0 & 1 & 0 \\ 0 & 1 & 1 \\ 1 & 0 & 1 \end{bmatrix}$ lists the eigenvector $(0, 0, 1)$, then $\yellow{\mathbf v_1}$, then $\blue{\mathbf v_2}$. It gives
+
+$$
+P^{-1}AP = \begin{bmatrix} -1 & 0 & 0 \\ 0 & 2 & 1 \\ 0 & 0 & 2 \end{bmatrix},
+$$
+
+with a block of size 1 for $\lambda = -1$ and a block of size 2 for $\lambda = 2$.
+
+<Choice
+  question="An eigenvalue $\lambda = 5$ has algebraic multiplicity 3 and geometric multiplicity 2. What Jordan blocks does it get?"
+  options={["One block of size 3", "Two blocks, of sizes 2 and 1", "Three blocks of size 1", "Two blocks, of sizes 3 and 2"]}
+  answer={1}
+>
+The number of blocks equals the geometric multiplicity, which is 2. Their sizes add up to the algebraic multiplicity, which is 3. The only way to split 3 into two positive sizes is $2 + 1$.
+</Choice>
+
+Tomorrow covers the case with no chains at all, where every block has size 1 and $J$ is diagonal. Day 33 comes back to a Jordan chain as the best basis for a map that has too few eigenvectors.
 
 ## Practice
 
+### Warm-up
+
 <Check>
-Let $A = \begin{bmatrix} 1 & -1 \\ 1 & 3 \end{bmatrix}$. It has a single eigenvalue $\lambda = 2$. Starting from $\blue{\mathbf v_2} = \mathbf e_1$, find $\yellow{\mathbf v_1} = (A - 2I)\blue{\mathbf v_2}$. (Modeled on Lay §5.3, Exercise 9.)
+Give the algebraic and geometric multiplicities of $\lambda = 3$ for $\begin{bmatrix} 3 & 1 \\ 0 & 3 \end{bmatrix}$. (Modeled on Lay §5.3 #8.)
+
+<VectorAnswer answer={[2, 1]} prefix="(\text{algebraic}, \text{geometric}) =" />
+
+<Answer>
+The matrix is triangular with $3$ twice on the diagonal, so the characteristic polynomial is $(3 - \lambda)^2$ and the algebraic multiplicity is 2. Then $A - 3I = \begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix}$ has rank 1, so the geometric multiplicity is $2 - 1 = 1$.
+</Answer>
+</Check>
+
+<Check>
+Compute $N^2$ for $N = \begin{bmatrix} 2 & -4 \\ 1 & -2 \end{bmatrix}$.
+
+<VectorAnswer answer={[0, 0, 0, 0]} columns={2} />
+
+<Answer>
+$$
+N^2 = \begin{bmatrix} 2 \cdot 2 + (-4) \cdot 1 & 2 \cdot (-4) + (-4)(-2) \\ 1 \cdot 2 + (-2) \cdot 1 & 1 \cdot (-4) + (-2)(-2) \end{bmatrix} = \begin{bmatrix} 0 & 0 \\ 0 & 0 \end{bmatrix}
+$$
+
+You could predict this. $N$ has trace $2 + (-2) = 0$ and determinant $-4 - (-4) = 0$, and any $2 \times 2$ matrix with both equal to zero squares to zero.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="Which vector can be the top $\mathbf v_2$ of a Jordan chain for the shear $S = \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$?"
+  options={["$\\begin{bmatrix} 3 \\\\ 0 \\end{bmatrix}$", "$\\begin{bmatrix} 0 \\\\ 0 \\end{bmatrix}$", "$\\begin{bmatrix} 1 \\\\ -1 \\end{bmatrix}$"]}
+  answer={2}
+>
+The top of a chain must be off the eigenline, so that its push is not $\mathbf 0$. The vector $(3, 0)$ lies on the eigenline and $(0, 0)$ is the zero vector, so both pushes are $\mathbf 0$. The vector $(1, -1)$ gives $(S - I)(1, -1) = (-1, 0)$, which is a nonzero eigenvector.
+</Choice>
+</Check>
+
+### Core
+
+<Check>
+Let $A = \begin{bmatrix} 1 & -1 \\ 1 & 3 \end{bmatrix}$. It has a single eigenvalue $\lambda = 2$. Starting from $\blue{\mathbf v_2} = \mathbf e_1$, find $\yellow{\mathbf v_1} = (A - 2I)\blue{\mathbf v_2}$. (Modeled on Lay §5.3 #9.)
 
 <VectorAnswer answer={[-1, 1]} />
+
+<Hint>
+Subtract 2 from each diagonal entry. Multiplying a matrix by $\mathbf e_1$ picks out its first column.
+</Hint>
 
 <Answer>
 $$
 \begin{aligned}
-\det(A - \lambda I) &= (1 - \lambda)(3 - \lambda) + 1 = (\lambda - 2)^2 \\
+\det(A - \lambda I) &= (1 - \lambda)(3 - \lambda) + 1 = \lambda^2 - 4\lambda + 4 = (\lambda - 2)^2 \\
 A - 2I &= \begin{bmatrix} -1 & -1 \\ 1 & 1 \end{bmatrix} \\
 \yellow{\mathbf v_1} &= (A - 2I)\begin{bmatrix} 1 \\ 0 \end{bmatrix} = \begin{bmatrix} -1 \\ 1 \end{bmatrix}
 \end{aligned}
 $$
 
-Check: $A(-1, 1) = (-2, 2) = 2(-1, 1)$, so $\yellow{\mathbf v_1}$ is an eigenvector. The rank of $A - 2I$ is 1, so the geometric multiplicity is 1 while the algebraic multiplicity is 2, and $A$ is defective.
+Check: $A(-1, 1) = (-1 - 1,\ -1 + 3) = (-2, 2) = 2(-1, 1)$, so $\yellow{\mathbf v_1}$ is an eigenvector. The rank of $A - 2I$ is 1, so the geometric multiplicity is 1 while the algebraic multiplicity is 2, and $A$ is defective.
 </Answer>
 </Check>
 
 <Check>
 Let $A = \begin{bmatrix} 2 & 0 & 1 \\ 0 & 2 & 0 \\ 0 & 0 & 2 \end{bmatrix}$. Give the algebraic and geometric multiplicities of $\lambda = 2$.
 
-<VectorAnswer answer={[3, 2]} labels={["Algebraic", "Geometric"]} />
+<VectorAnswer answer={[3, 2]} prefix="(\text{algebraic}, \text{geometric}) =" />
+
+<Hint>
+The matrix is triangular, so read the algebraic multiplicity off the diagonal. For the geometric one, find the rank of $A - 2I$.
+</Hint>
 
 <Answer>
 $A$ is triangular with 2 three times on the diagonal, so the algebraic multiplicity is 3. Then
@@ -118,9 +352,49 @@ has rank 1, so the eigenspace $\operatorname{Span}\{\mathbf e_1, \mathbf e_2\}$ 
 </Check>
 
 <Check>
+Let $A = \begin{bmatrix} 3 & 0 & 0 \\ 1 & 3 & 0 \\ 0 & 0 & -1 \end{bmatrix}$. Find $\dim\operatorname{Nul}(A - 3I)$ and $\dim\operatorname{Nul}(A - 3I)^2$. (Modeled on Lay §5.3 #17.)
+
+<VectorAnswer answer={[1, 2]} labels={["k = 1", "k = 2"]} />
+
+<Hint>
+Write out $A - 3I$ and count its pivots. Then multiply it by itself and count again.
+</Hint>
+
+<Answer>
+$$
+A - 3I = \begin{bmatrix} 0 & 0 & 0 \\ 1 & 0 & 0 \\ 0 & 0 & -4 \end{bmatrix}, \qquad (A - 3I)^2 = \begin{bmatrix} 0 & 0 & 0 \\ 0 & 0 & 0 \\ 0 & 0 & 16 \end{bmatrix}
+$$
+
+The first has rank 2, so its null space has dimension $3 - 2 = 1$ (spanned by $\mathbf e_2$). The second has rank 1, so its null space has dimension 2 (spanned by $\mathbf e_1$ and $\mathbf e_2$). That matches the algebraic multiplicity of $3$, and the chain is $\mathbf e_1 \to \mathbf e_2 \to \mathbf 0$.
+</Answer>
+</Check>
+
+<Check>
+Keep $A = \begin{bmatrix} 1 & -1 \\ 1 & 3 \end{bmatrix}$ and the chain from the first core check, $\blue{\mathbf v_2} = (1, 0)$ and $\yellow{\mathbf v_1} = (-1, 1)$. Find $P^{-1}AP$ for $P = \begin{bmatrix} \yellow{\mathbf v_1} & \blue{\mathbf v_2} \end{bmatrix}$. Enter it row by row.
+
+<VectorAnswer answer={[2, 1, 0, 2]} columns={2} />
+
+<Hint>
+You do not need $P^{-1}$. Write $A\yellow{\mathbf v_1}$ and $A\blue{\mathbf v_2}$ as combinations of $\yellow{\mathbf v_1}$ and $\blue{\mathbf v_2}$ and use the weights as columns.
+</Hint>
+
+<Answer>
+$A\yellow{\mathbf v_1} = 2\yellow{\mathbf v_1}$, so the first column is $(2, 0)$. The chain equation $(A - 2I)\blue{\mathbf v_2} = \yellow{\mathbf v_1}$ rearranges to $A\blue{\mathbf v_2} = 1\,\yellow{\mathbf v_1} + 2\blue{\mathbf v_2}$. Check: $A(1, 0) = (1, 1)$ and $(-1, 1) + 2(1, 0) = (1, 1)$. So the second column is $(1, 2)$ and
+
+$$
+P^{-1}AP = \begin{bmatrix} 2 & 1 \\ 0 & 2 \end{bmatrix}.
+$$
+</Answer>
+</Check>
+
+<Check>
 Let $A = \begin{bmatrix} 2 & 1 & 1 \\ 0 & 2 & 1 \\ 0 & 0 & 2 \end{bmatrix}$. Starting from $\mathbf v_3 = \mathbf e_3$, find $\mathbf v_2 = (A - 2I)\mathbf v_3$.
 
 <VectorAnswer answer={[1, 1, 0]} />
+
+<Hint>
+Multiplying by $\mathbf e_3$ picks out the third column of $A - 2I$.
+</Hint>
 
 <Answer>
 $$
@@ -132,5 +406,55 @@ A - 2I &= \begin{bmatrix} 0 & 1 & 1 \\ 0 & 0 & 1 \\ 0 & 0 & 0 \end{bmatrix} \\
 $$
 
 One more push sends $\mathbf v_1$ to $\mathbf 0$, so $\mathbf e_3$ is a generalized eigenvector of rank 3 and the chain has length 3. The dimensions of $\operatorname{Nul}(A - 2I)^k$ are 1, 2, 3.
+</Answer>
+</Check>
+
+### Challenge
+
+<Check>
+Let $A = \begin{bmatrix} 0 & 1 \\ -4 & 4 \end{bmatrix}$, $\mathbf b_1 = \begin{bmatrix} 1 \\ 2 \end{bmatrix}$ and $\mathbf b_2 = \begin{bmatrix} 0 \\ -1 \end{bmatrix}$. Find $P^{-1}AP$ for $P = \begin{bmatrix} \mathbf b_1 & \mathbf b_2 \end{bmatrix}$. Why is it not quite a Jordan block, and how would you fix $\mathbf b_2$? (Modeled on Lay §5.4 #17.)
+
+<VectorAnswer answer={[2, -1, 0, 2]} columns={2} />
+
+<Hint>
+Find the eigenvalue first, then compute $(A - \lambda I)\mathbf b_2$ and compare it with $\mathbf b_1$.
+</Hint>
+
+<Answer>
+The characteristic polynomial is $(0 - \lambda)(4 - \lambda) + 4 = \lambda^2 - 4\lambda + 4 = (\lambda - 2)^2$, so $\lambda = 2$. Then $A - 2I = \begin{bmatrix} -2 & 1 \\ -4 & 2 \end{bmatrix}$.
+
+$(A - 2I)\mathbf b_1 = (-2 + 2,\ -4 + 4) = \mathbf 0$, so $\mathbf b_1$ is an eigenvector and $A\mathbf b_1 = 2\mathbf b_1$.
+
+$(A - 2I)\mathbf b_2 = (0 - 1,\ 0 - 2) = (-1, -2) = -\mathbf b_1$, so $A\mathbf b_2 = -\mathbf b_1 + 2\mathbf b_2$.
+
+The columns are $(2, 0)$ and $(-1, 2)$, which gives $\begin{bmatrix} 2 & -1 \\ 0 & 2 \end{bmatrix}$. The push lands on $-\mathbf b_1$ instead of $\mathbf b_1$, so the corner is $-1$. Replacing $\mathbf b_2$ with $-\mathbf b_2 = (0, 1)$ makes its push exactly $\mathbf b_1$, and then $P^{-1}AP = \begin{bmatrix} 2 & 1 \\ 0 & 2 \end{bmatrix}$.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="A $3 \times 3$ matrix has two different eigenvalues, and each eigenspace is a line. Does $\mathbb R^3$ have a basis of its eigenvectors? (Modeled on Lay §5.3 #24.)"
+  options={["Yes, always", "No, never", "Only if the matrix is invertible"]}
+  answer={1}
+>
+Any eigenvector lies on one of the two eigenlines. So at most one independent eigenvector comes from each line, which is two in total, and a basis of $\mathbb R^3$ needs three. One of the eigenvalues must be a double root with a one-dimensional eigenspace, so the matrix is defective. Invertibility plays no part in this count.
+</Choice>
+</Check>
+
+<Check>
+Suppose $\blue{\mathbf v_3} \to \mathbf v_2 \to \yellow{\mathbf v_1} \to \mathbf 0$ is a Jordan chain for $A$ and $\lambda$, so each arrow means "apply $N = A - \lambda I$". Show that $\yellow{\mathbf v_1}, \mathbf v_2, \blue{\mathbf v_3}$ are linearly independent.
+
+<Hint>
+Start from $c_1\yellow{\mathbf v_1} + c_2\mathbf v_2 + c_3\blue{\mathbf v_3} = \mathbf 0$ and apply $N^2$ to both sides. Which terms survive?
+</Hint>
+
+<Answer>
+Suppose $c_1\yellow{\mathbf v_1} + c_2\mathbf v_2 + c_3\blue{\mathbf v_3} = \mathbf 0$.
+
+Apply $N^2$. Two pushes send $\yellow{\mathbf v_1}$ and $\mathbf v_2$ to $\mathbf 0$ and send $\blue{\mathbf v_3}$ to $\yellow{\mathbf v_1}$. So $c_3\yellow{\mathbf v_1} = \mathbf 0$. Since $\yellow{\mathbf v_1} \ne \mathbf 0$, $c_3 = 0$.
+
+Now the relation is $c_1\yellow{\mathbf v_1} + c_2\mathbf v_2 = \mathbf 0$. Apply $N$ once. It sends $\yellow{\mathbf v_1}$ to $\mathbf 0$ and $\mathbf v_2$ to $\yellow{\mathbf v_1}$, so $c_2\yellow{\mathbf v_1} = \mathbf 0$ and $c_2 = 0$.
+
+That leaves $c_1\yellow{\mathbf v_1} = \mathbf 0$, so $c_1 = 0$. Every weight is zero, so the three vectors are independent.
 </Answer>
 </Check>

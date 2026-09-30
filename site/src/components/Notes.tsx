@@ -35,7 +35,7 @@ import { AreaShearSlide, CornerToOrigin } from "@/components/interactive/determi
 import { CramerAreas, HeightStack, ProductAreaHunt } from "@/components/interactive/determinant-properties";
 import { CofactorLinePicker, MultipleAreaScale, ReplacementShear } from "@/components/interactive/cofactor-expansion";
 import { IterateSwing, ShiftToSingular, TraceCurveMatch } from "@/components/interactive/eigenvalue-properties";
-import { JordanChainBuilder, MultiplicityGapSlider, NullPowerClimb } from "@/components/interactive/generalized-eigenvectors";
+import { ChainCoordinates, JordanChainBuilder, MultiplicityGapSlider, NullPowerClimb, ShearRaySweep } from "@/components/interactive/generalized-eigenvectors";
 import { DiagonalBasisHunt, EigenOrbitSettle, EigenPolynomialHunt } from "@/components/interactive/diagonalizing-transformations";
 import { DiagonalFactorSteps, EigenCoordinateTarget } from "@/components/interactive/diagonalization";
 import { CharacteristicSweep, EigenpairHunt } from "@/components/interactive/characteristic-equation";
@@ -173,6 +173,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     MultiplicityGapSlider,
     JordanChainBuilder,
     NullPowerClimb,
+    ShearRaySweep,
+    ChainCoordinates,
     DiagonalBasisHunt,
     EigenOrbitSettle,
     EigenPolynomialHunt,
