@@ -20,13 +20,13 @@ import { CoordinateFinder, PolynomialCoordinates } from "@/components/interactiv
 import { QuadrantEscape, ShiftedLineTest } from "@/components/interactive/subspaces";
 import { AddressHunt, StaircaseBasis, TrimToBasis } from "@/components/interactive/basis";
 import { LiftToPlane, LoopAnywhere, RelationFinder } from "@/components/interactive/independence";
-import { OutputReach, PivotPicker, RowSlide } from "@/components/interactive/column-space";
-import { PivotBudget, RankTally } from "@/components/interactive/rank-nullity";
+import { ConsistencyLine, OutputReach, PivotPicker, RelationTwins, RowSlide } from "@/components/interactive/column-space";
+import { CollapseSlider, PivotBudget, RankTally, RowColumnDrop } from "@/components/interactive/rank-nullity";
 import { ColumnBuilder, DerivativeRoutes } from "@/components/interactive/matrix-representations";
-import { InvertibilityCalls, StatementBoard } from "@/components/interactive/invertible-matrix-theorem";
+import { CrushAndMiss, InvertibilityCalls, StatementBoard, ThirdPivotSlider } from "@/components/interactive/invertible-matrix-theorem";
 import { ChangeMatrixBuilder, SimilarityHunt, TwoAddresses } from "@/components/interactive/change-of-basis";
-import { FreeWeights, LandingHunt } from "@/components/interactive/null-space";
-import { DerivativeTarget, SharedDerivativeHunt, TranslationGap } from "@/components/interactive/linear-maps";
+import { FreeWeights, LandingHunt, NullSumCheck, RightSideShift } from "@/components/interactive/null-space";
+import { AdditivityHunt, DerivativeTarget, EvaluationZeros, SharedDerivativeHunt, TranslationGap } from "@/components/interactive/linear-maps";
 import { PivotHunt, PolynomialRecipe, ThirdVectorHunt } from "@/components/interactive/span-revisited";
 import { DifferenceInKernel, EvaluationKernel } from "@/components/interactive/kernel";
 import { ComplementLanding, RangeCollapse } from "@/components/interactive/image-range";
@@ -143,20 +143,30 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     OutputReach,
     PivotPicker,
     RowSlide,
+    ConsistencyLine,
+    RelationTwins,
     RankTally,
     PivotBudget,
+    CollapseSlider,
+    RowColumnDrop,
     ColumnBuilder,
     DerivativeRoutes,
     StatementBoard,
     InvertibilityCalls,
+    CrushAndMiss,
+    ThirdPivotSlider,
     TwoAddresses,
     ChangeMatrixBuilder,
     SimilarityHunt,
     LandingHunt,
     FreeWeights,
+    NullSumCheck,
+    RightSideShift,
     TranslationGap,
     DerivativeTarget,
     SharedDerivativeHunt,
+    AdditivityHunt,
+    EvaluationZeros,
     ThirdVectorHunt,
     PivotHunt,
     PolynomialRecipe,

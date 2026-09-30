@@ -3,11 +3,11 @@
 import { Check } from "@phosphor-icons/react";
 import { useId, useState } from "react";
 import { palette } from "@/lib/palette.generated";
-import { Goal, Panel, Readout, Slider, Tex, Workbench } from "./controls";
+import { describeVector, Goal, Panel, Readout, Slider, Tex, Workbench } from "./controls";
 import { hue, type Hue } from "./colors";
 import { useSettled } from "./gesture";
-import { texNumber, type Vec } from "./math";
-import { Arrow, Handle, Label, Plane } from "./plane";
+import { add, scale, texNumber, type Vec } from "./math";
+import { Arrow, Handle, Label, Marker, Plane, Segment } from "./plane";
 
 type Vec3 = [number, number, number];
 
@@ -247,6 +247,108 @@ export function RowSlide({ rows }: { rows: [Vec3, Vec3] }) {
           </>
         }
       />
+    </Panel>
+  );
+}
+
+const LINE_BOUNDS = { xMin: -5, xMax: 5, yMin: -5, yMax: 5 };
+const isZero = (value: number) => Math.abs(value) < 1e-9;
+const columnTex2 = (v: Vec, color: string) => `\\textcolor{${color}}{\\begin{bmatrix} ${texNumber(v[0])} \\\\ ${texNumber(v[1])} \\end{bmatrix}}`;
+
+/** Drag b and watch the last row of the reduced augmented matrix; it reads 0 = 0 exactly when b is on the line Col A. */
+export function ConsistencyLine({ columns }: { columns: [Vec, Vec] }) {
+  const [b, setB] = useState<Vec>([3, 1]);
+  const [first, second] = columns;
+  const leftover = b[1] - (first[1] / first[0]) * b[0];
+  const { settled: solved, gesture } = useSettled(isZero(leftover) && !(b[0] === 0 && b[1] === 0));
+  const leftoverColor = isZero(leftover) ? palette.teal : palette.glow;
+  const augmented = `\\left[\\begin{array}{cc|c} ${first[0]} & ${second[0]} & ${texNumber(b[0])} \\\\ 0 & 0 & \\textcolor{${leftoverColor}}{${texNumber(leftover)}} \\end{array}\\right]`;
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Drag <Tex>{"\\mathbf b"}</Tex> anywhere except the origin so that the last row of the reduced augmented matrix says <Tex>{"0 = 0"}</Tex>.</>}
+        success={<>Now the system is consistent, so <Tex>{"\\mathbf b"}</Tex> is an output of <Tex>{"A"}</Tex>. Every output lies on the teal line, which is <Tex>{"\\operatorname{Col}A"}</Tex>.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={LINE_BOUNDS} label="Plane with the two columns of A along one line and a draggable vector b">
+            <g opacity={solved ? 0.95 : 0.45} className="transition-opacity duration-300">
+              <Segment from={scale(-5, first)} to={scale(5, first)} color="teal" dashed={false} />
+            </g>
+            <Arrow to={first} color="green" />
+            <Arrow to={second} color="red" />
+            <Arrow to={b} color="yellow" />
+            <Label at={b} color="yellow">b</Label>
+            <Handle at={b} onMove={setB} color="yellow" label={`Tip of b, at ${describeVector(b)}`} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Readout tex={`\\mathbf b = ${columnTex2(b, palette.yellow)}`} />
+            <Readout tex={`[\\,A \\ \\ \\mathbf b\\,] \\sim ${augmented}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+const TWIN_BOUNDS = { xMin: -2, xMax: 5, yMin: -2, yMax: 5 };
+
+function TwinPlane({ columns, weights, name, lit }: { columns: [Vec, Vec, Vec]; weights: Vec; name: string; lit: boolean }) {
+  const [first, second, third] = columns;
+  const partial = scale(weights[0], first);
+  const result = add(partial, scale(weights[1], second));
+  return (
+    <figure className="min-w-0">
+      <Plane bounds={TWIN_BOUNDS} label={`Columns of ${name}, with the combination of the first two at ${describeVector(result)} and the third column at ${describeVector(third)}`}>
+        <Arrow to={first} color="green" width={2.5} />
+        <Arrow to={second} color="red" width={2.5} />
+        <Arrow to={third} color="pink" width={2.5} />
+        <Segment from={[0, 0]} to={partial} color="green" />
+        <Segment from={partial} to={result} color="red" />
+        <Marker at={third} color={lit ? "teal" : "glow"} ring={!lit} />
+        <Arrow to={result} color="teal" />
+      </Plane>
+      <figcaption className="mt-2 text-center text-meta text-text-muted">
+        <Tex>{name}</Tex>
+      </figcaption>
+    </figure>
+  );
+}
+
+/** One pair of weights drives a combination in A and in its reduced form B at once; the same weights reach column 3 in both. */
+export function RelationTwins({ matrix, reduced, answer }: { matrix: [Vec, Vec, Vec]; reduced: [Vec, Vec, Vec]; answer: Vec }) {
+  const [c1, setC1] = useState(0);
+  const [c2, setC2] = useState(0);
+  const inA = add(scale(c1, matrix[0]), scale(c2, matrix[1]));
+  const reached = isZero(inA[0] - matrix[2][0]) && isZero(inA[1] - matrix[2][1]);
+  const { settled: solved, gesture } = useSettled(reached);
+  const relation = (name: string) => `${texNumber(c1)}\\,\\mathbf ${name}_1 + ${texNumber(c2)}\\,\\mathbf ${name}_2`;
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Choose weights so the teal arrow in the left picture lands on the pink third column of <Tex>{"A"}</Tex>. Keep an eye on the right picture as you go.</>}
+        success={<>The weights <Tex>{`c_1 = ${answer[0]}`}</Tex> and <Tex>{`c_2 = ${answer[1]}`}</Tex> build the third column in both pictures, because row operations keep every relation among the columns.</>}
+      />
+      <div className="grid gap-4 sm:grid-cols-2">
+        <TwinPlane columns={matrix} weights={[c1, c2]} name="A" lit={solved} />
+        <TwinPlane columns={reduced} weights={[c1, c2]} name="B" lit={solved} />
+      </div>
+      <div className="mt-5 grid gap-4 md:grid-cols-2">
+        <div className="space-y-3">
+          <Slider label="c_1" value={c1} onChange={setC1} min={-3} max={3} step={1} color={palette.i_hat} />
+          <Slider label="c_2" value={c2} onChange={setC2} min={-3} max={3} step={1} color={palette.j_hat} />
+        </div>
+        <div className="space-y-3">
+          <Readout tex={relation("a")} />
+          <Readout tex={relation("b")} />
+        </div>
+      </div>
     </Panel>
   );
 }
