@@ -4,9 +4,10 @@ import { Check } from "@phosphor-icons/react";
 import { useId, useState } from "react";
 import { palette } from "@/lib/palette.generated";
 import { hue, type Hue } from "./colors";
-import { Goal, Panel, Readout, Slider, Tex, Workbench } from "./controls";
+import { columnTex, describeVector, Goal, Panel, Readout, Slider, Tex, Workbench } from "./controls";
 import { useSettled } from "./gesture";
-import { texNumber, type Vec } from "./math";
+import { add, nearlyEqual, scale, texNumber, type Vec } from "./math";
+import { Arrow, Handle, Label, Marker, Plane, Segment, usePlane } from "./plane";
 import { polynomialTex } from "./vector-spaces";
 
 type Coefficients = [number, number, number];
@@ -195,6 +196,128 @@ export function DerivativeRoutes({ target, start = [1, 1, 1] }: { target: Coeffi
             ))}
             <Readout tex={`\\textcolor{${palette.yellow}}{\\mathbf p(t)} = \\textcolor{${palette.yellow}}{${polynomialTex(p)}}`} />
             <Readout tex={`${DERIVATIVE_MATRIX_TEX}${plainColumnTex(p, palette.yellow)} = ${plainColumnTex(slope, palette.teal)}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+function twoColumnTex(first: Vec, second: Vec): string {
+  const g = (value: number) => `\\textcolor{${palette.i_hat}}{${texNumber(value)}}`;
+  const r = (value: number) => `\\textcolor{${palette.j_hat}}{${texNumber(value)}}`;
+  return `\\begin{bmatrix} ${g(first[0])} & ${r(second[0])} \\\\ ${g(first[1])} & ${r(second[1])} \\end{bmatrix}`;
+}
+
+function StepPath({ images, x }: { images: [Vec, Vec]; x: Vec }) {
+  const firstLeg = scale(x[0], images[0]);
+  return (
+    <>
+      <Arrow to={firstLeg} color="green" width={2.5} dashed />
+      <Arrow from={firstLeg} to={add(firstLeg, scale(x[1], images[1]))} color="red" width={2.5} dashed />
+    </>
+  );
+}
+
+/** T is known only through T(e1) and T(e2). Drag the teal point to where T(x) must land; once it does, the column path appears. */
+export function LandingPredict({ images, x }: { images: [Vec, Vec]; x: Vec }) {
+  const [guess, setGuess] = useState<Vec>([0, 0]);
+  const landing = add(scale(x[0], images[0]), scale(x[1], images[1]));
+  const { settled: solved, gesture } = useSettled(nearlyEqual(guess, landing));
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>The green and red arrows are <Tex>{"T(\\mathbf e_1)"}</Tex> and <Tex>{"T(\\mathbf e_2)"}</Tex>. Drag the teal point to <Tex>{`T${columnTex(x)}`}</Tex>.</>}
+        success={<>Right. The dashed path is <Tex>{`${texNumber(x[0])}\\,T(\\mathbf e_1) + ${texNumber(x[1])}\\,T(\\mathbf e_2)`}</Tex>, which is <Tex>{"A"}</Tex> times <Tex>{columnTex(x)}</Tex>.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={{ xMin: -6, xMax: 6, yMin: -4, yMax: 5 }} label="Plane showing T of e1 in green and T of e2 in red, with a draggable teal point">
+            {solved ? <StepPath images={images} x={x} /> : null}
+            <Arrow to={images[0]} color="green" />
+            <Arrow to={images[1]} color="red" />
+            <Label at={images[0]} color="green">T(e₁)</Label>
+            <Label at={images[1]} color="red" dx={-58}>T(e₂)</Label>
+            {solved ? <Marker at={landing} color="teal" ring /> : null}
+            <Handle at={guess} onMove={setGuess} color="teal" label={`Guess for T of x, at ${describeVector(guess)}`} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Readout tex={`A = ${twoColumnTex(images[0], images[1])}`} />
+            <Readout tex={`\\text{your point} = ${columnTex(guess, palette.teal)}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+const DEGREE = Math.PI / 180;
+const roundTo = (value: number) => Math.round(value * 100) / 100 + 0;
+
+function rotated(angle: number, v: Vec): Vec {
+  const [c, s] = [Math.cos(angle * DEGREE), Math.sin(angle * DEGREE)];
+  return [roundTo(c * v[0] - s * v[1]), roundTo(s * v[0] + c * v[1])];
+}
+
+const rotationMatrixTex = (angle: number) => twoColumnTex(rotated(angle, [1, 0]), rotated(angle, [0, 1]));
+
+function UnitCircle() {
+  const points = Array.from({ length: 73 }, (_, i) => rotated(i * 5, [1, 0]));
+  return (
+    <g opacity={0.45}>
+      {points.slice(1).map((point, i) => (
+        <Segment key={i} from={points[i]} to={point} color="text" dashed={false} />
+      ))}
+    </g>
+  );
+}
+
+function RingMark({ at, color, filled }: { at: Vec; color: Hue; filled: boolean }) {
+  const { toSvg } = usePlane();
+  const [x, y] = toSvg(at);
+  return (
+    <circle
+      cx={x}
+      cy={y}
+      r={8}
+      fill={hue(color)}
+      fillOpacity={filled ? 0.35 : 0}
+      stroke={hue(color)}
+      strokeWidth={1.5}
+      strokeDasharray={filled ? undefined : "3 3"}
+      className="transition-[fill-opacity]"
+    />
+  );
+}
+
+/** Turn the plane with a slider; the columns of the rotation matrix are the tips of the turned e1 and e2. */
+export function RotationColumns({ target }: { target: number }) {
+  const [angle, setAngle] = useState(0);
+  const { settled: solved, gesture } = useSettled(angle === target);
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Turn the plane counterclockwise by <Tex>{"\\varphi"}</Tex> degrees until its standard matrix is <Tex>{rotationMatrixTex(target)}</Tex>. The rings mark where those columns say the arrows end.</>}
+        success={<>A turn of {target}° does it. The first column is where <Tex>{"\\mathbf e_1"}</Tex> ends and the second is where <Tex>{"\\mathbf e_2"}</Tex> ends.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={{ xMin: -2, xMax: 2, yMin: -2, yMax: 2 }} label={`Unit circle with e1 and e2 turned by ${angle} degrees`}>
+            <UnitCircle />
+            <RingMark at={rotated(target, [1, 0])} color="green" filled={solved} />
+            <RingMark at={rotated(target, [0, 1])} color="red" filled={solved} />
+            <Arrow to={rotated(angle, [1, 0])} color="green" width={2} />
+            <Arrow to={rotated(angle, [0, 1])} color="red" width={2} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Slider label="\varphi" value={angle} onChange={setAngle} min={0} max={345} step={15} color={palette.teal} />
+            <Readout tex={`A = ${rotationMatrixTex(angle)}`} />
           </>
         }
       />

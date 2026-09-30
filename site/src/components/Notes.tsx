@@ -22,7 +22,7 @@ import { AddressHunt, StaircaseBasis, TrimToBasis } from "@/components/interacti
 import { LiftToPlane, LoopAnywhere, RelationFinder } from "@/components/interactive/independence";
 import { OutputReach, PivotPicker, RowSlide } from "@/components/interactive/column-space";
 import { PivotBudget, RankTally } from "@/components/interactive/rank-nullity";
-import { ColumnBuilder, DerivativeRoutes } from "@/components/interactive/matrix-representations";
+import { ColumnBuilder, DerivativeRoutes, LandingPredict, RotationColumns } from "@/components/interactive/matrix-representations";
 import { InvertibilityCalls, StatementBoard } from "@/components/interactive/invertible-matrix-theorem";
 import { ChangeMatrixBuilder, SimilarityHunt, TwoAddresses } from "@/components/interactive/change-of-basis";
 import { FreeWeights, LandingHunt } from "@/components/interactive/null-space";
@@ -139,6 +139,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     PivotBudget,
     ColumnBuilder,
     DerivativeRoutes,
+    LandingPredict,
+    RotationColumns,
     StatementBoard,
     InvertibilityCalls,
     TwoAddresses,

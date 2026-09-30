@@ -1,18 +1,46 @@
 Day 20 showed that many maps are linear, including differentiation, but a rule like $\mathbf p \mapsto \mathbf p'$ gives you nothing to row reduce, invert or multiply. Today asks whether every linear map can be written as a matrix, so that the matrix tools from Days 3 to 19 apply to it. Two earlier facts supply the answer. On Day 5 the columns of a matrix turned out to be the landing spots of $\mathbf e_1$ and $\mathbf e_2$, and on Day 15 a basis turned every vector, polynomials included, into a column of coordinates. Once you pick a basis for the input space and one for the output space, any linear map can be written as a matrix, even a map like differentiation that never mentions arrows.
 
+Each section below opens with a problem. Try it before you open the walkthrough, even if you only get partway.
+
 ## The standard matrix
 
-<Pair>
-<Figure src="standard-matrix" alt="The plane after the map T. The moved blue grid is skewed, the green arrow T(e1) ends at (2, 1) and the red arrow T(e2) at (−1, 1), each with its landing column. One green step and two red steps lead tip to tail to the teal arrow T(x) = (0, 3). A panel shows A with columns (2, 1) and (−1, 1), and the product A times (1, 2) equal to (0, 3)." />
+<Problem>
+A linear map $T:\mathbb R^2 \to \mathbb R^2$ sends $\mathbf e_1 = (1, 0)$ to $\green{(2, 1)}$ and $\mathbf e_2 = (0, 1)$ to $\red{(-1, 1)}$. Nobody tells you anything else about $T$. Find $T(1, 2)$.
 
-Every $\mathbf x$ in $\mathbb R^n$ is the combination $x_1\mathbf e_1 + \cdots + x_n\mathbf e_n$. A linear $T$ keeps combinations, so
+<VectorAnswer answer={[0, 3]} />
+
+<Solution>
+We know $T$ only on $\mathbf e_1$ and $\mathbf e_2$, so the natural first move is to write the input in terms of those two vectors:
+
+$$
+\begin{bmatrix} 1 \\ 2 \end{bmatrix} = 1\begin{bmatrix} 1 \\ 0 \end{bmatrix} + 2\begin{bmatrix} 0 \\ 1 \end{bmatrix} = 1\,\mathbf e_1 + 2\,\mathbf e_2.
+$$
+
+A linear map keeps sums and scalar multiples (Day 20), so $T$ of this combination is the same combination of the images:
+
+$$
+T(1, 2) = 1\,\green{T(\mathbf e_1)} + 2\,\red{T(\mathbf e_2)} = 1\green{\begin{bmatrix} 2 \\ 1 \end{bmatrix}} + 2\red{\begin{bmatrix} -1 \\ 1 \end{bmatrix}} = \begin{bmatrix} 2 - 2 \\ 1 + 2 \end{bmatrix} = \teal{\begin{bmatrix} 0 \\ 3 \end{bmatrix}}.
+$$
+
+The middle expression is a combination of two columns with weights $1$ and $2$. Day 4 gave that a shorter name: it is a matrix times a vector,
+
+$$
+\begin{bmatrix} \green{2} & \red{-1} \\ \green{1} & \red{1} \end{bmatrix}\begin{bmatrix} 1 \\ 2 \end{bmatrix} = \begin{bmatrix} 0 \\ 3 \end{bmatrix}.
+$$
+
+The two images were enough to find $T(1, 2)$, and the same steps work for any input. So two vectors of data pin down the whole map.
+</Solution>
+</Problem>
+
+<Concept title="Columns are landing spots">
+Put the images of $\mathbf e_1$ and $\mathbf e_2$ side by side as columns, and that matrix does whatever $T$ does. The reason is the one from the problem. Every $\mathbf x$ is $x_1\mathbf e_1 + \cdots + x_n\mathbf e_n$, and a linear $T$ keeps that combination:
 
 $$
 T(\mathbf x) = x_1\,T(\mathbf e_1) + \cdots + x_n\,T(\mathbf e_n).
 $$
+</Concept>
 
-The right side is a combination of the vectors $T(\mathbf e_j)$ with weights $x_j$, which is exactly a matrix times $\mathbf x$.
-</Pair>
+<Figure src="standard-matrix" alt="The plane after the map T. The moved blue grid is skewed, the green arrow T(e1) ends at (2, 1) and the red arrow T(e2) at (−1, 1), each with its landing column. One green step and two red steps lead tip to tail to the teal arrow T(x) = (0, 3). A panel shows A with columns (2, 1) and (−1, 1), and the product A times (1, 2) equal to (0, 3)." />
 
 <Definition term="Standard matrix">
 Let $T:\mathbb R^n \to \mathbb R^m$ be linear. There is exactly one matrix $A$ with $T(\mathbf x) = A\mathbf x$ for every $\mathbf x$, and it is the $m \times n$ matrix whose $j$th column is the image of $\mathbf e_j$:
@@ -24,15 +52,149 @@ $$
 It is called the **standard matrix** of $T$.
 </Definition>
 
-The standard matrix is Day 5's recipe, restated here because the next section extends it to any pair of bases. A matrix built this way needs only a picture. For a map described in words, follow $\mathbf e_1$ and $\mathbf e_2$ through each step and write down where they end up. For a map given by a formula, such as $T(x_1, x_2) = (3x_1 - x_2,\ x_2,\ x_1 + 4x_2)$, row $i$ of $A$ holds the coefficients of output entry $i$, so $A = \begin{bmatrix} 3 & -1 \\ 0 & 1 \\ 1 & 4 \end{bmatrix}$. The matrix has one column per input entry and one row per output entry.
+Try it with a different input. The widget draws only the two columns, and you place the output.
 
-In the widget, $T$ first shears the plane so that $\mathbf e_2$ moves to $\mathbf e_2 + \mathbf e_1$ and $\mathbf e_1$ stays put, and then reflects everything across the horizontal axis.
+<LandingPredict images={[[2, 1], [-1, 1]]} x={[-1, 2]} />
+
+## A matrix from a formula
+
+<Problem>
+Let $T(x_1, x_2) = (x_1 + 2x_2,\ 3x_1 - x_2,\ 4x_2)$. Find the standard matrix of $T$.
+
+<VectorAnswer answer={[1, 2, 3, -1, 0, 4]} columns={2} />
+
+<Solution>
+The definition says the columns are $T(\mathbf e_1)$ and $T(\mathbf e_2)$, so we compute those two outputs.
+
+<Steps>
+<Step>
+Put $x_1 = 1$ and $x_2 = 0$: $\;T(\mathbf e_1) = (1 + 0,\ 3 - 0,\ 0) = (1, 3, 0)$.
+</Step>
+<Step>
+Put $x_1 = 0$ and $x_2 = 1$: $\;T(\mathbf e_2) = (0 + 2,\ 0 - 1,\ 4) = (2, -1, 4)$.
+</Step>
+<Step>
+Stand them up as columns: $\;A = \begin{bmatrix} 1 & 2 \\ 3 & -1 \\ 0 & 4 \end{bmatrix}$.
+</Step>
+</Steps>
+
+Now look at the rows. Row 1 is $(1, 2)$, which are the coefficients in the first output entry $x_1 + 2x_2$. Row 2 holds the coefficients of $3x_1 - x_2$, and row 3 holds those of $0x_1 + 4x_2$. So you can read the matrix off the formula without plugging anything in.
+</Solution>
+</Problem>
+
+<Concept title="Read rows off a formula">
+When $T$ is given by a formula, row $i$ of its standard matrix holds the coefficients of output entry $i$. The matrix has one column per input variable and one row per output entry, so a map $\mathbb R^n \to \mathbb R^m$ has an $m \times n$ matrix.
+</Concept>
+
+<Choice
+  question="What is the standard matrix of $T(x_1, x_2, x_3) = (x_1 - x_3,\ 2x_2)$?"
+  options={["$\\begin{bmatrix} 1 & 0 \\\\ 0 & 2 \\\\ -1 & 0 \\end{bmatrix}$", "$\\begin{bmatrix} 1 & 0 & -1 \\\\ 0 & 2 & 0 \\end{bmatrix}$", "$\\begin{bmatrix} 1 & -1 \\\\ 2 & 0 \\end{bmatrix}$"]}
+  answer={1}
+>
+The map goes from $\mathbb R^3$ to $\mathbb R^2$, so the matrix is $2 \times 3$. Row 1 holds the coefficients of $1x_1 + 0x_2 - 1x_3$ and row 2 holds those of $0x_1 + 2x_2 + 0x_3$. The missing variables become zeros, which is what keeps every coefficient in the right column.
+</Choice>
+
+<Warning>
+The images go in as columns, not rows. A quick check is the size. For $T:\mathbb R^2 \to \mathbb R^4$, each image has 4 entries, so the matrix is $4 \times 2$. If you wrote a $2 \times 4$ matrix, you put the images in rows.
+</Warning>
+
+## A matrix from a picture
+
+Some maps come with no formula at all, only a description like "turn the plane" or "flip it over an axis." The recipe still works, because all it asks is where $\mathbf e_1$ and $\mathbf e_2$ land.
+
+<Problem>
+Let $T$ turn the plane $90^\circ$ counterclockwise about the origin. Find its standard matrix.
+
+<VectorAnswer answer={[0, -1, 1, 0]} columns={2} />
+
+<Solution>
+We need the two landing spots, so we follow each basis vector through the turn. The vector $\mathbf e_1 = (1, 0)$ points right. A quarter turn counterclockwise makes it point straight up, so $T(\mathbf e_1) = (0, 1)$. The vector $\mathbf e_2 = (0, 1)$ points up, and a quarter turn makes it point left, so $T(\mathbf e_2) = (-1, 0)$.
+
+$$
+A = \begin{bmatrix} \green{0} & \red{-1} \\ \green{1} & \red{0} \end{bmatrix}
+$$
+
+As a check, $A$ sends $(3, 1)$ to $(-1, 3)$. The first vector points right and a little up, and the second points up and a little left, which is what a quarter turn should do.
+</Solution>
+</Problem>
+
+For a turn through any angle $\varphi$, the same tracking works. The vector $\mathbf e_1$ moves to the point at angle $\varphi$ on the unit circle, $(\cos\varphi, \sin\varphi)$, and $\mathbf e_2$ stays a quarter turn ahead of it at $(-\sin\varphi, \cos\varphi)$. With $\varphi = 90^\circ$ these are $(0, 1)$ and $(-1, 0)$, the columns you just found. So the **rotation matrix** is
+
+$$
+\begin{bmatrix} \cos\varphi & -\sin\varphi \\ \sin\varphi & \cos\varphi \end{bmatrix}.
+$$
+
+Use the rings to work backward from a matrix to the turn it describes.
+
+<RotationColumns target={270} />
+
+<Problem>
+Let $T$ first shear the plane so that $\mathbf e_1$ stays put and $\mathbf e_2$ moves to $\mathbf e_2 + \mathbf e_1$, and then reflect everything across the horizontal axis. Find the standard matrix of $T$.
+
+<VectorAnswer answer={[1, 1, 0, -1]} columns={2} />
+
+<Solution>
+There are two moves, so we follow each basis vector through both of them, in the order they happen.
+
+<Steps>
+<Step>
+Follow $\mathbf e_1$. The shear leaves it at $(1, 0)$. Reflecting across the horizontal axis flips the sign of the second entry, and $0$ stays $0$, so $T(\mathbf e_1) = (1, 0)$.
+</Step>
+<Step>
+Follow $\mathbf e_2$. The shear moves it to $\mathbf e_2 + \mathbf e_1 = (1, 1)$. The reflection flips the second entry, giving $T(\mathbf e_2) = (1, -1)$.
+</Step>
+<Step>
+Stand the two landing spots up as columns: $\;A = \begin{bmatrix} \green{1} & \red{1} \\ \green{0} & \red{-1} \end{bmatrix}$.
+</Step>
+</Steps>
+
+You never needed the shear matrix or the reflection matrix on their own. Tracking the two vectors through both moves gives the final columns directly.
+</Solution>
+</Problem>
 
 <TransformExplorer matrix={[[1, 0], [0, 1]]} goal={{ matrix: [[1, 1], [0, -1]], prompt: "Drag the green and red tips to where $\\mathbf e_1$ and $\\mathbf e_2$ end up after the shear and then the reflection.", success: "That is the standard matrix. The shear and the flip both leave $\\mathbf e_1$ at $(1, 0)$, while $\\mathbf e_2$ moves to $(1, 1)$ and then flips to $(1, -1)$." }} />
 
+<Warning>
+Order matters when you combine moves. If you reflect first and shear second, $\mathbf e_2$ goes to $(0, -1)$ and then to $(-1, -1)$, which is a different matrix. Follow the vectors in the order the description gives.
+</Warning>
+
 ## Matrices for any bases
 
-A polynomial is not a column, so $d/dt$ on $\mathbb P_2$ has no standard matrix of its own. The goal of this section is a matrix that differentiates a polynomial when you multiply it by the polynomial's coordinate column. Coordinates make that possible. Write the input in coordinates, apply the map, and write the output in coordinates, and every step in between is a matrix.
+A polynomial is not a column, so $d/dt$ on $\mathbb P_2$ has no standard matrix of its own. The goal of this section is a matrix that differentiates a polynomial when you multiply it by the polynomial's coordinate column. Coordinates from Day 15 make that possible, and the next problem shows how.
+
+<Problem>
+A space $V$ has basis $\mathcal B = \{\mathbf b_1, \mathbf b_2\}$ and a space $W$ has basis $\mathcal C = \{\mathbf c_1, \mathbf c_2, \mathbf c_3\}$. A linear map $T:V \to W$ has
+
+$$
+T(\mathbf b_1) = \mathbf c_1 + 4\mathbf c_3, \qquad T(\mathbf b_2) = -2\mathbf c_1 + \mathbf c_2 - \mathbf c_3.
+$$
+
+Find the $\mathcal C$-coordinates of $T(3\mathbf b_1 + \mathbf b_2)$.
+
+<VectorAnswer answer={[1, 1, 11]} labels={["c₁", "c₂", "c₃"]} />
+
+<Solution>
+We know $T$ only on $\mathbf b_1$ and $\mathbf b_2$, so we use linearity exactly as in Problem 1:
+
+$$
+\begin{aligned}
+T(3\mathbf b_1 + \mathbf b_2) &= 3\,T(\mathbf b_1) + T(\mathbf b_2) \\
+&= (3\mathbf c_1 + 12\mathbf c_3) + (-2\mathbf c_1 + \mathbf c_2 - \mathbf c_3) \\
+&= \mathbf c_1 + \mathbf c_2 + 11\mathbf c_3.
+\end{aligned}
+$$
+
+So the $\mathcal C$-coordinates are $(1, 1, 11)$.
+
+Now write each image as its column of $\mathcal C$-coordinates, $T(\mathbf b_1) \to (1, 0, 4)$ and $T(\mathbf b_2) \to (-2, 1, -1)$. Remember the $0$, since $T(\mathbf b_1)$ has no $\mathbf c_2$ in it. With those as columns,
+
+$$
+\begin{bmatrix} 1 & -2 \\ 0 & 1 \\ 4 & -1 \end{bmatrix}\begin{bmatrix} 3 \\ 1 \end{bmatrix} = \begin{bmatrix} 3 - 2 \\ 0 + 1 \\ 12 - 1 \end{bmatrix} = \begin{bmatrix} 1 \\ 1 \\ 11 \end{bmatrix}.
+$$
+
+The input's $\mathcal B$-coordinates $(3, 1)$ went in, and the output's $\mathcal C$-coordinates came out. The vectors $\mathbf b_j$ and $\mathbf c_i$ could be arrows, polynomials or anything else, and the matrix never needs to know.
+</Solution>
+</Problem>
 
 <Definition term="Matrix of T relative to two bases">
 Let $T: V \to W$ be linear, let $\mathcal B = \{\mathbf b_1, \dots, \mathbf b_n\}$ be a basis for $V$, and let $\mathcal C$ be a basis for $W$ with $m$ vectors. The **matrix of $T$ relative to $\mathcal B$ and $\mathcal C$** is the $m \times n$ matrix
@@ -44,35 +206,71 @@ $$
 and it satisfies $[T(\mathbf x)]_{\mathcal C} = [T]_{\mathcal C \leftarrow \mathcal B}\,[\mathbf x]_{\mathcal B}$ for every $\mathbf x$ in $V$. When $W = V$ and $\mathcal C = \mathcal B$, it is written $[T]_{\mathcal B}$.
 </Definition>
 
-The notation $[T]_{\mathcal B}$ comes back on Day 22, where the same map gets matrices in two different bases, and on Day 33, where the goal is a basis that makes $[T]_{\mathcal B}$ diagonal.
+The input basis sits on the right of the arrow and the output basis on the left, in the same order as the product $[T]_{\mathcal C \leftarrow \mathcal B}[\mathbf x]_{\mathcal B}$. The formula works for the same reason the standard matrix does. If $[\mathbf x]_{\mathcal B} = (r_1, \dots, r_n)$, then $T(\mathbf x) = r_1 T(\mathbf b_1) + \cdots + r_n T(\mathbf b_n)$, and taking $\mathcal C$-coordinates keeps that combination because the coordinate map is linear. The notation $[T]_{\mathcal B}$ comes back on Day 22, where the same map gets matrices in two different bases, and on Day 33, where the goal is a basis that makes $[T]_{\mathcal B}$ diagonal.
 
-The input basis sits on the right of the arrow and the output basis on the left, in the same order as the product $[T]_{\mathcal C \leftarrow \mathcal B}[\mathbf x]_{\mathcal B}$. The formula works for the same reason the standard matrix does. If $[\mathbf x]_{\mathcal B} = (r_1, \dots, r_n)$, then $T(\mathbf x) = r_1 T(\mathbf b_1) + \cdots + r_n T(\mathbf b_n)$, and taking $\mathcal C$-coordinates keeps that combination, because the coordinate map is linear.
+Now the polynomial case. The recipe is the same: send each basis vector through $T$, then write the result in output coordinates.
+
+<Problem>
+Let $T = d/dt$ on $\mathbb P_2$, with $\mathcal B = \{\green{1}, \red{t}, \blue{t^2}\}$ for both input and output. Find $[T]_{\mathcal B}$.
+
+<VectorAnswer answer={[0, 1, 0, 0, 0, 2, 0, 0, 0]} columns={3} />
+
+<Solution>
+We need one column per basis polynomial, so we differentiate each one and write the answer in $\mathcal B$-coordinates.
+
+<Steps>
+<Step>
+Differentiate $\green{1}$. The derivative of a constant is $0 = 0\cdot 1 + 0\cdot t + 0\cdot t^2$, so column 1 is $(0, 0, 0)$.
+</Step>
+<Step>
+Differentiate $\red{t}$. The derivative is $1 = 1\cdot 1 + 0\cdot t + 0\cdot t^2$, so column 2 is $(1, 0, 0)$.
+</Step>
+<Step>
+Differentiate $\blue{t^2}$. The derivative is $2t = 0\cdot 1 + 2\cdot t + 0\cdot t^2$, so column 3 is $(0, 2, 0)$.
+</Step>
+<Step>
+Stand the three columns side by side: $\;[T]_{\mathcal B} = \begin{bmatrix} \green{0} & \red{1} & \blue{0} \\ \green{0} & \red{0} & \blue{2} \\ \green{0} & \red{0} & \blue{0} \end{bmatrix}$.
+</Step>
+</Steps>
+
+The first column is all zeros because $T(1) = 0$. It still takes up a slot, since dropping it would slide every other column one place to the left.
+</Solution>
+</Problem>
 
 <Figure src="derivative-matrix" alt="The basis polynomial t squared, drawn as a blue parabola, passes through a d/dt arrow and becomes the blue line 2t. A second arrow labelled with the B-coordinate brackets turns 2t into the blue column (0, 2, 0). On the right, the matrix of T relative to B has green first column (0, 0, 0), red second column (1, 0, 0) and blue third column (0, 2, 0), with column labels 1, t, t squared and the same row labels. Below, a log reads T(1) = 0, T(t) = 1 and T(t squared) = 2t." wide />
 
-To build a matrix, the aim is one column per basis vector: send $\mathbf b_j$ through $T$ and record the result in output coordinates. Here is the matrix of $T = d/dt$ on $\mathbb P_2$ with $\mathcal B = \{\green{1}, \red{t}, \blue{t^2}\}$, built one column at a time:
+<Warning>
+Each column holds the *coordinates* of $T(\mathbf b_j)$, not $T(\mathbf b_j)$ itself. With polynomials that is obvious, since $2t$ is not a column. With a nonstandard basis of $\mathbb R^m$ it is easy to forget, and the raw output vector gives the wrong column.
+</Warning>
 
-$$
-\begin{aligned}
-T(\green{1}) &= 0 = 0\cdot 1 + 0\cdot t + 0\cdot t^2 && \Rightarrow\ [T(\green{1})]_{\mathcal B} = (0, 0, 0) \\
-T(\red{t}) &= 1 = 1\cdot 1 + 0\cdot t + 0\cdot t^2 && \Rightarrow\ [T(\red{t})]_{\mathcal B} = (1, 0, 0) \\
-T(\blue{t^2}) &= 2t = 0\cdot 1 + 2\cdot t + 0\cdot t^2 && \Rightarrow\ [T(\blue{t^2})]_{\mathcal B} = (0, 2, 0) \\
-[T]_{\mathcal B} &= \begin{bmatrix} \green{0} & \red{1} & \blue{0} \\ \green{0} & \red{0} & \blue{2} \\ \green{0} & \red{0} & \blue{0} \end{bmatrix}
-\end{aligned}
-$$
-
-The whole first column is zero because $T(1) = 0$. Leaving out that column, or writing the images as rows, would give a different and wrong matrix.
-
-The widget uses a different map on $\mathbb P_2$, the shift $T(\mathbf p)(t) = \mathbf p(t + 1)$. Its dashed curve shows $T(\mathbf b_j)$, and your column is right when the curve it describes lands on it.
+The widget uses a different map on $\mathbb P_2$, the shift $T(\mathbf p)(t) = \mathbf p(t + 1)$. For example, $T(t^2) = (t + 1)^2 = 1 + 2t + t^2$, so its column is $(1, 2, 1)$. Its dashed curve shows $T(\mathbf b_j)$, and your column is right when the curve it describes lands on it.
 
 <ColumnBuilder images={[[1, 0, 0], [1, 1, 0], [1, 2, 1]]} mapTex="T(\mathbf p)(t) = \mathbf p(t + 1)" />
 
 ## Two routes to the same column
 
-<Pair>
+<Problem>
+Let $\mathbf p(t) = 3 + 5t - 2t^2$. Find $[\mathbf p']_{\mathcal B}$ in two ways: by differentiating $\mathbf p$ directly, and by multiplying $[T]_{\mathcal B}$ from Problem 6 by $[\mathbf p]_{\mathcal B}$.
+
+<VectorAnswer answer={[5, -4, 0]} />
+
+<Solution>
+Directly, $\mathbf p'(t) = 5 - 4t$, and its coordinates in $\{1, t, t^2\}$ are $(5, -4, 0)$.
+
+Through the matrix, first write $\mathbf p$ as a column. Its coefficients in $\{1, t, t^2\}$ are $(3, 5, -2)$. Then multiply:
+
+$$
+\begin{bmatrix} 0 & 1 & 0 \\ 0 & 0 & 2 \\ 0 & 0 & 0 \end{bmatrix}\yellow{\begin{bmatrix} 3 \\ 5 \\ -2 \end{bmatrix}} = \begin{bmatrix} 0 + 5 + 0 \\ 0 + 0 - 4 \\ 0 \end{bmatrix} = \teal{\begin{bmatrix} 5 \\ -4 \\ 0 \end{bmatrix}}.
+$$
+
+Both routes give $(5, -4, 0)$. The $3$ in $\mathbf p$ never reached the answer, because it multiplied the zero column.
+</Solution>
+</Problem>
+
 <Figure src="two-routes" alt="A square diagram. Top left, p(t) = 3 + 5t − 2t² in yellow; top right, p′(t) = 5 − 4t in teal, joined by a d/dt arrow. Arrows labelled with B-coordinate brackets point down to the yellow column (3, 5, −2) and the teal column (5, −4, 0). The bottom arrow carries the matrix of T relative to B, and the teal column has an orange frame." />
 
-For a general $\mathbf p = a_0 + a_1 t + a_2 t^2$, both routes around the square give the same column:
+<Concept title="The square commutes">
+Going across the top means applying $T$ and then taking coordinates. Going down and across the bottom means taking coordinates and then multiplying by the matrix. For a general $\mathbf p = a_0 + a_1 t + a_2 t^2$ both routes give the same column:
 
 $$
 \begin{aligned}
@@ -80,26 +278,106 @@ $$
 [T]_{\mathcal B}[\mathbf p]_{\mathcal B} &= \begin{bmatrix} 0 & 1 & 0 \\ 0 & 0 & 2 \\ 0 & 0 & 0 \end{bmatrix} \begin{bmatrix} a_0 \\ a_1 \\ a_2 \end{bmatrix} = \begin{bmatrix} a_1 \\ 2a_2 \\ 0 \end{bmatrix}
 \end{aligned}
 $$
-</Pair>
+</Concept>
 
 So you can differentiate a polynomial by multiplying its coefficient column by $[T]_{\mathcal B}$. The entry $a_0$ never reaches the output, which is the matrix's way of saying that constants have derivative zero.
 
 <DerivativeRoutes target={[4, -6, 0]} />
 
-Every derivative of a quadratic lies in $\mathbb P_1$. With the output basis $\mathcal C = \{1, t\}$, the zero row disappears and the matrix becomes $2 \times 3$:
+The matrix also works in the other direction. If someone hands you only the matrix, multiplying it by a general coordinate column recovers the formula for $T$.
+
+<Problem>
+A linear map $T:\mathbb P_1 \to \mathbb P_1$ has $[T]_{\mathcal B} = \begin{bmatrix} 2 & 1 \\ 0 & -1 \end{bmatrix}$ for $\mathcal B = \{1, t\}$. Find $T(3 + 2t)$, and then find a formula for $T(a_0 + a_1 t)$.
+
+<VectorAnswer answer={[8, -2]} labels={["1", "t"]} />
+
+<Solution>
+The matrix acts on coordinates, so we convert the input first. The polynomial $3 + 2t$ has $\mathcal B$-coordinates $(3, 2)$, and
+
+$$
+\begin{bmatrix} 2 & 1 \\ 0 & -1 \end{bmatrix}\begin{bmatrix} 3 \\ 2 \end{bmatrix} = \begin{bmatrix} 6 + 2 \\ 0 - 2 \end{bmatrix} = \begin{bmatrix} 8 \\ -2 \end{bmatrix}.
+$$
+
+Those are output coordinates, so we turn them back into a polynomial: $T(3 + 2t) = 8 - 2t$.
+
+For the general formula, repeat the same multiplication with letters: $\begin{bmatrix} 2 & 1 \\ 0 & -1 \end{bmatrix}\begin{bmatrix} a_0 \\ a_1 \end{bmatrix} = \begin{bmatrix} 2a_0 + a_1 \\ -a_1 \end{bmatrix}$, so $T(a_0 + a_1 t) = (2a_0 + a_1) - a_1 t$.
+</Solution>
+</Problem>
+
+Every derivative of a quadratic lies in $\mathbb P_1$. With the smaller output basis $\mathcal C = \{1, t\}$, the zero row disappears and the matrix of $d/dt$ becomes $2 \times 3$:
 
 $$
 [T]_{\mathcal C \leftarrow \mathcal B} = \begin{bmatrix} 0 & 1 & 0 \\ 0 & 0 & 2 \end{bmatrix}.
 $$
 
-The size always reads (dimension of the output) by (dimension of the input). When $V = \mathbb R^n$ and $W = \mathbb R^m$ with their standard bases, coordinates are just the entries, and $[T]_{\mathcal C \leftarrow \mathcal B}$ is the standard matrix from the first section. Because the matrix does everything $T$ does, questions about $T$ now become questions about a matrix. On Day 23, for example, a polynomial is in the kernel of $d/dt$ exactly when its coordinate column is in the null space of the derivative's matrix. Tomorrow you take $T$ to be the identity map, so that the matrix only translates coordinates from one basis to another.
+The size always reads (dimension of the output) by (dimension of the input).
+
+<Choice
+  question="Take $V = \mathbb R^2$ and $W = \mathbb R^3$ with their standard bases. What is $[T]_{\mathcal C \leftarrow \mathcal B}$ then?"
+  options={["The standard matrix of $T$", "Its transpose", "Something new that needs its own recipe"]}
+  answer={0}
+>
+In the standard basis, the coordinates of a vector are just its entries, so $[T(\mathbf e_j)]_{\mathcal C} = T(\mathbf e_j)$. The columns are the images of $\mathbf e_j$, which is the standard matrix from the first section.
+</Choice>
+
+Because the matrix does everything $T$ does, questions about $T$ now become questions about a matrix. On Day 23, for example, a polynomial is in the kernel of $d/dt$ exactly when its coordinate column is in the null space of the derivative's matrix. Tomorrow you take $T$ to be the identity map, so that the matrix only translates coordinates from one basis to another.
 
 ## Practice
 
-<Check>
-A linear map $T:\mathbb R^2 \to \mathbb R^3$ sends $\mathbf e_1$ to $(2, -1, 4)$ and $\mathbf e_2$ to $(0, 3, 1)$. Find $T(5, -2)$. (Modeled on Lay §1.9, Exercise 1.)
+### Warm-up
 
-<VectorAnswer answer={[10, -11, 18]} labels={["first", "second", "third"]} />
+<Check>
+A linear map $T:\mathbb R^2 \to \mathbb R^4$ sends $\mathbf e_1$ to $(1, 0, -2, 3)$ and $\mathbf e_2$ to $(4, 1, 0, -1)$. Enter its standard matrix row by row. (Modeled on Lay §1.9 #1.)
+
+<VectorAnswer answer={[1, 4, 0, 1, -2, 0, 3, -1]} columns={2} />
+
+<Answer>
+The images are the columns, so the matrix is $4 \times 2$:
+
+$$
+A = \begin{bmatrix} 1 & 4 \\ 0 & 1 \\ -2 & 0 \\ 3 & -1 \end{bmatrix}
+$$
+</Answer>
+</Check>
+
+<Check>
+Enter the standard matrix of $T(x_1, x_2, x_3) = (2x_1 - x_3,\ x_1 + x_2 + 5x_3)$ row by row. (Modeled on Lay §1.9, Example 5.)
+
+<VectorAnswer answer={[2, 0, -1, 1, 1, 5]} columns={3} />
+
+<Answer>
+Row $i$ holds the coefficients of output entry $i$. The first entry is $2x_1 + 0x_2 - 1x_3$ and the second is $1x_1 + 1x_2 + 5x_3$:
+
+$$
+A = \begin{bmatrix} 2 & 0 & -1 \\ 1 & 1 & 5 \end{bmatrix}
+$$
+</Answer>
+</Check>
+
+<Check>
+$\mathcal B = \{\mathbf b_1, \mathbf b_2, \mathbf b_3\}$ is a basis for $V$ and $\mathcal D = \{\mathbf d_1, \mathbf d_2\}$ is a basis for $W$. A linear $T:V \to W$ has $T(\mathbf b_1) = -\mathbf d_1 + 2\mathbf d_2$, $T(\mathbf b_2) = 4\mathbf d_1$ and $T(\mathbf b_3) = 3\mathbf d_1 - \mathbf d_2$. Enter $[T]_{\mathcal D \leftarrow \mathcal B}$ row by row. (Modeled on Lay §5.4 #1.)
+
+<VectorAnswer answer={[-1, 4, 3, 2, 0, -1]} columns={3} />
+
+<Answer>
+Column $j$ is $[T(\mathbf b_j)]_{\mathcal D}$. The second column is $(4, 0)$ because $T(\mathbf b_2)$ has no $\mathbf d_2$ in it:
+
+$$
+[T]_{\mathcal D \leftarrow \mathcal B} = \begin{bmatrix} -1 & 4 & 3 \\ 2 & 0 & -1 \end{bmatrix}
+$$
+</Answer>
+</Check>
+
+### Core
+
+<Check>
+A linear map $T:\mathbb R^2 \to \mathbb R^3$ sends $\mathbf e_1$ to $(2, -1, 4)$ and $\mathbf e_2$ to $(0, 3, 1)$. Find $T(5, -2)$. (Modeled on Lay §1.9 #1.)
+
+<VectorAnswer answer={[10, -11, 18]} />
+
+<Hint>
+Write $(5, -2) = 5\mathbf e_1 - 2\mathbf e_2$ and use linearity, or build the standard matrix and multiply.
+</Hint>
 
 <Answer>
 The standard matrix has the two images as its columns:
@@ -114,17 +392,39 @@ $$
 </Check>
 
 <Check>
+$T$ first reflects the plane across the line $x_2 = x_1$ and then turns it $90^\circ$ clockwise. Enter its standard matrix row by row. (Modeled on Lay §1.9 #10.)
+
+<VectorAnswer answer={[1, 0, 0, -1]} columns={2} />
+
+<Hint>
+Reflecting across $x_2 = x_1$ swaps the two entries. A clockwise quarter turn sends $(a, b)$ to $(b, -a)$. Follow $\mathbf e_1$ and $\mathbf e_2$ through both moves in order.
+</Hint>
+
+<Answer>
+Follow $\mathbf e_1 = (1, 0)$: the reflection swaps it to $(0, 1)$, and the clockwise turn sends $(0, 1)$ to $(1, 0)$. Follow $\mathbf e_2 = (0, 1)$: the reflection gives $(1, 0)$, and the turn sends it to $(0, -1)$.
+
+$$
+A = \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}
+$$
+
+The two moves together are a single reflection across the horizontal axis.
+</Answer>
+</Check>
+
+<Check>
 Let $D:\mathbb P_3 \to \mathbb P_2$ be $D(\mathbf p) = \mathbf p'$, with $\mathcal B = \{1, t, t^2, t^3\}$ and $\mathcal C = \{1, t, t^2\}$. Use $[D]_{\mathcal C \leftarrow \mathcal B}$ to find the $\mathcal C$-coordinates of the derivative of $\mathbf p(t) = 4 - t + 2t^2 + 5t^3$. (Modeled on Lay §5.4, Example 2.)
 
 <VectorAnswer answer={[-1, 4, 15]} labels={["1", "t", "t²"]} />
+
+<Hint>
+The columns are the $\mathcal C$-coordinates of $D(1)$, $D(t)$, $D(t^2)$ and $D(t^3)$. The matrix should be $3 \times 4$.
+</Hint>
 
 <Answer>
 The columns are the coordinates of $D(1) = 0$, $D(t) = 1$, $D(t^2) = 2t$ and $D(t^3) = 3t^2$:
 
 $$
-\begin{aligned}
-[D]_{\mathcal C \leftarrow \mathcal B}[\mathbf p]_{\mathcal B} &= \begin{bmatrix} 0 & 1 & 0 & 0 \\ 0 & 0 & 2 & 0 \\ 0 & 0 & 0 & 3 \end{bmatrix} \begin{bmatrix} 4 \\ -1 \\ 2 \\ 5 \end{bmatrix} = \begin{bmatrix} -1 \\ 4 \\ 15 \end{bmatrix}
-\end{aligned}
+[D]_{\mathcal C \leftarrow \mathcal B}[\mathbf p]_{\mathcal B} = \begin{bmatrix} 0 & 1 & 0 & 0 \\ 0 & 0 & 2 & 0 \\ 0 & 0 & 0 & 3 \end{bmatrix} \begin{bmatrix} 4 \\ -1 \\ 2 \\ 5 \end{bmatrix} = \begin{bmatrix} -1 \\ 4 \\ 15 \end{bmatrix}
 $$
 
 So $\mathbf p'(t) = -1 + 4t + 15t^2$. The matrix is $3 \times 4$ because the output space has dimension 3 and the input space has dimension 4.
@@ -132,9 +432,33 @@ So $\mathbf p'(t) = -1 + 4t + 15t^2$. The matrix is $3 \times 4$ because the out
 </Check>
 
 <Check>
-Let $T:\mathbb P_1 \to \mathbb R^2$ be $T(\mathbf p) = (\mathbf p(0),\ \mathbf p(2))$, with $\mathcal B = \{1, t\}$ and $\mathcal C = \left\{\begin{bmatrix} 1 \\ 1 \end{bmatrix}, \begin{bmatrix} 1 \\ -1 \end{bmatrix}\right\}$. Find $[T(\mathbf p)]_{\mathcal C}$ for $\mathbf p(t) = 3 - 2t$. (Modeled on Lay §5.4, Exercise 9.)
+Let $T:\mathbb P_2 \to \mathbb R^3$ be $T(\mathbf p) = (\mathbf p(-1),\ \mathbf p(1),\ \mathbf p(2))$. Enter its matrix relative to $\{1, t, t^2\}$ and the standard basis of $\mathbb R^3$, row by row. (Modeled on Lay §5.4 #9.)
+
+<VectorAnswer answer={[1, -1, 1, 1, 1, 1, 1, 2, 4]} columns={3} />
+
+<Hint>
+Column $j$ is the $j$th basis polynomial evaluated at $-1$, $1$ and $2$.
+</Hint>
+
+<Answer>
+Evaluate each basis polynomial at the three points. $T(1) = (1, 1, 1)$, $T(t) = (-1, 1, 2)$ and $T(t^2) = (1, 1, 4)$. The standard basis makes coordinates equal to entries, so these are the columns:
+
+$$
+\begin{bmatrix} 1 & -1 & 1 \\ 1 & 1 & 1 \\ 1 & 2 & 4 \end{bmatrix}
+$$
+
+Row $i$ lists $1$, $s$ and $s^2$ for the $i$th point $s$.
+</Answer>
+</Check>
+
+<Check>
+Let $T:\mathbb P_1 \to \mathbb R^2$ be $T(\mathbf p) = (\mathbf p(0),\ \mathbf p(2))$, with $\mathcal B = \{1, t\}$ and $\mathcal C = \left\{\begin{bmatrix} 1 \\ 1 \end{bmatrix}, \begin{bmatrix} 1 \\ -1 \end{bmatrix}\right\}$. Find $[T(\mathbf p)]_{\mathcal C}$ for $\mathbf p(t) = 3 - 2t$. (Modeled on Lay §5.4 #9.)
 
 <VectorAnswer answer={[1, 2]} labels={["c₁", "c₂"]} />
+
+<Hint>
+Build the matrix first. $T(1) = (1, 1)$ and $T(t) = (0, 2)$, but each column needs $\mathcal C$-coordinates, so write each output as a combination of $(1, 1)$ and $(1, -1)$.
+</Hint>
 
 <Answer>
 First build the matrix. $T(1) = (1, 1) = 1\cdot(1, 1) + 0\cdot(1, -1)$ and $T(t) = (0, 2) = 1\cdot(1, 1) - 1\cdot(1, -1)$, so
@@ -148,4 +472,54 @@ $$
 
 To check, $T(\mathbf p) = (3, -1)$, and $1\cdot(1, 1) + 2\cdot(1, -1) = (3, -1)$. The columns are $\mathcal C$-coordinates, not the raw outputs $(1, 1)$ and $(0, 2)$.
 </Answer>
+</Check>
+
+### Challenge
+
+<Check>
+$\mathcal B = \{\mathbf b_1, \mathbf b_2, \mathbf b_3\}$ is a basis for $V$, and $T:V \to V$ has $[T]_{\mathcal B} = \begin{bmatrix} 1 & 0 & -2 \\ 3 & 1 & 0 \\ 0 & -1 & 4 \end{bmatrix}$. Find the $\mathcal B$-coordinates of $T(2\mathbf b_1 + \mathbf b_2 - \mathbf b_3)$. (Modeled on Lay §5.4 #8.)
+
+<VectorAnswer answer={[4, 7, -5]} labels={["b₁", "b₂", "b₃"]} />
+
+<Hint>
+The input's $\mathcal B$-coordinates are $(2, 1, -1)$. Multiply.
+</Hint>
+
+<Answer>
+$$
+[T]_{\mathcal B}\begin{bmatrix} 2 \\ 1 \\ -1 \end{bmatrix} = \begin{bmatrix} 2 + 0 + 2 \\ 6 + 1 + 0 \\ 0 - 1 - 4 \end{bmatrix} = \begin{bmatrix} 4 \\ 7 \\ -5 \end{bmatrix}
+$$
+
+So $T(2\mathbf b_1 + \mathbf b_2 - \mathbf b_3) = 4\mathbf b_1 + 7\mathbf b_2 - 5\mathbf b_3$. You never needed to know what the $\mathbf b_j$ are.
+</Answer>
+</Check>
+
+<Check>
+Let $T:\mathbb P_1 \to \mathbb P_2$ be $T(\mathbf p)(t) = (t - 2)\,\mathbf p(t)$. Enter its matrix relative to $\{1, t\}$ and $\{1, t, t^2\}$ row by row. (Modeled on Lay §5.4 #5.)
+
+<VectorAnswer answer={[-2, 0, 1, -2, 0, 1]} columns={2} />
+
+<Hint>
+The input space has dimension 2 and the output space has dimension 3, so the matrix is $3 \times 2$. Compute $T(1)$ and $T(t)$ and write each in $\{1, t, t^2\}$.
+</Hint>
+
+<Answer>
+$T(1) = t - 2 = -2 + 1\cdot t + 0\cdot t^2$, so column 1 is $(-2, 1, 0)$. $T(t) = t^2 - 2t = 0 - 2t + 1\cdot t^2$, so column 2 is $(0, -2, 1)$:
+
+$$
+\begin{bmatrix} -2 & 0 \\ 1 & -2 \\ 0 & 1 \end{bmatrix}
+$$
+
+A $2 \times 2$ matrix would have no row for $t^2$, and multiplying by $t - 2$ always raises the degree.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="Order the basis of $\mathbb P_2$ as $\mathcal B' = \{t^2, t, 1\}$ instead. What is $[d/dt]_{\mathcal B'}$?"
+  options={["$\\begin{bmatrix} 0 & 1 & 0 \\\\ 0 & 0 & 2 \\\\ 0 & 0 & 0 \\end{bmatrix}$", "$\\begin{bmatrix} 0 & 0 & 0 \\\\ 2 & 0 & 0 \\\\ 0 & 1 & 0 \\end{bmatrix}$", "$\\begin{bmatrix} 0 & 2 & 0 \\\\ 0 & 0 & 1 \\\\ 0 & 0 & 0 \\end{bmatrix}$"]}
+  answer={1}
+>
+Column 1 is the derivative of the first basis vector $t^2$, which is $2t = 0\cdot t^2 + 2\cdot t + 0\cdot 1$, so it is $(0, 2, 0)$. Column 2 comes from $t$, whose derivative $1$ has coordinates $(0, 0, 1)$. Column 3 comes from $1$, whose derivative is $0$. A basis is an ordered list, and reordering it reorders both the rows and the columns of the matrix.
+</Choice>
 </Check>
