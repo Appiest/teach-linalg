@@ -15,7 +15,7 @@ import { CostCompare, LUBuilder, SubstitutionSolver } from "@/components/interac
 import { AdditionExplorer, CombinationTarget, DifferenceExplorer, GridWeights, ScaleExplorer, VectorExplorer } from "@/components/interactive/vectors";
 import { ColumnWeights, CommuteHunt, CompositionExplorer, ProductColumns, ZeroProductHunt } from "@/components/interactive/product";
 import { ElementaryMoves, InverseBuilder } from "@/components/interactive/elementary";
-import { InverseColumnsHunt, SingularHunt, UndoOrder } from "@/components/interactive/inverse";
+import { DeterminantSlider, InverseColumnsHunt, SameLanding, SingularHunt, UndoOrder } from "@/components/interactive/inverse";
 import { CoordinateFinder, PolynomialCoordinates } from "@/components/interactive/coordinates";
 import { QuadrantEscape, ShiftedLineTest } from "@/components/interactive/subspaces";
 import { AddressHunt, StaircaseBasis, TrimToBasis } from "@/components/interactive/basis";
@@ -124,6 +124,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     InverseColumnsHunt,
     SingularHunt,
     UndoOrder,
+    SameLanding,
+    DeterminantSlider,
     CoordinateFinder,
     PolynomialCoordinates,
     ShiftedLineTest,

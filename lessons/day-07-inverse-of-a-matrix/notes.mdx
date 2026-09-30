@@ -1,4 +1,48 @@
-On Day 5 a matrix became a motion of the whole plane, and on Day 6 two motions chained into a product. Today asks whether a motion can be run backwards. The answer matters for solving equations, because $A\mathbf x = \mathbf b$ asks which point $A$ moves onto $\mathbf b$, and a matrix that runs $A$ backwards would carry $\mathbf b$ straight to that point. Take $A = \begin{bmatrix} \green{2} & \red{1} \\ \green{1} & \red{1} \end{bmatrix}$. It sends $\hat\imath$ to $\green{(2, 1)}$, $\hat\jmath$ to $\red{(1, 1)}$, and $\yellow{\mathbf x} = (1, 1)$ to $(3, 2)$.
+On Day 5 a matrix became a motion of the whole plane, and on Day 6 two motions chained into a product. Today asks whether a motion can be run backwards. The answer matters for solving equations, because $A\mathbf x = \mathbf b$ asks which point $A$ moves onto $\mathbf b$, and a matrix that runs $A$ backwards would carry $\mathbf b$ straight to that point.
+
+Each section below opens with a problem. Try it before you open the walkthrough, even if you only get partway. Every problem uses only Day 6's product and ordinary equation solving.
+
+## Undoing a matrix
+
+<Problem>
+The matrix $A = \begin{bmatrix} \green{2} & \red{1} \\ \green{1} & \red{1} \end{bmatrix}$ moved some point $\yellow{\mathbf x}$ onto $\teal{(3, 2)}$. Which point was it?
+
+<VectorAnswer answer={[1, 1]} />
+
+<Solution>
+We want the point that $A$ sends to $(3, 2)$, so we call it $(p, q)$ and write out $A(p, q)$ with Day 4's column picture:
+
+$$
+p\begin{bmatrix} 2 \\ 1 \end{bmatrix} + q\begin{bmatrix} 1 \\ 1 \end{bmatrix} = \begin{bmatrix} 2p + q \\ p + q \end{bmatrix} = \begin{bmatrix} 3 \\ 2 \end{bmatrix}
+$$
+
+That gives $2p + q = 3$ and $p + q = 2$. Subtracting the second equation from the first removes $q$ and leaves $p = 1$. Then $q = 2 - 1 = 1$.
+
+So $\yellow{\mathbf x} = (1, 1)$. Solving worked, but we would have to solve again for every new target. It would be better to have one matrix that runs $A$ backwards on any point.
+</Solution>
+</Problem>
+
+<Problem>
+Someone claims that $\pink{C} = \begin{bmatrix} 1 & -1 \\ -1 & 2 \end{bmatrix}$ runs $A$ backwards. Test the claim by computing $CA$ and $AC$. Enter $CA$ row by row.
+
+<VectorAnswer answer={[1, 0, 0, 1]} columns={2} />
+
+<Solution>
+If $C$ undoes $A$, then doing $A$ and then $C$ should change nothing. By Day 6, "do $A$, then $C$" is the product $CA$. We compute it with the row–column rule:
+
+$$
+CA = \begin{bmatrix} 1 & -1 \\ -1 & 2 \end{bmatrix}\begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix} = \begin{bmatrix} 2 - 1 & 1 - 1 \\ -2 + 2 & -1 + 2 \end{bmatrix} = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}
+$$
+
+That is the identity $I$, the matrix that leaves every point where it is. The other order checks that doing $C$ first and then $A$ also changes nothing:
+
+$$
+AC = \begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}\begin{bmatrix} 1 & -1 \\ -1 & 2 \end{bmatrix} = \begin{bmatrix} 2 - 1 & -2 + 2 \\ 1 - 1 & -1 + 2 \end{bmatrix} = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}
+$$
+
+Both products are $I$, so the claim holds. As a check, $C(3, 2) = (3 - 2, -3 + 4) = (1, 1)$, which is the point from Problem 1.
+</Solution>
+</Problem>
 
 <Pair>
 <Figure src="undo" alt="Left: the standard grid with the yellow arrow x = (1, 1). Right: the same grid after A, slanted into long parallelograms, with x carried to Ax = (3, 2) in teal. A white arrow labelled A points from left to right, and a pink arrow labelled A inverse points back." />
@@ -9,8 +53,6 @@ A\yellow{\mathbf x} &= \begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}\begin{bmatri
 \pink{A^{-1}}\teal{\begin{bmatrix} 3 \\ 2 \end{bmatrix}} &= \begin{bmatrix} 1 & -1 \\ -1 & 2 \end{bmatrix}\begin{bmatrix} 3 \\ 2 \end{bmatrix} = \yellow{\begin{bmatrix} 1 \\ 1 \end{bmatrix}}
 \end{aligned}
 $$
-
-The pink matrix carries every point back to where it started, so it undoes $A$.
 </Pair>
 
 <Definition term="Invertible matrix">
@@ -23,15 +65,59 @@ $$
 Then $C$ is the **inverse** of $A$, written $A^{-1}$. A matrix with no inverse is called **singular**, and an invertible matrix is also called **nonsingular**.
 </Definition>
 
-Both products matter. $A^{-1}A = I$ says that undoing after doing changes nothing, and $AA^{-1} = I$ says the same thing in the other order. A matrix can have only one inverse, because if $B$ were a second one, then $B = B(AC) = (BA)C = C$.
+A matrix has at most one inverse. If $B$ were a second one, then $B = B(AC) = (BA)C = IC = C$, using Day 6's rule that grouping does not matter.
 
-The columns of $A^{-1}$ have a direct meaning. Column 1 of $A^{-1}$ is $A^{-1}\hat\imath$, which is the point that $A$ sends onto $\hat\imath$. Column 2 is the point that $A$ sends onto $\hat\jmath$.
+<Warning>
+Check both products. For now, $CA = I$ alone is not enough to call $C$ the inverse. Day 19 shows that for square matrices one product does imply the other, but that takes a theorem we have not reached.
+</Warning>
+
+The columns of $A^{-1}$ have a direct meaning, and the next problem finds it.
+
+<Problem>
+Find the point that $A = \begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}$ sends onto $\green{\hat\imath} = (1, 0)$. Compare your answer with the first column of $C$ in Problem 2.
+
+<VectorAnswer answer={[1, -1]} />
+
+<Solution>
+Call the point $(p, q)$. We need $2p + q = 1$ and $p + q = 0$. Subtracting the second equation from the first gives $p = 1$, and then $q = -1$.
+
+The point is $(1, -1)$, which is exactly the first column of $C$. That is no accident. The first column of $A^{-1}$ is $A^{-1}\hat\imath$, and $A^{-1}$ carries $\hat\imath$ back to the point that $A$ sent onto $\hat\imath$.
+</Solution>
+</Problem>
+
+<Concept title="The columns of an inverse">
+Column 1 of $A^{-1}$ is the point that $A$ sends onto $\hat\imath$, and column 2 is the point that $A$ sends onto $\hat\jmath$. So finding $A^{-1}$ is the same as solving $A\mathbf x = \hat\imath$ and $A\mathbf x = \hat\jmath$.
+</Concept>
+
+Build $A^{-1}$ yourself below. Each pink column has to land on its ringed basis arrow.
 
 <InverseColumnsHunt matrix={[[2, 1], [1, 1]]} />
 
 ## The formula for a 2 × 2 inverse
 
-The definition tells you how to check an inverse but not how to find one. For $2 \times 2$ matrices a formula builds the matrix whose product with $A$ is $I$ directly from the four entries.
+Solving two systems every time is slow. For $2 \times 2$ matrices a short formula does the work, and the next problem shows where it comes from.
+
+<Problem>
+Let $A = \begin{bmatrix} 4 & 3 \\ 2 & 2 \end{bmatrix}$. Swap the two diagonal entries and flip the signs of the other two, which gives $\begin{bmatrix} 2 & -3 \\ -2 & 4 \end{bmatrix}$. Multiply $A$ by this new matrix. What do you get, and how can you turn it into $A^{-1}$?
+
+<VectorAnswer answer={[2, 0, 0, 2]} columns={2} />
+
+<Solution>
+We multiply with the row–column rule, one entry at a time:
+
+$$
+\begin{bmatrix} 4 & 3 \\ 2 & 2 \end{bmatrix}\begin{bmatrix} 2 & -3 \\ -2 & 4 \end{bmatrix} = \begin{bmatrix} 8 - 6 & -12 + 12 \\ 4 - 4 & -6 + 8 \end{bmatrix} = \begin{bmatrix} 2 & 0 \\ 0 & 2 \end{bmatrix}
+$$
+
+The result is $2I$, which is almost the identity. Dividing the new matrix by $2$ divides the product by $2$ and gives exactly $I$:
+
+$$
+A^{-1} = \frac12\begin{bmatrix} 2 & -3 \\ -2 & 4 \end{bmatrix} = \begin{bmatrix} 1 & -3/2 \\ -1 & 2 \end{bmatrix}
+$$
+
+The $2$ we divided by is $4 \cdot 2 - 3 \cdot 2$. The same swap and sign flip works for any $2 \times 2$ matrix, and the leftover number is always $ad - bc$.
+</Solution>
+</Problem>
 
 <Definition term="Theorem 4">
 Let $A = \begin{bmatrix} a & b \\ c & d \end{bmatrix}$. If $ad - bc \neq 0$, then $A$ is invertible and
@@ -43,45 +129,114 @@ $$
 If $ad - bc = 0$, then $A$ is not invertible. The number $ad - bc$ is the **determinant** of $A$, written $\det A$.
 </Definition>
 
-The determinant comes back on Day 25, which shows that it measures how much $A$ scales area.
-
 <Figure src="formula" alt="The general formula for the inverse of a 2 by 2 matrix. Below it, the formula applied to A = [2 1; 1 1]: the diagonal entries have swapped places, the off-diagonal entries have flipped sign, and the fraction 1 over 2·1 − 1·1 gives A inverse = [1 −1; −1 2] in pink." wide />
 
-The recipe has three moves: swap $a$ and $d$, flip the signs of $b$ and $c$, then divide by $ad - bc$. It works because multiplying out gives
+The recipe works because multiplying out gives $\begin{bmatrix} a & b \\ c & d \end{bmatrix}\begin{bmatrix} d & -b \\ -c & a \end{bmatrix} = (ad - bc)\,I$, just as Problem 4 gave $2I$. The determinant comes back on Day 25, which shows that it measures how much $A$ scales area. Larger matrices have no recipe this short, so Day 8 computes their inverses by row reduction.
 
-$$
-\begin{bmatrix} a & b \\ c & d \end{bmatrix}\begin{bmatrix} d & -b \\ -c & a \end{bmatrix} = \begin{bmatrix} ad - bc & 0 \\ 0 & ad - bc \end{bmatrix},
-$$
+<Choice
+  question="Which matrix is the inverse of $\begin{bmatrix} 3 & 1 \\ 5 & 2 \end{bmatrix}$?"
+  options={["$\\begin{bmatrix} 2 & -1 \\\\ -5 & 3 \\end{bmatrix}$", "$\\begin{bmatrix} 2 & 1 \\\\ 5 & 3 \\end{bmatrix}$", "$\\begin{bmatrix} 3 & -1 \\\\ -5 & 2 \\end{bmatrix}$", "$\\begin{bmatrix} -2 & 1 \\\\ 5 & -3 \\end{bmatrix}$"]}
+  answer={0}
+>
+The determinant is $3 \cdot 2 - 1 \cdot 5 = 1$, so there is nothing to divide by. Swap $3$ and $2$ and flip the signs of $1$ and $5$ to get $\begin{bmatrix} 2 & -1 \\ -5 & 3 \end{bmatrix}$. Multiplying by the original matrix gives $\begin{bmatrix} 6 - 5 & -3 + 3 \\ 10 - 10 & -5 + 6 \end{bmatrix} = I$.
+</Choice>
 
-and dividing by $ad - bc$ turns that into $I$. For example, with $A = \begin{bmatrix} 4 & 3 \\ 2 & 2 \end{bmatrix}$:
-
-$$
-\begin{aligned}
-\det A &= 4 \cdot 2 - 3 \cdot 2 = 2 \\
-A^{-1} &= \frac{1}{2}\begin{bmatrix} 2 & -3 \\ -2 & 4 \end{bmatrix} = \begin{bmatrix} 1 & -3/2 \\ -1 & 2 \end{bmatrix} \\
-AA^{-1} &= \begin{bmatrix} 4 - 3 & -6 + 6 \\ 2 - 2 & -3 + 4 \end{bmatrix} = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}
-\end{aligned}
-$$
-
-The last line is the ten-second check. Multiplying your answer by $A$ catches a swapped sign or a forgotten division right away. Larger matrices have no recipe this short, so Day 8 computes their inverses by row reduction.
+<Warning>
+The common slips are swapping $b$ and $c$ instead of $a$ and $d$, flipping the signs on the diagonal, and forgetting to divide by $ad - bc$. Multiplying your answer by $A$ takes ten seconds and catches every one of them.
+</Warning>
 
 ## Solving with the inverse
+
+<Problem>
+Use $A^{-1} = \begin{bmatrix} 1 & -1 \\ -1 & 2 \end{bmatrix}$ from Problem 2 to solve the system $2x_1 + x_2 = 4$ and $x_1 + x_2 = 3$.
+
+<VectorAnswer answer={[1, 2]} labels={["x₁", "x₂"]} />
+
+<Solution>
+The system is $A\mathbf x = \mathbf b$ with $A = \begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}$ and $\teal{\mathbf b} = (4, 3)$. We want $\mathbf x$ alone, so we multiply both sides on the left by $A^{-1}$, which cancels the $A$:
+
+$$
+A^{-1}A\mathbf x = A^{-1}\mathbf b \quad\Longrightarrow\quad I\mathbf x = A^{-1}\mathbf b
+$$
+
+Now compute the right side:
+
+$$
+\yellow{\mathbf x} = \begin{bmatrix} 1 & -1 \\ -1 & 2 \end{bmatrix}\begin{bmatrix} 4 \\ 3 \end{bmatrix} = \begin{bmatrix} 4 - 3 \\ -4 + 6 \end{bmatrix} = \yellow{\begin{bmatrix} 1 \\ 2 \end{bmatrix}}
+$$
+
+Check: $2(1) + 2 = 4$ and $1 + 2 = 3$.
+</Solution>
+</Problem>
 
 <Definition term="Theorem 5">
 If $A$ is an invertible $n \times n$ matrix, then for each $\mathbf b$ in $\mathbb{R}^n$ the equation $A\mathbf x = \mathbf b$ has exactly one solution, $\mathbf x = A^{-1}\mathbf b$.
 </Definition>
 
-The vector $A^{-1}\mathbf b$ works because $A(A^{-1}\mathbf b) = I\mathbf b = \mathbf b$. It is the only solution, because any $\mathbf u$ with $A\mathbf u = \mathbf b$ gives $\mathbf u = A^{-1}A\mathbf u = A^{-1}\mathbf b$ after multiplying both sides by $A^{-1}$ on the left. In the video, $\teal{\mathbf b} = (4, 3)$ rides the grid back through $A^{-1}$:
+The vector $A^{-1}\mathbf b$ works because $A(A^{-1}\mathbf b) = I\mathbf b = \mathbf b$. It is the only solution, because any $\mathbf u$ with $A\mathbf u = \mathbf b$ gives $\mathbf u = A^{-1}A\mathbf u = A^{-1}\mathbf b$ after multiplying both sides by $A^{-1}$ on the left. For large systems, row reduction is faster than finding $A^{-1}$ first, and Day 9 explains why.
+
+Find the solution by hand below. There is exactly one spot where $\mathbf x$ works.
+
+<PreimageHunt matrix={[[2, 1], [1, 1]]} target={[4, 3]} success="That is the only point that works. $\mathbf x = (1, 2)$, which is $A^{-1}\mathbf b$." />
+
+## Matrix equations
+
+The same move solves equations whose unknown is a whole matrix. The only new care is the side you multiply on, because Day 6 showed that $A^{-1}B$ and $BA^{-1}$ are usually different.
+
+<Problem>
+$A$ is invertible, and $X$ is an unknown matrix with $XA = B$. Solve for $X$.
+
+<Solution>
+We want to remove the $A$ that sits on the right of $X$. Multiplying on the left would put $A^{-1}$ in front of $X$, where it cancels nothing. So we multiply both sides on the right by $A^{-1}$:
 
 $$
-\yellow{\mathbf x} = \pink{A^{-1}}\teal{\mathbf b} = \begin{bmatrix} 1 & -1 \\ -1 & 2 \end{bmatrix}\begin{bmatrix} 4 \\ 3 \end{bmatrix} = \begin{bmatrix} 4 - 3 \\ -4 + 6 \end{bmatrix} = \yellow{\begin{bmatrix} 1 \\ 2 \end{bmatrix}}
+XAA^{-1} = BA^{-1} \quad\Longrightarrow\quad XI = BA^{-1} \quad\Longrightarrow\quad X = BA^{-1}
 $$
 
-Matrices never get divided. Because $A^{-1}B$ and $BA^{-1}$ are usually different, every step has to say which side the inverse multiplies on.
+The inverse has to go on the same side as the $A$ it cancels, and it has to go on that side of both equations.
+</Solution>
+</Problem>
+
+<Choice
+  question="$A$ is invertible and $AX = B$. What is $X$?"
+  options={["$BA^{-1}$", "$A^{-1}B$", "$B/A$", "$A^{-1}BA$"]}
+  answer={1}
+>
+Here $A$ sits on the left of $X$, so multiply both sides on the left by $A^{-1}$: $A^{-1}AX = A^{-1}B$, which gives $X = A^{-1}B$. Matrices are never divided, because $B/A$ could not say which side the inverse goes on.
+</Choice>
+
+This also repairs Day 6's failed cancellation. If $A$ is invertible and $AB = AC$, multiplying on the left by $A^{-1}$ gives $B = C$. Cancelling failed on Day 6 only because the matrix there was singular.
 
 ## The inverse of a product
 
-Day 8 will build an inverse by undoing a chain of row operations, so it needs to know how to undo a product. If you shear the plane with $S$ and then turn it with $R$, the combined motion is $RS$. To undo it you have to undo the turn first, just as you take off your shoes before your socks.
+Day 8 builds an inverse by undoing a chain of row operations, so it needs to know how to undo a product.
+
+<Problem>
+The shear $S = \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$ followed by the quarter turn $R = \begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}$ is $RS = \begin{bmatrix} 0 & -1 \\ 1 & 1 \end{bmatrix}$. Find $(RS)^{-1}$ with the formula, enter it row by row, and then decide whether it equals $S^{-1}R^{-1}$ or $R^{-1}S^{-1}$.
+
+<VectorAnswer answer={[1, 1, -1, 0]} columns={2} />
+
+<Solution>
+The determinant of $RS$ is $0 \cdot 1 - (-1)(1) = 1$. Swapping the diagonal and flipping the other signs gives
+
+$$
+(RS)^{-1} = \begin{bmatrix} 1 & 1 \\ -1 & 0 \end{bmatrix}.
+$$
+
+Now the two candidates. The formula gives $S^{-1} = \begin{bmatrix} 1 & -1 \\ 0 & 1 \end{bmatrix}$ and $R^{-1} = \begin{bmatrix} 0 & 1 \\ -1 & 0 \end{bmatrix}$.
+
+<Steps>
+<Step>
+$S^{-1}R^{-1} = \begin{bmatrix} 1 & -1 \\ 0 & 1 \end{bmatrix}\begin{bmatrix} 0 & 1 \\ -1 & 0 \end{bmatrix} = \begin{bmatrix} 0 + 1 & 1 + 0 \\ 0 - 1 & 0 + 0 \end{bmatrix} = \begin{bmatrix} 1 & 1 \\ -1 & 0 \end{bmatrix}$. This matches.
+</Step>
+<Step>
+$R^{-1}S^{-1} = \begin{bmatrix} 0 & 1 \\ -1 & 0 \end{bmatrix}\begin{bmatrix} 1 & -1 \\ 0 & 1 \end{bmatrix} = \begin{bmatrix} 0 + 0 & 0 + 1 \\ -1 + 0 & 1 + 0 \end{bmatrix} = \begin{bmatrix} 0 & 1 \\ -1 & 1 \end{bmatrix}$. This does not.
+</Step>
+</Steps>
+
+So $(RS)^{-1} = S^{-1}R^{-1}$. Read right to left, it undoes the turn first and the shear second. The turn was the last move made, so it has to be the first move undone, just as you take off your shoes before your socks.
+</Solution>
+</Problem>
 
 <Figure src="undo-order" alt="Three small grids in a row: the standard grid, the grid after the shear S, and the grid after the shear and then the quarter turn R. White arrows labelled S and R point forward between them, and pink arrows labelled S inverse and R inverse point back." wide />
 
@@ -103,26 +258,108 @@ $$
 (AB)(B^{-1}A^{-1}) = A(BB^{-1})A^{-1} = AIA^{-1} = AA^{-1} = I,
 $$
 
-and $(B^{-1}A^{-1})(AB) = I$ collapses the same way. The guess $A^{-1}B^{-1}$ fails because $B$ and $A^{-1}$ never sit next to each other, so nothing cancels.
+and $(B^{-1}A^{-1})(AB) = I$ collapses the same way. The guess $A^{-1}B^{-1}$ fails because $B$ and $A^{-1}$ never sit next to each other, so nothing cancels. The same reasoning with three factors gives $(ABC)^{-1} = C^{-1}B^{-1}A^{-1}$.
 
 ## Singular matrices
 
-When $ad - bc = 0$, the two columns of $A$ lie on one line through the origin, and $A$ squashes the whole plane onto that line. Then many different points land on the same spot, so no matrix could send each one back to where it came from.
+The formula divides by $ad - bc$, so it breaks when $ad - bc = 0$. The next problem shows what goes wrong in the picture.
+
+<Problem>
+Let $M = \begin{bmatrix} 1 & 2 \\ 2 & 4 \end{bmatrix}$. Compute $M\begin{bmatrix} 1 \\ 0 \end{bmatrix}$, $M\begin{bmatrix} -1 \\ 1 \end{bmatrix}$ and $M\begin{bmatrix} 3 \\ -1 \end{bmatrix}$. Could any matrix undo $M$?
+
+<Solution>
+Use the entries as weights on the columns $(1, 2)$ and $(2, 4)$:
+
+$$
+\begin{aligned}
+M(1, 0) &= 1(1, 2) + 0(2, 4) = (1, 2) \\
+M(-1, 1) &= -1(1, 2) + 1(2, 4) = (1, 2) \\
+M(3, -1) &= 3(1, 2) - 1(2, 4) = (1, 2)
+\end{aligned}
+$$
+
+All three points land on $(1, 2)$. A matrix that undoes $M$ would have to send $(1, 2)$ back to all three of them at once, and a matrix sends each input to only one output. So no inverse exists. Its determinant confirms this: $1 \cdot 4 - 2 \cdot 2 = 0$.
+
+The three inputs differ by multiples of $(-2, 1)$, and $M(-2, 1) = -2(1, 2) + 1(2, 4) = \mathbf 0$. Adding a vector that lands on $\mathbf 0$ never changes where a point lands.
+</Solution>
+</Problem>
+
+<SameLanding matrix={[[1, 2], [2, 4]]} target={[1, 2]} starts={[[0, 0], [1, 1], [-2, 0]]} />
 
 <Figure src="singular" alt="The matrix M = [1 2; 2 4] sends the three yellow points (−1, 1), (1, 0) and (3, −1), which lie on a dotted line, to the single point (1, 2). Orange dotted arrows run from each point to (1, 2), which sits on the teal line y = 2x where the whole plane lands." />
 
-For $M = \begin{bmatrix} 1 & 2 \\ 2 & 4 \end{bmatrix}$, the determinant is $1 \cdot 4 - 2 \cdot 2 = 0$. The points $(1, 0)$, $(-1, 1)$ and $(3, -1)$ all land on $(1, 2)$, because they differ by multiples of $(-2, 1)$ and $M(-2, 1) = \mathbf 0$. In general, $\mathbf x = (-b, a)$ gives $A\mathbf x = (0, ad - bc)$, so when the determinant is zero some nonzero vector lands on $\mathbf 0$, and Theorem 5's uniqueness fails.
+<Concept title="Zero determinant means the plane is flattened">
+When $ad - bc = 0$, the two columns of $A$ lie on one line through the origin, and $A$ squashes the whole plane onto that line. The vector $\mathbf x = (-b, a)$ always gives $A\mathbf x = (ab - ba,\; ad - bc)$. The first entry is always $0$ and the second is the determinant, so when the determinant is zero some nonzero vector lands on $\mathbf 0$. Then many points share each landing spot, and no inverse can exist.
+</Concept>
+
+<Problem>
+For which value of $h$ is $\begin{bmatrix} h & 1 \\ 4 & 2 \end{bmatrix}$ singular?
+
+<VectorAnswer answer={[2]} labels={["h"]} prefix="h =" />
+
+<Solution>
+The matrix is singular exactly when its determinant is zero, so we compute the determinant with $h$ left as a letter: $2h - 1 \cdot 4 = 2h - 4$. Setting $2h - 4 = 0$ gives $h = 2$.
+
+At $h = 2$ the columns are $(2, 4)$ and $(1, 2)$. The first is twice the second, so they lie on one line. For every other $h$, the columns point in different directions, and the matrix is invertible.
+</Solution>
+</Problem>
+
+<DeterminantSlider second={[1, 2]} bottom={4} start={-2} />
+
+Drag both columns below to find another flat matrix of your own.
 
 <SingularHunt matrix={[[2, 1], [1, 2]]} />
 
-Day 19 gathers many other tests for whether a square matrix flattens space and shows they all agree with this one. Tomorrow each row operation from Day 3 becomes a matrix, and that turns row reduction into a way to compute $A^{-1}$ for a matrix of any size.
+Day 19 gathers many other tests for whether a square matrix flattens space and shows they all agree with this one.
 
 ## Practice
+
+### Warm-up
+
+<Check>
+Compute the determinant of $\begin{bmatrix} 3 & -2 \\ 4 & 1 \end{bmatrix}$. Is the matrix invertible?
+
+<VectorAnswer answer={[11]} labels={["det"]} prefix="\det =" />
+
+<Answer>
+$\det = 3 \cdot 1 - (-2) \cdot 4 = 3 + 8 = 11$. It is not zero, so the matrix is invertible.
+</Answer>
+</Check>
+
+<Check>
+Let $A = \begin{bmatrix} 2 & 1 \\ 5 & 3 \end{bmatrix}$ and $C = \begin{bmatrix} 3 & -1 \\ -5 & 2 \end{bmatrix}$. Compute $AC$, entering it row by row. Is $C = A^{-1}$? (Modeled on Lay §2.2, Example 1.)
+
+<VectorAnswer answer={[1, 0, 0, 1]} columns={2} />
+
+<Answer>
+$$
+AC = \begin{bmatrix} 6 - 5 & -2 + 2 \\ 15 - 15 & -5 + 6 \end{bmatrix} = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}
+$$
+
+The other order gives $CA = \begin{bmatrix} 6 - 5 & 3 - 3 \\ -10 + 10 & -5 + 6 \end{bmatrix} = I$ as well, so $C = A^{-1}$.
+</Answer>
+</Check>
+
+<Check>
+Find the inverse of $\begin{bmatrix} 1 & 0 \\ 3 & 1 \end{bmatrix}$, row by row.
+
+<VectorAnswer answer={[1, 0, -3, 1]} columns={2} />
+
+<Answer>
+The determinant is $1 \cdot 1 - 0 \cdot 3 = 1$. Swap the diagonal entries (both $1$) and flip the signs of $0$ and $3$: $\begin{bmatrix} 1 & 0 \\ -3 & 1 \end{bmatrix}$. The matrix adds $3$ times the first coordinate to the second, and its inverse subtracts it again.
+</Answer>
+</Check>
+
+### Core
 
 <Check>
 Find the inverse of $\begin{bmatrix} 5 & 2 \\ 7 & 3 \end{bmatrix}$ and use it to solve $5x_1 + 2x_2 = 4$, $7x_1 + 3x_2 = 5$. (Modeled on Lay §2.2 #1 and #5.)
 
 <VectorAnswer answer={[2, -3]} labels={["x₁", "x₂"]} />
+
+<Hint>
+Find the determinant first. Then $\mathbf x = A^{-1}\mathbf b$ with $\mathbf b = (4, 5)$.
+</Hint>
 
 <Answer>
 $$
@@ -138,9 +375,34 @@ Check: $5(2) + 2(-3) = 4$ and $7(2) + 3(-3) = 5$.
 </Check>
 
 <Check>
+Find the inverse of $\begin{bmatrix} 4 & 6 \\ 3 & 5 \end{bmatrix}$, row by row. You can type fractions such as 5/2. (Modeled on Lay §2.2 #1.)
+
+<VectorAnswer answer={[2.5, -3, -1.5, 2]} columns={2} />
+
+<Hint>
+This time the determinant is not $1$, so every entry of the swapped matrix gets divided by it.
+</Hint>
+
+<Answer>
+$$
+\begin{aligned}
+\det A &= 4 \cdot 5 - 6 \cdot 3 = 2 \\
+A^{-1} &= \frac12\begin{bmatrix} 5 & -6 \\ -3 & 4 \end{bmatrix} = \begin{bmatrix} 5/2 & -3 \\ -3/2 & 2 \end{bmatrix}
+\end{aligned}
+$$
+
+Check the first row of $AA^{-1}$: $4 \cdot \tfrac52 + 6 \cdot (-\tfrac32) = 10 - 9 = 1$ and $4(-3) + 6(2) = 0$.
+</Answer>
+</Check>
+
+<Check>
 For which value of $h$ is $\begin{bmatrix} h & 3 \\ 4 & 6 \end{bmatrix}$ singular? (Modeled on Lay §2.2 #10(c).)
 
-<VectorAnswer answer={[2]} labels={["h"]} />
+<VectorAnswer answer={[2]} labels={["h"]} prefix="h =" />
+
+<Hint>
+Write the determinant with $h$ as a letter and set it equal to zero.
+</Hint>
 
 <Answer>
 The determinant is $6h - 3 \cdot 4 = 6h - 12$, which is zero exactly when $h = 2$. Then the columns $(2, 4)$ and $(3, 6)$ both lie on the line $y = 2x$, and the matrix squashes the whole plane onto that line.
@@ -148,9 +410,13 @@ The determinant is $6h - 3 \cdot 4 = 6h - 12$, which is zero exactly when $h = 2
 </Check>
 
 <Check>
-Let $P = \begin{bmatrix} 1 & 2 \\ 3 & 7 \end{bmatrix}$ and $Q = \begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}$. Find $(PQ)^{-1} = \begin{bmatrix} c_{11} & c_{12} \\ c_{21} & c_{22} \end{bmatrix}$ as $Q^{-1}P^{-1}$, and enter its entries row by row. (Modeled on Lay §2.2 #15.)
+Let $P = \begin{bmatrix} 1 & 2 \\ 3 & 7 \end{bmatrix}$ and $Q = \begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}$. Find $(PQ)^{-1}$ as $Q^{-1}P^{-1}$, and enter it row by row. (Modeled on Lay §2.2 #15.)
 
-<VectorAnswer answer={[10, -3, -13, 4]} labels={["c₁₁", "c₁₂", "c₂₁", "c₂₂"]} />
+<VectorAnswer answer={[10, -3, -13, 4]} columns={2} />
+
+<Hint>
+Invert $P$ and $Q$ separately with the formula. Then multiply them in the reverse order.
+</Hint>
 
 <Answer>
 Both determinants equal $1$, so
@@ -165,3 +431,80 @@ $$
 The wrong order gives $P^{-1}Q^{-1} = \begin{bmatrix} 9 & -11 \\ -4 & 5 \end{bmatrix}$, which is a different matrix. You can confirm the right answer by multiplying it by $PQ = \begin{bmatrix} 4 & 3 \\ 13 & 10 \end{bmatrix}$ and getting $I$.
 </Answer>
 </Check>
+
+<Check>
+Let $A = \begin{bmatrix} 1 & 2 \\ 3 & 7 \end{bmatrix}$. Use one inverse to solve both $A\mathbf x = (3, 10)$ and $A\mathbf y = (0, 1)$. Enter $\mathbf x$ and then $\mathbf y$. (Modeled on Lay §2.2 #7.)
+
+<VectorAnswer answer={[1, 1, -2, 1]} labels={["x₁", "x₂", "y₁", "y₂"]} />
+
+<Hint>
+Find $A^{-1}$ once, then multiply it by each right side.
+</Hint>
+
+<Answer>
+$\det A = 7 - 6 = 1$, so $A^{-1} = \begin{bmatrix} 7 & -2 \\ -3 & 1 \end{bmatrix}$. Then
+
+$$
+\begin{aligned}
+\mathbf x &= \begin{bmatrix} 7 & -2 \\ -3 & 1 \end{bmatrix}\begin{bmatrix} 3 \\ 10 \end{bmatrix} = \begin{bmatrix} 21 - 20 \\ -9 + 10 \end{bmatrix} = \begin{bmatrix} 1 \\ 1 \end{bmatrix} \\
+\mathbf y &= \begin{bmatrix} 7 & -2 \\ -3 & 1 \end{bmatrix}\begin{bmatrix} 0 \\ 1 \end{bmatrix} = \begin{bmatrix} -2 \\ 1 \end{bmatrix}
+\end{aligned}
+$$
+
+The second answer is just column 2 of $A^{-1}$, because $(0, 1) = \hat\jmath$.
+</Answer>
+</Check>
+
+### Challenge
+
+<Check>
+<Choice
+  question="$P$ is invertible and $A = PBP^{-1}$. Which expression equals $B$?"
+  options={["$PAP^{-1}$", "$P^{-1}AP$", "$AP^{-1}P$", "$P^{-1}PA$"]}
+  answer={1}
+>
+Multiply on the left by $P^{-1}$ and on the right by $P$: $P^{-1}AP = P^{-1}PBP^{-1}P = IBI = B$. This shape returns on Day 32, where $P$ is built from eigenvectors. (Modeled on Lay §2.2 #18.)
+</Choice>
+
+<Hint>
+The $P$ on the left of $B$ needs a $P^{-1}$ on its left, and the $P^{-1}$ on the right of $B$ needs a $P$ on its right.
+</Hint>
+
+<Answer>
+$$
+P^{-1}AP = P^{-1}(PBP^{-1})P = (P^{-1}P)B(P^{-1}P) = B
+$$
+</Answer>
+</Check>
+
+<Check>
+The matrix $A = \begin{bmatrix} 2 & -6 \\ -1 & 3 \end{bmatrix}$ has determinant $0$. Find the vector $\mathbf x$ with first entry $3$ and $A\mathbf x = \mathbf 0$. (Modeled on Lay §2.2 #25.)
+
+<VectorAnswer answer={[3, 1]} />
+
+<Hint>
+The vector $(-b, a)$ always works when $\det A = 0$. Scale it so its first entry is $3$.
+</Hint>
+
+<Answer>
+Here $(-b, a) = (6, 2)$, and $A(6, 2) = (12 - 12, -6 + 6) = (0, 0)$. Half of it is $(3, 1)$, and $A(3, 1) = 3(2, -1) + 1(-6, 3) = (0, 0)$ as well. Since a nonzero vector lands on $\mathbf 0$, the equation $A\mathbf x = \mathbf 0$ has two different solutions, $\mathbf 0$ and $(3, 1)$. Theorem 5 says an invertible matrix gives exactly one, so $A$ is singular.
+</Answer>
+</Check>
+
+<Check>
+Let $A = \begin{bmatrix} 2 & 1 \\ 5 & 3 \end{bmatrix}$. Find $(A^T)^{-1}$, row by row, without inverting $A^T$ directly.
+
+<VectorAnswer answer={[3, -5, -1, 2]} columns={2} />
+
+<Hint>
+Theorem 6(c) says $(A^T)^{-1} = (A^{-1})^T$. Invert $A$, then flip.
+</Hint>
+
+<Answer>
+$\det A = 6 - 5 = 1$, so $A^{-1} = \begin{bmatrix} 3 & -1 \\ -5 & 2 \end{bmatrix}$. Its transpose is $\begin{bmatrix} 3 & -5 \\ -1 & 2 \end{bmatrix}$.
+
+Check: $A^T = \begin{bmatrix} 2 & 5 \\ 1 & 3 \end{bmatrix}$, and $\begin{bmatrix} 2 & 5 \\ 1 & 3 \end{bmatrix}\begin{bmatrix} 3 & -5 \\ -1 & 2 \end{bmatrix} = \begin{bmatrix} 6 - 5 & -10 + 10 \\ 3 - 3 & -5 + 6 \end{bmatrix} = I$.
+</Answer>
+</Check>
+
+Tomorrow each row operation becomes a matrix, and a chain of them that reduces $A$ to $I$ multiplies out to $A^{-1}$.
