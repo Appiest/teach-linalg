@@ -6,7 +6,7 @@ import { palette } from "@/lib/palette.generated";
 import { Goal, Panel, Readout, Slider, Tex, Workbench } from "./controls";
 import { useSettled } from "./gesture";
 import { apply, nearlyEqual, texNumber, type Matrix2, type Vec } from "./math";
-import { Arrow, DEFAULT_BOUNDS, Handle, Marker, Plane, usePlane } from "./plane";
+import { Arrow, boundsAround, DEFAULT_BOUNDS, Handle, Marker, Plane, usePlane } from "./plane";
 
 const GRID_REACH = 14;
 const EPSILON = 1e-9;
@@ -296,6 +296,128 @@ export function InverseBuilder({ matrix = [[0, 2], [1, 1]] }: { matrix?: Matrix2
               </div>
             </div>
             <StepLog steps={history.map((operation) => operation.tex)} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+const weightsFor = (first: Vec, second: Vec, target: Vec): Vec => {
+  const determinant = first[0] * second[1] - second[0] * first[1];
+  return [(target[0] * second[1] - second[0] * target[1]) / determinant, (first[0] * target[1] - target[0] * first[1]) / determinant];
+};
+
+function rowTex(row: Vec, color: string): string {
+  return `\\textcolor{${color}}{${fractionTex(row[0])}} & \\textcolor{${color}}{${fractionTex(row[1])}}`;
+}
+
+/** Row 2 of E is a recipe: the learner sets its two entries so that mixing the rows of A produces a target row. */
+export function RowRecipe({ a, target }: { a: Matrix2; target: Vec }) {
+  const [p, setP] = useState(0);
+  const [q, setQ] = useState(1);
+  const first: Vec = [a[0][0], a[0][1]];
+  const second: Vec = [a[1][0], a[1][1]];
+  const firstLeg: Vec = [p * first[0], p * first[1]];
+  const mixed: Vec = [firstLeg[0] + q * second[0], firstLeg[1] + q * second[1]];
+  const { settled: solved, gesture } = useSettled(nearlyEqual(mixed, target));
+  const [answerP, answerQ] = weightsFor(first, second, target);
+  const glow = (value: number) => `\\textcolor{${palette.glow}}{${fractionTex(value)}}`;
+  const [bounds] = useState(() => boundsAround([first, second, target, [answerP * first[0], answerP * first[1]]]));
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>The rows of <Tex>A</Tex> are drawn as arrows. Set row 2 of <Tex>E</Tex> so that row 2 of <Tex>EA</Tex> becomes the ringed row <Tex>{`(${fractionTex(target[0])}, ${fractionTex(target[1])})`}</Tex>.</>}
+        success={<>Row 2 of <Tex>E</Tex> is <Tex>{`(${fractionTex(answerP)}, ${fractionTex(answerQ)})`}</Tex>, which is the recipe <Tex>{`R_2 \\leftarrow R_2${signedTerm(answerP, "R_1")}`}</Tex>. The first entry of the new row is now zero.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={bounds} label="Row 1 of A in yellow and row 2 in blue, drawn as arrows, with a chain of their multiples ending at the new row 2 in teal. Use the two sliders.">
+            {!solved ? <Marker at={target} ring /> : null}
+            <Arrow to={first} color="yellow" width={1.5} dashed />
+            <Arrow to={second} color="blue" width={1.5} dashed />
+            <Arrow to={mixed} color="teal" width={2.5} />
+            <Arrow to={firstLeg} color="yellow" />
+            <Arrow from={firstLeg} to={mixed} color="blue" />
+            {solved ? <Marker at={target} color="teal" /> : null}
+          </Plane>
+        }
+        readout={
+          <>
+            <Slider label="p" value={p} onChange={setP} min={-4} max={4} step={1} color={palette.yellow} />
+            <Slider label="q" value={q} onChange={setQ} min={-2} max={2} step={1} color={palette.blue} />
+            <Readout tex={`E = \\begin{bmatrix} 1 & 0 \\\\ ${glow(p)} & ${glow(q)} \\end{bmatrix}`} />
+            <Readout tex={`EA = \\begin{bmatrix} ${rowTex(first, palette.yellow)} \\\\ ${rowTex(mixed, palette.teal)} \\end{bmatrix}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+type Undo = { id: string; tex: string; matrix: Matrix2 };
+
+const GRID_A_STEPS: Undo[] = [
+  { id: "e1", tex: "E_1^{-1}", matrix: [[0, 1], [1, 0]] },
+  { id: "e2", tex: "E_2^{-1}", matrix: [[1, 0], [2, 1]] },
+  { id: "e3", tex: "E_3^{-1}", matrix: [[1, 0], [0, -1]] },
+  { id: "e4", tex: "E_4^{-1}", matrix: [[1, 1], [0, 1]] },
+];
+
+const times = (left: Matrix2, right: Matrix2): Matrix2 => [
+  [left[0][0] * right[0][0] + left[0][1] * right[1][0], left[0][0] * right[0][1] + left[0][1] * right[1][1]],
+  [left[1][0] * right[0][0] + left[1][1] * right[1][0], left[1][0] * right[0][1] + left[1][1] * right[1][1]],
+];
+
+const sameMatrix = (left: Matrix2, right: Matrix2) => nearlyEqual(left[0] as Vec, right[0] as Vec) && nearlyEqual(left[1] as Vec, right[1] as Vec);
+
+function builtTex(applied: Undo[]): string {
+  if (applied.length === 0) return "I";
+  return [...applied].reverse().map((step) => step.tex).join("");
+}
+
+/** Starting from the square grid, the learner applies the four undo moves in some order; only the reverse of the reduction rebuilds A. */
+export function BuildFromSteps({ target = [[2, 1], [1, 1]] }: { target?: Matrix2 }) {
+  const [applied, setApplied] = useState<Undo[]>([]);
+  const current = applied.reduce<Matrix2>((matrix, step) => times(step.matrix, matrix), [[1, 0], [0, 1]]);
+  const { settled: solved, gesture } = useSettled(sameMatrix(current, target));
+  const finishedWrong = applied.length === GRID_A_STEPS.length && !solved;
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Start from the square grid and apply the four undo moves, one at a time, so the green and red arrows land in the rings where the columns of <Tex>A</Tex> sit.</>}
+        success={<>You rebuilt the grid of <Tex>A</Tex>, so <Tex>{"A = E_1^{-1}E_2^{-1}E_3^{-1}E_4^{-1}"}</Tex>. The last reduction step had to be undone first.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={DEFAULT_BOUNDS} label="The grid after the undo moves applied so far, with rings where the columns of A should land.">
+            <ImageGrid matrix={current} />
+            <Marker at={[target[0][0], target[1][0]]} color={solved ? "teal" : "green"} ring />
+            <Marker at={[target[0][1], target[1][1]]} color={solved ? "teal" : "red"} ring />
+            <BasisArrows matrix={current} />
+          </Plane>
+        }
+        readout={
+          <>
+            <div role="group" aria-label="Undo moves" className="flex flex-wrap gap-2">
+              {GRID_A_STEPS.map((step) => (
+                <ChoiceButton key={step.id} label={`Apply ${step.tex}`} disabled={applied.includes(step)} onClick={() => setApplied((list) => [...list, step])}>
+                  <Tex>{step.tex}</Tex>
+                </ChoiceButton>
+              ))}
+              <ChoiceButton label="Start over" disabled={applied.length === 0} onClick={() => setApplied([])}>
+                <span className="inline-flex items-center gap-1.5"><ArrowCounterClockwise className="size-4" aria-hidden /> Start over</span>
+              </ChoiceButton>
+            </div>
+            <Readout tex={`${builtTex(applied)} = ${squareTex(current)}`} />
+            <Readout tex={`\\begin{aligned} E_1^{-1}&: R_1 \\leftrightarrow R_2 \\\\ E_2^{-1}&: R_2 \\leftarrow R_2 + 2R_1 \\\\ E_3^{-1}&: R_2 \\leftarrow -R_2 \\\\ E_4^{-1}&: R_1 \\leftarrow R_1 + R_2 \\end{aligned}`} />
+            <p className={`text-meta text-text-muted ${finishedWrong ? "swap-shown" : "swap-hidden"}`} aria-live="polite">
+              That order builds a different grid. Start over and undo the last reduction step first.
+            </p>
           </>
         }
       />

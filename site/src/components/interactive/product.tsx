@@ -4,8 +4,8 @@ import { useState } from "react";
 import { palette } from "@/lib/palette.generated";
 import { columnTex, describeVector, Goal, Panel, Readout, Slider, Tex, Workbench } from "./controls";
 import { useSettled } from "./gesture";
-import { apply, nearlyEqual, texNumber, type Matrix2, type Vec } from "./math";
-import { Arrow, boundsAround, DEFAULT_BOUNDS, Handle, Label, Marker, Plane, usePlane, type Bounds } from "./plane";
+import { add, apply, nearlyEqual, scale, texNumber, type Matrix2, type Vec } from "./math";
+import { Arrow, boundsAround, DEFAULT_BOUNDS, Handle, Label, Marker, Plane, Segment, usePlane, type Bounds } from "./plane";
 
 const GRID_REACH = 14;
 
@@ -203,6 +203,109 @@ export function CommuteHunt({ a, b, start = 1 }: { a: Matrix2; b: [[Entry, Entry
           <SquarePicture matrix={ba} bounds={bounds} name="BA" lit={solved} />
         </div>
       </div>
+    </Panel>
+  );
+}
+
+const solveTwoByTwo = (matrix: Matrix2, target: Vec): Vec => {
+  const determinant = matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+  return [(matrix[1][1] * target[0] - matrix[0][1] * target[1]) / determinant, (matrix[0][0] * target[1] - matrix[1][0] * target[0]) / determinant];
+};
+
+/** Runs the column rule backward: the learner sets the weights in a column of B so that A's columns, scaled and chained, reach a column of AB. */
+export function ColumnWeights({ a, target }: { a: Matrix2; target: Vec }) {
+  const [top, setTop] = useState(0);
+  const [bottom, setBottom] = useState(0);
+  const a1 = columnOf(a, 0);
+  const a2 = columnOf(a, 1);
+  const firstLeg = scale(top, a1);
+  const result = add(firstLeg, scale(bottom, a2));
+  const { settled: solved, gesture } = useSettled(nearlyEqual(result, target));
+  const answer = solveTwoByTwo(a, target);
+  const [bounds] = useState(() => boundsAround([target, a1, a2, scale(answer[0], a1)]));
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>The first column of <Tex>{"AB"}</Tex> is the ringed point <Tex>{columnTex(target)}</Tex>. Set the two entries of <Tex>{"\\mathbf b_1"}</Tex> so that <Tex>{"A\\mathbf b_1"}</Tex> lands on it.</>}
+        success={<>Right. <Tex>{`\\mathbf b_1 = ${columnTex(answer)}`}</Tex>, because <Tex>{`${texNumber(answer[0])}\\,\\mathbf a_1 + ${texNumber(answer[1])}\\,\\mathbf a_2`}</Tex> is the first column of <Tex>{"AB"}</Tex>.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={bounds} label="The columns of A in green and red, a chain of their multiples ending at A b1 in teal, and a ringed target point. Use the two sliders.">
+            {!solved ? <Marker at={target} ring /> : null}
+            <Arrow to={a1} color="green" width={1.5} dashed />
+            <Arrow to={a2} color="red" width={1.5} dashed />
+            <Arrow to={result} color="teal" width={2.5} />
+            <Arrow to={firstLeg} color="green" />
+            <Arrow from={firstLeg} to={result} color="red" />
+            {solved ? <Marker at={target} color="teal" /> : null}
+          </Plane>
+        }
+        readout={
+          <>
+            <Slider label="b_{11}" value={top} onChange={setTop} min={-3} max={3} step={1} color={palette.i_hat} />
+            <Slider label="b_{21}" value={bottom} onChange={setBottom} min={-3} max={3} step={1} color={palette.j_hat} />
+            <Readout tex={`A = ${matrixTex(a)}`} />
+            <Readout tex={`\\begin{aligned} A\\mathbf b_1 &= ${texNumber(top)}${columnTex(a1, palette.i_hat)} + ${texNumber(bottom)}${columnTex(a2, palette.j_hat)} \\\\ &= ${columnTex(result, palette.teal)} \\end{aligned}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+const isZero = (v: Vec) => nearlyEqual(v, [0, 0]);
+
+function killsBoth(matrix: Matrix2, first: Vec, second: Vec): boolean {
+  if (isZero(first) || isZero(second) || nearlyEqual(first, second)) return false;
+  return isZero(apply(matrix, first)) && isZero(apply(matrix, second));
+}
+
+const ZERO_BOUNDS: Bounds = { xMin: -5, xMax: 5, yMin: -4, yMax: 4 };
+
+/** The learner drags two different nonzero columns of B until M sends both to the origin, so MB is the zero matrix. */
+export function ZeroProductHunt({ matrix, start = [[1, 1], [2, 0]] }: { matrix: Matrix2; start?: [Vec, Vec] }) {
+  const [first, setFirst] = useState<Vec>(start[0]);
+  const [second, setSecond] = useState<Vec>(start[1]);
+  const firstImage = apply(matrix, first);
+  const secondImage = apply(matrix, second);
+  const { settled: solved, gesture } = useSettled(killsBoth(matrix, first, second));
+  const reach = scale(20, columnOf(matrix, 0));
+  const nullDirection: Vec = [-matrix[0][1], matrix[0][0]];
+  const product: Matrix2 = [[firstImage[0], secondImage[0]], [firstImage[1], secondImage[1]]];
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Drag the two columns of <Tex>{"B"}</Tex> to two different spots, neither of them the origin, so that <Tex>{"M"}</Tex> sends both of them to <Tex>{"\\mathbf 0"}</Tex>.</>}
+        success={<>Now <Tex>{"MB"}</Tex> is the zero matrix, although neither <Tex>{"M"}</Tex> nor <Tex>{"B"}</Tex> is zero. Every column that works is a multiple of <Tex>{columnTex(nullDirection)}</Tex>.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={ZERO_BOUNDS} label="Two draggable columns of B in yellow and blue, and their images under M in teal, which always land on the dashed teal line.">
+            <Segment from={scale(-1, reach)} to={reach} color="teal" />
+            <Arrow to={firstImage} color="teal" width={2} />
+            <Arrow to={secondImage} color="teal" width={2} />
+            <Arrow to={first} color="yellow" />
+            <Arrow to={second} color="blue" />
+            <Label at={first} color="yellow">b₁</Label>
+            <Label at={second} color="blue">b₂</Label>
+            {solved ? <Marker at={[0, 0]} color="teal" ring /> : null}
+            <Handle at={first} onMove={setFirst} color="yellow" label={`Column b1 of B, at ${describeVector(first)}`} />
+            <Handle at={second} onMove={setSecond} color="blue" label={`Column b2 of B, at ${describeVector(second)}`} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Readout tex={`M = ${matrixTex(matrix)}`} />
+            <Readout tex={`B = ${matrixTex([[first[0], second[0]], [first[1], second[1]]], [palette.yellow, palette.blue])}`} />
+            <Readout tex={`MB = ${matrixTex(product, [palette.teal, palette.teal])}`} />
+          </>
+        }
+      />
     </Panel>
   );
 }

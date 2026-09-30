@@ -1,30 +1,178 @@
 Day 8 showed that every step of elimination is a matrix, so row reducing $A$ amounts to multiplying it by elementary matrices. Today's question is how to keep that work. In practice one matrix $A$ often meets many right-hand sides, and row reducing $A\mathbf x = \mathbf b$ from scratch repeats the same elimination every time $\mathbf b$ changes. An **LU factorization** writes down that elimination once, as a product $A = LU$, so each new $\mathbf b$ costs only two short substitutions.
 
+Each section below opens with a problem. Try it before you open the walkthrough, even if you only get partway. The first two problems need nothing but ordinary equation solving.
+
 ## Triangular matrices
 
-A square matrix is **lower triangular** when every entry above its main diagonal is $0$, and **upper triangular** when every entry below it is $0$. A lower triangular matrix with 1s on its diagonal is **unit lower triangular**.
+<Problem>
+Solve this system for $y_1$, $y_2$ and $y_3$.
 
 $$
-L = \begin{bmatrix} 1 & 0 & 0 \\ \pink{2} & 1 & 0 \\ \pink{-1} & \pink{3} & 1 \end{bmatrix}
-\qquad
-U = \begin{bmatrix} 2 & 1 & -1 \\ 0 & 3 & 2 \\ 0 & 0 & -2 \end{bmatrix}
+\begin{aligned}
+y_1 &= -1 \\
+2y_1 + y_2 &= -1 \\
+-y_1 + 3y_2 + y_3 &= 0
+\end{aligned}
 $$
 
-A triangular system is easy because one of its rows mentions a single unknown. In $L\mathbf y = \mathbf b$ the top row gives $y_1$ outright, and each row below adds exactly one new unknown. Solving from the top down is **forward substitution**. In $U\mathbf x = \mathbf y$ the bottom row holds the lone unknown, so you solve from the bottom up, which is **back substitution**. Triangular matrices come back on Day 26, where the determinant of one is the product of its diagonal, and on Day 28, where its eigenvalues sit on that diagonal.
+<VectorAnswer answer={[-1, 1, -4]} labels={["y₁", "y₂", "y₃"]} />
+
+<Solution>
+The top equation mentions only $y_1$, so it hands us $y_1 = -1$ with no work. That makes it the natural place to start.
+
+<Steps>
+<Step>
+The top equation says $y_1 = -1$.
+</Step>
+<Step>
+The second equation has one new unknown, $y_2$. Put in $y_1 = -1$: $2(-1) + y_2 = -1$, so $y_2 = -1 + 2 = 1$.
+</Step>
+<Step>
+The third equation has one new unknown, $y_3$. Put in both known values: $-(-1) + 3(1) + y_3 = 0$, so $1 + 3 + y_3 = 0$ and $y_3 = -4$.
+</Step>
+</Steps>
+
+Every equation added exactly one new unknown, so we never had to eliminate anything. In matrix form the system is $L\mathbf y = \mathbf b$ with $L = \begin{bmatrix} 1 & 0 & 0 \\ 2 & 1 & 0 \\ -1 & 3 & 1 \end{bmatrix}$, and every entry above its diagonal is zero.
+</Solution>
+</Problem>
+
+<Problem>
+Now solve $U\mathbf x = \mathbf y$ with $U = \begin{bmatrix} 2 & 1 & -1 \\ 0 & 3 & 2 \\ 0 & 0 & -2 \end{bmatrix}$ and the $\mathbf y = (-1, 1, -4)$ you just found.
+
+<VectorAnswer answer={[1, -1, 2]} labels={["x₁", "x₂", "x₃"]} />
+
+<Solution>
+This time the zeros sit below the diagonal, so the bottom equation, $-2x_3 = -4$, is the one with a single unknown. We start there and work up.
+
+<Steps>
+<Step>
+Bottom row: $-2x_3 = -4$, so $x_3 = 2$.
+</Step>
+<Step>
+Middle row: $3x_2 + 2x_3 = 1$. With $x_3 = 2$ this is $3x_2 + 4 = 1$, so $3x_2 = -3$ and $x_2 = -1$.
+</Step>
+<Step>
+Top row: $2x_1 + x_2 - x_3 = -1$. With the known values this is $2x_1 - 1 - 2 = -1$, so $2x_1 = 2$ and $x_1 = 1$.
+</Step>
+</Steps>
+
+So $\mathbf x = (1, -1, 2)$.
+</Solution>
+</Problem>
+
+<Concept title="Triangular systems solve one unknown at a time">
+A square matrix is **lower triangular** when every entry above its main diagonal is $0$, and **upper triangular** when every entry below it is $0$. A lower triangular matrix with 1s on its diagonal is **unit lower triangular**, like $L$ in Problem 1.
+
+In $L\mathbf y = \mathbf b$ the top row gives $y_1$ outright, and each row below adds one new unknown. Solving from the top down is **forward substitution**. In $U\mathbf x = \mathbf y$ the bottom row holds the lone unknown, so you solve from the bottom up, which is **back substitution**.
+</Concept>
+
+Triangular matrices come back on Day 26, where the determinant of one is the product of its diagonal, and on Day 28, where its eigenvalues sit on that diagonal.
+
+<Choice
+  question="Which matrix is unit lower triangular?"
+  options={["$\\begin{bmatrix} 1 & 4 \\\\ 0 & 1 \\end{bmatrix}$", "$\\begin{bmatrix} 2 & 0 \\\\ 5 & 1 \\end{bmatrix}$", "$\\begin{bmatrix} 1 & 0 \\\\ -3 & 1 \\end{bmatrix}$", "$\\begin{bmatrix} 0 & 0 \\\\ 1 & 0 \\end{bmatrix}$"]}
+  answer={2}
+>
+It has zeros above the diagonal and 1s on the diagonal. The first option is upper triangular, the second has a $2$ on its diagonal, and the last has $0$s on its diagonal.
+</Choice>
+
+## Two triangular solves
+
+The two problems above were really one problem. Multiplying out $LU$ gives $\begin{bmatrix} 2 & 1 & -1 \\ 4 & 5 & 0 \\ -2 & 8 & 5 \end{bmatrix}$, and Problems 1 and 2 solved $LU\mathbf x = (-1, -1, 0)$ in two easy stages. The next problem shows why that works, with $2 \times 2$ matrices you can draw.
+
+<Problem>
+Let $A = \begin{bmatrix} 1 & 1 \\ 2 & 3 \end{bmatrix} = LU$ with $L = \begin{bmatrix} 1 & 0 \\ \pink{2} & 1 \end{bmatrix}$ and $U = \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$. Solve $A\mathbf x = (2, 3)$ by first finding $\mathbf y$ with $L\mathbf y = \mathbf b$ and then $\mathbf x$ with $U\mathbf x = \mathbf y$.
+
+<VectorAnswer answer={[3, -1]} labels={["x₁", "x₂"]} />
+
+<Solution>
+We want $A\mathbf x = L(U\mathbf x) = \mathbf b$. If we name the inside part $\mathbf y = U\mathbf x$, the equation becomes $L\mathbf y = \mathbf b$, which is triangular.
+
+Forward substitution in $L\mathbf y = (2, 3)$: the top row says $y_1 = 2$. The bottom row says $2y_1 + y_2 = 3$, so $y_2 = 3 - 4 = -1$. So $\blue{\mathbf y} = (2, -1)$.
+
+Back substitution in $U\mathbf x = (2, -1)$: the bottom row says $x_2 = -1$. The top row says $x_1 + x_2 = 2$, so $x_1 = 3$. So $\yellow{\mathbf x} = (3, -1)$.
+
+Check with $A$ itself: $3(1, 2) - 1(1, 3) = (3 - 1, 6 - 3) = (2, 3)$.
+</Solution>
+</Problem>
 
 <Pair>
 <Figure src="shears" alt="Three small grids. On the left, a yellow arrow x = (1, 1) sits on a square grid. An arrow labelled U leads to the middle grid, sheared sideways, where x has become the blue arrow y = (2, 1). An arrow labelled L leads to the right grid, sheared vertically as well, where y has become the teal arrow b = (2, 5)." />
 
-Both factors of this $A$ are shears.
+<Concept title="Solve Ly = b, then Ux = y">
+If $A = LU$, then $A\mathbf x = L(U\mathbf x)$. Multiplying by $A$ applies $U$ first and then $L$, so $\yellow{\mathbf x} \to \blue{\mathbf y} \to \teal{\mathbf b}$. Solving runs the picture backward:
 
 $$
-\begin{bmatrix} 1 & 1 \\ 2 & 3 \end{bmatrix} = \begin{bmatrix} 1 & 0 \\ \pink{2} & 1 \end{bmatrix}\begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}
+L\blue{\mathbf y} = \teal{\mathbf b}, \qquad U\yellow{\mathbf x} = \blue{\mathbf y}.
 $$
-
-Multiplying by $A$ applies $U$ first and then $L$, so $\yellow{\mathbf x} \to \blue{\mathbf y} \to \teal{\mathbf b}$. Solving runs the picture backward: undo $L$ to find $\blue{\mathbf y}$, then undo $U$ to find $\yellow{\mathbf x}$.
+</Concept>
 </Pair>
 
+Do the two hops of Problem 3 by dragging. Find $\mathbf y$ first, because $\mathbf x$ has to land on it.
+
+<TwoTriangleSolve lower={[[1, 0], [2, 1]]} upper={[[1, 1], [0, 1]]} target={[2, 3]} />
+
+The same two stages work for the $3 \times 3$ factors of Problems 1 and 2. The two widgets below solve $A\mathbf x = \teal{(5, 14, 9)}$. Find $\blue{\mathbf y}$ first, then use it as the right side for $U$.
+
+<SubstitutionSolver matrix={[[1, 0, 0], [2, 1, 0], [-1, 3, 1]]} rhs={[5, 14, 9]} kind="lower" name="y" hue="blue" />
+
+<SubstitutionSolver matrix={[[2, 1, -1], [0, 3, 2], [0, 0, -2]]} rhs={[5, 4, 2]} kind="upper" name="x" hue="yellow" />
+
 ## Building L from elimination
+
+So far someone handed us $L$ and $U$. The next problem finds them from $A$, and the answer is the elimination you already know from Day 3.
+
+<Problem>
+Row reduce $A = \begin{bmatrix} 2 & 1 \\ 4 & 5 \end{bmatrix}$ to an echelon form $U$ with one row replacement. Put the multiple you subtracted below the diagonal of $L = \begin{bmatrix} 1 & 0 \\ \ell & 1 \end{bmatrix}$ and check that $LU = A$. Enter $\ell$ and the bottom-right entry of $U$.
+
+<VectorAnswer answer={[2, 3]} labels={["ℓ", "u₂₂"]} />
+
+<Solution>
+To reach echelon form we need a $0$ below the pivot $2$. Row 2 starts with $4$, which is $2$ times the pivot, so the natural step is $R_2 \leftarrow R_2 - 2R_1$. Row 2 becomes $(4, 5) - 2(2, 1) = (0, 3)$:
+
+$$
+U = \begin{bmatrix} 2 & 1 \\ 0 & 3 \end{bmatrix}, \qquad \ell = 2.
+$$
+
+Now check. Row 1 of $LU$ is $1\cdot(2, 1) + 0\cdot(0, 3) = (2, 1)$. Row 2 is $2\cdot(2, 1) + 1\cdot(0, 3) = (4, 5)$. So $LU = A$.
+
+Multiplying by $L$ adds $2$ times row 1 back into row 2, which undoes the elimination step. That is why the multiplier goes into $L$ with the same sign that we subtracted.
+</Solution>
+</Problem>
+
+<PivotFlattener a={[[2, 1], [4, 5]]} />
+
+For a $3 \times 3$ matrix there are three multipliers, one for each entry below the diagonal. The rule for finding them quickly is to look at each pivot column of the current matrix and divide it by its pivot.
+
+<Problem>
+Find $L$ and $U$ for $A = \begin{bmatrix} 2 & 1 & -1 \\ 4 & 5 & 0 \\ -2 & 8 & 5 \end{bmatrix}$. (A fresh problem modeled on Lay §2.5, Example 2.)
+
+<Solution>
+We eliminate column by column, and each step records one multiplier.
+
+<Steps>
+<Step>
+The first pivot column is $(\glow{2}, \glow{4}, \glow{-2})$. Dividing by the pivot $2$ gives $(1, \pink{2}, \pink{-1})$, so the steps are $R_2 \leftarrow R_2 - \pink{2}R_1$ and $R_3 \leftarrow R_3 - (\pink{-1})R_1$:
+
+$$
+\begin{bmatrix} 2 & 1 & -1 \\ 4 - 4 & 5 - 2 & 0 + 2 \\ -2 + 2 & 8 + 1 & 5 - 1 \end{bmatrix} = \begin{bmatrix} 2 & 1 & -1 \\ 0 & \glow{3} & 2 \\ 0 & \glow{9} & 4 \end{bmatrix}
+$$
+</Step>
+<Step>
+The second pivot column, from the pivot down, is $(\glow{3}, \glow{9})$. Dividing by $3$ gives $(1, \pink{3})$, so the step is $R_3 \leftarrow R_3 - \pink{3}R_2$, and row 3 becomes $(0, 9, 4) - 3(0, 3, 2) = (0, 0, -2)$.
+</Step>
+<Step>
+The result is echelon form, so it is $U$. The divided pivot columns are the columns of $L$:
+
+$$
+L = \begin{bmatrix} 1 & 0 & 0 \\ \pink{2} & 1 & 0 \\ \pink{-1} & \pink{3} & 1 \end{bmatrix}, \qquad U = \begin{bmatrix} 2 & 1 & -1 \\ 0 & 3 & 2 \\ 0 & 0 & -2 \end{bmatrix}.
+$$
+</Step>
+</Steps>
+
+These are the $L$ and $U$ of Problems 1 and 2.
+</Solution>
+</Problem>
 
 <Definition term="LU factorization">
 Suppose the $m \times n$ matrix $A$ can be reduced to an echelon form $U$ using only row replacements that add a multiple of a row to a row below it. Then
@@ -36,48 +184,39 @@ $$
 where $L$ is an $m \times m$ unit lower triangular matrix and $U$ is that $m \times n$ echelon form. The entry of $L$ in row $i$, column $j$ is the **multiplier** $\ell_{ij}$ used in the step $R_i \leftarrow R_i - \ell_{ij} R_j$.
 </Definition>
 
-The goal of elimination here is the same echelon form you reached on Day 3, except that this time you keep every multiplier instead of throwing it away. To find the multipliers, look at each pivot column of the current matrix. Divide the pivot and every entry below it by the pivot, and write the results into the matching column of $L$. Here is the matrix from the video, a fresh problem modeled on Lay §2.5, Example 2.
-
-$$
-A = \begin{bmatrix} \glow{2} & 1 & -1 \\ \glow{4} & 5 & 0 \\ \glow{-2} & 8 & 5 \end{bmatrix}
-\xrightarrow[R_3 \,-\, (\pink{-1})R_1]{R_2 \,-\, \pink{2}R_1}
-\begin{bmatrix} 2 & 1 & -1 \\ 0 & \glow{3} & 2 \\ 0 & \glow{9} & 4 \end{bmatrix}
-\xrightarrow{R_3 \,-\, \pink{3}R_2}
-\begin{bmatrix} 2 & 1 & -1 \\ 0 & 3 & 2 \\ 0 & 0 & \glow{-2} \end{bmatrix}
-$$
-
-The last matrix is $U$. The first pivot column $(2, 4, -2)$ divided by $2$ is $(1, \pink{2}, \pink{-1})$, and the second, $(3, 9)$ divided by $3$, is $(1, \pink{3})$. Those are the columns of $L$ shown above. The multipliers land in $L$ because elimination is a product of elementary matrices from Day 8: $E_2E_1A = U$, so $A = (E_2E_1)^{-1}U$, and $L = (E_2E_1)^{-1}$ is the matrix that undoes each subtraction by adding the same multiple back.
+The multipliers land in $L$ because elimination is a product of elementary matrices from Day 8. In Problem 5, $E_3E_2E_1A = U$, so $A = (E_3E_2E_1)^{-1}U$, and $L = (E_3E_2E_1)^{-1}$ is the matrix that undoes each subtraction by adding the same multiple back.
 
 <LUBuilder matrix={[[2, 1, 3], [-4, 1, -7], [6, 0, 12]]} />
 
-<Pair>
-<Figure src="factor" alt="The equation A = L U with 3 by 3 matrices. A is 2, 1, −1; 4, 5, 0; −2, 8, 5. L has 1s on its diagonal, zeros above, and the pink multipliers 2, −1 and 3 below. U is 2, 1, −1; 0, 3, 2; 0, 0, −2, with its pivots 2, 3 and −2 boxed in orange." />
+<Figure src="factor" alt="The equation A = L U with 3 by 3 matrices. A is 2, 1, −1; 4, 5, 0; −2, 8, 5. L has 1s on its diagonal, zeros above, and the pink multipliers 2, −1 and 3 below. U is 2, 1, −1; 0, 3, 2; 0, 0, −2, with its pivots 2, 3 and −2 boxed in orange." wide />
 
-When $A$ has fewer pivots than rows, fill the remaining columns of $L$ from the identity. $L$ is always square with as many rows as $A$, while $U$ has the shape of $A$. If a zero lands in a pivot position with a nonzero entry below it, a row swap is needed and plain LU does not exist. Software then uses a **permuted LU** factorization, which is the same idea with the rows reordered.
-</Pair>
+<Warning>
+The step subtracts $\ell$ times a row, and $L$ stores $+\ell$. A step written as $R_3 \leftarrow R_3 + R_1$ subtracts $-1$ times row 1, so the entry of $L$ is $-1$. Getting this sign backwards is the most common LU mistake, and multiplying $LU$ back out catches it.
+</Warning>
 
-## Solving with L and U
+## Fewer pivots than rows
 
-Once $L$ and $U$ are saved, the goal is to get $\mathbf x$ from any $\mathbf b$ without touching $A$ again. If $A = LU$, then $A\mathbf x = L(U\mathbf x)$. Call $U\mathbf x = \blue{\mathbf y}$ and solve two triangular systems in order.
+<Problem>
+Find $L$ and $U$ for the $3 \times 2$ matrix $A = \begin{bmatrix} 2 & 1 \\ 4 & 3 \\ -2 & 2 \end{bmatrix}$.
+
+<Solution>
+The same method applies, and only the shapes change.
+
+The first pivot column is $(2, 4, -2)$, and dividing by $2$ gives $(1, 2, -1)$. The steps $R_2 - 2R_1$ and $R_3 + R_1$ give rows $(2, 1)$, $(0, 1)$ and $(0, 3)$.
+
+The second pivot column, from the pivot down, is $(1, 3)$, so the step is $R_3 - 3R_2$, which turns row 3 into $(0, 0)$.
+
+There are no more pivots, but $L$ must be $3 \times 3$. Its third column comes from the identity:
 
 $$
-L\blue{\mathbf y} = \teal{\mathbf b}, \qquad U\yellow{\mathbf x} = \blue{\mathbf y}
+L = \begin{bmatrix} 1 & 0 & 0 \\ 2 & 1 & 0 \\ -1 & 3 & 1 \end{bmatrix}, \qquad U = \begin{bmatrix} 2 & 1 \\ 0 & 1 \\ 0 & 0 \end{bmatrix}.
 $$
 
-For $\teal{\mathbf b} = (-1, -1, 0)$ with the $L$ and $U$ above, forward substitution runs top to bottom and back substitution runs bottom to top.
+Check row 3 of $LU$: $-1(2, 1) + 3(0, 1) + 1(0, 0) = (-2, 2)$.
+</Solution>
+</Problem>
 
-$$
-\begin{aligned}
-\blue{y_1} &= -1, & \blue{y_2} &= -1 - 2(-1) = 1, & \blue{y_3} &= 0 + (-1) - 3(1) = -4 \\
-\yellow{x_3} &= \tfrac{-4}{-2} = 2, & \yellow{x_2} &= \tfrac{1 - 2(2)}{3} = -1, & \yellow{x_1} &= \tfrac{-1 - (-1) + 2}{2} = 1
-\end{aligned}
-$$
-
-So $\yellow{\mathbf x} = (1, -1, 2)$. The two widgets below solve $A\yellow{\mathbf x} = \teal{(5, 14, 9)}$ with the same factors. Find $\blue{\mathbf y}$ first, then use it as the right side for $U$.
-
-<SubstitutionSolver matrix={[[1, 0, 0], [2, 1, 0], [-1, 3, 1]]} rhs={[5, 14, 9]} kind="lower" name="y" hue="blue" />
-
-<SubstitutionSolver matrix={[[2, 1, -1], [0, 3, 2], [0, 0, -2]]} rhs={[5, 4, 2]} kind="upper" name="x" hue="yellow" />
+$L$ is always square with as many rows as $A$, while $U$ has the shape of $A$. If a zero lands in a pivot position with a nonzero entry below it, a row swap is needed and plain LU does not exist. Software then uses a **permuted LU** factorization, which is the same idea with the rows reordered.
 
 ## Why this saves work
 
@@ -92,7 +231,27 @@ $$
 \end{array}
 $$
 
-The factorization costs as much as one row reduction, and after that each new $\mathbf b$ costs only $2n^2$. With $n = 1000$ and 100 right-hand sides, row reducing each time takes about $6.7 \times 10^{10}$ flops and LU takes about $8.7 \times 10^8$, roughly 77 times less. Computing $A^{-1}$ first costs about $2.2 \times 10^9$, and $A^{-1}\mathbf b$ is also less accurate because of roundoff.
+<Problem>
+A $1000 \times 1000$ system must be solved for $100$ different right-hand sides. Estimate the flops for row reducing each time and for factoring once and then doing two triangular solves per right side. About how many times less work is LU?
+
+<Solution>
+Here $n^3 = 10^9$ and $n^2 = 10^6$.
+
+<Steps>
+<Step>
+Row reducing each time costs $\tfrac23 n^3$ per right side, so $100 \cdot \tfrac23 \cdot 10^9 \approx 6.7 \times 10^{10}$ flops.
+</Step>
+<Step>
+LU costs one factorization plus $100$ pairs of solves: $\tfrac23 \cdot 10^9 + 100 \cdot 2 \cdot 10^6 \approx 6.7 \times 10^8 + 2 \times 10^8 = 8.7 \times 10^8$ flops.
+</Step>
+<Step>
+The ratio is $6.7 \times 10^{10} / 8.7 \times 10^8 \approx 77$, so LU does about 77 times less work.
+</Step>
+</Steps>
+
+Computing $A^{-1}$ first would cost about $2 \cdot 10^9 + 100 \cdot 2 \cdot 10^6 = 2.2 \times 10^9$ flops, and $A^{-1}\mathbf b$ is also less accurate because of roundoff.
+</Solution>
+</Problem>
 
 <Figure src="cost" alt="A line chart of billions of flops against the number of right-hand sides k from 0 to 100, for n = 1000. The purple-gray line for row reducing each time climbs steadily to about 67 at k = 100. The teal line for LU once stays nearly flat along the bottom and ends at about 0.87." wide />
 
@@ -102,14 +261,56 @@ LU is the first of several factorizations in the course. Day 32 splits a matrix 
 
 ## Practice
 
+### Warm-up
+
 <Check>
-Use the factorization to solve $A\mathbf x = \mathbf b$ for $\mathbf b = (0, -2, -2)$ (modeled on Lay §2.5, #1).
+Solve $\begin{bmatrix} 1 & 0 \\ 3 & 1 \end{bmatrix}\mathbf y = \begin{bmatrix} 2 \\ 7 \end{bmatrix}$ by forward substitution.
+
+<VectorAnswer answer={[2, 1]} labels={["y₁", "y₂"]} />
+
+<Answer>
+The top row gives $y_1 = 2$. The bottom row gives $3(2) + y_2 = 7$, so $y_2 = 1$.
+</Answer>
+</Check>
+
+<Check>
+Solve $\begin{bmatrix} 2 & -1 \\ 0 & 3 \end{bmatrix}\mathbf x = \begin{bmatrix} 1 \\ 6 \end{bmatrix}$ by back substitution.
+
+<VectorAnswer answer={[1.5, 2]} labels={["x₁", "x₂"]} />
+
+<Answer>
+The bottom row gives $3x_2 = 6$, so $x_2 = 2$. The top row gives $2x_1 - 2 = 1$, so $x_1 = \tfrac32$.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="Which matrix could be the $U$ in an LU factorization?"
+  options={["$\\begin{bmatrix} 3 & 1 \\\\ 2 & 0 \\end{bmatrix}$", "$\\begin{bmatrix} 3 & 1 & 4 \\\\ 0 & 0 & 2 \\end{bmatrix}$", "$\\begin{bmatrix} 1 & 0 \\\\ 5 & 1 \\end{bmatrix}$"]}
+  answer={1}
+>
+$U$ is an echelon form. The second matrix has its pivots $3$ and $2$ stepping down to the right with zeros below them. The first has a nonzero entry below its first pivot, and the third is lower triangular.
+</Choice>
+
+<Answer>
+An echelon form has a zero below every pivot, and each pivot sits to the right of the one above it. $U$ does not need to be square.
+</Answer>
+</Check>
+
+### Core
+
+<Check>
+Use the factorization to solve $A\mathbf x = \mathbf b$ for $\mathbf b = (0, -2, -2)$. (Modeled on Lay §2.5 #1.)
 
 $$
 A = \begin{bmatrix} 1 & 0 & 0 \\ -1 & 1 & 0 \\ 3 & 2 & 1 \end{bmatrix}\begin{bmatrix} 1 & 2 & 0 \\ 0 & 1 & -1 \\ 0 & 0 & 2 \end{bmatrix}
 $$
 
 <VectorAnswer answer={[2, -1, 1]} labels={["x₁", "x₂", "x₃"]} />
+
+<Hint>
+Solve $L\mathbf y = \mathbf b$ from the top down first. Then solve $U\mathbf x = \mathbf y$ from the bottom up.
+</Hint>
 
 <Answer>
 Forward substitution in $L\mathbf y = \mathbf b$ gives $y_1 = 0$, then $y_2 = -2 + y_1 = -2$, then $y_3 = -2 - 3y_1 - 2y_2 = 2$.
@@ -129,9 +330,13 @@ So $\mathbf x = (2, -1, 1)$.
 </Check>
 
 <Check>
-Find an LU factorization of $A = \begin{bmatrix} 4 & -2 \\ 6 & 1 \end{bmatrix}$. Enter the multiplier $\ell_{21}$ and the lower-right entry $u_{22}$ of $U$ (modeled on Lay §2.5, #7).
+Find an LU factorization of $A = \begin{bmatrix} 4 & -2 \\ 6 & 1 \end{bmatrix}$. Enter the multiplier $\ell_{21}$ and the lower-right entry $u_{22}$ of $U$. (Modeled on Lay §2.5 #7.)
 
 <VectorAnswer answer={[1.5, 4]} labels={["ℓ₂₁", "u₂₂"]} />
+
+<Hint>
+Divide the first column by the pivot $4$.
+</Hint>
 
 <Answer>
 The first pivot column is $(4, 6)$, and dividing by the pivot $4$ gives $(1, \tfrac32)$, so $\ell_{21} = \tfrac32$. The step $R_2 \leftarrow R_2 - \tfrac32 R_1$ turns row 2 into $(0,\ 1 + 3) = (0, 4)$.
@@ -141,5 +346,107 @@ A = \begin{bmatrix} 1 & 0 \\ \tfrac32 & 1 \end{bmatrix}\begin{bmatrix} 4 & -2 \\
 $$
 
 Check row 2: $\tfrac32(4, -2) + (0, 4) = (6, 1)$.
+</Answer>
+</Check>
+
+<Check>
+Use the factorization from the previous check to solve $\begin{bmatrix} 4 & -2 \\ 6 & 1 \end{bmatrix}\mathbf x = \begin{bmatrix} 2 \\ 11 \end{bmatrix}$.
+
+<VectorAnswer answer={[1.5, 2]} labels={["x₁", "x₂"]} />
+
+<Hint>
+With $L = \begin{bmatrix} 1 & 0 \\ 3/2 & 1 \end{bmatrix}$, find $\mathbf y$ first.
+</Hint>
+
+<Answer>
+Forward: $y_1 = 2$ and $\tfrac32(2) + y_2 = 11$, so $y_2 = 8$.
+
+Back: $4x_2 = 8$ gives $x_2 = 2$, and $4x_1 - 2(2) = 2$ gives $x_1 = \tfrac32$.
+
+Check: $4 \cdot \tfrac32 - 2 \cdot 2 = 2$ and $6 \cdot \tfrac32 + 2 = 11$.
+</Answer>
+</Check>
+
+<Check>
+Find the three multipliers $\ell_{21}$, $\ell_{31}$, $\ell_{32}$ in the LU factorization of $A = \begin{bmatrix} 1 & 2 & 1 \\ 3 & 8 & 1 \\ -2 & 0 & 3 \end{bmatrix}$. (Modeled on Lay §2.5 #9.)
+
+<VectorAnswer answer={[3, -2, 2]} labels={["ℓ₂₁", "ℓ₃₁", "ℓ₃₂"]} />
+
+<Hint>
+Divide the first column by the pivot $1$. After the first round of steps, divide the second pivot column by its pivot.
+</Hint>
+
+<Answer>
+The first column $(1, 3, -2)$ divided by $1$ gives $\ell_{21} = 3$ and $\ell_{31} = -2$. The steps $R_2 - 3R_1$ and $R_3 + 2R_1$ give
+
+$$
+\begin{bmatrix} 1 & 2 & 1 \\ 0 & 2 & -2 \\ 0 & 4 & 5 \end{bmatrix}.
+$$
+
+The second pivot column is $(2, 4)$, so $\ell_{32} = 2$, and $R_3 - 2R_2$ leaves $U = \begin{bmatrix} 1 & 2 & 1 \\ 0 & 2 & -2 \\ 0 & 0 & 9 \end{bmatrix}$. Multiplying $L = \begin{bmatrix} 1 & 0 & 0 \\ 3 & 1 & 0 \\ -2 & 2 & 1 \end{bmatrix}$ by $U$ gives $A$ back.
+</Answer>
+</Check>
+
+<Check>
+With the factors from Problem 5, solve $A\mathbf x = (0, 5, 13)$ for $A = \begin{bmatrix} 2 & 1 & -1 \\ 4 & 5 & 0 \\ -2 & 8 & 5 \end{bmatrix}$.
+
+<VectorAnswer answer={[0, 1, 1]} labels={["x₁", "x₂", "x₃"]} />
+
+<Hint>
+$L$ and $U$ are already known, so this new right side costs only two substitutions.
+</Hint>
+
+<Answer>
+Forward in $L\mathbf y = (0, 5, 13)$: $y_1 = 0$, then $2(0) + y_2 = 5$ gives $y_2 = 5$, then $-0 + 3(5) + y_3 = 13$ gives $y_3 = -2$.
+
+Back in $U\mathbf x = (0, 5, -2)$: $-2x_3 = -2$ gives $x_3 = 1$, then $3x_2 + 2 = 5$ gives $x_2 = 1$, then $2x_1 + 1 - 1 = 0$ gives $x_1 = 0$.
+</Answer>
+</Check>
+
+### Challenge
+
+<Check>
+Find row 3 of $L$ for $A = \begin{bmatrix} 1 & 2 \\ 2 & 5 \\ 3 & 4 \end{bmatrix}$, which has only two pivots. (Modeled on Lay §2.5, Practice Problem.)
+
+<VectorAnswer answer={[3, -2, 1]} labels={["entry 1", "entry 2", "entry 3"]} />
+
+<Hint>
+The first two columns of $L$ come from the pivot columns. The third column comes from the identity.
+</Hint>
+
+<Answer>
+The first column $(1, 2, 3)$ gives $\ell_{21} = 2$ and $\ell_{31} = 3$. The steps $R_2 - 2R_1$ and $R_3 - 3R_1$ give rows $(1, 2)$, $(0, 1)$, $(0, -2)$. The second pivot column is $(1, -2)$, so $\ell_{32} = -2$, and $R_3 + 2R_2$ gives the zero row. Row 3 of $L$ is $(3, -2, 1)$, with its last entry from the identity.
+</Answer>
+</Check>
+
+<Check>
+For a $300 \times 300$ system, factoring costs about $\tfrac23 n^3$ flops and each pair of triangular solves costs about $2n^2$. After how many right-hand sides do the solves cost as much as the factoring did?
+
+<VectorAnswer answer={[100]} labels={["k"]} prefix="k =" />
+
+<Hint>
+Set $k \cdot 2n^2 = \tfrac23 n^3$ and simplify before putting in numbers.
+</Hint>
+
+<Answer>
+$k \cdot 2n^2 = \tfrac23 n^3$ gives $k = \tfrac{n}{3} = 100$. The factoring is a one-time cost, equal to about $\tfrac{n}{3}$ right sides' worth of solving.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="Does $\begin{bmatrix} 0 & 1 \\ 1 & 1 \end{bmatrix}$ have an LU factorization without row swaps?"
+  options={["Yes", "No"]}
+  answer={1}
+>
+The first pivot position holds $0$, and the entry below it is $1$. No multiple of row 1 can clear that $1$, because row 1 starts with $0$. Elimination needs a swap first, so only a permuted LU exists.
+</Choice>
+
+<Hint>
+Try to write the first step $R_2 \leftarrow R_2 - \ell R_1$. Which $\ell$ makes the first entry of row 2 zero?
+</Hint>
+
+<Answer>
+Row 2 would start with $1 - \ell \cdot 0 = 1$ for every $\ell$, so no replacement step works. You can also check directly: $\begin{bmatrix} 1 & 0 \\ \ell & 1 \end{bmatrix}\begin{bmatrix} a & b \\ 0 & d \end{bmatrix}$ has top-left entry $a$, which would have to be $0$, and then its bottom-left entry $\ell a$ is $0$, not $1$.
 </Answer>
 </Check>

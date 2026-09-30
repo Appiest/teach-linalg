@@ -12,10 +12,16 @@ import { ColumnSpanCheck, MatrixVectorExplorer, RowPictureSolver, SpanBreaker } 
 import { ImagePredictor, PreimageHunt, RotationDial, ShapeMatch } from "@/components/interactive/transformations";
 import { ClosureHunt, PolynomialCombiner } from "@/components/interactive/vector-spaces";
 import { CostCompare, LUBuilder, SubstitutionSolver } from "@/components/interactive/lu";
+import { EntryHunt, SpanPainter } from "@/components/interactive/span";
+import { RowReduceExplorer, SolutionCountExplorer } from "@/components/interactive/systems";
+import { ColumnSpanCheck, MatrixVectorExplorer } from "@/components/interactive/matrix";
+import { PreimageHunt, ShapeMatch } from "@/components/interactive/transformations";
+import { ClosureHunt, NegativeFinder, PolynomialCombiner, ScalingEscape } from "@/components/interactive/vector-spaces";
+import { CostCompare, LUBuilder, PivotFlattener, SubstitutionSolver, TwoTriangleSolve } from "@/components/interactive/lu";
 import { AdditionExplorer, CombinationTarget, DifferenceExplorer, GridWeights, ScaleExplorer, VectorExplorer } from "@/components/interactive/vectors";
-import { CommuteHunt, CompositionExplorer, ProductColumns } from "@/components/interactive/product";
-import { ElementaryMoves, InverseBuilder } from "@/components/interactive/elementary";
-import { InverseColumnsHunt, SingularHunt, UndoOrder } from "@/components/interactive/inverse";
+import { ColumnWeights, CommuteHunt, CompositionExplorer, ProductColumns, ZeroProductHunt } from "@/components/interactive/product";
+import { BuildFromSteps, ElementaryMoves, InverseBuilder, RowRecipe } from "@/components/interactive/elementary";
+import { DeterminantSlider, InverseColumnsHunt, SameLanding, SingularHunt, UndoOrder } from "@/components/interactive/inverse";
 import { CoordinateFinder, PolynomialCoordinates } from "@/components/interactive/coordinates";
 import { QuadrantEscape, ShiftedLineTest } from "@/components/interactive/subspaces";
 import { AddressHunt, StaircaseBasis, TrimToBasis } from "@/components/interactive/basis";
@@ -120,16 +126,26 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     CompositionExplorer,
     ProductColumns,
     CommuteHunt,
+    ColumnWeights,
+    ZeroProductHunt,
     PolynomialCombiner,
     ClosureHunt,
+    NegativeFinder,
+    ScalingEscape,
     LUBuilder,
     SubstitutionSolver,
     CostCompare,
+    TwoTriangleSolve,
+    PivotFlattener,
     ElementaryMoves,
     InverseBuilder,
+    RowRecipe,
+    BuildFromSteps,
     InverseColumnsHunt,
     SingularHunt,
     UndoOrder,
+    SameLanding,
+    DeterminantSlider,
     CoordinateFinder,
     PolynomialCoordinates,
     ShiftedLineTest,

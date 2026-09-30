@@ -3,9 +3,10 @@
 import { CheckCircle, Circle } from "@phosphor-icons/react";
 import { useState } from "react";
 import { palette } from "@/lib/palette.generated";
-import { columnTex, Goal, Panel, Readout, RichText, Slider, Tex } from "./controls";
+import { columnTex, describeVector, Goal, Panel, Readout, RichText, Slider, Tex, Workbench } from "./controls";
 import { useSettled } from "./gesture";
-import { formatNumber, texNumber } from "./math";
+import { apply, formatNumber, nearlyEqual, texNumber, type Matrix2, type Vec } from "./math";
+import { Arrow, boundsAround, Handle, Label, Marker, Plane, Segment } from "./plane";
 
 type Row3 = [number, number, number];
 type Matrix3 = [Row3, Row3, Row3];
@@ -222,6 +223,111 @@ export function CostCompare({ target = 50 }: { target?: number }) {
         </ul>
         <Readout tex={`\\frac{\\text{row reduce each time}}{\\text{LU once}} = ${formatNumber(ratioAt(k), 1)}`} />
       </div>
+    </Panel>
+  );
+}
+
+const squareTex = (m: Matrix2, entryColor: (row: number, col: number) => string) =>
+  `\\begin{bmatrix} ${m.map((row, r) => row.map((value, c) => colored(value, entryColor(r, c))).join(" & ")).join(" \\\\ ")} \\end{bmatrix}`;
+
+const plainColor = () => palette.text;
+
+function solveTriangle(matrix: Matrix2, target: Vec): Vec {
+  const determinant = matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+  return [(matrix[1][1] * target[0] - matrix[0][1] * target[1]) / determinant, (matrix[0][0] * target[1] - matrix[1][0] * target[0]) / determinant];
+}
+
+/** Solving LUx = b as two hops: the learner drags y until Ly hits b, then drags x until Ux hits y. */
+export function TwoTriangleSolve({ lower, upper, target }: { lower: Matrix2; upper: Matrix2; target: Vec }) {
+  const [y, setY] = useState<Vec>([0, 0]);
+  const [x, setX] = useState<Vec>([1, 0]);
+  const ly = apply(lower, y);
+  const ux = apply(upper, x);
+  const { settled: solved, gesture } = useSettled(nearlyEqual(ly, target) && nearlyEqual(ux, y));
+  const answerY = solveTriangle(lower, target);
+  const answerX = solveTriangle(upper, answerY);
+  const [bounds] = useState(() => boundsAround([target, answerY, answerX]));
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>First drag <Tex>{"\\mathbf y"}</Tex> until <Tex>{"L\\mathbf y"}</Tex> lands on the ringed point <Tex>{`\\mathbf b = ${columnTex(target)}`}</Tex>. Then drag <Tex>{"\\mathbf x"}</Tex> until <Tex>{"U\\mathbf x"}</Tex> lands on the tip of <Tex>{"\\mathbf y"}</Tex>.</>}
+        success={<>Both hops line up, so <Tex>{`\\mathbf y = ${columnTex(answerY)}`}</Tex> and <Tex>{`\\mathbf x = ${columnTex(answerX)}`}</Tex>. Then <Tex>{"A\\mathbf x = L(U\\mathbf x) = L\\mathbf y = \\mathbf b"}</Tex>.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={bounds} label="Draggable vectors y in blue and x in yellow. Dashed lines join y to L y and x to U x. A ring marks b.">
+            <Marker at={target} color={solved ? "teal" : "glow"} ring />
+            <Segment from={y} to={ly} color="teal" />
+            <Marker at={ly} color="teal" />
+            <Segment from={x} to={ux} color="blue" />
+            <Marker at={ux} color="blue" />
+            <Arrow to={y} color="blue" />
+            <Arrow to={x} color="yellow" />
+            <Label at={y} color="blue">y</Label>
+            <Label at={x} color="yellow" dx={8} dy={24}>x</Label>
+            <Handle at={y} onMove={setY} color="blue" label={`Tip of y, at ${describeVector(y)}. L y is ${describeVector(ly)}.`} />
+            <Handle at={x} onMove={setX} color="yellow" label={`Tip of x, at ${describeVector(x)}. U x is ${describeVector(ux)}.`} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Readout tex={`L = ${squareTex(lower, plainColor)} \\quad U = ${squareTex(upper, plainColor)}`} />
+            <Readout tex={`L\\mathbf y = ${columnTex(ly, palette.teal)}`} />
+            <Readout tex={`U\\mathbf x = ${columnTex(ux, palette.blue)}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+const MULTIPLIER_RANGE: [number, number] = [0, 3];
+
+function afterStep(a: Matrix2, multiplier: number): Matrix2 {
+  return [a[0], [a[1][0] - multiplier * a[0][0], a[1][1] - multiplier * a[0][1]]];
+}
+
+function columnsAcross(a: Matrix2): Vec[] {
+  return MULTIPLIER_RANGE.flatMap((multiplier) => {
+    const m = afterStep(a, multiplier);
+    return [[m[0][0], m[1][0]] as Vec, [m[0][1], m[1][1]] as Vec];
+  });
+}
+
+/** One replacement R2 − ℓR1 on a 2×2 matrix: the learner slides ℓ until the green column lies flat, which is the zero below the pivot. */
+export function PivotFlattener({ a }: { a: Matrix2 }) {
+  const [multiplier, setMultiplier] = useState(0);
+  const working = afterStep(a, multiplier);
+  const { settled: solved, gesture } = useSettled(isZero(working[1][0]));
+  const answer = a[1][0] / a[0][0];
+  const [bounds] = useState(() => boundsAround(columnsAcross(a), { xMin: -2, xMax: 2, yMin: -2, yMax: 2 }));
+  const upperEntryColor = (r: number, c: number) => (r > c ? (solved ? palette.teal : palette.glow) : palette.text);
+  const lowerEntryColor = (r: number, c: number) => (r > c ? palette.pink : palette.text);
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Slide the multiplier <Tex>{"\\ell"}</Tex> in <Tex>{"R_2 \\leftarrow R_2 - \\ell R_1"}</Tex> until the entry below the first pivot is <Tex>0</Tex>. In the picture, the green column drops onto the horizontal axis.</>}
+        success={<>With <Tex>{`\\ell = ${texNumber(answer)}`}</Tex> the working matrix is <Tex>U</Tex>, and the same <Tex>{texNumber(answer)}</Tex> sits below the diagonal of <Tex>L</Tex>.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={bounds} label="The two columns of the working matrix, green and red. Use the slider for the multiplier.">
+            <Arrow to={[working[0][0], working[1][0]]} color={solved ? "teal" : "green"} />
+            <Arrow to={[working[0][1], working[1][1]]} color="red" />
+          </Plane>
+        }
+        readout={
+          <>
+            <Slider label={"\\ell"} value={multiplier} onChange={setMultiplier} min={MULTIPLIER_RANGE[0]} max={MULTIPLIER_RANGE[1]} step={0.5} color={palette.pink} />
+            <Readout tex={`L = ${squareTex([[1, 0], [multiplier, 1]], lowerEntryColor)}`} />
+            <Readout tex={`\\text{working} = ${squareTex(working, upperEntryColor)}`} />
+          </>
+        }
+      />
     </Panel>
   );
 }

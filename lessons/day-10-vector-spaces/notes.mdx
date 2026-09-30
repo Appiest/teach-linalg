@@ -1,6 +1,79 @@
-Since Day 1 you have added and scaled arrows in $\mathbb{R}^n$. Span, linear combinations and linear maps never used anything else, so they should work for any objects that add and scale by the same rules. Polynomials, functions and matrices are three such objects. Today's question is what exactly counts as a vector, and it comes now because the next unit builds on the answer. A vector space is the name for any set where those two operations behave the way they do for arrows, and every theorem you prove from the rules then holds for all of these sets at once. Days 11 to 19 rebuild subspaces, span, independence, basis and dimension on this definition.
+Since Day 1 you have added and scaled arrows in $\mathbb{R}^n$. Span, linear combinations and linear maps never used anything else, so they should work for any objects that add and scale by the same rules. Polynomials, functions and matrices are three such objects. Today's question is what exactly counts as a vector, and it comes now because the next unit builds on the answer. A **vector space** is the name for any set where those two operations behave the way they do for arrows, and every theorem you prove from the rules then holds for all of these sets at once. Days 11 to 19 rebuild subspaces, span, independence, basis and dimension on this definition.
+
+Each section below opens with a problem. Try it before you open the walkthrough, even if you only get partway. The definition comes after the examples, so you will have done everything it describes before you read it.
+
+## Polynomials
+
+<Problem>
+Let $\yellow{\mathbf p}(t) = 1 + 2t - t^2$ and $\blue{\mathbf q}(t) = 2 - t + t^2$. Write $\mathbf p + \mathbf q$ as a polynomial and enter its three coefficients (constant, $t$, $t^2$). Then check your answer at $t = 2$.
+
+<VectorAnswer answer={[3, 1, 0]} labels={["constant", "t", "t²"]} />
+
+<Solution>
+Adding two functions means adding their values at every $t$, so we can gather the terms of the same power:
+
+$$
+\begin{aligned}
+(\yellow{\mathbf p} + \blue{\mathbf q})(t) &= (\yellow{1} + \blue{2}) + (\yellow{2} - \blue{1})\,t + (\yellow{-1} + \blue{1})\,t^2 \\
+&= \teal{3 + t}
+\end{aligned}
+$$
+
+The coefficients are $(3, 1, 0)$. To check at $t = 2$, evaluate each piece: $\mathbf p(2) = 1 + 4 - 4 = 1$ and $\mathbf q(2) = 2 - 2 + 4 = 4$, which add to $5$. The sum gives $3 + 2 = 5$ as well.
+
+Look at the coefficient lists. $\yellow{(1, 2, -1)} + \blue{(2, -1, 1)} = \teal{(3, 1, 0)}$ is ordinary vector addition in $\mathbb{R}^3$. Scaling works the same way: $3\mathbf p = 3 + 6t - 3t^2$, and $3(1, 2, -1) = (3, 6, -3)$.
+</Solution>
+</Problem>
+
+<Pair>
+<Figure src="polynomials-as-arrows" alt="Left: the curves p(t) = 1 + 2t − t² in yellow, q(t) = 2 − t + t² in blue and their sum 3 + t as a straight teal line. Right: the coefficient arrows (1, 2, −1) and (2, −1, 1) in 3D, placed tip to tail, with the teal sum arrow ending at (3, 1, 0)." />
+
+<Concept title="Polynomials add like columns">
+The set $\mathbb{P}_2$ holds every polynomial $a_0 + a_1 t + a_2 t^2$ with real coefficients and degree at most 2. Adding two of them adds matching coefficients, and scaling one multiplies every coefficient. So each polynomial in $\mathbb{P}_2$ behaves exactly like its column of coefficients in $\mathbb{R}^3$.
+</Concept>
+</Pair>
+
+On Days 12 to 15 these coefficient lists turn questions about polynomials into row reduction in $\mathbb R^3$. Below, find the linear combination of $\mathbf p$ and $\mathbf q$ that matches the dashed curve.
+
+<PolynomialCombiner p={[1, 2, -1]} q={[2, -1, 1]} target={[0, 5, -3]} />
+
+<Choice
+  question="Is the set of polynomials of degree exactly 2 closed under addition?"
+  options={["Yes", "No"]}
+  answer={1}
+>
+Problem 1 is a counterexample. Both $\mathbf p$ and $\mathbf q$ have degree exactly 2, but the $t^2$ terms cancel and $\mathbf p + \mathbf q = 3 + t$ has degree 1. That is why $\mathbb{P}_2$ allows degree *at most* 2.
+</Choice>
+
+## Matrices and functions
+
+Polynomials are one example. The next problem uses matrices, and the same two operations appear again.
+
+<Problem>
+Let $\yellow{A} = \begin{bmatrix} 1 & -2 \\ 0 & 3 \end{bmatrix}$ and $\blue{B} = \begin{bmatrix} 4 & 1 \\ -1 & 2 \end{bmatrix}$. Compute $A + 2B$, row by row.
+
+<VectorAnswer answer={[9, 0, -2, 7]} columns={2} />
+
+<Solution>
+Day 6 added and scaled matrices one entry at a time, so we do the same here. First $2B = \begin{bmatrix} 8 & 2 \\ -2 & 4 \end{bmatrix}$. Then add entry by entry:
+
+$$
+\begin{bmatrix} 1 + 8 & -2 + 2 \\ 0 - 2 & 3 + 4 \end{bmatrix} = \teal{\begin{bmatrix} 9 & 0 \\ -2 & 7 \end{bmatrix}}
+$$
+
+A $2 \times 2$ matrix is a list of four numbers arranged in a square, so it adds and scales like a vector in $\mathbb{R}^4$.
+</Solution>
+</Problem>
+
+The $2 \times 2$ matrices form the space $M_{2\times 2}$. Only addition and scalar multiplication matter here, and matrix multiplication plays no part in $M_{2\times 2}$ as a vector space.
+
+The real-valued functions on an interval also add and scale, with $(\mathbf f + \mathbf g)(t) = \mathbf f(t) + \mathbf g(t)$ and $(c\,\mathbf f)(t) = c\,\mathbf f(t)$. For example, if $\mathbf f(t) = 1 + \sin 2t$ and $\mathbf g(t) = 2 + 0.5t$, then $(\mathbf f + \mathbf g)(0) = 1 + 2 = 3$. Think of each whole function as a single point of that space. Then $\mathbf 0$, $\mathbf f$, $\mathbf g$ and $\mathbf f + \mathbf g$ sit at the corners of a parallelogram, exactly like $\mathbf 0$, $\vec v$, $\vec w$ and $\vec v + \vec w$ on Day 1.
+
+<Figure src="functions-as-points" alt="Left: the graphs of f(t) = 1 + sin 2t in yellow, g(t) = 2 + 0.5t in blue and their sum in teal for t from 0 to 4. Right: four dots labelled 0, f, g and f + g joined by a dashed parallelogram." wide />
 
 ## The definition
+
+Every example so far had an addition, a scaling, and the same handful of rules that arrows in $\mathbb{R}^n$ obey. The definition lists those rules, so that anything obeying them can borrow every theorem about arrows.
 
 <Definition term="Vector space">
 A **vector space** is a nonempty set $V$ of objects, called **vectors**, together with an addition and a multiplication by real scalars. The ten rules below must hold for all $\mathbf u, \mathbf v, \mathbf w$ in $V$ and all scalars $c, d$.
@@ -29,83 +102,101 @@ $$
 $$
 </Definition>
 
-When the operations are built from ordinary arithmetic on numbers, rules 2, 3 and 7 to 10 hold automatically, because real numbers already obey them. The rules that need checking are usually closure and the existence of a zero and negatives.
+When the operations are built from ordinary arithmetic on numbers, as in $\mathbb{P}_2$, $M_{2\times 2}$ and the function spaces, rules 2, 3 and 7 to 10 hold automatically, because real numbers already obey them. The rules that need checking are usually closure and the existence of a zero and negatives.
 
-## Polynomials
-
-The set $\mathbb{P}_2$ holds every polynomial $a_0 + a_1 t + a_2 t^2$ with real coefficients and degree at most 2. You add two polynomials by adding their values at every $t$, which is the same as adding matching coefficients. You scale one by multiplying every coefficient. On Days 12 to 15 these coefficient lists turn questions about polynomials into row reduction in $\mathbb R^3$.
-
-<Pair>
-<Figure src="polynomials-as-arrows" alt="Left: the curves p(t) = 1 + 2t − t² in yellow, q(t) = 2 − t + t² in blue and their sum 3 + t as a straight teal line. Right: the coefficient arrows (1, 2, −1) and (2, −1, 1) in 3D, placed tip to tail, with the teal sum arrow ending at (3, 1, 0)." />
-
-$$
-\begin{aligned}
-(\yellow{\mathbf p} + \blue{\mathbf q})(t) &= (\yellow{1} + \blue{2}) + (\yellow{2} - \blue{1})\,t \\
-&\quad + (\yellow{-1} + \blue{1})\,t^2 \\
-&= \teal{3 + t}
-\end{aligned}
-$$
-
-The coefficient lists add the same way: $\yellow{(1, 2, -1)} + \blue{(2, -1, 1)} = \teal{(3, 1, 0)}$. The $t^2$ terms cancel, so the sum has degree 1. That is why $\mathbb{P}_2$ allows degree *at most* 2, since a set of polynomials with degree exactly 2 would not contain this sum.
-</Pair>
-
-<PolynomialCombiner p={[1, 2, -1]} q={[2, -1, 1]} target={[0, 5, -3]} />
+<Choice
+  question="Which two rules are the closure rules?"
+  options={["Rules 2 and 3", "Rules 1 and 6", "Rules 4 and 5", "Rules 8 and 9"]}
+  answer={1}
+>
+Rule 1 says a sum stays in $V$, and rule 6 says a scalar multiple stays in $V$. They are the rules that fail most often, because a set can easily be too small to hold every sum or multiple.
+</Choice>
 
 ## The zero vector and negatives
 
-Every vector space has a zero vector and negatives, and you can always find them by scaling. For any $\mathbf u$ in $V$,
+<Problem>
+Find the polynomial $\mathbf n$ with $\mathbf p + \mathbf n = 0$ for every $t$, where $\mathbf p(t) = 1 + 2t - t^2$. Enter its coefficients.
+
+<VectorAnswer answer={[-1, -2, 1]} labels={["constant", "t", "t²"]} />
+
+<Solution>
+The sum must be the zero polynomial $0 + 0t + 0t^2$, and polynomials add coefficient by coefficient. So each coefficient of $\mathbf n$ must cancel the matching coefficient of $\mathbf p$: the constant must be $-1$, the $t$ coefficient $-2$, and the $t^2$ coefficient $+1$.
+
+So $\mathbf n = -1 - 2t + t^2$, and that is exactly $(-1)\mathbf p$.
+</Solution>
+</Problem>
+
+<NegativeFinder p={[1, 2, -1]} />
+
+In every vector space you can find the zero vector and negatives by scaling:
 
 $$
 0\,\mathbf u = \mathbf 0 \qquad\text{and}\qquad (-1)\,\mathbf u = -\mathbf u.
 $$
 
-The first fact follows from the rules alone. Rule 8 splits $0\,\mathbf u$ into two copies of itself, and adding its negative to both sides leaves $\mathbf 0$:
+Problem 3 showed the second fact for one polynomial. The first fact follows from the rules alone, which means it holds in every vector space, even ones with strange operations.
 
-$$
-\begin{aligned}
-0\,\mathbf u &= (0 + 0)\,\mathbf u = 0\,\mathbf u + 0\,\mathbf u && \text{rule 8} \\
-0\,\mathbf u + (-0\,\mathbf u) &= 0\,\mathbf u + \big[0\,\mathbf u + (-0\,\mathbf u)\big] && \text{rule 3} \\
-\mathbf 0 &= 0\,\mathbf u + \mathbf 0 && \text{rule 5} \\
-\mathbf 0 &= 0\,\mathbf u && \text{rule 4}
-\end{aligned}
-$$
+<Steps>
+<Step>
+Split $0\,\mathbf u$ into two copies of itself with rule 8, since $0 = 0 + 0$: $\;0\,\mathbf u = (0 + 0)\,\mathbf u = 0\,\mathbf u + 0\,\mathbf u$.
+</Step>
+<Step>
+We want to cancel one copy, so add the negative $-0\,\mathbf u$ (rule 5 says it exists) to both sides, and regroup the right side with rule 3: $\;0\,\mathbf u + (-0\,\mathbf u) = 0\,\mathbf u + \big[0\,\mathbf u + (-0\,\mathbf u)\big]$.
+</Step>
+<Step>
+Rule 5 turns each "vector plus its negative" into $\mathbf 0$: $\;\mathbf 0 = 0\,\mathbf u + \mathbf 0$.
+</Step>
+<Step>
+Rule 4 says adding $\mathbf 0$ changes nothing, so $\mathbf 0 = 0\,\mathbf u$.
+</Step>
+</Steps>
 
-So the zero vector of $\mathbb{P}_2$ is the zero polynomial $0 + 0t + 0t^2$, and the negative of $\yellow{\mathbf p}$ is $-1 - 2t + t^2$. The zero vector of a function space is the function that equals 0 at every $t$. A function such as $f(t) = t$ that is zero at only some points is not the zero vector.
-
-## Functions and matrices
-
-The real-valued functions on an interval also form a vector space, with $(\mathbf f + \mathbf g)(t) = \mathbf f(t) + \mathbf g(t)$ and $(c\,\mathbf f)(t) = c\,\mathbf f(t)$. Think of each whole function as a single point of that space. Then $\mathbf 0$, $\mathbf f$, $\mathbf g$ and $\mathbf f + \mathbf g$ sit at the corners of a parallelogram, exactly like $\mathbf 0$, $\vec v$, $\vec w$ and $\vec v + \vec w$ on Day 1.
-
-<Figure src="functions-as-points" alt="Left: the graphs of f(t) = 1 + sin 2t in yellow, g(t) = 2 + 0.5t in blue and their sum in teal for t from 0 to 4. Right: four dots labelled 0, f, g and f + g joined by a dashed parallelogram." wide />
-
-The $2 \times 2$ matrices $M_{2\times 2}$ form a vector space under entry-by-entry addition and scaling. Its zero vector is the zero matrix, and $-A = (-1)A$.
-
-$$
-\yellow{\begin{bmatrix} 1 & -2 \\ 0 & 3 \end{bmatrix}} + \blue{\begin{bmatrix} 4 & 1 \\ -1 & 2 \end{bmatrix}} = \teal{\begin{bmatrix} 5 & -1 \\ -1 & 5 \end{bmatrix}}
-$$
-
-Only addition and scalar multiplication matter here. Matrix multiplication plays no part in $M_{2\times 2}$ as a vector space.
+<Warning>
+The zero vector of a function space is the function that equals 0 at every $t$. A function such as $\mathbf f(t) = t$ is zero at $t = 0$, but it is not the zero vector, because it is not zero everywhere.
+</Warning>
 
 ## A set that fails
 
 To show a set is not a vector space, find one rule that breaks and give specific numbers that break it. A general feeling that "it doesn't seem closed" is not enough.
 
-Let $W$ be the points $(x, y)$ with $xy \geq 0$, which are the first and third quadrants. Scaling can never leave $W$, because $(cx)(cy) = c^2 xy \geq 0$. Addition can leave it, and the widget asks you to find a pair of vectors that shows how.
+<Problem>
+Let $W$ be the points $(x, y)$ in $\mathbb{R}^2$ with $xy \geq 0$, which are the first and third quadrants, with the usual addition and scaling. Find two vectors in $W$ whose sum is not in $W$.
+
+<Solution>
+Both vectors must have $xy \geq 0$, so each one lies in the first or third quadrant. If both were in the same quadrant their sum would stay there, so we try one from each: $\yellow{\mathbf u} = (2, 1)$ from the first and $\blue{\mathbf v} = (-1, -3)$ from the third.
+
+Check membership: $2 \cdot 1 = 2 \geq 0$ and $(-1)(-3) = 3 \geq 0$, so both are in $W$. Their sum is $\teal{(1, -2)}$, and $1 \cdot (-2) = -2 < 0$. So the sum is not in $W$, rule 1 fails, and $W$ is not a vector space.
+
+Scaling, on the other hand, never leaves $W$, because $(cx)(cy) = c^2xy \geq 0$. One failing rule is enough.
+</Solution>
+</Problem>
 
 <ClosureHunt u={[2, 1]} v={[1, 3]} />
 
 <Figure src="closure-fails" alt="The first and third quadrants shaded. The yellow vector u = (2, 1) and the blue vector v = (−1, −3) both lie in the shaded region, but their teal sum (1, −2), ringed in orange, lands in the unshaded fourth quadrant." />
 
-Here $\yellow{\mathbf u} = (2, 1)$ and $\blue{\mathbf v} = (-1, -3)$ are in $W$, since $2 \cdot 1 = 2$ and $(-1)(-3) = 3$. Their sum $\teal{(1, -2)}$ has $1 \cdot (-2) = -2 < 0$, so rule 1 fails and $W$ is not a vector space.
+<Problem>
+Let $H$ be the upper half-plane, the points $(x, y)$ with $y \geq 0$. Is $H$ closed under addition? Is it closed under scaling?
+
+<Solution>
+For addition, take any two points of $H$, say $(x_1, y_1)$ and $(x_2, y_2)$ with $y_1 \geq 0$ and $y_2 \geq 0$. Their sum has second entry $y_1 + y_2$, which is at least $0$. So every sum stays in $H$, and rule 1 holds.
+
+For scaling, a negative scalar flips the sign of $y$. Take $\mathbf u = (1, 2)$ in $H$ and $c = -1$: then $c\,\mathbf u = (-1, -2)$ has $y = -2 < 0$. Rule 6 fails, and so does rule 5, because $\mathbf u$ has no negative inside $H$.
+</Solution>
+</Problem>
+
+<ScalingEscape start={[1, 2]} />
 
 A set can also sit inside a vector space and be a vector space itself, like a line through the origin in $\mathbb R^2$. Tomorrow's lesson calls such a set a subspace and tests for one with three quick checks instead of all ten rules.
 
 ## Practice
 
-<Check>
-In $M_{2\times 2}$, let $A = \begin{bmatrix} 2 & 0 \\ -1 & 3 \end{bmatrix}$ and $B = \begin{bmatrix} 1 & 4 \\ -2 & 5 \end{bmatrix}$. Compute $2A - B$ and enter its entries row by row. (Modeled on Lay §4.1, p. 198.)
+### Warm-up
 
-<VectorAnswer answer={[3, -4, 0, 1]} labels={["top left", "top right", "bottom left", "bottom right"]} />
+<Check>
+In $M_{2\times 2}$, let $A = \begin{bmatrix} 2 & 0 \\ -1 & 3 \end{bmatrix}$ and $B = \begin{bmatrix} 1 & 4 \\ -2 & 5 \end{bmatrix}$. Compute $2A - B$, row by row. (Modeled on Lay §4.1, p. 198.)
+
+<VectorAnswer answer={[3, -4, 0, 1]} columns={2} />
 
 <Answer>
 $$
@@ -115,9 +206,39 @@ $$
 </Check>
 
 <Check>
+In $\mathbb{P}_2$, let $\mathbf p = 3 - t + 2t^2$ and $\mathbf q = 1 + t - t^2$. Enter the coefficients of $\mathbf p - 2\mathbf q$.
+
+<VectorAnswer answer={[1, -3, 4]} labels={["constant", "t", "t²"]} />
+
+<Answer>
+$2\mathbf q = 2 + 2t - 2t^2$, so $\mathbf p - 2\mathbf q = (3 - 2) + (-1 - 2)t + (2 + 2)t^2 = 1 - 3t + 4t^2$.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="What is the zero vector of $M_{2\times 3}$?"
+  options={["The number $0$", "The $2 \\times 3$ matrix of all zeros", "The $3 \\times 3$ identity matrix", "The $2 \\times 2$ matrix of all zeros"]}
+  answer={1}
+>
+The zero vector must be in the space and satisfy $A + \mathbf 0 = A$ for every $2 \times 3$ matrix $A$. The $2 \times 3$ zero matrix does both. A number or a matrix of another size cannot even be added to $A$.
+</Choice>
+
+<Answer>
+Every vector space has its own zero vector, of the same kind as its other vectors.
+</Answer>
+</Check>
+
+### Core
+
+<Check>
 On the set $\mathbb{R}^2$, keep the usual addition but define a new scaling by $c \odot (x, y) = (cx, 0)$. Compute $1 \odot (3, 4)$, then name the rule that fails.
 
 <VectorAnswer answer={[3, 0]} />
+
+<Hint>
+Compare the answer with $(3, 4)$. Which rule talks about multiplying by $1$?
+</Hint>
 
 <Answer>
 $1 \odot (3, 4) = (1 \cdot 3, 0) = (3, 0)$, which is not $(3, 4)$. Rule 10 requires $1\mathbf u = \mathbf u$, so rule 10 fails and this is not a vector space. Closure still holds, since every result is in $\mathbb{R}^2$, which shows that closure alone is not enough.
@@ -125,11 +246,110 @@ $1 \odot (3, 4) = (1 \cdot 3, 0) = (3, 0)$, which is not $(3, 4)$. Rule 10 requi
 </Check>
 
 <Check>
-Let $V$ be the positive real numbers with "addition" $x \oplus y = xy$ and "scaling" $c \odot x = x^c$. Find the zero vector of $V$ and the negative of $4$.
+Let $V$ be the positive real numbers with "addition" $x \oplus y = xy$ and "scaling" $c \odot x = x^c$. Compute $2 \oplus 5$ and $3 \odot 4$.
+
+<VectorAnswer answer={[10, 64]} labels={["2 ⊕ 5", "3 ⊙ 4"]} />
+
+<Hint>
+Use the new definitions exactly as written: $\oplus$ multiplies, and $c \odot x$ raises $x$ to the power $c$.
+</Hint>
+
+<Answer>
+$2 \oplus 5 = 2 \cdot 5 = 10$ and $3 \odot 4 = 4^3 = 64$. The symbols look like addition and scaling, but the rules decide what they do.
+</Answer>
+</Check>
+
+<Check>
+In the same space $V$, find the zero vector and the negative of $4$.
 
 <VectorAnswer answer={[1, 0.25]} labels={["zero vector", "negative of 4"]} />
 
+<Hint>
+The zero vector must satisfy $x \oplus \mathbf 0 = x$ for every $x$. Write that with ordinary multiplication.
+</Hint>
+
 <Answer>
 The zero vector must satisfy $x \oplus \mathbf 0 = x$, which means $x \cdot \mathbf 0 = x$, so $\mathbf 0 = 1$. The negative of $4$ must satisfy $4 \oplus y = 1$, so $y = \tfrac14$. Both agree with the facts above, because $0 \odot 4 = 4^0 = 1$ and $(-1) \odot 4 = 4^{-1} = \tfrac14$.
+</Answer>
+</Check>
+
+<Check>
+On the set $\mathbb{R}$, keep the usual scaling but define "addition" by $x \oplus y = x - y$. Compute $3 \oplus 1$ and $1 \oplus 3$. Which rule do they break?
+
+<VectorAnswer answer={[2, -2]} labels={["3 ⊕ 1", "1 ⊕ 3"]} />
+
+<Hint>
+Look for the rule about swapping the order of a sum.
+</Hint>
+
+<Answer>
+$3 \oplus 1 = 3 - 1 = 2$ and $1 \oplus 3 = 1 - 3 = -2$. Rule 2 says $\mathbf u + \mathbf v = \mathbf v + \mathbf u$, and these differ, so rule 2 fails and this is not a vector space. Rule 3 fails too: $(1 \oplus 2) \oplus 3 = -4$ while $1 \oplus (2 \oplus 3) = 2$.
+</Answer>
+</Check>
+
+<Check>
+Let $\mathbf f(t) = t^2$ and $\mathbf g(t) = 3 - t$ be vectors in the space of functions on $\mathbb{R}$. Find the values of $2\mathbf f - \mathbf g$ at $t = 1$ and at $t = 2$.
+
+<VectorAnswer answer={[0, 7]} labels={["at t = 1", "at t = 2"]} />
+
+<Hint>
+$(2\mathbf f - \mathbf g)(t) = 2\mathbf f(t) - \mathbf g(t)$. Evaluate each function first.
+</Hint>
+
+<Answer>
+At $t = 1$: $2(1) - (3 - 1) = 2 - 2 = 0$. At $t = 2$: $2(4) - (3 - 2) = 8 - 1 = 7$. The function $2\mathbf f - \mathbf g$ is zero at $t = 1$ but not at $t = 2$, so it is not the zero vector.
+</Answer>
+</Check>
+
+### Challenge
+
+<Check>
+Prove that $c\,\mathbf 0 = \mathbf 0$ for every scalar $c$ in any vector space, citing the rule used at each step.
+
+<Hint>
+Copy the proof that $0\,\mathbf u = \mathbf 0$, but start from $\mathbf 0 = \mathbf 0 + \mathbf 0$ and use rule 7 instead of rule 8.
+</Hint>
+
+<Answer>
+$$
+\begin{aligned}
+c\,\mathbf 0 &= c(\mathbf 0 + \mathbf 0) = c\,\mathbf 0 + c\,\mathbf 0 && \text{rules 4 and 7} \\
+c\,\mathbf 0 + (-c\,\mathbf 0) &= c\,\mathbf 0 + \big[c\,\mathbf 0 + (-c\,\mathbf 0)\big] && \text{rule 3} \\
+\mathbf 0 &= c\,\mathbf 0 + \mathbf 0 && \text{rule 5} \\
+\mathbf 0 &= c\,\mathbf 0 && \text{rule 4}
+\end{aligned}
+$$
+</Answer>
+</Check>
+
+<Check>
+In the space $V$ of positive reals with $x \oplus y = xy$ and $c \odot x = x^c$, rule 8 says $(c + d) \odot x = (c \odot x) \oplus (d \odot x)$. Compute both sides for $c = 2$, $d = 1$ and $x = 3$.
+
+<VectorAnswer answer={[27, 27]} labels={["left side", "right side"]} />
+
+<Hint>
+Translate each side into ordinary powers and products before putting in numbers.
+</Hint>
+
+<Answer>
+The left side is $3 \odot 3 = 3^3 = 27$. The right side is $3^2 \oplus 3^1 = 9 \cdot 3 = 27$. In general rule 8 becomes $x^{c + d} = x^c x^d$, a law of exponents, so it always holds in $V$.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="Is the set of $2 \times 2$ matrices with determinant $0$ closed under addition?"
+  options={["Yes", "No"]}
+  answer={1}
+>
+Take $\begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix}$ and $\begin{bmatrix} 0 & 0 \\ 0 & 1 \end{bmatrix}$. Each has determinant $0$, but their sum is $I$, whose determinant is $1$. So rule 1 fails, and the singular matrices do not form a vector space.
+</Choice>
+
+<Hint>
+Look for two simple singular matrices whose sum is the identity.
+</Hint>
+
+<Answer>
+Day 7's determinant $ad - bc$ decides membership. $1 \cdot 0 - 0 \cdot 0 = 0$ for the first matrix, $0 \cdot 1 - 0 \cdot 0 = 0$ for the second, and $1 \cdot 1 - 0 \cdot 0 = 1$ for their sum.
 </Answer>
 </Check>

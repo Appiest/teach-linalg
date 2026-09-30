@@ -213,3 +213,92 @@ export function ClosureHunt({ u: startU = [2, 1], v: startV = [1, 3] }: { u?: Ve
     </Panel>
   );
 }
+
+const NEGATIVE_START: Coefficients = [0, 0, 0];
+
+/** The learner builds the negative of p coefficient by coefficient, until p + n is the zero polynomial lying flat on the axis. */
+export function NegativeFinder({ p }: { p: Coefficients }) {
+  const [n, setN] = useState<Coefficients>(NEGATIVE_START);
+  const sum = combine(1, p, 1, n);
+  const { settled: solved, gesture } = useSettled(sameCoefficients(sum, [0, 0, 0]));
+  const setEntry = (index: number) => (value: number) => setN((current) => current.map((old, i) => (i === index ? value : old)) as Coefficients);
+  const negative = combine(-1, p, 0, p);
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Set the three coefficients of <Tex>{"\\mathbf n"}</Tex> so that the teal curve <Tex>{"\\mathbf p + \\mathbf n"}</Tex> lies flat on the <Tex>t</Tex>-axis at every <Tex>t</Tex>.</>}
+        success={<>The sum is the zero polynomial, so <Tex>{`-\\mathbf p = ${polynomialTex(negative)}`}</Tex>. Every coefficient of <Tex>{"\\mathbf p"}</Tex> flipped its sign.</>}
+      />
+      <Workbench
+        plane={
+          <PolynomialGraph label={`Graphs of p in yellow, n in blue and p + n in teal, which is currently ${polynomialTex(sum)}`}>
+            <Curve coeffs={p} color="yellow" width={2.5} />
+            <Curve coeffs={n} color="blue" width={2.5} />
+            <Curve coeffs={sum} color="teal" width={solved ? 5 : 3.5} />
+          </PolynomialGraph>
+        }
+        readout={
+          <>
+            {[0, 1, 2].map((index) => (
+              <Slider key={index} label={`n_${index}`} value={n[index]} onChange={setEntry(index)} min={-3} max={3} step={1} color={palette.blue} />
+            ))}
+            <Readout tex={`\\mathbf n = \\textcolor{${palette.blue}}{${polynomialTex(n)}}`} />
+            <Readout tex={`\\mathbf p + \\mathbf n = \\textcolor{${palette.teal}}{${polynomialTex(sum)}}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+const inUpperHalf = (v: Vec) => v[1] >= 0;
+
+function UpperShading({ bounds }: { bounds: Bounds }) {
+  const { toSvg } = usePlane();
+  const [x1, y1] = toSvg([bounds.xMin, bounds.yMax]);
+  const [x2, y2] = toSvg([bounds.xMax, 0]);
+  return <rect aria-hidden x={x1} y={y1} width={x2 - x1} height={y2 - y1} fill="var(--palette-purple-gray)" fillOpacity={0.16} />;
+}
+
+const ESCAPE_BOUNDS: Bounds = { xMin: -5, xMax: 5, yMin: -5, yMax: 5 };
+
+/** The upper half-plane is closed under addition; the learner finds a vector in it and a scalar that throws it out. */
+export function ScalingEscape({ start = [1, 2] }: { start?: Vec }) {
+  const [u, setU] = useState<Vec>(start);
+  const [c, setC] = useState(1);
+  const scaled: Vec = [c * u[0], c * u[1]];
+  const { settled: solved, gesture } = useSettled(inUpperHalf(u) && !inUpperHalf(scaled));
+  const member = (v: Vec) => (inUpperHalf(v) ? "\\in" : "\\notin");
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>The shaded set <Tex>H</Tex> is every point with <Tex>{"y \\geq 0"}</Tex>. Keep <Tex>{"\\mathbf u"}</Tex> in <Tex>H</Tex>, and find a scalar <Tex>c</Tex> that sends <Tex>{"c\\,\\mathbf u"}</Tex> outside it.</>}
+        success={<>Rule 6 fails, because <Tex>{"\\mathbf u"}</Tex> is in <Tex>H</Tex> and <Tex>{"c\\,\\mathbf u"}</Tex> is not. Any negative <Tex>c</Tex> works on a vector above the axis, so <Tex>H</Tex> has no negatives either.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={ESCAPE_BOUNDS} label="Plane with the upper half shaded as the set H, a draggable vector u and its multiple c u. Drag the tip of u or use arrow keys, and use the slider for c.">
+            <UpperShading bounds={ESCAPE_BOUNDS} />
+            <Arrow to={scaled} color="teal" />
+            <Arrow to={u} color="yellow" />
+            {solved ? <Marker at={scaled} color="glow" ring /> : null}
+            <Label at={u} color="yellow">u</Label>
+            <Label at={scaled} color="teal" dy={22}>cu</Label>
+            <Handle at={u} onMove={setU} color="yellow" label={`Tip of vector u, at ${describeVector(u)}`} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Slider label="c" value={c} onChange={setC} min={-2} max={2} step={0.5} color={palette.teal} />
+            <MembershipRow tex={`\\textcolor{${palette.yellow}}{\\mathbf u} = ${columnTex(u)} ${member(u)} H`} />
+            <MembershipRow tex={`\\textcolor{${palette.teal}}{c\\,\\mathbf u} = ${columnTex(scaled)} ${member(scaled)} H`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
