@@ -19,7 +19,7 @@ import { InverseColumnsHunt, SingularHunt, UndoOrder } from "@/components/intera
 import { CoordinateFinder, PolynomialCoordinates } from "@/components/interactive/coordinates";
 import { CounterexampleHunt, PolynomialSetTest, QuadrantEscape, ShiftedLineTest } from "@/components/interactive/subspaces";
 import { AddressHunt, StaircaseBasis, TrimToBasis } from "@/components/interactive/basis";
-import { LiftToPlane, LoopAnywhere, RelationFinder } from "@/components/interactive/independence";
+import { CollinearHunt, LiftToPlane, LoopAnywhere, RelationFinder, ZeroFunctionHunt } from "@/components/interactive/independence";
 import { OutputReach, PivotPicker, RowSlide } from "@/components/interactive/column-space";
 import { PivotBudget, RankTally } from "@/components/interactive/rank-nullity";
 import { ColumnBuilder, DerivativeRoutes } from "@/components/interactive/matrix-representations";
@@ -134,6 +134,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     RelationFinder,
     LiftToPlane,
     LoopAnywhere,
+    CollinearHunt,
+    ZeroFunctionHunt,
     OutputReach,
     PivotPicker,
     RowSlide,

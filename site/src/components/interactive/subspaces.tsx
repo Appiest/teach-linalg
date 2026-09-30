@@ -291,17 +291,18 @@ function parabolaThrough([left, middle, right]: Samples): Samples {
   return [middle, (right - left) / 2, (left + right) / 2 - middle];
 }
 
-const valueAt = (coeffs: Samples, t: number) => coeffs[0] + coeffs[1] * t + coeffs[2] * t * t;
+export const valueAt = (coeffs: Samples, t: number) => coeffs[0] + coeffs[1] * t + coeffs[2] * t * t;
 
-function GraphCurve({ coeffs, color, dashed = false }: { coeffs: Samples; color: Hue; dashed?: boolean }) {
-  const { toSvg } = usePlane();
+/** The graph of a0 + a1 t + a2 t^2 across the whole width of the surrounding Plane, with t on the horizontal axis. */
+export function GraphCurve({ coeffs, color, dashed = false, width }: { coeffs: Samples; color: Hue; dashed?: boolean; width?: number }) {
+  const { toSvg, bounds } = usePlane();
   const steps = 80;
   const path = Array.from({ length: steps + 1 }, (_, i) => {
-    const t = GRAPH_BOUNDS.xMin + ((GRAPH_BOUNDS.xMax - GRAPH_BOUNDS.xMin) * i) / steps;
+    const t = bounds.xMin + ((bounds.xMax - bounds.xMin) * i) / steps;
     const [x, y] = toSvg([t, valueAt(coeffs, t)]);
     return `${i === 0 ? "M" : "L"}${x.toFixed(1)},${y.toFixed(1)}`;
   }).join(" ");
-  return <path d={path} fill="none" stroke={hue(color)} strokeWidth={dashed ? 2.5 : 3.5} strokeDasharray={dashed ? "7 7" : undefined} strokeLinecap="round" />;
+  return <path d={path} fill="none" stroke={hue(color)} strokeWidth={width ?? (dashed ? 2.5 : 3.5)} strokeDasharray={dashed ? "7 7" : undefined} strokeLinecap="round" />;
 }
 
 /**
