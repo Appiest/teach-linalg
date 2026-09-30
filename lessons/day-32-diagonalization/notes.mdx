@@ -1,96 +1,308 @@
-On Day 28 the matrix $A = \begin{bmatrix} 3 & -2 \\ 1 & 0 \end{bmatrix}$ kept two lines, doubling the yellow one through $\yellow{\mathbf v_1} = (2, 1)$ and leaving the blue one through $\blue{\mathbf v_2} = (1, 1)$ alone. Yesterday's shear could not supply two independent eigenvectors, and today asks what a matrix gains when it can. Those two eigenvectors become the axes of a new grid. On that grid $A$ does nothing except stretch each axis, and that picture turns into a factorization $A = PDP^{-1}$ that makes $A$ easy to understand and easy to raise to powers.
+On Day 28 the matrix $A = \begin{bmatrix} 3 & -2 \\ 1 & 0 \end{bmatrix}$ kept two lines, doubling the yellow one through $\yellow{\mathbf v_1} = (2, 1)$ and leaving the blue one through $\blue{\mathbf v_2} = (1, 1)$ alone. Yesterday's shear could not supply two independent eigenvectors, and today asks what a matrix gains when it can. The answer is a factorization $A = PDP^{-1}$ with a diagonal matrix in the middle. It makes $A$ easy to understand and easy to raise to powers, which is what Day 33 needs to predict where $A^k\mathbf x$ heads.
 
-<Figure src="three-moves" alt="Four small grids. Start: the slanted purple-gray eigen-grid with the yellow v1 = (2, 1), the blue v2 = (1, 1), the gray vector u = (0, 1) and an orange ring at Au = (−2, 0). After P inverse: the grid is the ordinary square grid, yellow and blue lie on the axes, and u sits at (−1, 2). After D: the grid is stretched to twice its width, and u sits at (−2, 2). After P: the grid is slanted again with the yellow arrow at (4, 2), and u lands inside the ring at (−2, 0)." wide />
+Each section below opens with a problem. Try it before you open the walkthrough, even if you only get partway. The box after each walkthrough names the idea you just used.
+
+## Diagonal matrices
+
+We start with the easiest matrices of all, because the whole lesson is about turning other matrices into these.
+
+<Problem>
+Let $D = \begin{bmatrix} 2 & 0 \\ 0 & 3 \end{bmatrix}$. Compute $D\begin{bmatrix} 4 \\ 5 \end{bmatrix}$, $D^2$ and $D^3$. Then guess $D^k$.
+
+<Solution>
+$D$ has zeros off the diagonal, so each entry of the output uses only one entry of the input: $D\begin{bmatrix} 4 \\ 5 \end{bmatrix} = \begin{bmatrix} 2 \cdot 4 + 0 \cdot 5 \\ 0 \cdot 4 + 3 \cdot 5 \end{bmatrix} = \begin{bmatrix} 8 \\ 15 \end{bmatrix}$. The first entry is doubled and the second is tripled.
+
+Squaring uses the row-times-column rule, and every off-diagonal product has a zero in it:
+
+$$
+D^2 = \begin{bmatrix} 2 \cdot 2 + 0 \cdot 0 & 2 \cdot 0 + 0 \cdot 3 \\ 0 \cdot 2 + 3 \cdot 0 & 0 \cdot 0 + 3 \cdot 3 \end{bmatrix} = \begin{bmatrix} 4 & 0 \\ 0 & 9 \end{bmatrix}, \qquad D^3 = D^2 D = \begin{bmatrix} 8 & 0 \\ 0 & 27 \end{bmatrix}.
+$$
+
+Each diagonal entry is raised to the power on its own, so $D^k = \begin{bmatrix} 2^k & 0 \\ 0 & 3^k \end{bmatrix}$.
+</Solution>
+</Problem>
+
+A diagonal matrix scales each axis by its own number and never mixes the axes. Most matrices do mix them, like $A$ above. The plan for today is to find a different set of axes on which $A$ does no mixing.
 
 ## The eigenbasis
 
-Because $\yellow{\mathbf v_1}$ and $\blue{\mathbf v_2}$ are independent, every $\mathbf x$ in $\mathbb R^2$ has one address $\mathbf x = c_1\yellow{\mathbf v_1} + c_2\blue{\mathbf v_2}$. Applying $A$ and using linearity gives
+<Problem>
+Keep $A = \begin{bmatrix} 3 & -2 \\ 1 & 0 \end{bmatrix}$ with $A\yellow{\mathbf v_1} = 2\yellow{\mathbf v_1}$ and $A\blue{\mathbf v_2} = 1\blue{\mathbf v_2}$. Write $\mathbf u = (0, 1)$ as $c_1\yellow{\mathbf v_1} + c_2\blue{\mathbf v_2}$. Then compute $A\mathbf u$ two ways, directly and by using the weights.
 
-$$
-A\mathbf x = c_1 A\yellow{\mathbf v_1} + c_2 A\blue{\mathbf v_2} = \glow{2}\,c_1\yellow{\mathbf v_1} + \glow{1}\,c_2\blue{\mathbf v_2}.
-$$
+<Solution>
+First we want the weights, because the eigenvectors are the vectors whose behavior we already know.
 
-In these eigen-coordinates $A$ multiplies the first coordinate by $2$ and the second by $1$. No coordinate leaks into the other, so $A$ acts like the diagonal matrix $\begin{bmatrix} 2 & 0 \\ 0 & 1 \end{bmatrix}$.
+<Steps>
+<Step>
+Match entries in $c_1(2, 1) + c_2(1, 1) = (0, 1)$. That gives $2c_1 + c_2 = 0$ and $c_1 + c_2 = 1$.
+</Step>
+<Step>
+Subtract the second equation from the first to get $c_1 = -1$. Then $c_2 = 1 - c_1 = 2$. So $\mathbf u = -1\,\yellow{\mathbf v_1} + 2\,\blue{\mathbf v_2}$.
+</Step>
+<Step>
+Directly, $A\mathbf u = (3 \cdot 0 - 2 \cdot 1,\ 1 \cdot 0 + 0 \cdot 1) = (-2, 0)$.
+</Step>
+<Step>
+Using the weights and linearity, $A\mathbf u = -1\,A\yellow{\mathbf v_1} + 2\,A\blue{\mathbf v_2} = -1 \cdot \glow{2}\,\yellow{\mathbf v_1} + 2 \cdot \glow{1}\,\blue{\mathbf v_2}$. That is $(-4, -2) + (2, 2) = (-2, 0)$, the same answer.
+</Step>
+</Steps>
+
+In the weights, $A$ turned $(-1, 2)$ into $(-2, 2)$. It multiplied the first weight by $2$ and the second by $1$, which is exactly what the diagonal matrix $\begin{bmatrix} 2 & 0 \\ 0 & 1 \end{bmatrix}$ does.
+</Solution>
+</Problem>
 
 <Pair>
 <Figure src="eigen-grid-stretch" alt="Two copies of the slanted eigen-grid of v1 = (2, 1) and v2 = (1, 1) with one shaded cell. After A acts, the yellow arrow reaches (4, 2), the blue arrow is unchanged, and the shaded cell is twice as long along the yellow line." />
 
-A basis of $\mathbb R^n$ made of eigenvectors of $A$ is called an **eigenvector basis**, or eigenbasis. The picture shows why it is the right grid for $A$. Every yellow step doubles and every blue step stays the same length, so each grid cell stretches along one axis and nothing turns.
+<Concept title="Eigenvectors make the right grid">
+A basis of $\mathbb R^n$ made of eigenvectors of $A$ is an **eigenvector basis**, or eigenbasis. Measured in it, $A$ multiplies each weight by its eigenvalue and nothing else:
+
+$$
+A(c_1\yellow{\mathbf v_1} + c_2\blue{\mathbf v_2}) = \glow{\lambda_1}c_1\yellow{\mathbf v_1} + \glow{\lambda_2}c_2\blue{\mathbf v_2}.
+$$
+
+On the slanted grid, every yellow step doubles and every blue step stays the same, so each cell stretches along one axis and nothing turns.
+</Concept>
 </Pair>
+
+Use the weights to aim. The readout shows $\mathbf x$ and $A\mathbf x$ in eigen-coordinates, so you can work out which $\mathbf x$ lands on the ring.
 
 <EigenCoordinateTarget v1={[2, 1]} v2={[1, 1]} lambdas={[2, 1]} target={[-1, 1]} start={[1, 0]} />
 
 ## The diagonalization theorem
 
-The goal here is to rewrite the picture above as matrix algebra, so that the stretch in eigen-coordinates becomes a single diagonal factor. Put the eigenvectors into the columns of $P = [\,\yellow{\mathbf v_1}\ \blue{\mathbf v_2}\,]$ and the eigenvalues, in the same order, on the diagonal of $D$. Multiplying $A$ into $P$ one column at a time gives
+The next step writes the weight picture as matrix algebra, so the stretch becomes a single diagonal factor.
+
+<Problem>
+Put the eigenvectors into the columns of $P = \begin{bmatrix} \yellow{2} & \blue{1} \\ \yellow{1} & \blue{1} \end{bmatrix}$ and the eigenvalues, in the same order, into $D = \begin{bmatrix} 2 & 0 \\ 0 & 1 \end{bmatrix}$. Compute $AP$ and $PD$ and compare them.
+
+<Solution>
+A matrix product can be computed one column at a time: column $j$ of $AP$ is $A$ times column $j$ of $P$. That is convenient here, because the columns of $P$ are eigenvectors.
 
 $$
-AP = [\,A\yellow{\mathbf v_1}\ \ A\blue{\mathbf v_2}\,] = [\,\glow{2}\yellow{\mathbf v_1}\ \ \glow{1}\blue{\mathbf v_2}\,] = [\,\yellow{\mathbf v_1}\ \ \blue{\mathbf v_2}\,]\begin{bmatrix} \glow{2} & 0 \\ 0 & \glow{1} \end{bmatrix} = PD.
+AP = \begin{bmatrix} A\yellow{\mathbf v_1} & A\blue{\mathbf v_2} \end{bmatrix} = \begin{bmatrix} 4 & 1 \\ 2 & 1 \end{bmatrix}.
 $$
 
-The columns of $P$ are independent, so $P$ is invertible, and multiplying $AP = PD$ on the right by $P^{-1}$ gives $A = PDP^{-1}$. Read right to left, the factorization is three moves: $P^{-1}$ converts $\mathbf x$ into eigen-coordinates, $D$ stretches each coordinate, and $P$ converts back.
+Column $j$ of $PD$ is $P$ times column $j$ of $D$. Column 1 of $D$ is $(2, 0)$, which picks $2$ copies of $\yellow{\mathbf v_1}$, and column 2 is $(0, 1)$, which picks one copy of $\blue{\mathbf v_2}$:
+
+$$
+PD = \begin{bmatrix} 2\yellow{\mathbf v_1} & 1\blue{\mathbf v_2} \end{bmatrix} = \begin{bmatrix} 4 & 1 \\ 2 & 1 \end{bmatrix}.
+$$
+
+They match, because each column says the same thing as $A\mathbf v_j = \lambda_j\mathbf v_j$. The columns of $P$ are independent, so $P$ is invertible. Multiplying $AP = PD$ on the right by $P^{-1}$ gives $A = PDP^{-1}$.
+</Solution>
+</Problem>
 
 <Definition term="The diagonalization theorem">
 A square matrix $A$ is **diagonalizable** if $A = PDP^{-1}$ for some invertible $P$ and diagonal $D$. An $n \times n$ matrix $A$ is diagonalizable exactly when it has $n$ linearly independent eigenvectors. In that case the columns of $P$ are those eigenvectors, and the diagonal entries of $D$ are their eigenvalues in the same order.
 </Definition>
 
-The argument above runs in both directions. If $AP = PD$ with $D$ diagonal, column $j$ says $A\mathbf p_j = d_j\mathbf p_j$, so the columns of any such $P$ must be eigenvectors.
+The argument runs in both directions. If $AP = PD$ with $D$ diagonal, column $j$ says $A\mathbf p_j = d_j\mathbf p_j$, so the columns of any such $P$ must be eigenvectors. Try building $P$ yourself.
+
+<EigenColumnHunt matrix={[[3, -2], [1, 0]]} start={[[1, 0], [0, 1]]} />
+
+Read right to left, $A = PDP^{-1}$ is three moves. $P^{-1}$ converts $\mathbf x$ into eigen-coordinates, $D$ stretches each coordinate, and $P$ converts back. The figure shows the three moves carrying $\mathbf u = (0, 1)$ from the problem above to $A\mathbf u = (-2, 0)$.
+
+<Figure src="three-moves" alt="Four small grids. Start: the slanted purple-gray eigen-grid with the yellow v1 = (2, 1), the blue v2 = (1, 1), the gray vector u = (0, 1) and an orange ring at Au = (−2, 0). After P inverse: the grid is the ordinary square grid, yellow and blue lie on the axes, and u sits at (−1, 2). After D: the grid is stretched to twice its width, and u sits at (−2, 2). After P: the grid is slanted again with the yellow arrow at (4, 2), and u lands inside the ring at (−2, 0)." wide />
+
+Now play the three moves yourself, in any order you like.
 
 <DiagonalFactorSteps v1={[2, 1]} v2={[1, 1]} lambdas={[2, 1]} u={[0, 1]} />
+
+## Too few eigenvectors
+
+<Problem>
+Decide whether each matrix is diagonalizable: the shear $S = \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$ and $T = \begin{bmatrix} 2 & 3 \\ 0 & -1 \end{bmatrix}$.
+
+<Solution>
+By the theorem, the question for each matrix is whether it has two independent eigenvectors.
+
+On Day 31 the shear had the double eigenvalue $1$, and $S - I = \begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix}$ has rank 1, so every eigenvector lies on the $x$-axis. One line cannot supply two independent columns for $P$, so $S$ is not diagonalizable.
+
+$T$ is triangular, so its eigenvalues are its diagonal entries $2$ and $-1$. They are different, and eigenvectors for different eigenvalues are independent (Day 30). One eigenvector from each gives two independent columns, so $T$ is diagonalizable, and we did not need to find a single eigenvector to know it.
+</Solution>
+</Problem>
 
 <Pair>
 <Figure src="enough-eigenvectors" alt="Left: the matrix A = [3 −2; 1 0] with its yellow and blue eigen-lines and the slanted eigen-grid they make. Right: the shear S = [1 1; 0 1] with a single yellow eigen-line along the x-axis. A gray arrow (0, 2) is carried to the teal arrow (2, 2), off its dashed line." />
 
-Not every matrix has enough eigenvectors. The shear $S$ from Day 31 has eigenvalue $1$ twice, but its only eigenvectors lie on the $x$-axis. One line cannot supply two independent columns for $P$, so $S$ is not diagonalizable.
-
-Distinct eigenvalues always avoid this problem. Eigenvectors for different eigenvalues are independent (Day 30), so an $n \times n$ matrix with $n$ distinct eigenvalues is diagonalizable. The converse fails: $2I$ has only one eigenvalue and is already diagonal.
+<Concept title="Count the eigenvectors">
+An $n \times n$ matrix with $n$ different eigenvalues is always diagonalizable. With a repeated eigenvalue, add up the eigenspace dimensions. $A$ is diagonalizable exactly when that sum is $n$, which happens when every eigenvalue's geometric multiplicity equals its algebraic multiplicity (Lay §5.3, Theorem 7).
+</Concept>
 </Pair>
+
+The first test is only a shortcut. A repeated eigenvalue does not rule out diagonalizing, since $2I$ has only the eigenvalue $2$ and is already diagonal.
+
+<Choice
+  question="Which matrix is diagonalizable?"
+  options={["$\\begin{bmatrix} 4 & 1 \\\\ 0 & 4 \\end{bmatrix}$", "$\\begin{bmatrix} 4 & 1 \\\\ 0 & 5 \\end{bmatrix}$", "$\\begin{bmatrix} 0 & 1 \\\\ 0 & 0 \\end{bmatrix}$"]}
+  answer={1}
+>
+The middle matrix is triangular with the different eigenvalues $4$ and $5$, so it has two independent eigenvectors. The other two each have a double eigenvalue whose shifted matrix $\begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix}$ has rank 1, so each has only one eigenline.
+</Choice>
+
+<Warning>
+Diagonalizable and invertible are separate questions. The shear is invertible and not diagonalizable. The matrix $\begin{bmatrix} 1 & 1 \\ 0 & 0 \end{bmatrix}$ has the different eigenvalues $1$ and $0$, so it is diagonalizable, and its determinant is $0$, so it is not invertible.
+</Warning>
 
 ## Diagonalizing step by step
 
-For a repeated eigenvalue, count: $A$ is diagonalizable exactly when the eigenspace dimensions add up to $n$. The recipe aims for $n$ independent eigenvectors to fill the columns of $P$, and it can stop early when the count comes up short. Here is the full recipe with $A = \begin{bmatrix} 4 & 1 \\ 2 & 3 \end{bmatrix}$. Find the eigenvalues, find a basis for each eigenspace, and build $P$ and $D$ in matching order:
+Now we can run the whole recipe. Its goal is $n$ independent eigenvectors to fill the columns of $P$, and it can stop early if an eigenspace comes up short.
 
-$$
-\begin{aligned}
-\det(A - \lambda I) &= (4 - \lambda)(3 - \lambda) - 2 = \lambda^2 - 7\lambda + 10 = (\lambda - 5)(\lambda - 2) \\
-A - 5I &= \begin{bmatrix} -1 & 1 \\ 2 & -2 \end{bmatrix} \;\Rightarrow\; \yellow{\mathbf v_1} = \begin{bmatrix} 1 \\ 1 \end{bmatrix} \\
-A - 2I &= \begin{bmatrix} 2 & 1 \\ 2 & 1 \end{bmatrix} \;\Rightarrow\; \blue{\mathbf v_2} = \begin{bmatrix} 1 \\ -2 \end{bmatrix} \\
-P &= \begin{bmatrix} \yellow{1} & \blue{1} \\ \yellow{1} & \blue{-2} \end{bmatrix}, \qquad D = \begin{bmatrix} \glow{5} & 0 \\ 0 & \glow{2} \end{bmatrix} \\
-AP &= \begin{bmatrix} 5 & 2 \\ 5 & -4 \end{bmatrix} = PD.
-\end{aligned}
-$$
+<Problem>
+Diagonalize $A = \begin{bmatrix} 4 & 1 \\ 2 & 3 \end{bmatrix}$.
 
-Checking $AP = PD$ avoids computing $P^{-1}$. It proves nothing unless $P$ is invertible, and here $\det P = -3 \ne 0$.
+<Solution>
+<Steps>
+<Step>
+Find the eigenvalues, since each one tells us which null space to search. $\det(A - \lambda I) = (4 - \lambda)(3 - \lambda) - 2 = \lambda^2 - 7\lambda + 10 = (\lambda - 5)(\lambda - 2)$, so $\lambda = 5$ and $\lambda = 2$.
+</Step>
+<Step>
+Find an eigenvector for $5$. $A - 5I = \begin{bmatrix} -1 & 1 \\ 2 & -2 \end{bmatrix}$, and its first row says $-x_1 + x_2 = 0$, so $\yellow{\mathbf v_1} = (1, 1)$.
+</Step>
+<Step>
+Find an eigenvector for $2$. $A - 2I = \begin{bmatrix} 2 & 1 \\ 2 & 1 \end{bmatrix}$, and its first row says $2x_1 + x_2 = 0$, so $\blue{\mathbf v_2} = (1, -2)$.
+</Step>
+<Step>
+Build $P$ and $D$ in matching order: $P = \begin{bmatrix} \yellow{1} & \blue{1} \\ \yellow{1} & \blue{-2} \end{bmatrix}$ and $D = \begin{bmatrix} \glow{5} & 0 \\ 0 & \glow{2} \end{bmatrix}$.
+</Step>
+<Step>
+Check with $AP = PD$ instead of computing $P^{-1}$. $AP = \begin{bmatrix} 4 + 1 & 4 - 2 \\ 2 + 3 & 2 - 6 \end{bmatrix} = \begin{bmatrix} 5 & 2 \\ 5 & -4 \end{bmatrix}$, and $PD = \begin{bmatrix} 5 \cdot 1 & 2 \cdot 1 \\ 5 \cdot 1 & 2 \cdot (-2) \end{bmatrix} = \begin{bmatrix} 5 & 2 \\ 5 & -4 \end{bmatrix}$. Finally $\det P = -2 - 1 = -3 \ne 0$, so $P$ is invertible.
+</Step>
+</Steps>
+</Solution>
+</Problem>
+
+The order of the columns in $P$ decides the order of the entries in $D$. Here $P$ lists $(1, -2)$ first, so find the diagonal of $D$ that makes $PD$ match $AP$.
+
+<DiagonalEntryMatch matrix={[[4, 1], [2, 3]]} first={[1, -2]} second={[1, 1]} />
+
+<Warning>
+$AP = PD$ holds for any eigenvectors, even two copies of the same one. It proves $A = PDP^{-1}$ only when $P$ is invertible, so always check $\det P \ne 0$ as well.
+</Warning>
+
+A repeated eigenvalue can still work, as long as its eigenspace is big enough.
+
+<Problem>
+Diagonalize $A = \begin{bmatrix} 1 & 2 & 2 \\ 0 & 3 & 0 \\ 0 & 0 & 3 \end{bmatrix}$. Its eigenvalues are $1$ and $3$, with $3$ repeated.
+
+<Solution>
+The risk is the repeated eigenvalue, so count its eigenspace first.
+
+<Steps>
+<Step>
+$A - 3I = \begin{bmatrix} -2 & 2 & 2 \\ 0 & 0 & 0 \\ 0 & 0 & 0 \end{bmatrix}$ has one pivot, so its null space has dimension $3 - 1 = 2$. That equals the multiplicity of $3$, so the count will reach $3$.
+</Step>
+<Step>
+The single equation $-2x_1 + 2x_2 + 2x_3 = 0$ says $x_1 = x_2 + x_3$, with $x_2$ and $x_3$ free. Setting one free variable to 1 and the other to 0 gives $(1, 1, 0)$ and $(1, 0, 1)$.
+</Step>
+<Step>
+For $\lambda = 1$, $A - I = \begin{bmatrix} 0 & 2 & 2 \\ 0 & 2 & 0 \\ 0 & 0 & 2 \end{bmatrix}$ forces $x_2 = x_3 = 0$ with $x_1$ free, so the eigenvector is $(1, 0, 0)$.
+</Step>
+<Step>
+$P = \begin{bmatrix} 1 & 1 & 1 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix}$ and $D = \begin{bmatrix} 1 & 0 & 0 \\ 0 & 3 & 0 \\ 0 & 0 & 3 \end{bmatrix}$. Both $AP$ and $PD$ equal $\begin{bmatrix} 1 & 3 & 3 \\ 0 & 3 & 0 \\ 0 & 0 & 3 \end{bmatrix}$, and $\det P = 1$.
+</Step>
+</Steps>
+</Solution>
+</Problem>
 
 ## Powers of A
 
-Multiplying $A$ by itself ten times is slow, and the entries of $A^k$ are hard to predict by looking at $A$. The factorization fixes both problems. Squaring $A = PDP^{-1}$ puts $P^{-1}P = I$ in the middle, and the same cancellation happens for every power:
+Multiplying $A$ by itself ten times is slow, and the entries of $A^k$ are hard to predict by looking at $A$. The factorization fixes both problems.
+
+<Problem>
+Use $A = PDP^{-1}$ to write $A^2$ with only one $P$ and one $P^{-1}$. Then find a formula for $A^k$ when $A = \begin{bmatrix} 3 & -2 \\ 1 & 0 \end{bmatrix}$, $P = \begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}$ and $D = \begin{bmatrix} 2 & 0 \\ 0 & 1 \end{bmatrix}$.
+
+<Solution>
+<Steps>
+<Step>
+Write the product out: $A^2 = (PDP^{-1})(PDP^{-1}) = PD(P^{-1}P)DP^{-1}$. The middle pair $P^{-1}P$ is $I$, so $A^2 = PD^2P^{-1}$.
+</Step>
+<Step>
+Each extra factor of $A$ brings another $P^{-1}P$ pair that cancels, so $A^k = PD^kP^{-1}$. Only $D$ takes the power, and Problem 1 showed how easy that is.
+</Step>
+<Step>
+Find $P^{-1}$ with the $2 \times 2$ formula. $\det P = 2 - 1 = 1$, so $P^{-1} = \begin{bmatrix} 1 & -1 \\ -1 & 2 \end{bmatrix}$.
+</Step>
+<Step>
+Multiply $PD^k$ first: $\begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}\begin{bmatrix} 2^k & 0 \\ 0 & 1 \end{bmatrix} = \begin{bmatrix} 2 \cdot 2^k & 1 \\ 2^k & 1 \end{bmatrix}$.
+</Step>
+<Step>
+Then multiply by $P^{-1}$: $\begin{bmatrix} 2^{k+1} & 1 \\ 2^k & 1 \end{bmatrix}\begin{bmatrix} 1 & -1 \\ -1 & 2 \end{bmatrix} = \begin{bmatrix} 2^{k+1} - 1 & 2 - 2^{k+1} \\ 2^k - 1 & 2 - 2^k \end{bmatrix}$.
+</Step>
+</Steps>
+
+Check at $k = 1$: the formula gives $\begin{bmatrix} 3 & -2 \\ 1 & 0 \end{bmatrix}$, which is $A$. At $k = 10$ it gives $\begin{bmatrix} 2047 & -2046 \\ 1023 & -1022 \end{bmatrix}$ without nine separate multiplications.
+</Solution>
+</Problem>
+
+<Concept title="Only the middle factor takes the power">
+If $A = PDP^{-1}$, then
 
 $$
-A^2 = PD(P^{-1}P)DP^{-1} = PD^2P^{-1}, \qquad A^k = PD^kP^{-1}.
+A^k = PD^kP^{-1}, \qquad D^k = \begin{bmatrix} \glow{d_1^k} & 0 \\ 0 & \glow{d_2^k} \end{bmatrix}.
 $$
 
-$$
-D^k = \begin{bmatrix} \glow{d_1^k} & 0 \\ 0 & \glow{d_2^k} \end{bmatrix}
-$$
+In eigen-coordinates, $k$ applications of $A$ multiply each weight by its eigenvalue $k$ times.
+</Concept>
 
-Only $D$ takes the power, and a diagonal matrix raises each diagonal entry separately. For the video's matrix, $P = \begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}$ and $P^{-1} = \begin{bmatrix} 1 & -1 \\ -1 & 2 \end{bmatrix}$, so
+<Choice
+  question="If $A = PDP^{-1}$, which expression equals $A^3$?"
+  options={["$P^3D^3P^{-3}$", "$PD^3P^{-1}$", "$PD^3P$", "$P^{-1}D^3P$"]}
+  answer={1}
+>
+Writing out $(PDP^{-1})(PDP^{-1})(PDP^{-1})$, the two inner $P^{-1}P$ pairs cancel. One $P$ stays on the left and one $P^{-1}$ stays on the right, so $A^3 = PD^3P^{-1}$.
+</Choice>
 
-$$
-A^k = \begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}\begin{bmatrix} 2^k & 0 \\ 0 & 1 \end{bmatrix}\begin{bmatrix} 1 & -1 \\ -1 & 2 \end{bmatrix} = \begin{bmatrix} 2^{k+1} - 1 & 2 - 2^{k+1} \\ 2^k - 1 & 2 - 2^k \end{bmatrix}.
-$$
-
-At $k = 1$ this gives back $A$, and at $k = 10$ it gives $\begin{bmatrix} 2047 & -2046 \\ 1023 & -1022 \end{bmatrix}$ without nine separate multiplications. Tomorrow reads $D$ as the matrix of the same map in the eigenvector basis, and uses $A^k = PD^kP^{-1}$ to track where $A^k\mathbf x$ heads.
+Tomorrow reads $D$ as the matrix of the same map in the eigenvector basis, and uses $A^k = PD^kP^{-1}$ to track where $A^k\mathbf x$ heads.
 
 ## Practice
 
-<Check>
-Diagonalize $A = \begin{bmatrix} 5 & -2 \\ 1 & 2 \end{bmatrix}$ and use $A = PDP^{-1}$ to compute $A^3$. Enter its four entries. (Modeled on Lay §5.3, Practice Problem 1.)
+### Warm-up
 
-<VectorAnswer answer={[101, -74, 37, -10]} labels={["top left", "top right", "bottom left", "bottom right"]} />
+<Check>
+Compute $D^5$ for $D = \begin{bmatrix} 2 & 0 \\ 0 & -1 \end{bmatrix}$. Enter it row by row.
+
+<VectorAnswer answer={[32, 0, 0, -1]} columns={2} />
 
 <Answer>
-The characteristic polynomial is $\lambda^2 - 7\lambda + 12 = (\lambda - 4)(\lambda - 3)$. Then $A - 4I = \begin{bmatrix} 1 & -2 \\ 1 & -2 \end{bmatrix}$ gives $(2, 1)$, and $A - 3I = \begin{bmatrix} 2 & -2 \\ 1 & -1 \end{bmatrix}$ gives $(1, 1)$. That is the same $P$ as in the video:
+Raise each diagonal entry to the fifth power: $2^5 = 32$ and $(-1)^5 = -1$. So $D^5 = \begin{bmatrix} 32 & 0 \\ 0 & -1 \end{bmatrix}$.
+</Answer>
+</Check>
+
+<Check>
+A matrix factors as $A = PDP^{-1}$ with $P = \begin{bmatrix} 1 & 2 \\ 1 & -1 \end{bmatrix}$ and $D = \begin{bmatrix} 4 & 0 \\ 0 & -1 \end{bmatrix}$. Give an eigenvector of $A$ for $\lambda = 4$. (Modeled on Lay §5.3 #5.)
+
+<VectorAnswer answer={[1, 1]} />
+
+<Answer>
+The theorem says column $j$ of $P$ is an eigenvector for the $j$th diagonal entry of $D$. The first diagonal entry is $4$, so the first column $(1, 1)$ is an eigenvector for $4$. Any nonzero multiple also works, but the checker expects $(1, 1)$.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="A $3 \times 3$ matrix has eigenvalues $1$, $2$ and $3$. Is it diagonalizable?"
+  options={["Yes", "No", "Not enough information"]}
+  answer={0}
+>
+Three different eigenvalues give three eigenvectors, and eigenvectors for different eigenvalues are independent. Three independent eigenvectors in $\mathbb R^3$ fill the columns of an invertible $P$.
+</Choice>
+</Check>
+
+### Core
+
+<Check>
+Diagonalize $A = \begin{bmatrix} 5 & -2 \\ 1 & 2 \end{bmatrix}$ and use $A = PDP^{-1}$ to compute $A^3$. Enter it row by row. (Modeled on Lay §5.3, Practice Problem 1.)
+
+<VectorAnswer answer={[101, -74, 37, -10]} columns={2} />
+
+<Hint>
+The eigenvalues are $4$ and $3$. Find an eigenvector for each, then compute $PD^3$ before multiplying by $P^{-1}$.
+</Hint>
+
+<Answer>
+The characteristic polynomial is $\lambda^2 - 7\lambda + 12 = (\lambda - 4)(\lambda - 3)$. Then $A - 4I = \begin{bmatrix} 1 & -2 \\ 1 & -2 \end{bmatrix}$ gives $(2, 1)$, and $A - 3I = \begin{bmatrix} 2 & -2 \\ 1 & -1 \end{bmatrix}$ gives $(1, 1)$. That is the same $P$ as in the lesson, with $P^{-1} = \begin{bmatrix} 1 & -1 \\ -1 & 2 \end{bmatrix}$:
 
 $$
 \begin{aligned}
@@ -103,9 +315,48 @@ $$
 </Check>
 
 <Check>
-Both $B = \begin{bmatrix} 2 & 0 & 0 \\ 1 & 2 & 0 \\ 0 & 0 & 3 \end{bmatrix}$ and $C = \begin{bmatrix} 2 & 0 & 0 \\ 0 & 2 & 0 \\ 1 & 0 & 3 \end{bmatrix}$ have eigenvalues $2, 2, 3$. Find the dimension of the eigenspace for $\lambda = 2$ in each, and decide which matrix is diagonalizable. (Modeled on Lay §5.3, Exercises 13–20.)
+Let $A = PDP^{-1}$ with $P = \begin{bmatrix} 3 & 5 \\ 1 & 2 \end{bmatrix}$ and $D = \begin{bmatrix} 2 & 0 \\ 0 & 1 \end{bmatrix}$. Compute $A^4$. Enter it row by row. (Modeled on Lay §5.3 #1.)
+
+<VectorAnswer answer={[91, -225, 30, -74]} columns={2} />
+
+<Hint>
+$\det P = 1$, so $P^{-1}$ has integer entries. Use $A^4 = PD^4P^{-1}$.
+</Hint>
+
+<Answer>
+$\det P = 6 - 5 = 1$, so $P^{-1} = \begin{bmatrix} 2 & -5 \\ -1 & 3 \end{bmatrix}$ and $D^4 = \begin{bmatrix} 16 & 0 \\ 0 & 1 \end{bmatrix}$.
+
+$$
+\begin{aligned}
+PD^4 &= \begin{bmatrix} 48 & 5 \\ 16 & 2 \end{bmatrix} \\
+A^4 &= \begin{bmatrix} 48 & 5 \\ 16 & 2 \end{bmatrix}\begin{bmatrix} 2 & -5 \\ -1 & 3 \end{bmatrix} = \begin{bmatrix} 96 - 5 & -240 + 15 \\ 32 - 2 & -80 + 6 \end{bmatrix} = \begin{bmatrix} 91 & -225 \\ 30 & -74 \end{bmatrix}
+\end{aligned}
+$$
+</Answer>
+</Check>
+
+<Check>
+Let $A = \begin{bmatrix} 1 & 0 \\ 4 & -1 \end{bmatrix}$. Find the eigenvector for $\lambda = 1$ whose first entry is $1$. (Modeled on Lay §5.3 #7.)
+
+<VectorAnswer answer={[1, 2]} />
+
+<Hint>
+Write out $A - I$ and read off the equation its nonzero row gives.
+</Hint>
+
+<Answer>
+$A - I = \begin{bmatrix} 0 & 0 \\ 4 & -2 \end{bmatrix}$, whose second row says $4x_1 - 2x_2 = 0$, so $x_2 = 2x_1$. With $x_1 = 1$ the eigenvector is $(1, 2)$. The other eigenvalue is $-1$ with eigenvector $(0, 1)$, so $P = \begin{bmatrix} 1 & 0 \\ 2 & 1 \end{bmatrix}$ and $D = \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}$.
+</Answer>
+</Check>
+
+<Check>
+Both $B = \begin{bmatrix} 2 & 0 & 0 \\ 1 & 2 & 0 \\ 0 & 0 & 3 \end{bmatrix}$ and $C = \begin{bmatrix} 2 & 0 & 0 \\ 0 & 2 & 0 \\ 1 & 0 & 3 \end{bmatrix}$ have eigenvalues $2, 2, 3$. Find the dimension of the eigenspace for $\lambda = 2$ in each. Which matrix is diagonalizable? (Modeled on Lay §5.3 #13–20.)
 
 <VectorAnswer answer={[1, 2]} labels={["for B", "for C"]} />
+
+<Hint>
+Subtract $2I$ and count pivots. The dimension of the eigenspace is $3$ minus the number of pivots.
+</Hint>
 
 <Answer>
 $$
@@ -117,11 +368,70 @@ $B - 2I$ has two pivots, so its null space is the line through $(0, 1, 0)$. $B$ 
 </Check>
 
 <Check>
-A $5 \times 5$ matrix has three different eigenvalues. The eigenspace for the first has dimension $2$, and the eigenspace for the second also has dimension $2$. How many independent eigenvectors does it have in total? (Modeled on Lay §5.3, Exercise 25.)
+A $5 \times 5$ matrix has three different eigenvalues. The eigenspace for the first has dimension $2$, and the eigenspace for the second also has dimension $2$. How many independent eigenvectors does it have in total? (Modeled on Lay §5.3 #25.)
 
 <VectorAnswer answer={[5]} labels={["how many"]} />
 
+<Hint>
+Every eigenvalue has at least one eigenvector, and eigenvectors from different eigenspaces never cancel each other out.
+</Hint>
+
 <Answer>
 The third eigenvalue has at least one eigenvector, so the total is at least $2 + 2 + 1 = 5$. It cannot exceed $5$ in $\mathbb R^5$, so it is exactly $5$ and the matrix is diagonalizable. You never needed to know the entries.
+</Answer>
+</Check>
+
+### Challenge
+
+<Check>
+Use the diagonalization of $A = \begin{bmatrix} 4 & 1 \\ 2 & 3 \end{bmatrix}$ from the lesson to compute $A^3$. Enter it row by row.
+
+<VectorAnswer answer={[86, 39, 78, 47]} columns={2} />
+
+<Hint>
+$P = \begin{bmatrix} 1 & 1 \\ 1 & -2 \end{bmatrix}$ has determinant $-3$, so $P^{-1} = \tfrac13\begin{bmatrix} 2 & 1 \\ 1 & -1 \end{bmatrix}$. Keep the $\tfrac13$ outside until the end.
+</Hint>
+
+<Answer>
+With $D^3 = \begin{bmatrix} 125 & 0 \\ 0 & 8 \end{bmatrix}$,
+
+$$
+\begin{aligned}
+PD^3 &= \begin{bmatrix} 125 & 8 \\ 125 & -16 \end{bmatrix} \\
+A^3 &= \tfrac13\begin{bmatrix} 125 & 8 \\ 125 & -16 \end{bmatrix}\begin{bmatrix} 2 & 1 \\ 1 & -1 \end{bmatrix} = \tfrac13\begin{bmatrix} 258 & 117 \\ 234 & 141 \end{bmatrix} = \begin{bmatrix} 86 & 39 \\ 78 & 47 \end{bmatrix}
+\end{aligned}
+$$
+
+Every entry came out a whole number, as it must, since $A$ has whole-number entries.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="Which statement is true for every $n \times n$ matrix $A$? (Modeled on Lay §5.3 #21–22.)"
+  options={["If $A$ is diagonalizable, then $A$ is invertible.", "If $A$ is invertible, then $A$ is diagonalizable.", "If $A$ has $n$ eigenvalues counted with multiplicity, then $A$ is diagonalizable.", "If $AP = PD$ with $D$ diagonal, then every nonzero column of $P$ is an eigenvector of $A$."]}
+  answer={3}
+>
+Column $j$ of $AP = PD$ reads $A\mathbf p_j = d_j\mathbf p_j$, so every nonzero column is an eigenvector. The first statement fails for $\begin{bmatrix} 1 & 1 \\ 0 & 0 \end{bmatrix}$, and the second and third both fail for the shear, which is invertible and has eigenvalues $1, 1$ but only one eigenline.
+</Choice>
+</Check>
+
+<Check>
+Show that if $A$ is diagonalizable and invertible, then $A^{-1}$ is diagonalizable too. (Modeled on Lay §5.3 #27.)
+
+<Hint>
+Write $A = PDP^{-1}$ and invert both sides. Why does $D$ have an inverse?
+</Hint>
+
+<Answer>
+Write $A = PDP^{-1}$. Since $A$ is invertible, $0$ is not an eigenvalue, so every diagonal entry of $D$ is nonzero. Then $D^{-1}$ exists and is the diagonal matrix of reciprocals $1/d_j$.
+
+The inverse of a product is the product of inverses in reverse order:
+
+$$
+A^{-1} = (PDP^{-1})^{-1} = (P^{-1})^{-1}D^{-1}P^{-1} = PD^{-1}P^{-1}.
+$$
+
+That is a diagonalization of $A^{-1}$ with the same $P$. So $A^{-1}$ has the same eigenvectors as $A$, with eigenvalues $1/d_j$.
 </Answer>
 </Check>

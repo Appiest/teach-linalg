@@ -37,7 +37,7 @@ import { CofactorLinePicker, MultipleAreaScale, ReplacementShear } from "@/compo
 import { IterateSwing, ShiftToSingular, TraceCurveMatch } from "@/components/interactive/eigenvalue-properties";
 import { ChainCoordinates, JordanChainBuilder, MultiplicityGapSlider, NullPowerClimb, ShearRaySweep } from "@/components/interactive/generalized-eigenvectors";
 import { DiagonalBasisHunt, EigenOrbitSettle, EigenPolynomialHunt } from "@/components/interactive/diagonalizing-transformations";
-import { DiagonalFactorSteps, EigenCoordinateTarget } from "@/components/interactive/diagonalization";
+import { DiagonalEntryMatch, DiagonalFactorSteps, EigenColumnHunt, EigenCoordinateTarget } from "@/components/interactive/diagonalization";
 import { CharacteristicSweep, EigenpairHunt } from "@/components/interactive/characteristic-equation";
 import { SpectralEllipseBuilder, SymmetricPerpendicularHunt } from "@/components/interactive/symmetric-matrices";
 import { DotShadowHunt, RowPerpendicularHunt, UnitCircleScale } from "@/components/interactive/inner-products";
@@ -180,6 +180,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     EigenPolynomialHunt,
     EigenCoordinateTarget,
     DiagonalFactorSteps,
+    EigenColumnHunt,
+    DiagonalEntryMatch,
     CharacteristicSweep,
     EigenpairHunt,
     SymmetricPerpendicularHunt,

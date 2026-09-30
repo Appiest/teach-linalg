@@ -4,12 +4,13 @@ import { ArrowCounterClockwise } from "@phosphor-icons/react";
 import { useEffect, useRef, useState } from "react";
 import { palette } from "@/lib/palette.generated";
 import { hue, type Hue } from "./colors";
-import { columnTex, describeVector, Goal, Panel, Readout, Tex, Workbench } from "./controls";
+import { columnTex, describeVector, Goal, Panel, Readout, Slider, Tex, Workbench } from "./controls";
 import { useSettled } from "./gesture";
-import { apply, det, nearlyEqual, texNumber, type Matrix2, type Vec } from "./math";
+import { apply, det, nearlyEqual, scale, texNumber, type Matrix2, type Vec } from "./math";
 import { Arrow, Handle, Label, Marker, Plane, usePlane, type Bounds } from "./plane";
 
 const DIAGONAL_BOUNDS: Bounds = { xMin: -6, xMax: 6, yMin: -4, yMax: 5 };
+const MATCH_BOUNDS: Bounds = { xMin: -4, xMax: 7, yMin: -5, yMax: 6 };
 const GRID_REACH = 14;
 
 const multiply = (left: Matrix2, right: Matrix2): Matrix2 => [
@@ -229,3 +230,120 @@ export function DiagonalFactorSteps({ v1, v2, lambdas, u }: { v1: Vec; v2: Vec; 
     </Panel>
   );
 }
+
+const cross = (first: Vec, second: Vec) => first[0] * second[1] - first[1] * second[0];
+const dot = (first: Vec, second: Vec) => first[0] * second[0] + first[1] * second[1];
+const isZeroVector = (v: Vec) => nearlyEqual(v, [0, 0]);
+const keepsOwnLine = (matrix: Matrix2, v: Vec) => !isZeroVector(v) && Math.abs(cross(v, apply(matrix, v))) < 1e-9;
+const stretchOf = (matrix: Matrix2, v: Vec) => dot(apply(matrix, v), v) / dot(v, v);
+
+function LineAlong({ direction, color }: { direction: Vec; color: Hue }) {
+  const { toSvg } = usePlane();
+  const [x1, y1] = toSvg(scale(-30, direction));
+  const [x2, y2] = toSvg(scale(30, direction));
+  return <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={hue(color)} strokeWidth={2.5} strokeOpacity={0.7} strokeLinecap="round" />;
+}
+
+/** Two versions of a note in one grid cell, so switching between them never changes the height. */
+function ReservedNote({ showSecond, first, second }: { showSecond: boolean; first: React.ReactNode; second: React.ReactNode }) {
+  return (
+    <div className="grid rounded-lg bg-surface-sunken px-4 py-3 text-meta text-text-muted">
+      <p aria-hidden={showSecond} className={`[grid-area:1/1] ${showSecond ? "swap-hidden" : "swap-shown"}`}>{first}</p>
+      <p aria-hidden={!showSecond} className={`[grid-area:1/1] ${showSecond ? "swap-shown" : "swap-hidden"}`}>{second}</p>
+    </div>
+  );
+}
+
+function columnVerdictTex(matrix: Matrix2, column: Vec, name: string): string {
+  const image = columnTex(apply(matrix, column), palette.teal);
+  if (!keepsOwnLine(matrix, column)) return `A\\mathbf ${name} = ${image} \\text{, off the line of } \\mathbf ${name}`;
+  return `A\\mathbf ${name} = ${image} = ${texNumber(stretchOf(matrix, column))}\\,\\mathbf ${name}`;
+}
+
+/** Drag the two columns of P. AP = PD with D diagonal needs each column to be an eigenvector, and P needs them on different lines. */
+export function EigenColumnHunt({ matrix, start = [[1, 0], [0, 1]] }: { matrix: Matrix2; start?: [Vec, Vec] }) {
+  const [first, setFirst] = useState<Vec>(start[0]);
+  const [second, setSecond] = useState<Vec>(start[1]);
+  const bothEigen = keepsOwnLine(matrix, first) && keepsOwnLine(matrix, second);
+  const parallel = Math.abs(cross(first, second)) < 1e-9;
+  const { settled: solved, gesture } = useSettled(bothEigen && !parallel);
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Drag the columns <Tex>{"\\mathbf p_1"}</Tex> and <Tex>{"\\mathbf p_2"}</Tex> of <Tex>P</Tex> until <Tex>A</Tex> keeps each one on its own line. A column lights up when its teal image lines up with it.</>}
+        success={<>Both columns are eigenvectors on different lines. Now each column of <Tex>AP</Tex> is a multiple of the matching column of <Tex>P</Tex>, so <Tex>{"AP = PD"}</Tex> with those multiples on the diagonal of <Tex>D</Tex>.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={DIAGONAL_BOUNDS} label={`Column p1 at ${describeVector(first)} with A p1 at ${describeVector(apply(matrix, first))}, and column p2 at ${describeVector(second)} with A p2 at ${describeVector(apply(matrix, second))}.`}>
+            {keepsOwnLine(matrix, first) ? <LineAlong direction={first} color="yellow" /> : null}
+            {keepsOwnLine(matrix, second) ? <LineAlong direction={second} color="blue" /> : null}
+            <Arrow to={apply(matrix, first)} color="teal" width={2.5} />
+            <Arrow to={apply(matrix, second)} color="teal" width={2.5} />
+            <Arrow to={first} color="yellow" />
+            <Arrow to={second} color="blue" />
+            <Label at={first} color="yellow">p₁</Label>
+            <Label at={second} color="blue">p₂</Label>
+            <Handle at={first} onMove={setFirst} color="yellow" label={`Column p1, at ${describeVector(first)}`} />
+            <Handle at={second} onMove={setSecond} color="blue" label={`Column p2, at ${describeVector(second)}`} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Readout tex={columnVerdictTex(matrix, first, "p_1")} />
+            <Readout tex={columnVerdictTex(matrix, second, "p_2")} />
+            <ReservedNote
+              showSecond={bothEigen && parallel}
+              first={<>Each column needs to be an eigenvector, and the two columns need different directions.</>}
+              second={<>Both columns sit on one eigenline, so <Tex>P</Tex> has no inverse. Move one column to the other eigenline.</>}
+            />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+/** Slide the diagonal of D until PD matches AP column by column; the order of P's columns fixes the order of D's entries. */
+export function DiagonalEntryMatch({ matrix, first, second }: { matrix: Matrix2; first: Vec; second: Vec }) {
+  const [d1, setD1] = useState(0);
+  const [d2, setD2] = useState(0);
+  const matches = nearlyEqual(apply(matrix, first), scale(d1, first)) && nearlyEqual(apply(matrix, second), scale(d2, second));
+  const { settled: solved, gesture } = useSettled(matches);
+  const answer = [stretchOf(matrix, first), stretchOf(matrix, second)].map((value) => texNumber(value));
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Slide <Tex>{"d_1"}</Tex> and <Tex>{"d_2"}</Tex> until each dashed column of <Tex>PD</Tex> covers the matching teal column of <Tex>AP</Tex>.</>}
+        success={<>That gives <Tex>{`D = \\begin{bmatrix} ${answer[0]} & 0 \\\\ 0 & ${answer[1]} \\end{bmatrix}`}</Tex>. The first column of <Tex>P</Tex> belongs to <Tex>{answer[0]}</Tex>, so <Tex>{answer[0]}</Tex> goes first on the diagonal.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={MATCH_BOUNDS} label={`Columns of P, their images under A, and the columns of P D: d1 p1 at ${describeVector(scale(d1, first))} and d2 p2 at ${describeVector(scale(d2, second))}.`}>
+            <Arrow to={apply(matrix, first)} color="teal" width={5} />
+            <Arrow to={apply(matrix, second)} color="teal" width={5} />
+            <Arrow to={scale(d1, first)} color="yellow" width={2.5} dashed />
+            <Arrow to={scale(d2, second)} color="blue" width={2.5} dashed />
+            <Arrow to={first} color="yellow" />
+            <Arrow to={second} color="blue" />
+            <Label at={first} color="yellow" dx={-30}>p₁</Label>
+            <Label at={second} color="blue" dx={-30}>p₂</Label>
+          </Plane>
+        }
+        readout={
+          <>
+            <Slider label="d_1" value={d1} onChange={setD1} min={-3} max={6} step={1} color={palette.yellow} />
+            <Slider label="d_2" value={d2} onChange={setD2} min={-3} max={6} step={1} color={palette.blue} />
+            <Readout tex={`AP = ${matrixTex(multiply(matrix, fromColumns(first, second)), [palette.teal, palette.teal])}`} />
+            <Readout tex={`PD = ${matrixTex(fromColumns(scale(d1, first), scale(d2, second)), [palette.yellow, palette.blue])}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
