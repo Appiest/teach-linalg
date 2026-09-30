@@ -317,3 +317,89 @@ export function RankCopyBudget({ tolerance = 0.05 }: { tolerance?: number }) {
     </Panel>
   );
 }
+
+const dot2 = (a: Vec, b: Vec) => a[0] * b[0] + a[1] * b[1];
+const perpendicularTo = (v: Vec): Vec => [-v[1], v[0]];
+
+/** Aim a pair of perpendicular unit inputs; the goal is the turn where their outputs are perpendicular too. */
+export function PerpendicularPairHunt({ matrix, start = [1, 0] }: { matrix: Matrix2; start?: Vec }) {
+  const [aim, setAim] = useState<Vec>(start);
+  const first = unitOf(aim);
+  const second = perpendicularTo(first);
+  const outputs: Vec[] = [apply(matrix, first), apply(matrix, second)];
+  const overlap = dot2(outputs[0], outputs[1]);
+  const { settled: solved, gesture } = useSettled(Math.abs(overlap) < 1e-9);
+  const moveAim = (point: Vec) => {
+    if (point[0] !== 0 || point[1] !== 0) setAim(point);
+  };
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>The two inputs always meet at a right angle. Turn them until their outputs <Tex>{"A\\mathbf x"}</Tex> and <Tex>{"A\\mathbf y"}</Tex> meet at a right angle too.</>}
+        success={<>These inputs are the right singular vectors <Tex>{"\\mathbf v_1"}</Tex> and <Tex>{"\\mathbf v_2"}</Tex> (up to sign and order). Their outputs are the two axes of the ellipse, with lengths <Tex>{`${texNumber(singularValues(matrix)[0])}`}</Tex> and <Tex>{`${texNumber(singularValues(matrix)[1])}`}</Tex>.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={SVD_BOUNDS} label={`Perpendicular unit inputs ${describeVector(first)} and ${describeVector(second)}, and their outputs ${describeVector(outputs[0])} and ${describeVector(outputs[1])}. Drag the aiming handle or use the arrow keys.`}>
+            <CircleImage m={IDENTITY} color="muted" dashed />
+            <CircleImage m={matrix} color="teal" fill={0.1} />
+            <Segment from={[0, 0]} to={aim} color="text" />
+            <Arrow to={outputs[0]} color="yellow" />
+            <Arrow to={outputs[1]} color="blue" />
+            <Arrow to={first} color="yellow" width={2} />
+            <Arrow to={second} color="blue" width={2} />
+            <Label at={outputs[0]} color="yellow">Ax</Label>
+            <Label at={outputs[1]} color="blue">Ay</Label>
+            <Handle at={aim} onMove={moveAim} color="yellow" label={`Aiming handle at ${describeVector(aim)}; x points toward it and y is x turned a quarter turn`} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Readout tex={`\\mathbf x\\cdot\\mathbf y = 0`} />
+            <Readout tex={`(A\\mathbf x)\\cdot(A\\mathbf y) = \\textcolor{${solved ? palette.teal : palette.glow}}{${texNumber(overlap)}}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+/** A rank-one matrix squashes the circle flat. The goal is a nonzero input that A sends to the origin. */
+export function CollapsedDirectionHunt({ matrix, start = [1, 0] }: { matrix: Matrix2; start?: Vec }) {
+  const [x, setX] = useState<Vec>(start);
+  const image = apply(matrix, x);
+  const isZeroVector = (v: Vec) => Math.abs(v[0]) < 1e-9 && Math.abs(v[1]) < 1e-9;
+  const { settled: solved, gesture } = useSettled(isZeroVector(image) && !isZeroVector(x));
+  const [largest, smallest] = singularValues(matrix);
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>This <Tex>A</Tex> flattens the whole circle onto a segment. Find a nonzero input <Tex>{"\\mathbf x"}</Tex> with <Tex>{"A\\mathbf x = \\mathbf 0"}</Tex>.</>}
+        success={<>This direction is <Tex>{"\\mathbf v_2"}</Tex>, the one with <Tex>{`\\sigma_2 = 0`}</Tex>, and it spans <Tex>{"\\operatorname{Nul}A"}</Tex>. Only one singular value is nonzero, so the rank is 1.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={SVD_BOUNDS} label={`Input x at ${describeVector(x)} and its output A x at ${describeVector(image)}. Drag x or use the arrow keys.`}>
+            <CircleImage m={IDENTITY} color="muted" dashed />
+            <CircleImage m={matrix} color="teal" />
+            <Arrow to={image} color="teal" />
+            <Arrow to={x} color="yellow" width={2.5} />
+            {solved ? <Segment from={[-4 * x[0], -4 * x[1]]} to={[4 * x[0], 4 * x[1]]} color="glow" /> : null}
+            <Label at={x} color="yellow">x</Label>
+            <Handle at={x} onMove={setX} color="yellow" label={`Input x, at ${describeVector(x)}`} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Readout tex={`A${`\\begin{bmatrix} ${texNumber(x[0])} \\\\ ${texNumber(x[1])} \\end{bmatrix}`} = \\begin{bmatrix} ${texNumber(image[0])} \\\\ ${texNumber(image[1])} \\end{bmatrix}`} />
+            <Readout tex={`\\sigma_1 = ${texNumber(largest)}, \\quad \\sigma_2 = ${texNumber(smallest)}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}

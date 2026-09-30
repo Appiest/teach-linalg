@@ -1,32 +1,89 @@
 Diagonalization on Day 32 needed a square matrix with enough eigenvectors, so it could not take apart a rectangular matrix or a shear. Yesterday's quadratic forms remove that limit, because the squared length $\|A\mathbf x\|^2$ is a quadratic form for every matrix $A$. Today asks which unit input $A$ stretches the most, and the answer leads to a factorization that every matrix has. The singular value decomposition works for every matrix, because every $m \times n$ matrix $A$ turns one set of perpendicular directions $\yellow{\mathbf v_1}, \blue{\mathbf v_2}, \dots$ into another set of perpendicular directions $\yellow{\mathbf u_1}, \blue{\mathbf u_2}, \dots$ and stretches each one by a number $\glow{\sigma_i} \ge 0$. The video's matrix is $A = \begin{bmatrix} 2 & -1 \\ 2 & 2 \end{bmatrix}$, which sends the unit circle to a tilted ellipse.
 
+Each section below opens with a problem. Try it before you open the walkthrough, even if you only get partway. The box after each walkthrough names the idea you just used.
+
 ## Singular values
 
-The length of $A\mathbf x$ is controlled by the symmetric matrix $A^TA$, because $\|A\mathbf x\|^2 = (A\mathbf x)^T(A\mathbf x) = \mathbf x^T(A^TA)\mathbf x$. By Day 34, $A^TA$ has an orthonormal basis of eigenvectors $\mathbf v_1, \dots, \mathbf v_n$, ordered so that $\lambda_1 \ge \lambda_2 \ge \dots \ge \lambda_n$. Days 34 and 39 called unit eigenvectors $\mathbf u$. Here they are named $\mathbf v$, because $\mathbf u$ is saved for the output directions. For each one,
+<Problem>
+Let $A = \begin{bmatrix} 2 & -1 \\ 2 & 2 \end{bmatrix}$. Compute $\|A\mathbf x\|$ for the three unit vectors $(1, 0)$, $(0, 1)$ and $\tfrac{1}{\sqrt5}(2, 1)$. Then use Day 39 to find the longest $\|A\mathbf x\|$ can be over all unit vectors.
+
+<Hint>
+$\|A\mathbf x\|^2 = (A\mathbf x)^T(A\mathbf x) = \mathbf x^T(A^TA)\mathbf x$ is a quadratic form. Day 39 says where a quadratic form is largest on the unit circle.
+</Hint>
+
+<Solution>
+Start by trying a few inputs, then find a way to know when to stop trying.
+
+<Steps>
+<Step>
+$A(1, 0) = (2, 2)$, with length $\sqrt{4 + 4} = \sqrt8 \approx 2.83$. $A(0, 1) = (-1, 2)$, with length $\sqrt5 \approx 2.24$.
+</Step>
+<Step>
+$A(2, 1) = (4 - 1,\ 4 + 2) = (3, 6)$, so $A\left(\tfrac{1}{\sqrt5}(2, 1)\right) = \tfrac{1}{\sqrt5}(3, 6)$, with length $\tfrac{\sqrt{45}}{\sqrt5} = 3$. This input does better than both axes.
+</Step>
+<Step>
+To know that $3$ is the best, turn the length into a quadratic form: $\|A\mathbf x\|^2 = \mathbf x^T(A^TA)\mathbf x$ with
+
+$$
+A^TA = \begin{bmatrix} 2 & 2 \\ -1 & 2 \end{bmatrix}\begin{bmatrix} 2 & -1 \\ 2 & 2 \end{bmatrix} = \begin{bmatrix} 8 & 2 \\ 2 & 5 \end{bmatrix}.
+$$
+</Step>
+<Step>
+Its characteristic polynomial is $(8 - \lambda)(5 - \lambda) - 4 = \lambda^2 - 13\lambda + 36 = (\lambda - 9)(\lambda - 4)$. By Day 39, the largest value of $\|A\mathbf x\|^2$ on the unit circle is $9$, at the eigenvector $\tfrac{1}{\sqrt5}(2, 1)$. So the longest $\|A\mathbf x\|$ is $\sqrt9 = 3$.
+</Step>
+</Steps>
+
+The smallest value of $\|A\mathbf x\|^2$ is the other eigenvalue $4$, so the shortest output of a unit vector has length $\sqrt4 = 2$.
+</Solution>
+</Problem>
+
+<Pair>
+<Figure src="singular-axes" alt="A dashed unit circle and the teal ellipse it becomes under A = [2 −1; 2 2]. Short yellow v1 and blue v2 lie on the circle at right angles. Long yellow Av1 = 3u1 reaches the far end of the ellipse and blue Av2 = 2u2 reaches the near side, with a small orange right-angle mark between them." />
+
+The same argument works for any matrix. By Day 34, $A^TA$ has an orthonormal basis of eigenvectors $\mathbf v_1, \dots, \mathbf v_n$, ordered so that $\lambda_1 \ge \dots \ge \lambda_n$. For each one,
 
 $$
 \|A\mathbf v_i\|^2 = \mathbf v_i^T(A^TA)\mathbf v_i = \mathbf v_i^T(\lambda_i \mathbf v_i) = \lambda_i,
 $$
 
-so every $\lambda_i$ is at least $0$. The **singular values** of $A$ are $\glow{\sigma_i} = \sqrt{\lambda_i}$, and $\glow{\sigma_i}$ is the length of $A\mathbf v_i$.
-
-<Pair>
-<Figure src="singular-axes" alt="A dashed unit circle and the teal ellipse it becomes under A = [2 −1; 2 2]. Short yellow v1 and blue v2 lie on the circle at right angles. Long yellow Av1 = 3u1 reaches the far end of the ellipse and blue Av2 = 2u2 reaches the near side, with a small orange right-angle mark between them." />
-
-For the video's matrix, $A^TA = \begin{bmatrix} 8 & 2 \\ 2 & 5 \end{bmatrix}$ has eigenvalues $9$ and $4$, so $\glow{\sigma_1} = 3$ and $\glow{\sigma_2} = 2$. The unit eigenvectors are $\yellow{\mathbf v_1} = \tfrac{1}{\sqrt5}(2, 1)$ and $\blue{\mathbf v_2} = \tfrac{1}{\sqrt5}(-1, 2)$.
-
-Day 39 showed that $\mathbf x^T(A^TA)\mathbf x$ is largest over unit vectors at the top eigenvector. So $\glow{\sigma_1}$ is the longest $\|A\mathbf x\|$ can be, reached at $\mathbf x = \yellow{\mathbf v_1}$, and the outputs $A\yellow{\mathbf v_1}$ and $A\blue{\mathbf v_2}$ are the ellipse's two axes.
+so every $\lambda_i$ is at least $0$. Days 34 and 39 called unit eigenvectors $\mathbf u$. Here they are named $\mathbf v$, because $\mathbf u$ is saved for the output directions.
 </Pair>
+
+<Concept title="Singular values">
+The **singular values** of $A$ are $\glow{\sigma_i} = \sqrt{\lambda_i}$, where $\lambda_1 \ge \lambda_2 \ge \dots$ are the eigenvalues of $A^TA$. The number $\glow{\sigma_i}$ is the length of $A\mathbf v_i$. The largest one, $\glow{\sigma_1}$, is the longest $\|A\mathbf x\|$ can be for a unit vector $\mathbf x$, reached at $\mathbf x = \yellow{\mathbf v_1}$. For the video's matrix, $\glow{\sigma_1} = 3$ and $\glow{\sigma_2} = 2$.
+</Concept>
 
 <LongestStretchHunt matrix={[[2, -1], [2, 2]]} start={[0, 2]} />
 
+<Warning>
+Singular values come from $A^TA$, not from $A$. This $A$ has characteristic polynomial $\lambda^2 - 4\lambda + 6$, whose roots are the complex numbers $2 \pm i\sqrt2$, yet its singular values are the real numbers $3$ and $2$. Also remember the square root: the eigenvalue $9$ gives $\sigma_1 = 3$, not $9$.
+</Warning>
+
+<Problem>
+Keep $\yellow{\mathbf v_1} = \tfrac{1}{\sqrt5}(2, 1)$ and take the other unit eigenvector $\blue{\mathbf v_2} = \tfrac{1}{\sqrt5}(-1, 2)$. The inputs are perpendicular. Are the outputs $A\mathbf v_1$ and $A\mathbf v_2$ perpendicular too?
+
+<Solution>
+Compute both outputs and take their dot product. We already have $A\mathbf v_1 = \tfrac{1}{\sqrt5}(3, 6)$. For the second, $A(-1, 2) = (-2 - 2,\ -2 + 4) = (-4, 2)$, so $A\mathbf v_2 = \tfrac{1}{\sqrt5}(-4, 2)$. Then
+
+$$
+(A\mathbf v_1)\cdot(A\mathbf v_2) = \tfrac15\left(3\cdot(-4) + 6\cdot 2\right) = \tfrac15(-12 + 12) = 0.
+$$
+
+They are perpendicular. That had to happen, because $(A\mathbf v_1)\cdot(A\mathbf v_2) = \mathbf v_1^T(A^TA)\mathbf v_2 = \lambda_2\,(\mathbf v_1\cdot\mathbf v_2) = 0$. Most perpendicular pairs lose their right angle under $A$. For example $(1, 0)$ and $(0, 1)$ go to $(2, 2)$ and $(-1, 2)$, whose dot product is $-2 + 4 = 2$.
+</Solution>
+</Problem>
+
+<PerpendicularPairHunt matrix={[[2, -1], [2, 2]]} start={[1, 0]} />
+
 ## The decomposition
+
+Problem 2 found perpendicular inputs $\mathbf v_i$ whose outputs are perpendicular with lengths $\sigma_i$. Dividing each output by its length gives unit output directions $\mathbf u_i = A\mathbf v_i/\sigma_i$, and so $A\mathbf v_i = \sigma_i\mathbf u_i$. Putting these facts into matrices gives the factorization.
 
 <Definition term="The singular value decomposition">
 Let $A$ be an $m \times n$ matrix of rank $r$. Then $A = U\Sigma V^T$, where $V$ is an $n \times n$ orthogonal matrix whose columns $\mathbf v_i$ are unit eigenvectors of $A^TA$, $\Sigma$ is the $m \times n$ matrix with $\glow{\sigma_1} \ge \dots \ge \glow{\sigma_r} > 0$ down its diagonal and zeros elsewhere, and $U$ is an $m \times m$ orthogonal matrix whose first $r$ columns are $\mathbf u_i = A\mathbf v_i / \glow{\sigma_i}$.
 </Definition>
 
-The formula $\mathbf u_i = A\mathbf v_i/\sigma_i$ gives $A\mathbf v_i = \sigma_i \mathbf u_i$ for each $i$, which says $AV = U\Sigma$ one column at a time. Multiplying on the right by $V^{-1} = V^T$ gives $A = U\Sigma V^T$. If $r < m$, the missing columns of $U$ come from an orthonormal basis of $\operatorname{Nul} A^T$, found with Gram–Schmidt (Day 37).
+The equations $A\mathbf v_i = \sigma_i \mathbf u_i$ say $AV = U\Sigma$ one column at a time. Multiplying on the right by $V^{-1} = V^T$ gives $A = U\Sigma V^T$. If $r < m$, the missing columns of $U$ come from an orthonormal basis of $\operatorname{Nul} A^T$, found with Gram–Schmidt (Day 37).
 
 <Figure src="three-moves" alt="Four small grids in two rows. Start: a teal unit circle with yellow v1 and blue v2. After V transpose: the grid has turned, the circle is unchanged, and yellow and blue lie along the axes. After Sigma: the circle is an upright ellipse three wide and two tall. After U: the ellipse is tilted, with the yellow arrow on its long axis and the blue arrow on its short axis." wide />
 
@@ -34,45 +91,164 @@ Read right to left, the factors are three moves. $V^T$ turns $\yellow{\mathbf v_
 
 <SvdEllipseMatch target={{ sigmas: [3, 1.5], turn: 60 }} />
 
-The recipe aims to find the three factors, and it finds $V$ first because $V$ comes from a symmetric matrix that Day 34 already knows how to diagonalize. Here is the whole recipe for $A = \begin{bmatrix} 3 & 0 \\ 4 & 5 \end{bmatrix}$. Diagonalize $A^TA$, take square roots, and build each $\mathbf u_i$ from $A\mathbf v_i$:
+<Problem>
+Find an SVD of $A = \begin{bmatrix} 3 & 0 \\ 4 & 5 \end{bmatrix}$.
+
+<Solution>
+The recipe finds $V$ first, because $V$ comes from the symmetric matrix $A^TA$, which Day 34 already knows how to diagonalize. Then $\Sigma$ comes from square roots, and $U$ comes from $A\mathbf v_i$.
+
+<Steps>
+<Step>
+Compute $A^TA = \begin{bmatrix} 3 & 4 \\ 0 & 5 \end{bmatrix}\begin{bmatrix} 3 & 0 \\ 4 & 5 \end{bmatrix} = \begin{bmatrix} 25 & 20 \\ 20 & 25 \end{bmatrix}$. Its eigenvalues are $25 \pm 20$, which are $45$ and $5$.
+</Step>
+<Step>
+The unit eigenvectors are $\yellow{\mathbf v_1} = \tfrac{1}{\sqrt2}(1, 1)$ for $45$ and $\blue{\mathbf v_2} = \tfrac{1}{\sqrt2}(-1, 1)$ for $5$. The singular values are $\glow{\sigma_1} = \sqrt{45} = 3\sqrt5$ and $\glow{\sigma_2} = \sqrt5$.
+</Step>
+<Step>
+Build the output directions. $A(1, 1) = (3, 9)$, so
 
 $$
-\begin{aligned}
-A^TA &= \begin{bmatrix} 25 & 20 \\ 20 & 25 \end{bmatrix}, \qquad \lambda = 45,\ 5 \\
-\yellow{\mathbf v_1} &= \tfrac{1}{\sqrt2}\begin{bmatrix} 1 \\ 1 \end{bmatrix}, \quad \blue{\mathbf v_2} = \tfrac{1}{\sqrt2}\begin{bmatrix} -1 \\ 1 \end{bmatrix}, \qquad \glow{\sigma_1} = 3\sqrt5, \quad \glow{\sigma_2} = \sqrt5 \\
-\yellow{\mathbf u_1} &= \frac{A\yellow{\mathbf v_1}}{\glow{\sigma_1}} = \frac{1}{3\sqrt5}\cdot\frac{1}{\sqrt2}\begin{bmatrix} 3 \\ 9 \end{bmatrix} = \tfrac{1}{\sqrt{10}}\begin{bmatrix} 1 \\ 3 \end{bmatrix}, \qquad \blue{\mathbf u_2} = \frac{A\blue{\mathbf v_2}}{\glow{\sigma_2}} = \tfrac{1}{\sqrt{10}}\begin{bmatrix} -3 \\ 1 \end{bmatrix} \\
-A &= \underbrace{\tfrac{1}{\sqrt{10}}\begin{bmatrix} 1 & -3 \\ 3 & 1 \end{bmatrix}}_{U}\underbrace{\begin{bmatrix} 3\sqrt5 & 0 \\ 0 & \sqrt5 \end{bmatrix}}_{\Sigma}\underbrace{\tfrac{1}{\sqrt2}\begin{bmatrix} 1 & 1 \\ -1 & 1 \end{bmatrix}}_{V^T}.
-\end{aligned}
+\yellow{\mathbf u_1} = \frac{A\mathbf v_1}{\sigma_1} = \frac{1}{3\sqrt5}\cdot\frac{1}{\sqrt2}\begin{bmatrix} 3 \\ 9 \end{bmatrix} = \tfrac{1}{\sqrt{10}}\begin{bmatrix} 1 \\ 3 \end{bmatrix}.
 $$
 
-Note that the rows of $V^T$ are the $\mathbf v_i$. A quick check is $|\det A| = 15 = \sigma_1\sigma_2$, which holds for every square matrix because $U$ and $V$ have determinant $\pm1$.
+$A(-1, 1) = (-3, 1)$, so $\blue{\mathbf u_2} = \frac{1}{\sqrt5}\cdot\frac{1}{\sqrt2}(-3, 1) = \tfrac{1}{\sqrt{10}}(-3, 1)$.
+</Step>
+<Step>
+Assemble the factors. The rows of $V^T$ are the $\mathbf v_i$:
 
-The SVD also gives orthonormal bases for the column space (Day 16) and the null space (Day 17). The rank of $A$ is the number of nonzero singular values $r$. The vectors $\mathbf u_1, \dots, \mathbf u_r$ span $\operatorname{Col} A$, and $\mathbf v_{r+1}, \dots, \mathbf v_n$ span $\operatorname{Nul} A$ because $A$ sends each of them to $\mathbf 0$.
+$$
+A = \underbrace{\tfrac{1}{\sqrt{10}}\begin{bmatrix} 1 & -3 \\ 3 & 1 \end{bmatrix}}_{U}\underbrace{\begin{bmatrix} 3\sqrt5 & 0 \\ 0 & \sqrt5 \end{bmatrix}}_{\Sigma}\underbrace{\tfrac{1}{\sqrt2}\begin{bmatrix} 1 & 1 \\ -1 & 1 \end{bmatrix}}_{V^T}.
+$$
+</Step>
+</Steps>
+
+A quick check is $|\det A| = 15 = 3\sqrt5\cdot\sqrt5 = \sigma_1\sigma_2$, which holds for every square matrix because $U$ and $V$ have determinant $\pm1$.
+</Solution>
+</Problem>
+
+<Warning>
+Build each $\mathbf u_i$ from $A\mathbf v_i/\sigma_i$. If you find the $\mathbf u$'s separately as eigenvectors of $AA^T$, a sign can come out flipped, and then $U\Sigma V^T$ is not $A$. Also, the third factor is $V^T$, so its rows, not its columns, are the $\mathbf v_i$.
+</Warning>
+
+The SVD also reads off the rank and the fundamental subspaces from Days 16 and 17.
+
+<Problem>
+Find the singular values of $A = \begin{bmatrix} 1 & 1 \\ 1 & 1 \end{bmatrix}$. Use them to find the rank of $A$, a unit vector spanning $\operatorname{Nul}A$ and a unit vector spanning $\operatorname{Col}A$.
+
+<Solution>
+$A^TA = \begin{bmatrix} 2 & 2 \\ 2 & 2 \end{bmatrix}$ has eigenvalues $4$ and $0$, with unit eigenvectors $\mathbf v_1 = \tfrac{1}{\sqrt2}(1, 1)$ and $\mathbf v_2 = \tfrac{1}{\sqrt2}(1, -1)$. So $\sigma_1 = 2$ and $\sigma_2 = 0$.
+
+Since $\|A\mathbf v_2\| = \sigma_2 = 0$, the vector $\mathbf v_2$ is sent to $\mathbf 0$ and spans $\operatorname{Nul}A$. The output direction is $\mathbf u_1 = A\mathbf v_1/2 = \tfrac{1}{2\sqrt2}(2, 2) = \tfrac{1}{\sqrt2}(1, 1)$, which spans $\operatorname{Col}A$. One singular value is nonzero, so the rank is $1$.
+</Solution>
+</Problem>
+
+<CollapsedDirectionHunt matrix={[[1, 1], [1, 1]]} start={[1, 0]} />
+
+<Concept title="Rank and subspaces from the SVD">
+The rank of $A$ is the number of nonzero singular values $r$. The vectors $\mathbf u_1, \dots, \mathbf u_r$ are an orthonormal basis of $\operatorname{Col} A$, and $\mathbf v_{r+1}, \dots, \mathbf v_n$ are an orthonormal basis of $\operatorname{Nul} A$, because $A$ sends each of them to $\mathbf 0$.
+</Concept>
 
 ## Rank-k approximation
 
-The goal of this section is to store a large matrix with far fewer numbers while losing as little as possible. Multiplying out $U\Sigma V^T$ column by row writes $A$ as a sum of **rank-one layers**, each an outer product of a column and a row:
+The goal of this section is to store a large matrix with far fewer numbers while losing as little as possible.
+
+<Problem>
+Multiply out $U\Sigma V^T$ from Problem 3 one column of $U$ at a time, to write $A = \begin{bmatrix} 3 & 0 \\ 4 & 5 \end{bmatrix}$ as $\sigma_1\mathbf u_1\mathbf v_1^T + \sigma_2\mathbf u_2\mathbf v_2^T$. Compute the first piece $A_1 = \sigma_1\mathbf u_1\mathbf v_1^T$ and the leftover $A - A_1$.
+
+<Solution>
+A column times a row is a full matrix in which every row is a multiple of the same row. That is why each piece has rank one.
+
+<Steps>
+<Step>
+The numbers in front combine into one factor: $3\sqrt5\cdot\tfrac{1}{\sqrt{10}}\cdot\tfrac{1}{\sqrt2} = \tfrac{3\sqrt5}{\sqrt{20}} = \tfrac{3\sqrt5}{2\sqrt5} = \tfrac32$.
+</Step>
+<Step>
+The column times the row is $\begin{bmatrix} 1 \\ 3 \end{bmatrix}\begin{bmatrix} 1 & 1 \end{bmatrix} = \begin{bmatrix} 1 & 1 \\ 3 & 3 \end{bmatrix}$, so $A_1 = \tfrac32\begin{bmatrix} 1 & 1 \\ 3 & 3 \end{bmatrix} = \begin{bmatrix} 3/2 & 3/2 \\ 9/2 & 9/2 \end{bmatrix}$.
+</Step>
+<Step>
+The leftover is $A - A_1 = \begin{bmatrix} 3/2 & -3/2 \\ -1/2 & 1/2 \end{bmatrix}$. Square its entries and add: $\tfrac94 + \tfrac94 + \tfrac14 + \tfrac14 = 5$, and $\sqrt5 = \sigma_2$.
+</Step>
+</Steps>
+
+The size of what we threw away is exactly the singular value we dropped.
+</Solution>
+</Problem>
+
+<Concept title="Rank-one layers">
+Multiplying out $U\Sigma V^T$ column by row writes $A$ as a sum of **rank-one layers**:
 
 $$
-A = \glow{\sigma_1}\yellow{\mathbf u_1}\yellow{\mathbf v_1^T} + \glow{\sigma_2}\blue{\mathbf u_2}\blue{\mathbf v_2^T} + \dots + \glow{\sigma_r}\mathbf u_r\mathbf v_r^T.
+\begin{aligned}
+A &= \glow{\sigma_1}\yellow{\mathbf u_1}\yellow{\mathbf v_1^T} + \glow{\sigma_2}\blue{\mathbf u_2}\blue{\mathbf v_2^T} \\
+&\quad + \dots + \glow{\sigma_r}\mathbf u_r\mathbf v_r^T.
+\end{aligned}
 $$
 
-Keeping only the first $k$ layers gives the **rank-$k$ approximation** $A_k$. Its error is measured by the square root of the sum of the squared entries of $A - A_k$, and that error equals $\sqrt{\sigma_{k+1}^2 + \dots + \sigma_r^2}$. The Eckart–Young theorem, stated here without proof, says no other matrix of rank $k$ comes closer. An $m \times n$ matrix stored at rank $k$ costs $k(m + n + 1)$ numbers instead of $mn$, since each layer needs one $\mathbf u$, one $\mathbf v$ and one $\sigma$.
+Keeping only the first $k$ layers gives the **rank-$k$ approximation** $A_k$. Its error, the square root of the sum of the squared entries of $A - A_k$, equals $\sqrt{\sigma_{k+1}^2 + \dots + \sigma_r^2}$. The Eckart–Young theorem, stated here without proof, says no other matrix of rank $k$ comes closer.
+</Concept>
+
+An $m \times n$ matrix stored at rank $k$ costs $k(m + n + 1)$ numbers instead of $mn$, since each layer needs one $\mathbf u$, one $\mathbf v$ and one $\sigma$.
 
 <Figure src="rank-copies" alt="A grayscale landscape with a sky, a round sun and two ridges of hills, rebuilt from 1, 2, 5 and 20 layers beside the original. One layer shows only horizontal and vertical bands, two layers show a bright column where the sun is, five show a blocky sun and hills, and twenty look nearly the same as the original. A bar chart of the first 30 singular values on a log scale has its first 20 bars in teal." wide />
 
 A grayscale picture is a matrix of brightness values, and its singular values fall off fast. The same idea runs principal component analysis in Lay §7.5, where the first few singular directions of a data table carry most of its variation.
 
-This factorization is what the whole course has been building toward. It uses Day 34's orthonormal eigenvectors of a symmetric matrix, Day 39's largest value of a quadratic form and Day 37's Gram–Schmidt, and it reads off the rank, the column space and the null space along the way. With it you can take any matrix apart into perpendicular directions and the stretches between them.
-
 <RankCopyBudget tolerance={0.05} />
 
+<Warning>
+$A_k$ does not keep $k$ rows or $k$ columns of $A$. In Problem 5 neither row of $A_1$ matches a row of $A$. $A_k$ keeps $k$ layers, and each layer touches every entry.
+</Warning>
+
+This factorization is what the whole course has been building toward. It uses Day 34's orthonormal eigenvectors of a symmetric matrix, Day 39's largest value of a quadratic form and Day 37's Gram–Schmidt, and it reads off the rank, the column space and the null space along the way. With it you can take any matrix apart into perpendicular directions and the stretches between them.
+
 ## Practice
+
+### Warm-up
+
+<Check>
+Find the singular values of $\begin{bmatrix} 3 & 0 \\ 0 & -5 \end{bmatrix}$, largest first.
+
+<VectorAnswer answer={[5, 3]} labels={["σ₁", "σ₂"]} />
+
+<Answer>
+$A^TA = \begin{bmatrix} 9 & 0 \\ 0 & 25 \end{bmatrix}$, with eigenvalues $25$ and $9$, so $\sigma_1 = 5$ and $\sigma_2 = 3$. Singular values are never negative and are listed largest first, so the $-5$ becomes $5$ and moves to the front. The minus sign ends up in $U$.
+</Answer>
+</Check>
+
+<Check>
+Compute $A^TA$ for $A = \begin{bmatrix} 1 & 2 \\ 0 & 1 \end{bmatrix}$, row by row.
+
+<VectorAnswer answer={[1, 2, 2, 5]} columns={2} />
+
+<Answer>
+$$
+A^TA = \begin{bmatrix} 1 & 0 \\ 2 & 1 \end{bmatrix}\begin{bmatrix} 1 & 2 \\ 0 & 1 \end{bmatrix} = \begin{bmatrix} 1 & 2 \\ 2 & 5 \end{bmatrix}
+$$
+
+Each entry is a dot product of two columns of $A$: $(1, 0)\cdot(1, 0) = 1$, $(1, 0)\cdot(2, 1) = 2$ and $(2, 1)\cdot(2, 1) = 5$. The result is symmetric, as $A^TA$ always is.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="Which statement is true for every matrix $A$?"
+  options={["Its singular values are the absolute values of its eigenvalues", "Its singular values are real and at least $0$", "It has as many nonzero singular values as columns"]}
+  answer={1}
+>
+Each $\sigma_i = \|A\mathbf v_i\|$ is a length, so it is real and at least $0$. The first option fails for the video's matrix, whose eigenvalues are complex. The third fails for Problem 4's matrix, which has a zero singular value.
+</Choice>
+</Check>
+
+### Core
 
 <Check>
 Find the singular values of $A = \begin{bmatrix} 3 & 8 \\ 0 & 3 \end{bmatrix}$, largest first. (Modeled on Lay §7.4, Exercise 3.)
 
 <VectorAnswer answer={[9, 1]} labels={["σ₁", "σ₂"]} />
+
+<Hint>
+Compute $A^TA$ and factor its characteristic polynomial. Then take square roots.
+</Hint>
 
 <Answer>
 $$
@@ -83,30 +259,108 @@ A^TA &= \begin{bmatrix} 3 & 0 \\ 8 & 3 \end{bmatrix}\begin{bmatrix} 3 & 8 \\ 0 &
 \end{aligned}
 $$
 
-The eigenvalues of $A$ itself are $3$ and $3$, so singular values are not the eigenvalues of $A$. They come from $A^TA$. As a check, $\sigma_1\sigma_2 = 9 = |\det A|$.
+The eigenvalues of $A$ itself are $3$ and $3$, so singular values are not the eigenvalues of $A$. As a check, $\sigma_1\sigma_2 = 9 = |\det A|$.
 </Answer>
 </Check>
 
 <Check>
-Use the worked example's SVD of $A = \begin{bmatrix} 3 & 0 \\ 4 & 5 \end{bmatrix}$ to find its rank-one approximation $A_1 = \sigma_1\mathbf u_1\mathbf v_1^T$. Enter its four entries. (Modeled on Lay §7.4, Exercise 23.)
+Let $A = \begin{bmatrix} 1 & 1 \\ 0 & 1 \\ 1 & 0 \end{bmatrix}$. Find $\sigma_1^2$ and $\sigma_2^2$. (Modeled on Lay §7.4, Exercise 9.)
 
-<VectorAnswer answer={[1.5, 1.5, 4.5, 4.5]} labels={["top left", "top right", "bottom left", "bottom right"]} />
+<VectorAnswer answer={[3, 1]} labels={["σ₁²", "σ₂²"]} />
+
+<Hint>
+$A$ is $3 \times 2$, so $A^TA$ is $2 \times 2$.
+</Hint>
+
+<Answer>
+$A^TA = \begin{bmatrix} 1 + 0 + 1 & 1 + 0 + 0 \\ 1 + 0 + 0 & 1 + 1 + 0 \end{bmatrix} = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$, with eigenvalues $3$ and $1$. So $\sigma_1 = \sqrt3$ and $\sigma_2 = 1$. The top input is $\mathbf v_1 = \tfrac{1}{\sqrt2}(1, 1)$, and $\mathbf u_1 = A\mathbf v_1/\sqrt3 = \tfrac{1}{\sqrt6}(2, 1, 1)$. Here $\Sigma$ is $3 \times 2$, the same shape as $A$.
+</Answer>
+</Check>
+
+<Check>
+Find the rank-one approximation $A_1 = \sigma_1\mathbf u_1\mathbf v_1^T$ of $A = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$, row by row. (Modeled on Lay §7.4, Exercise 23.)
+
+<VectorAnswer answer={[1.5, 1.5, 1.5, 1.5]} columns={2} />
+
+<Hint>
+$A$ is symmetric with eigenvalues $3$ and $1$, so $\sigma_1 = 3$ and $\mathbf u_1 = \mathbf v_1 = \tfrac{1}{\sqrt2}(1, 1)$.
+</Hint>
 
 <Answer>
 $$
-A_1 = 3\sqrt5 \cdot \tfrac{1}{\sqrt{10}}\begin{bmatrix} 1 \\ 3 \end{bmatrix} \tfrac{1}{\sqrt2}\begin{bmatrix} 1 & 1 \end{bmatrix} = \tfrac{3\sqrt5}{\sqrt{20}}\begin{bmatrix} 1 & 1 \\ 3 & 3 \end{bmatrix} = \begin{bmatrix} 3/2 & 3/2 \\ 9/2 & 9/2 \end{bmatrix}.
+A_1 = 3\cdot\tfrac{1}{\sqrt2}\begin{bmatrix} 1 \\ 1 \end{bmatrix}\tfrac{1}{\sqrt2}\begin{bmatrix} 1 & 1 \end{bmatrix} = \tfrac32\begin{bmatrix} 1 & 1 \\ 1 & 1 \end{bmatrix}
 $$
 
-The leftover is $A - A_1 = \begin{bmatrix} 3/2 & -3/2 \\ -1/2 & 1/2 \end{bmatrix}$, and the square root of the sum of its squared entries is $\sqrt{5} = \sigma_2$. The dropped singular value measures exactly what was thrown away.
+The leftover $A - A_1 = \begin{bmatrix} 1/2 & -1/2 \\ -1/2 & 1/2 \end{bmatrix}$ has squared entries adding to $1$, and $\sqrt1 = \sigma_2$.
 </Answer>
 </Check>
+
+<Check>
+A $100 \times 80$ matrix is stored as its rank-$5$ approximation. How many numbers does that take?
+
+<VectorAnswer answer={[905]} labels={["numbers"]} />
+
+<Hint>
+Each layer needs one $\mathbf u$ in $\mathbb R^{100}$, one $\mathbf v$ in $\mathbb R^{80}$ and one $\sigma$.
+</Hint>
+
+<Answer>
+Each layer costs $100 + 80 + 1 = 181$ numbers, so five layers cost $5 \cdot 181 = 905$. The full matrix has $100 \cdot 80 = 8000$ entries, so the copy uses about $11\%$ of the storage.
+</Answer>
+</Check>
+
+<Check>
+The wide matrix $A = \begin{bmatrix} 1 & 1 & 0 \\ 0 & 1 & 1 \end{bmatrix}$ has three right singular vectors, and the last one has $\sigma_3 = 0$. Find that $\mathbf v_3$, scaled so its first entry is $1$. (Modeled on Lay §7.4, Exercise 13.)
+
+<VectorAnswer answer={[1, -1, 1]} />
+
+<Hint>
+A right singular vector with singular value $0$ spans $\operatorname{Nul}A$. Solve $A\mathbf x = \mathbf 0$.
+</Hint>
+
+<Answer>
+$A\mathbf x = \mathbf 0$ says $x_1 + x_2 = 0$ and $x_2 + x_3 = 0$, so $x_1 = -x_2$ and $x_3 = -x_2$. With $x_1 = 1$ this is $(1, -1, 1)$, and the unit version is $\mathbf v_3 = \tfrac{1}{\sqrt3}(1, -1, 1)$. The rank is $2$, since $AA^T = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$ has the nonzero eigenvalues $3$ and $1$, giving $\sigma_1 = \sqrt3$ and $\sigma_2 = 1$.
+</Answer>
+</Check>
+
+### Challenge
 
 <Check>
 A $3 \times 3$ matrix $B$ has singular values $6$, $2$ and $0$. What is its rank, and what is the largest value of $\|B\mathbf x\|$ over unit vectors $\mathbf x$? (Modeled on Lay §7.4, Exercises 14 and 15.)
 
 <VectorAnswer answer={[2, 6]} labels={["rank", "largest length"]} />
 
+<Hint>
+Count the nonzero singular values for the rank. The longest output is one of the singular values.
+</Hint>
+
 <Answer>
 The rank is the number of nonzero singular values, which is $2$. The longest output of a unit vector is $\sigma_1 = 6$, reached at $\mathbf x = \mathbf v_1$. The third right singular vector $\mathbf v_3$ satisfies $\|B\mathbf v_3\| = \sigma_3 = 0$, so it spans $\operatorname{Nul} B$.
+</Answer>
+</Check>
+
+<Check>
+For $A = \begin{bmatrix} 3 & 0 \\ 4 & 5 \end{bmatrix}$, what is the smallest value of $\|A\mathbf x\|^2$ over unit vectors $\mathbf x$?
+
+<VectorAnswer answer={[5]} labels={["smallest ‖Ax‖²"]} />
+
+<Hint>
+Use Problem 3's eigenvalues of $A^TA$.
+</Hint>
+
+<Answer>
+$\|A\mathbf x\|^2 = \mathbf x^T(A^TA)\mathbf x$, and by Day 39 its smallest value on the unit circle is the smallest eigenvalue of $A^TA$, which is $5$. It happens at $\mathbf v_2 = \tfrac{1}{\sqrt2}(-1, 1)$. Check: $A(-1, 1) = (-3, 1)$, so $\|A\mathbf v_2\|^2 = \tfrac{9 + 1}{2} = 5$.
+</Answer>
+</Check>
+
+<Check>
+Show that every singular value of an $n \times n$ orthogonal matrix $Q$ equals $1$.
+
+<Hint>
+Use $Q^TQ = I$ from Day 35.
+</Hint>
+
+<Answer>
+The singular values are the square roots of the eigenvalues of $Q^TQ$. Since the columns of $Q$ are orthonormal, $Q^TQ = I$, whose only eigenvalue is $1$. So every singular value is $\sqrt1 = 1$. In pictures, $Q$ turns or reflects the unit circle without stretching it, so the image ellipse is the unit circle again. This is why $U$ and $V$ in an SVD never change lengths, and all the stretching lives in $\Sigma$.
 </Answer>
 </Check>

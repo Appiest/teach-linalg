@@ -41,7 +41,7 @@ import { DiagonalFactorSteps, EigenCoordinateTarget } from "@/components/interac
 import { CharacteristicSweep, EigenpairHunt } from "@/components/interactive/characteristic-equation";
 import { SpectralEllipseBuilder, SymmetricPerpendicularHunt } from "@/components/interactive/symmetric-matrices";
 import { DotShadowHunt, RowPerpendicularHunt, UnitCircleScale } from "@/components/interactive/inner-products";
-import { LongestStretchHunt, RankCopyBudget, SvdEllipseMatch } from "@/components/interactive/singular-value-decomposition";
+import { CollapsedDirectionHunt, LongestStretchHunt, PerpendicularPairHunt, RankCopyBudget, SvdEllipseMatch } from "@/components/interactive/singular-value-decomposition";
 import { LineFootHunt, LineOnlyShadow, NearestPlanePoint, ShadowPreimageHunt, ShadowSumBasis } from "@/components/interactive/orthogonal-projection";
 import { NormalizePair, QrWeightSliders, ShadowSubtractSlider, StraightenedTargetHunt, VanishingStepHunt } from "@/components/interactive/gram-schmidt";
 import { ParabolaFit, ProjectionRightAngle, ResidualBalance, ResidualSquaresFit } from "@/components/interactive/least-squares";
@@ -188,6 +188,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     LongestStretchHunt,
     SvdEllipseMatch,
     RankCopyBudget,
+    PerpendicularPairHunt,
+    CollapsedDirectionHunt,
     LineFootHunt,
     ShadowSumBasis,
     NearestPlanePoint,
