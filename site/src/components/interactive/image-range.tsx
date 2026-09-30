@@ -191,3 +191,101 @@ export function ComplementLanding({
     </Panel>
   );
 }
+
+const matrixTex2 = (m: Matrix2) => `\\begin{bmatrix} ${texNumber(m[0][0])} & ${texNumber(m[0][1])} \\\\ ${texNumber(m[1][0])} & ${texNumber(m[1][1])} \\end{bmatrix}`;
+
+/** A rank-one map: drag the input and watch the output slide along the range line until it lands on the ringed b. */
+export function RangeProbe({ matrix = [[1, 2], [2, 4]], target = [-2, -4], start = [1, 0] }: { matrix?: Matrix2; target?: Vec; start?: Vec }) {
+  const [x, setX] = useState<Vec>(start);
+  const { settled, gesture } = useSettled(pointKey(x));
+  const solved = nearlyEqual(apply(matrix, keyPoint(settled)), target);
+  const output = apply(matrix, x);
+  const rangeDirection: Vec = isZero([matrix[0][0], matrix[1][0]]) ? [matrix[0][1], matrix[1][1]] : [matrix[0][0], matrix[1][0]];
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>Drag the input <Tex>{"\\mathbf x"}</Tex> so that its output <Tex>{"T(\\mathbf x)"}</Tex> lands on the ringed point <Tex>{`\\mathbf b = ${columnTex(target)}`}</Tex>. Watch where the output is allowed to go.</>}
+        success={<>You reached <Tex>{"\\mathbf b"}</Tex>, so it is in the range. Every output stays on the teal line, so a point off that line could never be reached.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={DEFAULT_BOUNDS} label={`Input x at ${describeVector(x)} and its output T(x) at ${describeVector(output)}, which always lies on the teal range line. Drag x or use the arrow keys.`}>
+            <FullLine direction={rangeDirection} color="teal" width={2.5} />
+            <Marker at={target} color={solved ? "teal" : "glow"} ring />
+            <Arrow to={output} color="teal" />
+            <Arrow to={x} color="yellow" />
+            <Label at={x} color="yellow">x</Label>
+            <Label at={output} color="teal" dy={22}>T(x)</Label>
+            <Handle at={x} onMove={setX} color="yellow" label={`Tip of the input x, at ${describeVector(x)}`} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Readout tex={`T(\\mathbf x) = ${matrixTex2(matrix)}\\mathbf x`} />
+            <Readout tex={`${columnTex(x, palette.yellow)} \\mapsto ${columnTex(output, palette.teal)}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}
+
+function spanDimension(columns: Vec[]): number {
+  const nonzero = columns.filter((column) => !isZero(column));
+  if (nonzero.length === 0) return 0;
+  const [first] = nonzero;
+  return nonzero.some((column) => det([[first[0], column[0]], [first[1], column[1]]]) !== 0) ? 2 : 1;
+}
+
+function ColumnsRange({ columns, rank }: { columns: Vec[]; rank: number }) {
+  const direction = columns.find((column) => !isZero(column)) ?? [1, 0];
+  return (
+    <>
+      <WholePlaneTint shown={rank === 2} />
+      {rank === 1 ? <FullLine direction={direction} color="teal" /> : null}
+    </>
+  );
+}
+
+/** A map from R^3 to R^2 with two fixed parallel columns. Drag the third column and watch the three input dimensions split between kernel and range. */
+export function ThirdColumnBudget({ first = [1, 2], second = [-2, -4], start = [2, 0] }: { first?: Vec; second?: Vec; start?: Vec }) {
+  const [third, setThird] = useState<Vec>(start);
+  const rank = spanDimension([first, second, third]);
+  const { settled, gesture } = useSettled(pointKey(third));
+  const solved = spanDimension([first, second, keyPoint(settled)]) === 1;
+  const entry = (color: string, value: number) => `\\textcolor{${color}}{${texNumber(value)}}`;
+  const matrix = `\\begin{bmatrix} ${entry(palette.i_hat, first[0])} & ${entry(palette.j_hat, second[0])} & ${entry(palette.blue, third[0])} \\\\ ${entry(palette.i_hat, first[1])} & ${entry(palette.j_hat, second[1])} & ${entry(palette.blue, third[1])} \\end{bmatrix}`;
+
+  return (
+    <Panel gesture={gesture}>
+      <Goal
+        solved={solved}
+        prompt={<>This <Tex>{"T:\\mathbb R^3 \\to \\mathbb R^2"}</Tex> has three columns. Drag the blue third column until the range shrinks to a line, and watch the kernel grow to make up the difference.</>}
+        success={<>All three columns lie on one line, so <Tex>{"\\dim\\operatorname{range}T = 1"}</Tex> and <Tex>{"\\dim\\ker T = 2"}</Tex>. The three input dimensions are still all accounted for.</>}
+      />
+      <Workbench
+        plane={
+          <Plane bounds={DEFAULT_BOUNDS} label={`Three columns in the plane: ${describeVector(first)}, ${describeVector(second)} and a draggable third column at ${describeVector(third)}. The range is ${rank === 2 ? "the whole plane" : "a line"}.`}>
+            <ColumnsRange columns={[first, second, third]} rank={rank} />
+            <Arrow to={first} color="green" />
+            <Arrow to={second} color="red" />
+            <Arrow to={third} color="blue" />
+            <Label at={first} color="green">a₁</Label>
+            <Label at={second} color="red">a₂</Label>
+            <Label at={third} color="blue">a₃</Label>
+            <Handle at={third} onMove={setThird} color="blue" label={`Tip of the third column a3, at ${describeVector(third)}`} />
+          </Plane>
+        }
+        readout={
+          <>
+            <Readout tex={`A = ${matrix}`} />
+            <DimensionBar kernelDim={3 - rank} total={3} lit={solved} />
+            <Readout tex={`\\begin{aligned} \\textcolor{${palette.pink}}{\\dim\\ker T} &= \\textcolor{${palette.pink}}{${3 - rank}} \\\\ \\textcolor{${palette.teal}}{\\dim\\operatorname{range}T} &= \\textcolor{${palette.teal}}{${rank}} \\end{aligned}`} />
+          </>
+        }
+      />
+    </Panel>
+  );
+}

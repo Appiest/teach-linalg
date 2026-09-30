@@ -29,7 +29,7 @@ import { FreeWeights, LandingHunt } from "@/components/interactive/null-space";
 import { DerivativeTarget, SharedDerivativeHunt, TranslationGap } from "@/components/interactive/linear-maps";
 import { PivotHunt, PolynomialRecipe, ThirdVectorHunt } from "@/components/interactive/span-revisited";
 import { DifferenceInKernel, EvaluationKernel, SecondDerivativeTwins, ZeroLanding } from "@/components/interactive/kernel";
-import { ComplementLanding, RangeCollapse } from "@/components/interactive/image-range";
+import { ComplementLanding, RangeCollapse, RangeProbe, ThirdColumnBudget } from "@/components/interactive/image-range";
 import { DiagonalZeroHunt, EigenDirectionHunt, EigenGapHunt } from "@/components/interactive/eigenvectors";
 import { AreaShearSlide, CornerToOrigin } from "@/components/interactive/determinants-as-area";
 import { CramerAreas, HeightStack, ProductAreaHunt } from "@/components/interactive/determinant-properties";
@@ -162,6 +162,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     SecondDerivativeTwins,
     RangeCollapse,
     ComplementLanding,
+    RangeProbe,
+    ThirdColumnBudget,
     EigenDirectionHunt,
     EigenGapHunt,
     DiagonalZeroHunt,
