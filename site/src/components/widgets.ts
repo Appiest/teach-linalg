@@ -1,9 +1,9 @@
-import { AddressHunt, StaircaseBasis, TrimToBasis } from "@/components/interactive/basis";
+import { AddressHunt, BasisForAddress, SpareRecipe, StaircaseBasis, TrimToBasis } from "@/components/interactive/basis";
 import { ChangeMatrixBuilder, SimilarityHunt, TwoAddresses } from "@/components/interactive/change-of-basis";
 import { CharacteristicSweep, EigenpairHunt, RepeatedRootSlider, TriangularPolyMatch } from "@/components/interactive/characteristic-equation";
 import { CofactorHunt, CofactorLinePicker, ColumnClearExpand, MultipleAreaScale, ReplacementShear } from "@/components/interactive/cofactor-expansion";
 import { ConsistencyLine, OutputReach, PivotPicker, RelationTwins, RowSlide } from "@/components/interactive/column-space";
-import { CoordinateFinder, PolynomialCoordinates } from "@/components/interactive/coordinates";
+import { CoordinateBuilder, CoordinateFinder, PolynomialCoordinates, SpanDimension } from "@/components/interactive/coordinates";
 import { CramerAreas, CramerParameterLines, EllipseAreaStretch, HeightStack, ProductAreaHunt } from "@/components/interactive/determinant-properties";
 import { AreaShearSlide, CornerToOrigin } from "@/components/interactive/determinants-as-area";
 import { DiagonalEntryMatch, DiagonalFactorSteps, EigenColumnHunt, EigenCoordinateTarget } from "@/components/interactive/diagonalization";
@@ -14,7 +14,7 @@ import { BuildFromSteps, ElementaryMoves, InverseBuilder, RowRecipe } from "@/co
 import { ChainCoordinates, JordanChainBuilder, MultiplicityGapSlider, NullPowerClimb, ShearRaySweep } from "@/components/interactive/generalized-eigenvectors";
 import { NormalizePair, QrWeightSliders, ShadowSubtractSlider, StraightenedTargetHunt, VanishingStepHunt } from "@/components/interactive/gram-schmidt";
 import { ComplementLanding, RangeCollapse } from "@/components/interactive/image-range";
-import { LiftToPlane, LoopAnywhere, RelationFinder } from "@/components/interactive/independence";
+import { CollinearHunt, LiftToPlane, LoopAnywhere, RelationFinder, ZeroFunctionHunt } from "@/components/interactive/independence";
 import { DotShadowHunt, EqualDistanceTurn, OrthogonalWeights, RowPerpendicularHunt, UnitCircleScale } from "@/components/interactive/inner-products";
 import { DeterminantSlider, InverseColumnsHunt, SameLanding, SingularHunt, UndoOrder } from "@/components/interactive/inverse";
 import { CrushAndMiss, InvertibilityCalls, StatementBoard, ThirdPivotSlider } from "@/components/interactive/invertible-matrix-theorem";
@@ -31,8 +31,8 @@ import { LevelPointHunt, NegativeDirectionHunt, QuadraticAxisTurner, QuadraticCi
 import { CollapseSlider, PivotBudget, RankTally, RowColumnDrop } from "@/components/interactive/rank-nullity";
 import { CollapsedDirectionHunt, LongestStretchHunt, PerpendicularPairHunt, RankCopyBudget, SvdEllipseMatch } from "@/components/interactive/singular-value-decomposition";
 import { EntryHunt, LineSpanPicker, RowLinesMeet, SpanPainter } from "@/components/interactive/span";
-import { PivotHunt, PolynomialRecipe, ThirdVectorHunt } from "@/components/interactive/span-revisited";
-import { QuadrantEscape, ShiftedLineTest } from "@/components/interactive/subspaces";
+import { ConsistencyHunt, GrowTheSpan, PivotHunt, PolynomialRecipe, ThirdVectorHunt } from "@/components/interactive/span-revisited";
+import { CounterexampleHunt, PolynomialSetTest, QuadrantEscape, ShiftedLineTest } from "@/components/interactive/subspaces";
 import { EigenDirectionSweep, ShadowStretchSum, SpectralEllipseBuilder, SymmetricPerpendicularHunt } from "@/components/interactive/symmetric-matrices";
 import { PivotSpotter, RowReduceExplorer, RowReducer, SolutionCountExplorer } from "@/components/interactive/systems";
 import { TransformExplorer } from "@/components/interactive/transform";
@@ -46,6 +46,7 @@ export const widgets = {
   AddressHunt,
   AreaShearSlide,
   BasisColumnBuilder,
+  BasisForAddress,
   BuildFromSteps,
   ChainCoordinates,
   ChangeMatrixBuilder,
@@ -55,6 +56,7 @@ export const widgets = {
   CofactorLinePicker,
   CollapseSlider,
   CollapsedDirectionHunt,
+  CollinearHunt,
   ColumnBuilder,
   ColumnClearExpand,
   ColumnSpanCheck,
@@ -63,10 +65,13 @@ export const widgets = {
   CommuteHunt,
   ComplementLanding,
   CompositionExplorer,
+  ConsistencyHunt,
   ConsistencyLine,
+  CoordinateBuilder,
   CoordinateFinder,
   CornerToOrigin,
   CostCompare,
+  CounterexampleHunt,
   CramerAreas,
   CramerParameterLines,
   CrushAndMiss,
@@ -99,6 +104,7 @@ export const widgets = {
   EvaluationZeros,
   FreeWeights,
   GridWeights,
+  GrowTheSpan,
   HeightStack,
   ImagePredictor,
   InverseBuilder,
@@ -136,6 +142,7 @@ export const widgets = {
   PolynomialCombiner,
   PolynomialCoordinates,
   PolynomialRecipe,
+  PolynomialSetTest,
   PowerLineStretch,
   PreimageHunt,
   ProductAreaHunt,
@@ -181,7 +188,9 @@ export const widgets = {
   SingularHunt,
   SolutionCountExplorer,
   SpanBreaker,
+  SpanDimension,
   SpanPainter,
+  SpareRecipe,
   SpectralEllipseBuilder,
   StaircaseBasis,
   StatementBoard,
@@ -203,5 +212,6 @@ export const widgets = {
   UnitCircleScale,
   VanishingStepHunt,
   VectorExplorer,
+  ZeroFunctionHunt,
   ZeroProductHunt,
 };
