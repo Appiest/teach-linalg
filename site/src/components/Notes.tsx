@@ -10,7 +10,7 @@ import { EntryHunt, SpanPainter } from "@/components/interactive/span";
 import { RowReduceExplorer, SolutionCountExplorer } from "@/components/interactive/systems";
 import { ColumnSpanCheck, MatrixVectorExplorer } from "@/components/interactive/matrix";
 import { PreimageHunt, ShapeMatch } from "@/components/interactive/transformations";
-import { ClosureHunt, PolynomialCombiner } from "@/components/interactive/vector-spaces";
+import { ClosureHunt, NegativeFinder, PolynomialCombiner, ScalingEscape } from "@/components/interactive/vector-spaces";
 import { CostCompare, LUBuilder, PivotFlattener, SubstitutionSolver, TwoTriangleSolve } from "@/components/interactive/lu";
 import { AdditionExplorer, CombinationTarget, DifferenceExplorer, GridWeights, ScaleExplorer, VectorExplorer } from "@/components/interactive/vectors";
 import { ColumnWeights, CommuteHunt, CompositionExplorer, ProductColumns, ZeroProductHunt } from "@/components/interactive/product";
@@ -116,6 +116,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     ZeroProductHunt,
     PolynomialCombiner,
     ClosureHunt,
+    NegativeFinder,
+    ScalingEscape,
     LUBuilder,
     SubstitutionSolver,
     CostCompare,
