@@ -32,7 +32,7 @@ import { DifferenceInKernel, EvaluationKernel } from "@/components/interactive/k
 import { ComplementLanding, RangeCollapse } from "@/components/interactive/image-range";
 import { DiagonalZeroHunt, EigenDirectionHunt, EigenGapHunt } from "@/components/interactive/eigenvectors";
 import { AreaShearSlide, CornerToOrigin } from "@/components/interactive/determinants-as-area";
-import { CramerAreas, HeightStack, ProductAreaHunt } from "@/components/interactive/determinant-properties";
+import { CramerAreas, CramerParameterLines, EllipseAreaStretch, HeightStack, ProductAreaHunt } from "@/components/interactive/determinant-properties";
 import { CofactorHunt, CofactorLinePicker, ColumnClearExpand, MultipleAreaScale, ReplacementShear } from "@/components/interactive/cofactor-expansion";
 import { IterateSwing, ShiftToSingular, TraceCurveMatch } from "@/components/interactive/eigenvalue-properties";
 import { JordanChainBuilder, MultiplicityGapSlider, NullPowerClimb } from "@/components/interactive/generalized-eigenvectors";
@@ -164,6 +164,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     HeightStack,
     ProductAreaHunt,
     CramerAreas,
+    CramerParameterLines,
+    EllipseAreaStretch,
     CofactorLinePicker,
     ReplacementShear,
     MultipleAreaScale,
