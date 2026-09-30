@@ -1,6 +1,24 @@
 On Day 17 the null space collected every input a matrix sends to $\mathbf 0$, and it decided whether a solution of $A\mathbf x = \mathbf b$ is unique. Day 20 widened "matrix" to any linear map between vector spaces, including the derivative, and Day 21 wrote such a map as a matrix. With those maps in hand, today asks Day 17's question of them. The answer is again a subspace, called the kernel, and its size decides whether the map can ever send two different inputs to the same place. Tomorrow asks the companion question of which outputs the map can reach.
 
+Each section below opens with a problem. Try it before you open the walkthrough, even if you only get partway.
+
 ## The kernel
+
+<Problem>
+Take Day 20's map $T:\mathbb P_2 \to \mathbb R^2$ with $T(\mathbf p) = (\green{\mathbf p(0)}, \red{\mathbf p(1)})$. Compute $T(t^2 - t)$ and $T(t^2 - 1)$. Which of the two does $T$ send to the zero vector?
+
+<VectorAnswer answer={[-1, 0]} labels={["p(0)", "p(1)"]} prefix="T(t^2 - 1) =" />
+
+<Solution>
+The map reads a polynomial's value at $t = 0$ and at $t = 1$, so we substitute each number.
+
+For $t^2 - t$: at $t = 0$ it is $0 - 0 = 0$, and at $t = 1$ it is $1 - 1 = 0$. So $T(t^2 - t) = (0, 0)$.
+
+For $t^2 - 1$: at $t = 0$ it is $0 - 1 = -1$, and at $t = 1$ it is $1 - 1 = 0$. So $T(t^2 - 1) = (-1, 0)$.
+
+Only $t^2 - t$ goes to zero. In pictures, $T$ reads a graph's height at two pins, $t = 0$ and $t = 1$, and $t^2 - t$ is a graph that crosses both pins at height 0.
+</Solution>
+</Problem>
 
 <Definition term="Kernel">
 The **kernel** of a linear transformation $T : V \to W$ is the set of all vectors in $V$ that $T$ sends to the zero vector of $W$:
@@ -12,85 +30,171 @@ $$
 When $T(\mathbf x) = A\mathbf x$ for a matrix $A$, the kernel is exactly $\operatorname{Nul}A$.
 </Definition>
 
+<Warning>
 The kernel lives in the domain $V$. For a map from $\mathbb P_2$ to $\mathbb R^2$, the kernel is a set of polynomials, not of columns. It is also a set, so when nothing but zero goes to zero you write $\ker T = \{\mathbf 0\}$, not $\mathbf 0$.
+</Warning>
 
-Testing one vector takes one evaluation. Take Day 20's map $T(\mathbf p) = (\green{\mathbf p(0)}, \red{\mathbf p(1)})$ from $\mathbb P_2$ to $\mathbb R^2$. For $\mathbf p = t^2 - t$ you get $T(\mathbf p) = (0 - 0,\ 1 - 1) = (0, 0)$, so $t^2 - t$ is in $\ker T$. For $\mathbf p = t^2 - 1$ you get $(-1, 0)$, so it is not. In pictures, $T$ reads a graph's height at the two pins $t = 0$ and $t = 1$, and a kernel vector is a graph that crosses both pins at height 0.
+Find another member of this kernel with the sliders.
 
 <EvaluationKernel start={[1, 1, 0]} />
 
-Testing polynomials one at a time never finishes, so the goal is a short list of polynomials whose span is exactly the kernel. To find it, write $\mathbf p = a_0 + a_1 t + a_2 t^2$ and turn $T(\mathbf p) = \mathbf 0$ into equations on the coefficients:
+For a matrix map the kernel is Day 17's null space, and in the plane you can see it as a line of inputs that all land on the origin.
 
-$$
-\begin{aligned}
-\mathbf p(0) &= a_0 = 0 \\
-\mathbf p(1) &= a_0 + a_1 + a_2 = 0 \\
-\Longrightarrow\quad \mathbf p &= a_2 t^2 - a_2 t = a_2(t^2 - t)
-\end{aligned}
-$$
+<ZeroLanding matrix={[[2, -4], [-1, 2]]} start={[1, 1]} />
 
-So $\ker T = \operatorname{Span}\{t^2 - t\}$, a line inside the three-dimensional space $\mathbb P_2$.
+Testing polynomials one at a time never finishes, so the goal of the next problem is a short list of polynomials whose span is exactly the kernel.
+
+<Problem>
+Find every $\mathbf p$ in $\mathbb P_2$ with $T(\mathbf p) = (0, 0)$, where $T(\mathbf p) = (\mathbf p(0), \mathbf p(1))$ as before. Enter the one whose $t^2$ coefficient is $1$, as its coefficients $(a_0, a_1, a_2)$.
+
+<VectorAnswer answer={[0, -1, 1]} labels={["a₀", "a₁", "a₂"]} />
+
+<Solution>
+A general member of $\mathbb P_2$ has three unknown coefficients, so we write $\mathbf p = a_0 + a_1 t + a_2 t^2$ and turn $T(\mathbf p) = \mathbf 0$ into equations on them.
+
+<Steps>
+<Step>
+The first entry is $\mathbf p(0) = a_0$, and it must be $0$. So $a_0 = 0$.
+</Step>
+<Step>
+The second entry is $\mathbf p(1) = a_0 + a_1 + a_2$, and it must be $0$. With $a_0 = 0$ that says $a_1 = -a_2$.
+</Step>
+<Step>
+The coefficient $a_2$ is free. Substituting gives $\mathbf p = 0 - a_2 t + a_2 t^2 = a_2(t^2 - t)$.
+</Step>
+</Steps>
+
+So $\ker T = \operatorname{Span}\{t^2 - t\}$, a line inside the three-dimensional space $\mathbb P_2$. With $a_2 = 1$ the polynomial is $t^2 - t$, with coefficients $(0, -1, 1)$.
+</Solution>
+</Problem>
 
 ## Why it is a subspace
+
+<Problem>
+Suppose a linear map $T$ sends both $\mathbf u$ and $\mathbf v$ to $\mathbf 0$. Must it send $\mathbf u + \mathbf v$ to $\mathbf 0$? What about $5\mathbf u$?
+
+<Solution>
+We only know two things about $T$: it keeps sums and it keeps scalar multiples. So we use those two rules and see what they give.
+
+For the sum, $T(\mathbf u + \mathbf v) = T(\mathbf u) + T(\mathbf v) = \mathbf 0 + \mathbf 0 = \mathbf 0$. For the multiple, $T(5\mathbf u) = 5\,T(\mathbf u) = 5\,\mathbf 0 = \mathbf 0$. Both answers are yes, whatever $T$ is.
+
+For the map above, $t^2 - t$ is in the kernel, and so is $3(t^2 - t) = 3t^2 - 3t$. You can check it directly, since $3t^2 - 3t$ is zero at $t = 0$ and at $t = 1$.
+</Solution>
+</Problem>
 
 <Definition term="Theorem">
 The kernel of a linear transformation $T : V \to W$ is a subspace of $V$.
 </Definition>
 
-Run Day 11's three checks. Suppose $T(\mathbf u) = \mathbf 0$ and $T(\mathbf v) = \mathbf 0$, and let $c$ be any scalar.
+Day 11's three checks are the problem you just did, plus the zero vector:
 
 $$
 \begin{aligned}
-&\text{(a)} \quad T(\mathbf 0) = \mathbf 0 \\
-&\text{(b)} \quad T(\mathbf u + \mathbf v) = T(\mathbf u) + T(\mathbf v) = \mathbf 0 + \mathbf 0 = \mathbf 0 \\
-&\text{(c)} \quad T(c\,\mathbf u) = c\,T(\mathbf u) = c\,\mathbf 0 = \mathbf 0
+T(\mathbf 0) &= \mathbf 0 \\
+T(\mathbf u + \mathbf v) &= T(\mathbf u) + T(\mathbf v) = \mathbf 0 \\
+T(c\,\mathbf u) &= c\,T(\mathbf u) = \mathbf 0
 \end{aligned}
 $$
 
-Line (a) is Day 20's fact that every linear map sends zero to zero, and lines (b) and (c) use only the two rules in the definition of linear. Day 17's proof for $\operatorname{Nul}A$ is the special case $T(\mathbf x) = A\mathbf x$. The theorem also explains why the solutions of a homogeneous differential equation such as $y'' + \omega^2 y = 0$ can be added and scaled: they form the kernel of the linear map $y \mapsto y'' + \omega^2 y$ (Lay §4.2, Example 9). Day 28 uses the same fact for eigenvectors: the eigenvectors of $A$ for an eigenvalue $\lambda$, together with $\mathbf 0$, form the kernel of $\mathbf x \mapsto (A - \lambda I)\mathbf x$, so they make a subspace.
+The first line is Day 20's fact that every linear map sends zero to zero. Day 17's proof for $\operatorname{Nul}A$ is the special case $T(\mathbf x) = A\mathbf x$. The theorem also explains why the solutions of a homogeneous differential equation such as $y'' + \omega^2 y = 0$ can be added and scaled: they form the kernel of the linear map $y \mapsto y'' + \omega^2 y$ (Lay §4.2, Example 9). Day 28 uses the same fact for eigenvectors: the eigenvectors of $A$ for an eigenvalue $\lambda$, together with $\mathbf 0$, form the kernel of $\mathbf x \mapsto (A - \lambda I)\mathbf x$, so they make a subspace.
+
+<Choice
+  question="Let $T(\mathbf p) = (\mathbf p(0), \mathbf p(1))$ again. Is the set of all $\mathbf p$ with $T(\mathbf p) = (1, 0)$ a subspace of $\mathbb P_2$?"
+  options={["Yes, for the same reason the kernel is", "No"]}
+  answer={1}
+>
+The zero polynomial gives $T(\mathbf 0) = (0, 0)$, not $(1, 0)$, so the set is missing $\mathbf 0$. It also fails the sum test, because two members add to something with $T = (2, 0)$. Only the output $\mathbf 0$ is safe under adding and scaling, which is why the kernel is special.
+</Choice>
 
 ## The derivative
 
-<Pair>
-<Figure src="constants-flatten" alt="Two graph panels joined by an arrow labelled D. The left panel holds four pink horizontal lines, the constant polynomials p = c at heights 2, 1, −1 and −2. The right panel holds one thick teal line along the horizontal axis, the zero polynomial, labelled Dp = 0." />
+<Problem>
+Let $D : \mathbb P_3 \to \mathbb P_3$ be $D(\mathbf p) = \mathbf p'$. Find every $\mathbf p$ with $D(\mathbf p) = \mathbf 0$.
 
-The derivative $D : \mathbb P_3 \to \mathbb P_3$ sends $a_0 + a_1 t + a_2 t^2 + a_3 t^3$ to $a_1 + 2a_2 t + 3a_3 t^2$. That is the zero polynomial exactly when $a_1 = a_2 = a_3 = 0$, so
+<Solution>
+As before, write a general input and set the output to zero. The derivative of $a_0 + a_1 t + a_2 t^2 + a_3 t^3$ is $a_1 + 2a_2 t + 3a_3 t^2$. That is the zero polynomial exactly when every coefficient is zero, so $a_1 = 0$, $2a_2 = 0$ and $3a_3 = 0$. Nothing constrains $a_0$. So
 
 $$
 \ker D = \{a_0\} = \operatorname{Span}\{1\}.
 $$
 
-A constant has slope 0 everywhere. This kernel is the reason every antiderivative carries a $+\,C$.
-</Pair>
+The constants are exactly the polynomials with slope 0 everywhere.
+</Solution>
+</Problem>
 
-Day 21's recipe gives the same answer, and it turns a question about polynomials into a null space computation you already know how to do. With $\mathcal B = \{1, t, t^2, t^3\}$, a polynomial is in $\ker D$ exactly when its coordinate vector is in the null space of $[D]_{\mathcal B}$, because $[D\mathbf p]_{\mathcal B} = [D]_{\mathcal B}[\mathbf p]_{\mathcal B}$ and only the zero polynomial has zero coordinates:
+<Figure src="constants-flatten" alt="Two graph panels joined by an arrow labelled D. The left panel holds four pink horizontal lines, the constant polynomials p = c at heights 2, 1, −1 and −2. The right panel holds one thick teal line along the horizontal axis, the zero polynomial, labelled Dp = 0." />
 
-$$
-[D]_{\mathcal B} = \begin{bmatrix} 0 & 1 & 0 & 0 \\ 0 & 0 & 2 & 0 \\ 0 & 0 & 0 & 3 \\ 0 & 0 & 0 & 0 \end{bmatrix},
-\qquad
-\operatorname{Nul}[D]_{\mathcal B} = \operatorname{Span}\left\{\begin{bmatrix} 1 \\ 0 \\ 0 \\ 0 \end{bmatrix}\right\}.
-$$
+<Concept title="The kernel of the derivative is the constants">
+Every constant flattens to the zero polynomial under $D$, and nothing else does. This kernel is the reason every antiderivative carries a $+\,C$. Two antiderivatives of the same function have the same derivative, so their difference is in $\ker D$, which means it is a constant.
+</Concept>
 
-The vector $(1, 0, 0, 0)$ is the coordinate vector of the constant $1$. The integral map is different. $T(\mathbf f) = \int_0^t \mathbf f(s)\,ds$ has $\ker T = \{\mathbf 0\}$, because an antiderivative that is identically zero has derivative $\mathbf f = \mathbf 0$.
+Day 21's matrices give a second route, and it turns a question about polynomials into a null space computation you already know how to do.
+
+<Problem>
+Let $T : \mathbb P_3 \to \mathbb P_3$ be $T(\mathbf p) = \mathbf p''$, the second derivative. Write $[T]_{\mathcal B}$ for $\mathcal B = \{1, t, t^2, t^3\}$ and use its null space to find $\ker T$. To check your matrix, multiply it by the coordinates of $5 - 2t + 3t^2 + t^3$ and enter the result.
+
+<VectorAnswer answer={[6, 6, 0, 0]} labels={["1", "t", "t²", "t³"]} />
+
+<Solution>
+We build the matrix column by column, as on Day 21, and then row reduce.
+
+<Steps>
+<Step>
+Take second derivatives of the basis: $T(1) = 0$, $T(t) = 0$, $T(t^2) = 2$ and $T(t^3) = 6t$. Their coordinate columns are $(0, 0, 0, 0)$, $(0, 0, 0, 0)$, $(2, 0, 0, 0)$ and $(0, 6, 0, 0)$.
+</Step>
+<Step>
+Stand them up: $\;[T]_{\mathcal B} = \begin{bmatrix} 0 & 0 & 2 & 0 \\ 0 & 0 & 0 & 6 \\ 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0 \end{bmatrix}$.
+</Step>
+<Step>
+Solve $[T]_{\mathcal B}\,\mathbf c = \mathbf 0$. Row 1 says $2c_3 = 0$ and row 2 says $6c_4 = 0$, so $c_3 = c_4 = 0$ while $c_1$ and $c_2$ are free. The null space is spanned by $(1, 0, 0, 0)$ and $(0, 1, 0, 0)$.
+</Step>
+<Step>
+Translate the coordinates back into polynomials: $(1, 0, 0, 0)$ is $1$ and $(0, 1, 0, 0)$ is $t$. So $\ker T = \operatorname{Span}\{1, t\}$.
+</Step>
+<Step>
+Check the matrix on $5 - 2t + 3t^2 + t^3$, whose coordinates are $(5, -2, 3, 1)$. The product is $(2 \cdot 3,\ 6 \cdot 1,\ 0,\ 0) = (6, 6, 0, 0)$, which is the polynomial $6 + 6t$. Differentiating twice directly agrees: the first derivative is $-2 + 6t + 3t^2$, and the second is $6 + 6t$.
+</Step>
+</Steps>
+
+This works because $[T\mathbf p]_{\mathcal B} = [T]_{\mathcal B}[\mathbf p]_{\mathcal B}$, and only the zero polynomial has all-zero coordinates. So $\mathbf p$ is in $\ker T$ exactly when its coordinate column is in $\operatorname{Nul}[T]_{\mathcal B}$.
+</Solution>
+</Problem>
+
+Two cubics with the same second derivative differ by something in this kernel. Find one.
+
+<SecondDerivativeTwins base={[0, 0, 0, 1]} />
+
+Not every calculus map has a kernel this big. The integral map $T(\mathbf f) = \int_0^t \mathbf f(s)\,ds$ has $\ker T = \{\mathbf 0\}$, because an antiderivative that is identically zero has derivative $\mathbf f = \mathbf 0$.
 
 ## One-to-one maps
+
+<Problem>
+With $T(\mathbf p) = (\mathbf p(0), \mathbf p(1))$ again, compute $T(\yellow{t^2})$ and $T(\blue{t})$. Then compute $T$ of their difference.
+
+<VectorAnswer answer={[0, 0]} labels={["p(0)", "p(1)"]} prefix="T(t^2 - t) =" />
+
+<Solution>
+Substitute the two pins. $T(\yellow{t^2}) = (0^2, 1^2) = (0, 1)$ and $T(\blue{t}) = (0, 1)$. The two different polynomials land on the same output $\teal{\mathbf b} = (0, 1)$.
+
+Linearity says the map keeps differences, so $T(t^2 - t) = T(t^2) - T(t) = (0, 1) - (0, 1) = (0, 0)$. The difference of the two inputs is the kernel vector from Problem 2.
+
+Run the argument backward and you can manufacture more collisions. Adding a kernel vector to $t^2$ does not change its output, so $2t^2 - t = t^2 + (t^2 - t)$ also lands on $(0, 1)$.
+</Solution>
+</Problem>
+
+<Figure src="same-output" alt="Left, a graph panel with dashed pins at t = 0 in green and t = 1 in red. The yellow parabola u = t² and the blue line v = t both pass through the pin points (0, 0) and (1, 1), along with two faint yellow parabolas u + c(t² − t). The pink parabola t² − t crosses both pins at height 0. Right, an arrow T leads to a small plane R² where a teal arrow reaches b = (0, 1), ringed in orange, and a pink dot sits at the origin." />
 
 <Definition term="Theorem">
 A linear transformation $T : V \to W$ is one-to-one if and only if $\ker T = \{\mathbf 0\}$.
 </Definition>
 
-Both directions come from linearity. If $T(\mathbf u) = T(\mathbf v)$, then
+The problem contains both directions of the proof. If $T(\mathbf u) = T(\mathbf v)$, then
 
 $$
 T(\yellow{\mathbf u} - \blue{\mathbf v}) = T(\yellow{\mathbf u}) - T(\blue{\mathbf v}) = \teal{\mathbf b} - \teal{\mathbf b} = \mathbf 0,
 $$
 
 so $\mathbf u - \mathbf v$ is in the kernel. When the kernel is only $\{\mathbf 0\}$, that forces $\mathbf u = \mathbf v$, and $T$ is one-to-one. In the other direction, a nonzero $\mathbf k$ in the kernel gives $T(\mathbf u + \mathbf k) = T(\mathbf u) + \mathbf 0 = T(\mathbf u)$, so the different inputs $\mathbf u$ and $\mathbf u + \mathbf k$ share one output.
-
-<Pair>
-<Figure src="same-output" alt="Left, a graph panel with dashed pins at t = 0 in green and t = 1 in red. The yellow parabola u = t² and the blue line v = t both pass through the pin points (0, 0) and (1, 1), along with two faint yellow parabolas u + c(t² − t). The pink parabola t² − t crosses both pins at height 0. Right, an arrow T leads to a small plane R² where a teal arrow reaches b = (0, 1), ringed in orange, and a pink dot sits at the origin." />
-
-Here $\yellow{\mathbf u} = t^2$ and $\blue{\mathbf v} = t$ both land on $\teal{\mathbf b} = (0, 1)$. Their difference $\pink{t^2 - t}$ lands on $\mathbf 0$. Adding any multiple of it to $\mathbf u$ keeps the graph pinned at the same two points, so the whole family $\mathbf u + c(t^2 - t)$ lands on $\mathbf b$.
-</Pair>
 
 <DifferenceInKernel matrix={[[1, -2], [-1, 2]]} u={[1, 1]} start={[1, -1]} />
 
@@ -100,26 +204,95 @@ Here $\yellow{\mathbf u} = t^2$ and $\blue{\mathbf v} = t$ both land on $\teal{\
 Adding a third pin changes the verdict. The map $S(\mathbf p) = (\mathbf p(-1), \mathbf p(0), \mathbf p(1))$ from $\mathbb P_2$ to $\mathbb R^3$ reads $t^2 - t$ as $(2, 0, 0)$. A nonzero polynomial of degree at most 2 has at most two roots, so only the zero polynomial reads 0 at all three pins. That gives $\ker S = \{\mathbf 0\}$, and $S$ is one-to-one.
 </Pair>
 
-For a matrix map $\mathbf x \mapsto A\mathbf x$, the test is whether $A\mathbf x = \mathbf 0$ has a nonzero solution, so row reduce and look for free variables. Each free variable in $A\mathbf x = \mathbf 0$ produces a nonzero kernel vector, so the map is one-to-one exactly when every column of $A$ has a pivot. For example,
+For a matrix map, the test is whether $A\mathbf x = \mathbf 0$ has a nonzero solution.
 
-$$
-\begin{aligned}
-A &= \begin{bmatrix} 1 & 2 & 0 & 1 \\ 0 & 1 & 3 & 0 \\ 0 & 0 & 0 & 2 \end{bmatrix} && \text{pivots in columns 1, 2, 4} \\
-x_4 &= 0, \quad x_2 = -3x_3, \quad x_1 = -2x_2 = 6x_3 && x_3 \text{ free} \\
-\ker T &= \operatorname{Span}\{(6, -3, 1, 0)\}
-\end{aligned}
-$$
+<Problem>
+Let $T(\mathbf x) = A\mathbf x$ with $A = \begin{bmatrix} 1 & 2 & 0 & 1 \\ 0 & 1 & 3 & 0 \\ 0 & 0 & 0 & 2 \end{bmatrix}$. Is $T$ one-to-one? Find the kernel vector with $x_3 = 1$.
 
-so this $T : \mathbb R^4 \to \mathbb R^3$ is not one-to-one. Any map from $\mathbb R^4$ to $\mathbb R^3$ has at least one free variable, since three rows hold at most three pivots. Having fewer columns than rows does not guarantee a pivot in every column, though, so a tall matrix still needs row reduction. The theorem also needs linearity. For $f(x) = x^2$, only $0$ goes to $0$, yet $f(1) = f(-1)$.
+<VectorAnswer answer={[6, -3, 1, 0]} labels={["x₁", "x₂", "x₃", "x₄"]} />
+
+<Solution>
+The matrix is already in echelon form, so we can read the pivots and solve from the bottom row up.
+
+<Steps>
+<Step>
+The pivots sit in columns 1, 2 and 4, so $x_3$ is a free variable. A free variable means $A\mathbf x = \mathbf 0$ has nonzero solutions, so $T$ is not one-to-one.
+</Step>
+<Step>
+Row 3 says $2x_4 = 0$, so $x_4 = 0$.
+</Step>
+<Step>
+Row 2 says $x_2 + 3x_3 = 0$, so $x_2 = -3x_3$.
+</Step>
+<Step>
+Row 1 says $x_1 + 2x_2 + x_4 = 0$, so $x_1 = -2x_2 = 6x_3$. With $x_3 = 1$ the kernel vector is $(6, -3, 1, 0)$, and $\ker T = \operatorname{Span}\{(6, -3, 1, 0)\}$.
+</Step>
+</Steps>
+</Solution>
+</Problem>
+
+<Concept title="Free variables break one-to-one">
+Each free variable in $A\mathbf x = \mathbf 0$ produces a nonzero kernel vector. So $\mathbf x \mapsto A\mathbf x$ is one-to-one exactly when every column of $A$ has a pivot.
+</Concept>
+
+<Choice
+  question="Which maps can be one-to-one?"
+  options={["Some map from $\\mathbb R^4$ to $\\mathbb R^3$", "Every map from $\\mathbb R^2$ to $\\mathbb R^3$", "Some map from $\\mathbb R^2$ to $\\mathbb R^3$, but not every one"]}
+  answer={2}
+>
+A $3 \times 4$ matrix has at most three pivots for four columns, so a free variable is forced and no map $\mathbb R^4 \to \mathbb R^3$ is one-to-one. A $3 \times 2$ matrix can have a pivot in both columns, but it does not have to. The zero map from $\mathbb R^2$ to $\mathbb R^3$ sends everything to $\mathbf 0$, so a tall matrix still needs row reduction.
+</Choice>
+
+<Warning>
+The theorem needs linearity. For $f(x) = x^2$, only $0$ goes to $0$, yet $f(1) = f(-1)$. And every linear map sends $\mathbf 0$ to $\mathbf 0$, so "$T(\mathbf 0) = \mathbf 0$" says nothing. The kernel is trivial only when nothing *else* goes there.
+</Warning>
 
 For a square matrix, Day 25 packs this test into one number: the determinant is zero exactly when the map squashes space and many inputs share an output. First, tomorrow on Day 24, the range collects every output of $T$, and the dimensions of the kernel and the range turn out to add up to $\dim V$.
 
 ## Practice
 
+### Warm-up
+
+<Check>
+Let $T : \mathbb P_2 \to \mathbb R$ be $T(\mathbf p) = \mathbf p(2)$. Compute $T(t^2 - 3t + 2)$. Is $t^2 - 3t + 2$ in $\ker T$? (Modeled on Lay §4.2 #31.)
+
+<VectorAnswer answer={[0]} labels={["T(p)"]} prefix="T(p) =" />
+
+<Answer>
+$T(t^2 - 3t + 2) = 4 - 6 + 2 = 0$, so yes. The polynomial factors as $(t - 1)(t - 2)$, and any polynomial with a root at $t = 2$ is in this kernel.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="Which vector is in the kernel of $\mathbf x \mapsto \begin{bmatrix} 1 & 2 \\ 2 & 4 \end{bmatrix}\mathbf x$?"
+  options={["$(1, 2)$", "$(2, -1)$", "$(0, 1)$"]}
+  answer={1}
+>
+Multiply: $\begin{bmatrix} 1 & 2 \\ 2 & 4 \end{bmatrix}\begin{bmatrix} 2 \\ -1 \end{bmatrix} = \begin{bmatrix} 2 - 2 \\ 4 - 4 \end{bmatrix} = \mathbf 0$. The other two give $(5, 10)$ and $(2, 4)$.
+</Choice>
+</Check>
+
+<Check>
+<Choice
+  question="For $T : \mathbb P_2 \to \mathbb R^2$, where does $\ker T$ live?"
+  options={["In $\\mathbb R^2$, since that is where the zero output is", "In $\\mathbb P_2$", "In both"]}
+  answer={1}
+>
+The kernel is a set of inputs, so it lives in the domain $\mathbb P_2$. Its members are polynomials that $T$ sends to the zero vector of $\mathbb R^2$. (Modeled on Lay §4.2 #25(e).)
+</Choice>
+</Check>
+
+### Core
+
 <Check>
 Let $T(\mathbf x) = A\mathbf x$ with $A = \begin{bmatrix} 1 & 2 & -1 \\ 2 & 4 & 1 \end{bmatrix}$. Find a basis for $\ker T$ and enter the basis vector whose second entry is 1. Then check that $\mathbf u = (3, 0, 1)$ and $\mathbf v = (1, 1, 1)$ have the same image. (Modeled on Lay §1.9, Example 4.)
 
 <VectorAnswer answer={[-2, 1, 0]} labels={["x₁", "x₂", "x₃"]} />
+
+<Hint>
+Row reduce $A$, find the free variable, and set it to 1.
+</Hint>
 
 <Answer>
 $$
@@ -135,9 +308,36 @@ $A\mathbf u = (3 - 1,\ 6 + 1) = (2, 7)$ and $A\mathbf v = (1 + 2 - 1,\ 2 + 4 + 1
 </Check>
 
 <Check>
+Let $T : \mathbb P_2 \to \mathbb R$ be $T(\mathbf p) = \mathbf p(2)$. The kernel has a basis of two polynomials. Enter the one with $t^2$ coefficient $1$ and $t$ coefficient $0$, as $(a_0, a_1, a_2)$. (Modeled on Lay §4.2 #31.)
+
+<VectorAnswer answer={[-4, 0, 1]} labels={["a₀", "a₁", "a₂"]} />
+
+<Hint>
+$T(a_0 + a_1 t + a_2 t^2) = a_0 + 2a_1 + 4a_2$. Set it to zero and treat $a_1$ and $a_2$ as free.
+</Hint>
+
+<Answer>
+The single equation $a_0 + 2a_1 + 4a_2 = 0$ gives $a_0 = -2a_1 - 4a_2$ with $a_1$ and $a_2$ free. So
+
+$$
+\begin{aligned}
+\mathbf p &= a_1(t - 2) + a_2(t^2 - 4) \\
+\ker T &= \operatorname{Span}\{t - 2,\ t^2 - 4\}
+\end{aligned}
+$$
+
+With $a_1 = 0$ and $a_2 = 1$ the polynomial is $t^2 - 4$, or $(-4, 0, 1)$. Both basis polynomials have a root at $t = 2$, as they must.
+</Answer>
+</Check>
+
+<Check>
 Let $T : \mathbb P_3 \to \mathbb P_3$ be $T(\mathbf p) = \mathbf p''$, and let $\mathbf p = 3 - t + 4t^2 + t^3$. Find the polynomial $\mathbf q$ with $T(\mathbf q) = T(\mathbf p)$ whose constant and $t$ coefficients are both 0. (Modeled on Lay §4.2, Example 8.)
 
 <VectorAnswer answer={[0, 0, 4, 1]} labels={["constant", "t", "t²", "t³"]} />
+
+<Hint>
+Two inputs with the same image differ by a kernel vector, and Problem 5 found $\ker T = \operatorname{Span}\{1, t\}$.
+</Hint>
 
 <Answer>
 In general $T(a_0 + a_1 t + a_2 t^2 + a_3 t^3) = 2a_2 + 6a_3 t$, which is zero exactly when $a_2 = a_3 = 0$, so $\ker T = \operatorname{Span}\{1, t\}$. Here $T(\mathbf p) = 8 + 6t$. Two inputs with the same image differ by a kernel vector, so $\mathbf q = \mathbf p - (3 - t) = 4t^2 + t^3$. As a check, $\mathbf q'' = 8 + 6t$.
@@ -147,7 +347,11 @@ In general $T(a_0 + a_1 t + a_2 t^2 + a_3 t^3) = 2a_2 + 6a_3 t$, which is zero e
 <Check>
 Let $T : M_{2\times2} \to M_{2\times2}$ be $T(A) = A + A^T$. Compute $T(M)$ for $M = \begin{bmatrix} 1 & 3 \\ -3 & 0 \end{bmatrix}$, entering the entries row by row. Then describe $\ker T$. (Modeled on Lay §4.2 #33.)
 
-<VectorAnswer answer={[2, 0, 0, 0]} labels={["row 1, column 1", "row 1, column 2", "row 2, column 1", "row 2, column 2"]} />
+<VectorAnswer answer={[2, 0, 0, 0]} columns={2} />
+
+<Hint>
+For the kernel, write a general $\begin{bmatrix} a & b \\ c & d \end{bmatrix}$, compute $A + A^T$, and set each entry to 0.
+</Hint>
 
 <Answer>
 $$
@@ -155,5 +359,59 @@ M + M^T = \begin{bmatrix} 1 & 3 \\ -3 & 0 \end{bmatrix} + \begin{bmatrix} 1 & -3
 $$
 
 So $M$ is not in the kernel. For a general $A = \begin{bmatrix} a & b \\ c & d \end{bmatrix}$, $A + A^T = \begin{bmatrix} 2a & b + c \\ b + c & 2d \end{bmatrix}$ is zero exactly when $a = d = 0$ and $c = -b$. The kernel is the set of matrices $\begin{bmatrix} 0 & b \\ -b & 0 \end{bmatrix}$, which is $\operatorname{Span}\left\{\begin{bmatrix} 0 & 1 \\ -1 & 0 \end{bmatrix}\right\}$. Changing $M$'s top-left entry from 1 to 0 would put it in the kernel.
+</Answer>
+</Check>
+
+<Check>
+Let $T(x_1, x_2, x_3, x_4) = (0,\ x_1 + x_2,\ x_2 + x_3,\ x_3 + x_4)$. Find the kernel vector with $x_4 = 1$. Is $T$ one-to-one? (Modeled on Lay §1.9 #25.)
+
+<VectorAnswer answer={[-1, 1, -1, 1]} labels={["x₁", "x₂", "x₃", "x₄"]} />
+
+<Hint>
+Set each output entry to 0 and solve from the last one backward.
+</Hint>
+
+<Answer>
+The equations are $x_3 + x_4 = 0$, $x_2 + x_3 = 0$ and $x_1 + x_2 = 0$. With $x_4 = 1$ they give $x_3 = -1$, then $x_2 = 1$, then $x_1 = -1$. So $(-1, 1, -1, 1)$ is a nonzero kernel vector and $T$ is not one-to-one. The first output entry is always $0$, so the standard matrix has a zero row and only three pivots for four columns.
+</Answer>
+</Check>
+
+### Challenge
+
+<Check>
+Let $T : \mathbb P_2 \to \mathbb R^2$ be $T(\mathbf p) = (\mathbf p(1),\ \mathbf p'(1))$. Find the kernel polynomial with $t^2$ coefficient $1$, as $(a_0, a_1, a_2)$. (Modeled on Lay §4.2 #32.)
+
+<VectorAnswer answer={[1, -2, 1]} labels={["a₀", "a₁", "a₂"]} />
+
+<Hint>
+With $\mathbf p = a_0 + a_1 t + a_2 t^2$, the two conditions are $a_0 + a_1 + a_2 = 0$ and $a_1 + 2a_2 = 0$.
+</Hint>
+
+<Answer>
+The second condition gives $a_1 = -2a_2$. Substituting into the first gives $a_0 - 2a_2 + a_2 = 0$, so $a_0 = a_2$. With $a_2 = 1$ the polynomial is $1 - 2t + t^2 = (t - 1)^2$. So $\ker T = \operatorname{Span}\{(t - 1)^2\}$, the quadratics that touch zero at $t = 1$ with zero slope.
+</Answer>
+</Check>
+
+<Check>
+Let $T : V \to W$ be linear and let $Z$ be a subspace of $W$. Show that $U = \{\mathbf x \in V : T(\mathbf x) \in Z\}$ is a subspace of $V$. Which set is $U$ when $Z = \{\mathbf 0\}$? (Modeled on Lay §4.2 #36.)
+
+<Hint>
+Copy the proof that the kernel is a subspace, replacing "equals $\mathbf 0$" with "lies in $Z$", and use that $Z$ is itself a subspace.
+</Hint>
+
+<Answer>
+$T(\mathbf 0) = \mathbf 0$ lies in $Z$, so $\mathbf 0$ is in $U$. If $\mathbf x$ and $\mathbf y$ are in $U$, then $T(\mathbf x + \mathbf y) = T(\mathbf x) + T(\mathbf y)$ is a sum of two vectors of $Z$, which lies in $Z$ because $Z$ is closed under addition. If $\mathbf x$ is in $U$, then $T(c\mathbf x) = c\,T(\mathbf x)$ lies in $Z$ because $Z$ is closed under scaling. So $U$ is a subspace. When $Z = \{\mathbf 0\}$, $U$ is exactly $\ker T$.
+</Answer>
+</Check>
+
+<Check>
+Let $T : V \to W$ be linear and one-to-one, and let $\mathbf v_1, \dots, \mathbf v_p$ be linearly independent in $V$. Show that $T(\mathbf v_1), \dots, T(\mathbf v_p)$ are linearly independent. (Modeled on Lay §4.5 #32.)
+
+<Hint>
+Start from $c_1 T(\mathbf v_1) + \cdots + c_p T(\mathbf v_p) = \mathbf 0$ and pull the combination inside $T$.
+</Hint>
+
+<Answer>
+Suppose $c_1 T(\mathbf v_1) + \cdots + c_p T(\mathbf v_p) = \mathbf 0$. By linearity this says $T(c_1 \mathbf v_1 + \cdots + c_p \mathbf v_p) = \mathbf 0$, so $c_1 \mathbf v_1 + \cdots + c_p \mathbf v_p$ is in $\ker T$. A one-to-one map has $\ker T = \{\mathbf 0\}$, so $c_1 \mathbf v_1 + \cdots + c_p \mathbf v_p = \mathbf 0$. The $\mathbf v_j$ are independent, so every $c_j = 0$. That is the definition of the images being independent. A one-to-one map never squashes an independent set.
 </Answer>
 </Check>

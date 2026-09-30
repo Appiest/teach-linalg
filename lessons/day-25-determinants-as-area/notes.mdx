@@ -1,12 +1,42 @@
-The last unit described a linear map through whole subspaces, its kernel and its range. This unit condenses a square matrix into a single number, the determinant. You met it on Day 7, where $ad - bc$ decided whether a $2\times 2$ matrix has an inverse, and today that number gets a picture. The matrix $A = \begin{bmatrix} \green{3} & \red{1} \\ \green{1} & \red{2} \end{bmatrix}$ sends the unit square to the parallelogram whose sides are its columns $\green{(3, 1)}$ and $\red{(1, 2)}$, and the determinant is the area of that parallelogram. The determinant gets a unit of its own because two later lessons depend on it. Day 26 turns $\det A \neq 0$ into an invertibility test for square matrices of every size, and after Day 28 introduces eigenvalues, Day 29 finds them by solving $\det(A - \lambda I) = 0$.
+The last unit described a linear map through whole subspaces, its kernel and its range. This unit condenses a square matrix into a single number, the determinant. You met it on Day 7, where $ad - bc$ decided whether a $2\times 2$ matrix has an inverse, and today that number gets a picture: it measures how much the matrix stretches area. The determinant gets a unit of its own because two later lessons depend on it. Day 26 turns $\det A \neq 0$ into an invertibility test for square matrices of every size, and after Day 28 introduces eigenvalues, Day 29 finds them by solving $\det(A - \lambda I) = 0$.
 
-<TransformExplorer matrix={[[3, 1], [1, 2]]} showArea goal={{ determinant: 2, prompt: "Drag the green and red tips until the shaded parallelogram has area $2$ and is still yellow.", success: "Area $2$ means $\\det A = 2$. Every square of the grid now has twice its old area." }} />
+Each section below opens with a problem. Try it before you open the walkthrough, even if you only get partway.
 
 ## Where ad − bc comes from
 
-The goal of this section is to find the parallelogram's area from the four entries alone, which shows why the formula is $ad - bc$ and not some other combination. Put the parallelogram on $\green{(a, c)}$ and $\red{(b, d)}$ inside a box that is $a + b$ wide and $c + d$ tall. The box minus the parallelogram is six pieces: two triangles of area $\tfrac12 ac$, two triangles of area $\tfrac12 bd$, and two rectangles of area $bc$.
+<Problem>
+The matrix $A = \begin{bmatrix} \green{3} & \red{1} \\ \green{1} & \red{2} \end{bmatrix}$ sends the unit square to the parallelogram whose sides are its columns $\green{(3, 1)}$ and $\red{(1, 2)}$. Find the area of that parallelogram using only rectangles and triangles.
+
+<VectorAnswer answer={[5]} labels={["area"]} prefix="\text{area} =" />
+
+<Solution>
+A slanted shape is hard to measure directly, so we put it inside a shape that is easy to measure and subtract what is left over.
+
+<Steps>
+<Step>
+The parallelogram's far corner is $\green{(3, 1)} + \red{(1, 2)} = (4, 3)$, so it fits exactly inside the box from $(0, 0)$ to $(4, 3)$. The box has area $4 \cdot 3 = 12$.
+</Step>
+<Step>
+Two leftover triangles have legs $3$ and $1$, one under the green side and one above the matching opposite side. Each has area $\tfrac12 \cdot 3 \cdot 1 = 1.5$, so together they cover $3$.
+</Step>
+<Step>
+Two more triangles have legs $1$ and $2$, beside the red side and its opposite. Each has area $\tfrac12 \cdot 1 \cdot 2 = 1$, so together they cover $2$.
+</Step>
+<Step>
+Two small rectangles fill the corners at $(0, 3)$ and $(4, 0)$. Each is $1$ by $1$, so together they cover $2$.
+</Step>
+<Step>
+Subtract: $\;12 - 3 - 2 - 2 = 5$.
+</Step>
+</Steps>
+
+The answer matches $ad - bc = 3 \cdot 2 - 1 \cdot 1 = 5$, and that is no coincidence.
+</Solution>
+</Problem>
 
 <Figure src="box" alt="The parallelogram on the green column (3, 1) and the red column (1, 2), inside a dashed box 4 wide and 3 tall. The four triangles and two small rectangles between the box and the parallelogram are shaded gray, and the box edges are marked a, b along the bottom and top and c, d along the sides." wide />
+
+Repeat the problem with letters. Put the parallelogram on $\green{(a, c)}$ and $\red{(b, d)}$ inside a box that is $a + b$ wide and $c + d$ tall. The leftover pieces are two triangles of area $\tfrac12 ac$, two triangles of area $\tfrac12 bd$ and two rectangles of area $bc$:
 
 $$
 \begin{aligned}
@@ -15,8 +45,6 @@ $$
 &= \green a\red d - \red b\green c
 \end{aligned}
 $$
-
-For the video's $A$, that is $3\cdot 2 - 1\cdot 1 = 5$.
 
 <Definition term="Determinant as area (Lay §3.3, Theorems 9 and 10)">
 For $A = \begin{bmatrix} a & b \\ c & d \end{bmatrix}$, the **determinant** is $\det A = ad - bc$. The parallelogram determined by the columns of $A$ has area $|\det A|$. If $T(\mathbf x) = A\mathbf x$ and $S$ is any parallelogram, or any region with finite area, then
@@ -28,71 +56,214 @@ $$
 For a $3\times 3$ matrix the same statements hold with volume in place of area: $|\det A|$ is the volume of the box on its three columns.
 </Definition>
 
-The second statement follows from the first because $A$ sends every square of the grid to a copy of the same parallelogram, so every region's area is multiplied by the same factor.
+The second statement follows from the first because $A$ sends every square of the grid to a copy of the same parallelogram, so every region's area is multiplied by the same factor. Try it: reshape the matrix until each grid square has twice its old area.
+
+<TransformExplorer matrix={[[3, 1], [1, 2]]} showArea goal={{ determinant: 2, prompt: "Drag the green and red tips until the shaded parallelogram has area $2$ and is still yellow.", success: "Area $2$ means $\\det A = 2$. Every square of the grid now has twice its old area." }} />
 
 ## Shears keep area
 
-The picture above needed $a, b, c, d > 0$, but the formula holds for every matrix. The reason is a fact about sliding. Adding a multiple of $\green{\mathbf a_1}$ to $\red{\mathbf a_2}$ moves the top edge along a line parallel to $\green{\mathbf a_1}$. The base stays the same and so does the height, so the area stays the same.
+The box picture needed $a, b, c, d > 0$, but the formula holds for every matrix. The reason is a fact about sliding.
+
+<Problem>
+Find the area of the parallelogram on $\green{\mathbf a_1} = (3, 0)$ and $\red{\mathbf a_2} = (2, 2)$. Then replace $\red{\mathbf a_2}$ by $(-1, 2)$ and find the area again.
+
+<VectorAnswer answer={[6]} labels={["area"]} prefix="\text{area} =" />
+
+<Solution>
+A parallelogram's area is base times height. The base $\green{\mathbf a_1}$ lies along the $x$-axis with length $3$. The height is how far the opposite side sits above the base, which is the second entry of $\red{\mathbf a_2}$, namely $2$. So the area is $3 \cdot 2 = 6$.
+
+Replacing $\red{\mathbf a_2}$ by $(-1, 2)$ leans the shape the other way, but the base is still $3$ and the height is still $2$, so the area is still $6$. The determinant agrees both times: $3 \cdot 2 - 2 \cdot 0 = 6$ and $3 \cdot 2 - (-1) \cdot 0 = 6$.
+
+The new side is $(-1, 2) = (2, 2) - (3, 0)$, which is $\mathbf a_2 - \mathbf a_1$. Adding a multiple of one side to the other slides the top edge along a line parallel to the base.
+</Solution>
+</Problem>
 
 <Figure src="shear" alt="A green base a1 = (3, 0) and a red side a2 = (2, 2) forming a leaning yellow parallelogram. A dashed line at height 2 runs parallel to the base, and a dashed rectangle on a1 and the upright red arrow a2 + c a1 = (0, 2) sits on the same base with the same height." wide />
 
+<Concept title="Sliding a side keeps area">
+Replacing $\mathbf a_2$ by $\mathbf a_2 + c\,\mathbf a_1$ is a shear. It keeps the base and the height, so it keeps the area, and $\det$ does not change either. Sliding like this turns any parallelogram into a rectangle, which is how Lay proves the area formula in general.
+</Concept>
+
 <AreaShearSlide base={3} height={2} start={2} />
 
-The determinant agrees: $\det\begin{bmatrix} 3 & x \\ 0 & 2 \end{bmatrix} = 6$ for every $x$. Sliding like this turns any parallelogram into a rectangle, which is how Lay proves Theorem 9 in general.
+## Scaling a column
+
+<Problem>
+Let $A = \begin{bmatrix} 2 & 1 \\ 1 & 3 \end{bmatrix}$. Compute $\det A$. Then triple only the second column and compute the new determinant.
+
+<VectorAnswer answer={[15]} labels={["new det"]} prefix="\det\begin{bmatrix} 2 & 3 \\ 1 & 9 \end{bmatrix} =" />
+
+<Solution>
+First, $\det A = 2 \cdot 3 - 1 \cdot 1 = 5$.
+
+Tripling the second column gives $\begin{bmatrix} 2 & 3 \\ 1 & 9 \end{bmatrix}$, and its determinant is $2 \cdot 9 - 3 \cdot 1 = 18 - 3 = 15$.
+
+That is $3 \cdot 5$. In the picture, one side of the parallelogram got three times longer while the other stayed the same, so the area tripled. In the formula, both terms $ad$ and $bc$ contain exactly one entry from the second column, so both get multiplied by 3.
+</Solution>
+</Problem>
+
+<Concept title="Scale a column and the determinant scales">
+Multiplying one column by $k$ multiplies $\det A$ by $k$. Multiplying the whole $2 \times 2$ matrix by $k$ scales both columns, so $\det(kA) = k^2 \det A$. A negative $k$ reverses a side, and the sign of the determinant flips with it.
+</Concept>
+
+<ColumnStretch first={[2, 1]} second={[1, 3]} target={-10} />
+
+<Warning>
+$\det(kA)$ is not $k\det A$. For a $2 \times 2$ matrix both sides of the parallelogram stretch, so the area grows by $k^2$.
+</Warning>
+
+## Any region
+
+<Problem>
+Let $S$ be the parallelogram on $(1, 1)$ and $(-1, 2)$, and let $A = \begin{bmatrix} 2 & 0 \\ 1 & 1 \end{bmatrix}$. Find the area of $T(S)$ for $T(\mathbf x) = A\mathbf x$ in two ways: by mapping the sides, and by using $\det A$.
+
+<VectorAnswer answer={[6]} labels={["area"]} prefix="\text{area of } T(S) =" />
+
+<Solution>
+**Map the sides.** A linear map sends the parallelogram on $\mathbf u$ and $\mathbf v$ to the parallelogram on $A\mathbf u$ and $A\mathbf v$. Here $A(1, 1) = (2, 2)$ and $A(-1, 2) = (-2, 1)$, so the image has area $\left|\det\begin{bmatrix} 2 & -2 \\ 2 & 1 \end{bmatrix}\right| = |2 + 4| = 6$.
+
+**Use the scale factor.** The area of $S$ is $\left|\det\begin{bmatrix} 1 & -1 \\ 1 & 2 \end{bmatrix}\right| = |2 + 1| = 3$, and $\det A = 2 \cdot 1 - 0 \cdot 1 = 2$. So the image has area $2 \cdot 3 = 6$.
+
+The second way never computed the image. It only needed to know that $A$ doubles every area, which is what the definition's second statement says.
+</Solution>
+</Problem>
 
 ## Parallelograms away from the origin
 
-The formula wants two sides that start at $\mathbf 0$. When a parallelogram sits somewhere else, subtract one corner from all four to slide it to the origin. Sliding does not change area. The two corners next to the origin are then the columns, and the fourth corner must be their sum.
+The formula wants two sides that start at $\mathbf 0$. When a parallelogram sits somewhere else, the goal is to slide it to the origin first.
 
-Take the corners $(1, 1)$, $(4, 2)$, $(2, 5)$ and $(5, 6)$.
+<Problem>
+Find the area of the parallelogram with corners $(1, 1)$, $(4, 2)$, $(2, 5)$ and $(5, 6)$.
 
-$$
-\begin{aligned}
-&\text{subtract } (1, 1): && (0, 0),\ \green{(3, 1)},\ \red{(1, 4)},\ (4, 5) \\
-&\text{check the fourth corner}: && \green{(3, 1)} + \red{(1, 4)} = (4, 5) \\
-&\text{area}: && \left|\det\begin{bmatrix} \green 3 & \red 1 \\ \green 1 & \red 4 \end{bmatrix}\right| = |12 - 1| = 11
-\end{aligned}
-$$
+<VectorAnswer answer={[11]} labels={["area"]} prefix="\text{area} =" />
+
+<Solution>
+Sliding a shape does not change its area, so we move one corner to the origin by subtracting it from all four.
+
+<Steps>
+<Step>
+Subtract $(1, 1)$ from every corner: $\;(0, 0)$, $\green{(3, 1)}$, $\red{(1, 4)}$ and $(4, 5)$.
+</Step>
+<Step>
+Pick the two sides at the origin. The fourth corner must be their sum, and $\green{(3, 1)} + \red{(1, 4)} = (4, 5)$ checks out, so these are the sides and $(4, 5)$ is the far corner.
+</Step>
+<Step>
+Take the determinant: $\;\left|\det\begin{bmatrix} \green 3 & \red 1 \\ \green 1 & \red 4 \end{bmatrix}\right| = |12 - 1| = 11$.
+</Step>
+</Steps>
+</Solution>
+</Problem>
 
 <CornerToOrigin corners={[[1, 1], [4, 2], [2, 5], [5, 6]]} />
 
 Any corner works. If you slide $(5, 6)$ to the origin instead, the sides become $(-1, -4)$ and $(-3, -1)$, and the determinant is $1 - 12 = -11$, which gives the same area.
 
+<Warning>
+Slide first, then take the determinant. The determinant of two raw corners such as $(4, 2)$ and $(2, 5)$ is $20 - 4 = 16$, but that measures a different parallelogram, the one with a corner at the origin and sides $(4, 2)$ and $(2, 5)$.
+</Warning>
+
 ## The sign of the determinant
 
-Area is never negative, so $|\det A|$ is the area and the sign carries a separate fact. Turn from the first column toward the second through the smaller angle. If that turn is counterclockwise, $\det A > 0$ and $A$ keeps the plane's **orientation**. If it is clockwise, $\det A < 0$ and $A$ flips the plane over, like a mirror image. Swapping the columns reverses the turn, which is why $ad - bc$ becomes $bc - ad$.
+<Problem>
+Let $\mathbf u = (1, 3)$ and $\mathbf v = (2, 4)$. Compute $\det[\,\mathbf u\ \ \mathbf v\,]$ and $\det[\,\mathbf v\ \ \mathbf u\,]$. For which order is the shorter turn from the first column to the second counterclockwise?
+
+<VectorAnswer answer={[-2, 2]} labels={["det[u v]", "det[v u]"]} />
+
+<Solution>
+$\det\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} = 4 - 6 = -2$ and $\det\begin{bmatrix} 2 & 1 \\ 4 & 3 \end{bmatrix} = 6 - 4 = 2$. Swapping the columns swapped the two products, so the sign flipped.
+
+To see the turns, compare directions. The vector $\mathbf u = (1, 3)$ points steeply up, with slope $3$, and $\mathbf v = (2, 4)$ is less steep, with slope $2$. Turning from $\mathbf u$ to $\mathbf v$ therefore goes clockwise, and turning from $\mathbf v$ to $\mathbf u$ goes counterclockwise. The positive determinant belongs to the counterclockwise order, $[\,\mathbf v\ \ \mathbf u\,]$.
+</Solution>
+</Problem>
+
+<Concept title="The sign records orientation">
+Area is never negative, so $|\det A|$ is the area and the sign carries a separate fact. If the shorter turn from the first column toward the second is counterclockwise, $\det A > 0$ and $A$ keeps the plane's **orientation**. If it is clockwise, $\det A < 0$ and $A$ flips the plane over, like a mirror image. If the columns lie on one line, $\det A = 0$.
+</Concept>
 
 <Figure src="signs" alt="Three panels sharing the green column (3, 1). Left: red column (1, 2), a yellow parallelogram with an orange arrow turning counterclockwise from green to red, labelled det A = 5. Middle: red column (1.5, 0.5) on the same line as green, a flat segment, det A = 0. Right: red column (2, −1), a pink parallelogram with the orange arrow turning clockwise, det A = −5." wide />
 
-The moves from Day 5's gallery show all three cases.
+<SignSweep target={-2} />
 
-$$
-\begin{aligned}
-&\text{rotation by } \varphi: && \det\begin{bmatrix} \cos\varphi & -\sin\varphi \\ \sin\varphi & \cos\varphi \end{bmatrix} = \cos^2\varphi + \sin^2\varphi = 1 \\
-&\text{shear}: && \det\begin{bmatrix} 1 & k \\ 0 & 1 \end{bmatrix} = 1 \\
-&\text{reflection across } x_2 = x_1: && \det\begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix} = -1 \\
-&\text{projection onto the } x_1\text{-axis}: && \det\begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix} = 0
-\end{aligned}
-$$
+The moves from Day 5's gallery show all three cases. The rotation matrix $\begin{bmatrix} \cos\varphi & -\sin\varphi \\ \sin\varphi & \cos\varphi \end{bmatrix}$ has determinant $\cos^2\varphi + \sin^2\varphi = 1$. The shear $\begin{bmatrix} 1 & k \\ 0 & 1 \end{bmatrix}$ has determinant $1$. The reflection across $x_2 = x_1$, which is $\begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$, has determinant $-1$. The projection onto the $x_1$-axis, $\begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix}$, has determinant $0$.
 
 Rotations and shears keep both area and orientation. The reflection keeps area but flips the plane, and the projection squashes it flat.
 
 <TransformExplorer matrix={[[3, 1], [1, 2]]} showArea goal={{ determinant: -3, prompt: "Drag the tips until $\\det A = -3$. The square should turn pink.", success: "The parallelogram has area $3$, and the pink fill says the turn from green to red is now clockwise." }} />
 
-The half-turn $\begin{bmatrix} -1 & 0 \\ 0 & -1 \end{bmatrix}$ has determinant $+1$. It points every arrow the other way, but it is a rotation by $180^\circ$, so it does not flip the plane over.
+<Warning>
+The half-turn $\begin{bmatrix} -1 & 0 \\ 0 & -1 \end{bmatrix}$ has determinant $+1$. It points every arrow the other way, but it is a rotation by $180^\circ$, so it does not flip the plane over. Only a reflection across a line flips the plane.
+</Warning>
 
 ## A determinant of zero
 
-When $\det A = 0$ the parallelogram has no area, so the two columns lie on one line. Then $A$ squashes the whole plane onto that line (or onto the origin), which is exactly the singular case from Day 7. Many points land on the same output, so no matrix can undo $A$. In three dimensions the box on the columns goes flat in the same way, as the box did on Day 13. This is the geometric reason that "$\det A \neq 0$" belongs on the invertible matrix theorem list from Day 19. Day 29 looks for exactly this flattening in $A - \lambda I$, and the values of $\lambda$ that cause it are the eigenvalues.
+<Problem>
+Find the number $k$ that makes $\det\begin{bmatrix} 2 & k \\ 3 & 6 \end{bmatrix} = 0$. What do the two columns look like then?
+
+<VectorAnswer answer={[4]} labels={["k"]} prefix="k =" />
+
+<Solution>
+The determinant is $2 \cdot 6 - k \cdot 3 = 12 - 3k$. Setting it to zero gives $3k = 12$, so $k = 4$.
+
+The columns are then $(2, 3)$ and $(4, 6)$, and the second is twice the first. The parallelogram on them is a flat segment with no area.
+</Solution>
+</Problem>
+
+When $\det A = 0$ the two columns lie on one line, so $A$ squashes the whole plane onto that line (or onto the origin). In Day 24's language, the range is a proper subspace and the kernel is more than $\{\mathbf 0\}$. Many points land on the same output, so no matrix can undo $A$, which is the singular case from Day 7. In three dimensions the box on the columns goes flat in the same way, as it did on Day 13. This is the geometric reason that "$\det A \neq 0$" belongs on the invertible matrix theorem list from Day 19. Day 29 looks for exactly this flattening in $A - \lambda I$, and the values of $\lambda$ that cause it are the eigenvalues.
+
+<Choice
+  question="Which matrix is invertible?"
+  options={["$\\begin{bmatrix} 3 & -6 \\\\ -1 & 2 \\end{bmatrix}$", "$\\begin{bmatrix} 3 & 6 \\\\ -1 & 2 \\end{bmatrix}$", "$\\begin{bmatrix} 0 & 0 \\\\ 5 & 1 \\end{bmatrix}$"]}
+  answer={1}
+>
+The determinants are $6 - 6 = 0$, $6 + 6 = 12$ and $0 - 0 = 0$. Only the middle matrix keeps some area, so only it can be undone. In the first, the second column is $-2$ times the first, and in the third, both columns lie on the $x_2$-axis.
+</Choice>
 
 The picture only gives a formula for $2\times 2$ matrices, so tomorrow, on Day 26, we learn to compute the determinant of any square matrix and carry today's area test to every size.
 
 ## Practice
 
+### Warm-up
+
+<Check>
+Find the area of the parallelogram on the columns of $\begin{bmatrix} 4 & -2 \\ 3 & 1 \end{bmatrix}$. (Modeled on Lay §3.3 #19.)
+
+<VectorAnswer answer={[10]} labels={["area"]} prefix="\text{area} =" />
+
+<Answer>
+$\det = 4 \cdot 1 - (-2) \cdot 3 = 4 + 6 = 10$, so the area is $|10| = 10$.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="What does the reflection across the $x_2$-axis, $\begin{bmatrix} -1 & 0 \\ 0 & 1 \end{bmatrix}$, do to area and orientation?"
+  options={["Keeps area, keeps orientation", "Keeps area, flips orientation", "Squashes the plane flat"]}
+  answer={1}
+>
+Its determinant is $-1 \cdot 1 - 0 = -1$. The size $|-1| = 1$ says area is unchanged, and the negative sign says the plane is flipped. Every reflection across a line in the plane has determinant $-1$.
+</Choice>
+</Check>
+
+<Check>
+The unit square is mapped by $\mathbf x \mapsto \begin{bmatrix} 5 & 2 \\ -1 & 3 \end{bmatrix}\mathbf x$. What is the area of its image? (Modeled on Lay §3.3 #25.)
+
+<VectorAnswer answer={[17]} labels={["area"]} prefix="\text{area} =" />
+
+<Answer>
+The unit square has area 1, so the image has area $|\det A| = |15 - (-2)| = 17$.
+</Answer>
+</Check>
+
+### Core
+
 <Check>
 Let $S$ be the parallelogram determined by $\mathbf b_1 = \begin{bmatrix} 2 \\ 1 \end{bmatrix}$ and $\mathbf b_2 = \begin{bmatrix} 1 \\ 3 \end{bmatrix}$, and let $A = \begin{bmatrix} 1 & 2 \\ -1 & 1 \end{bmatrix}$. What is the area of the image of $S$ under $\mathbf x \mapsto A\mathbf x$? (Modeled on Lay §3.3 #27.)
 
 <VectorAnswer answer={[15]} labels={["area"]} prefix="\text{area} =" />
+
+<Hint>
+Find the area of $S$ and the scale factor $|\det A|$ separately, then multiply.
+</Hint>
 
 <Answer>
 $$
@@ -112,13 +283,109 @@ A $2\times 2$ matrix $A$ has $\det A = 4$. What is $\det(3A)$? (Modeled on Lay �
 
 <VectorAnswer answer={[36]} labels={["det(3A)"]} prefix="\det(3A) =" />
 
+<Hint>
+Multiplying $A$ by 3 multiplies both columns by 3.
+</Hint>
+
 <Answer>
-Multiplying $A$ by 3 multiplies both columns by 3, so both sides of the parallelogram get 3 times longer and its area gets $3 \cdot 3 = 9$ times bigger. In symbols,
+Both sides of the parallelogram get 3 times longer, so its area gets $3 \cdot 3 = 9$ times bigger. In symbols,
 
 $$
-\det(3A) = (3a)(3d) - (3b)(3c) = 9(ad - bc) = 9 \cdot 4 = 36.
+\begin{aligned}
+\det(3A) &= (3a)(3d) - (3b)(3c) \\
+&= 9(ad - bc) = 9 \cdot 4 = 36
+\end{aligned}
 $$
 
 A common slip is to answer 12. That would be right only if one column were scaled.
+</Answer>
+</Check>
+
+<Check>
+A parallelogram has corners $(-2, 1)$, $(3, 4)$, $(2, 2)$ and $(-1, 3)$, listed in no particular order. Find its area. (Modeled on Lay §3.3 #21.)
+
+<VectorAnswer answer={[7]} labels={["area"]} prefix="\text{area} =" />
+
+<Hint>
+Subtract $(-2, 1)$ from every corner. Of the three corners left, the one that equals the sum of the other two is the far corner.
+</Hint>
+
+<Answer>
+Subtracting $(-2, 1)$ gives $(0, 0)$, $(5, 3)$, $(4, 1)$ and $(1, 2)$. Since $(4, 1) + (1, 2) = (5, 3)$, the sides are $(4, 1)$ and $(1, 2)$, and $(5, 3)$ is the far corner. The area is $\left|\det\begin{bmatrix} 4 & 1 \\ 1 & 2 \end{bmatrix}\right| = |8 - 1| = 7$. Skipping the slide would go wrong: the untranslated corners $(3, 4)$ and $(2, 2)$ give $|6 - 8| = 2$, which is the area of a different parallelogram.
+</Answer>
+</Check>
+
+<Check>
+Find the area of the triangle with corners $(0, 0)$, $(4, 1)$ and $(2, 5)$.
+
+<VectorAnswer answer={[9]} labels={["area"]} prefix="\text{area} =" />
+
+<Hint>
+The triangle is half of the parallelogram on $(4, 1)$ and $(2, 5)$.
+</Hint>
+
+<Answer>
+The parallelogram on $(4, 1)$ and $(2, 5)$ has area $\left|\det\begin{bmatrix} 4 & 2 \\ 1 & 5 \end{bmatrix}\right| = |20 - 2| = 18$. Its diagonal from $(4, 1)$ to $(2, 5)$ cuts it into two copies of the triangle, so the triangle has area $9$.
+</Answer>
+</Check>
+
+<Check>
+Let $A = \begin{bmatrix} 2 & -1 \\ 3 & 1 \end{bmatrix}$ and $B = \begin{bmatrix} 1 & 1 \\ -1 & 2 \end{bmatrix}$. What is the area of the image of the unit square under "first $B$, then $A$"?
+
+<VectorAnswer answer={[15]} labels={["area"]} prefix="\text{area} =" />
+
+<Hint>
+Each map multiplies every area by its own factor.
+</Hint>
+
+<Answer>
+$B$ multiplies area by $|\det B| = |2 + 1| = 3$, and then $A$ multiplies it by $|\det A| = |2 + 3| = 5$. The unit square ends with area $3 \cdot 5 = 15$. As a check, $AB = \begin{bmatrix} 3 & 0 \\ 2 & 5 \end{bmatrix}$ has determinant $15$. Day 26 shows that $\det(AB) = \det A \det B$ always holds.
+</Answer>
+</Check>
+
+### Challenge
+
+<Check>
+The matrix $\begin{bmatrix} k & 2 \\ 3 & k - 1 \end{bmatrix}$ squashes the plane onto a line for exactly two values of $k$. Enter both, smaller first.
+
+<VectorAnswer answer={[-2, 3]} labels={["smaller k", "larger k"]} />
+
+<Hint>
+Set the determinant to zero. You get a quadratic in $k$.
+</Hint>
+
+<Answer>
+$\det = k(k - 1) - 6 = k^2 - k - 6 = (k - 3)(k + 2)$, which is zero for $k = -2$ and $k = 3$. At $k = 3$ the columns are $(3, 3)$ and $(2, 2)$, and at $k = -2$ they are $(-2, 3)$ and $(2, -3)$, so each pair lies on one line. Day 29 finds eigenvalues by solving an equation of exactly this shape.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="A $2 \times 2$ matrix $A$ turns the plane by $180^\circ$ and then reflects it across the $x_1$-axis. What is $\det A$?"
+  options={["$1$", "$-1$", "$0$"]}
+  answer={1}
+>
+The half-turn has determinant $+1$ and the reflection has determinant $-1$. Areas multiply, and so do signs, so $\det A = -1$. You can check it: the half-turn sends $\mathbf e_1 \to (-1, 0)$ and $\mathbf e_2 \to (0, -1)$, and the reflection then gives $(-1, 0)$ and $(0, 1)$, so $A = \begin{bmatrix} -1 & 0 \\ 0 & 1 \end{bmatrix}$.
+</Choice>
+</Check>
+
+<Check>
+Show algebraically that a shear keeps the determinant: $\det[\,\mathbf u\ \ \mathbf v + c\,\mathbf u\,] = \det[\,\mathbf u\ \ \mathbf v\,]$ for any vectors $\mathbf u, \mathbf v$ in $\mathbb R^2$ and any number $c$. (Modeled on Lay §3.3, the proof of Theorem 9.)
+
+<Hint>
+Write $\mathbf u = (a, c_1)$ and $\mathbf v = (b, d)$, expand $ad - bc$ for the sheared matrix, and look for terms that cancel.
+</Hint>
+
+<Answer>
+With $\mathbf u = (a, c_1)$ and $\mathbf v = (b, d)$, the sheared matrix is $\begin{bmatrix} a & b + ca \\ c_1 & d + cc_1 \end{bmatrix}$. Its determinant is
+
+$$
+\begin{aligned}
+a(d + cc_1) - (b + ca)c_1 &= ad + acc_1 - bc_1 - acc_1 \\
+&= ad - bc_1,
+\end{aligned}
+$$
+
+which is $\det[\,\mathbf u\ \ \mathbf v\,]$. The two extra terms are equal and cancel, which is the algebra behind the picture of a top edge sliding along a line parallel to the base.
 </Answer>
 </Check>

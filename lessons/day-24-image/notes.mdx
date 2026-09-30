@@ -1,6 +1,26 @@
 Yesterday's kernel collected every input that a linear map sends to zero, and it settled whether $T(\mathbf x) = \mathbf b$ can have more than one solution. The other half of solving is whether $T(\mathbf x) = \mathbf b$ has any solution at all, and that depends on which outputs the map can reach. Today collects those outputs into one set, just as Day 16's column space did for a matrix. The two ideas then fit together in one count: the input dimensions that the kernel crushes plus the dimensions that survive as outputs always add up to the dimension of the input space.
 
+Each section below opens with a problem. Try it before you open the walkthrough, even if you only get partway.
+
 ## The range
+
+<Problem>
+Let $T(\mathbf x) = A\mathbf x$ with Day 18's matrix $A = \begin{bmatrix} \green{1} & \red{0} & \pink{-1} \\ \green{0} & \red{1} & \pink{1} \\ \green{1} & \red{1} & \pink{0} \end{bmatrix}$. Compute $T(1, 2, 0)$ and $T(3, 0, 1)$. What do the two outputs have in common? Can any input reach $\glow{\mathbf b} = (1, 1, 0)$?
+
+<VectorAnswer answer={[2, 1, 3]} prefix="T(3, 0, 1) =" />
+
+<Solution>
+Multiply row by row. $T(1, 2, 0) = (1 - 0,\ 2 + 0,\ 1 + 2) = (1, 2, 3)$ and $T(3, 0, 1) = (3 - 1,\ 0 + 1,\ 3 + 0) = (2, 1, 3)$.
+
+In both outputs the third entry is the sum of the first two, since $1 + 2 = 3$ and $2 + 1 = 3$. To see whether that always happens, compute a general output:
+
+$$
+A\mathbf x = \begin{bmatrix} x_1 - x_3 \\ x_2 + x_3 \\ x_1 + x_2 \end{bmatrix}.
+$$
+
+The first two entries add to $x_1 + x_2$, which is the third entry, for every input. So every output lies on the plane $y_3 = y_1 + y_2$. The point $(1, 1, 0)$ has $1 + 1 \neq 0$, so it is off that plane and no input reaches it.
+</Solution>
+</Problem>
 
 <Definition term="Range">
 The **range** of a linear transformation $T : V \to W$ is the set of every output it can make:
@@ -12,47 +32,145 @@ $$
 Many books call it the **image** and write $\operatorname{im}T$. For a matrix map $T(\mathbf x) = A\mathbf x$, the range is $\operatorname{Col}A$, because $A\mathbf x = x_1\mathbf a_1 + \cdots + x_n\mathbf a_n$ is always a combination of the columns.
 </Definition>
 
-The range lives in the codomain $W$, not in $V$. It is always a **subspace** of $W$, and the proof only uses the two rules that make $T$ linear. Take any two outputs $T(\mathbf u)$ and $T(\mathbf w)$ and any scalar $c$:
-
-$$
-\begin{aligned}
-\mathbf 0 &= T(\mathbf 0) && \text{so } \mathbf 0 \text{ is an output} \\
-T(\mathbf u) + T(\mathbf w) &= T(\mathbf u + \mathbf w) && \text{an output of } \mathbf u + \mathbf w \\
-c\,T(\mathbf u) &= T(c\,\mathbf u) && \text{an output of } c\,\mathbf u
-\end{aligned}
-$$
-
 <Pair>
 <Figure src="range-plane" alt="Axes x1, x2 and x3 with a tilted teal hexagon labelled range T. Teal dots, the outputs of ten inputs, all lie on the hexagon, along with the green column a1 and the red column a2. An orange ring marks b = (1, 1, 0) below the sheet, joined to it by a dashed orange line." />
 
-$$
-A = \begin{bmatrix} \green{1} & \red{0} & \pink{-1} \\ \green{0} & \red{1} & \pink{1} \\ \green{1} & \red{1} & \pink{0} \end{bmatrix}
-$$
-
-This is Day 18's matrix. Every output $A\mathbf x$ lands on the plane $x_3 = x_1 + x_2$, which is spanned by $\green{\mathbf a_1}$ and $\red{\mathbf a_2}$. The point $\glow{\mathbf b} = (1, 1, 0)$ is off that plane, so no input reaches it.
+The plane in the problem is spanned by $\green{\mathbf a_1}$ and $\red{\mathbf a_2}$. The third column adds nothing new, because $\pink{\mathbf a_3} = \red{\mathbf a_2} - \green{\mathbf a_1}$. The point $\glow{\mathbf b}$ sits below the sheet.
 </Pair>
 
-To find the range of a map on any finite-dimensional space, aim for a spanning set of the range that you can then trim to a basis. You get one by applying $T$ to a basis of $V$. Every input is a combination of the basis, so by linearity every output is the same combination of their images. Here is that recipe for $T : \mathbb P_2 \to \mathbb R^2$, $T(\mathbf p) = (\mathbf p(0), \mathbf p(1))$ (modeled on Lay §4.2 #31):
+The range lives in the codomain $W$, not in $V$. It is always a **subspace** of $W$, and the proof uses only the two rules that make $T$ linear. Take any two outputs $T(\mathbf u)$ and $T(\mathbf w)$ and any scalar $c$:
 
 $$
 \begin{aligned}
-T(1) &= (1, 1), \qquad T(t) = (0, 1), \qquad T(t^2) = (0, 1) \\
-\operatorname{range}T &= \operatorname{Span}\{(1, 1), (0, 1), (0, 1)\} \\
-&= \operatorname{Span}\{(1, 1), (0, 1)\} = \mathbb R^2
+\mathbf 0 &= T(\mathbf 0) \\
+T(\mathbf u) + T(\mathbf w) &= T(\mathbf u + \mathbf w) \\
+c\,T(\mathbf u) &= T(c\,\mathbf u)
 \end{aligned}
 $$
 
-The images $T(t)$ and $T(t^2)$ are equal, so one of them is redundant. The two that remain are independent, and two independent vectors in $\mathbb R^2$ span all of it.
+Each right side is $T$ of something in $V$, so each left side is an output.
+
+In the plane, a map with parallel columns has a line for its range. Drag the input and watch the output stay on it.
+
+<RangeProbe matrix={[[1, 2], [2, 4]]} target={[-1, -2]} start={[1, 0]} />
+
+For a map on polynomials there are no columns to read, so the goal is a spanning set of the range that you can then trim to a basis.
+
+<Problem>
+Let $T : \mathbb P_2 \to \mathbb R^2$ be $T(\mathbf p) = (\mathbf p(0), \mathbf p(1))$. Find the range of $T$. (Modeled on Lay §4.2 #31.)
+
+<Solution>
+Every input is a combination of the basis $1, t, t^2$, and $T$ keeps combinations. So every output is a combination of $T(1)$, $T(t)$ and $T(t^2)$, and those three images span the range.
+
+<Steps>
+<Step>
+Apply $T$ to each basis polynomial: $T(1) = (1, 1)$, $T(t) = (0, 1)$ and $T(t^2) = (0, 1)$.
+</Step>
+<Step>
+So $\operatorname{range}T = \operatorname{Span}\{(1, 1), (0, 1), (0, 1)\}$.
+</Step>
+<Step>
+Trim the repeat. $T(t)$ and $T(t^2)$ are equal, so one of them adds nothing: $\operatorname{range}T = \operatorname{Span}\{(1, 1), (0, 1)\}$.
+</Step>
+<Step>
+These two are not multiples of each other, so they are independent, and two independent vectors in $\mathbb R^2$ span all of it. The range is $\mathbb R^2$.
+</Step>
+</Steps>
+</Solution>
+</Problem>
+
+<Concept title="Images of a basis span the range">
+Apply $T$ to a basis of $V$. The images always span $\operatorname{range}T$, but some of them may be redundant, and any basis vector in the kernel produces $\mathbf 0$. Trim the list to an independent set, and you have a basis of the range.
+</Concept>
+
+A set described by parameters is a range in disguise, and writing it that way proves it is a subspace.
+
+<Problem>
+Let $W$ be the set of all vectors $(2a - b,\ a + b,\ 3a)$ with $a$ and $b$ real. Find a matrix $A$ with $W = \operatorname{Col}A$. (Modeled on Lay §4.2, Example 4.)
+
+<VectorAnswer answer={[2, -1, 1, 1, 3, 0]} columns={2} />
+
+<Solution>
+We want to write each vector of $W$ as a matrix times $(a, b)$, so we split it into an $a$ part and a $b$ part:
+
+$$
+\begin{aligned}
+\begin{bmatrix} 2a - b \\ a + b \\ 3a \end{bmatrix} &= a\begin{bmatrix} 2 \\ 1 \\ 3 \end{bmatrix} + b\begin{bmatrix} -1 \\ 1 \\ 0 \end{bmatrix} \\
+&= \begin{bmatrix} 2 & -1 \\ 1 & 1 \\ 3 & 0 \end{bmatrix}\begin{bmatrix} a \\ b \end{bmatrix}
+\end{aligned}
+$$
+
+So $W$ is the range of $\mathbf x \mapsto A\mathbf x$ for this $A$, which makes it a subspace of $\mathbb R^3$. It is a plane, since the two columns are independent.
+</Solution>
+</Problem>
+
+<Warning>
+Row reduction changes the column space. To get a basis for $\operatorname{Col}A$, use the echelon form only to find which columns are pivot columns, then take those columns from the original $A$.
+</Warning>
 
 ## Onto
 
-A map $T : V \to W$ is **onto** when its range is all of $W$, so every $\mathbf b$ in $W$ is the output of at least one input. Day 18's matrix map is not onto $\mathbb R^3$, because its range is only a plane. For a matrix map from $\mathbb R^n$ to $\mathbb R^m$, onto means that $A\mathbf x = \mathbf b$ is consistent for every $\mathbf b$, which happens exactly when $A$ has a pivot in every row. When $\mathbf b$ is out of reach, Day 38's least squares finds the output in the range that comes closest to it.
+A map $T : V \to W$ is **onto** when its range is all of $W$, so every $\mathbf b$ in $W$ is the output of at least one input. The map in Problem 1 is not onto $\mathbb R^3$, because its range is only a plane. The map in Problem 2 is onto $\mathbb R^2$.
+
+<Problem>
+Let $A = \begin{bmatrix} 1 & 3 & 0 & 2 \\ 0 & 1 & -1 & 4 \\ 0 & 0 & 0 & 5 \end{bmatrix}$. Solve $A\mathbf x = (1, 2, 5)$, taking $x_3 = 0$. Then explain why $A\mathbf x = \mathbf b$ has a solution for every $\mathbf b$ in $\mathbb R^3$.
+
+<VectorAnswer answer={[5, -2, 0, 1]} labels={["x₁", "x₂", "x₃", "x₄"]} />
+
+<Solution>
+The matrix is already in echelon form, so we solve from the bottom row up.
+
+<Steps>
+<Step>
+Row 3 says $5x_4 = 5$, so $x_4 = 1$.
+</Step>
+<Step>
+Row 2 says $x_2 - x_3 + 4x_4 = 2$. With $x_3 = 0$ and $x_4 = 1$ that is $x_2 + 4 = 2$, so $x_2 = -2$.
+</Step>
+<Step>
+Row 1 says $x_1 + 3x_2 + 2x_4 = 1$, so $x_1 - 6 + 2 = 1$ and $x_1 = 5$.
+</Step>
+</Steps>
+
+Nothing in these steps depended on the right side being $(1, 2, 5)$. Every row has a pivot, so every row gives an equation we can solve for its pivot variable, and no row can turn into the impossible $0 = $ nonzero. So $A\mathbf x = \mathbf b$ is consistent for every $\mathbf b$, and $\mathbf x \mapsto A\mathbf x$ is onto $\mathbb R^3$.
+</Solution>
+</Problem>
+
+<Concept title="Onto means a pivot in every row">
+A matrix map $\mathbb R^n \to \mathbb R^m$ is onto exactly when $A\mathbf x = \mathbf b$ is consistent for every $\mathbf b$. That happens exactly when $A$ has a pivot in every row, which is the same as saying the columns of $A$ span $\mathbb R^m$.
+</Concept>
 
 The widget holds $\mathbf a_1$ fixed. While the columns point in different directions, the range fills the plane. Line them up and watch what happens to both dimensions.
 
 <RangeCollapse first={[2, 1]} start={[-1, 2]} />
 
+<Choice
+  question="Can a linear map from $\mathbb R^2$ to $\mathbb R^3$ be onto?"
+  options={["Yes, if its two columns are independent", "No, never"]}
+  answer={1}
+>
+A $3 \times 2$ matrix has only two columns, so it has at most two pivots and cannot have one in each of its three rows. Its range is at most a plane in $\mathbb R^3$. Independent columns make the map one-to-one, which is a different property.
+</Choice>
+
+<Warning>
+One consistent system does not make a map onto. If $A\mathbf x = \mathbf b$ has a solution for one particular $\mathbf b$, that only shows $\mathbf b$ is in the range. Onto needs a solution for every $\mathbf b$. When $\mathbf b$ is out of reach, Day 38's least squares finds the output in the range that comes closest to it.
+</Warning>
+
 ## The dimension count
+
+<Problem>
+Let $S : \mathbb P_2 \to \mathbb R^2$ be $S(\mathbf p) = (\mathbf p(0), \mathbf p(0))$. Find $\dim\ker S$ and $\dim\operatorname{range}S$. Then compare with $T(\mathbf p) = (\mathbf p(0), \mathbf p(1))$ from Problem 2. (Modeled on Lay §4.2 #32.)
+
+<VectorAnswer answer={[2, 1]} labels={["dim ker S", "dim range S"]} />
+
+<Solution>
+For the kernel, write $\mathbf p = a_0 + a_1 t + a_2 t^2$. Then $S(\mathbf p) = (a_0, a_0)$, which is zero exactly when $a_0 = 0$. The coefficients $a_1$ and $a_2$ are free, so $\ker S = \operatorname{Span}\{t, t^2\}$ and $\dim\ker S = 2$.
+
+For the range, apply $S$ to the basis: $S(1) = (1, 1)$, $S(t) = (0, 0)$ and $S(t^2) = (0, 0)$. Only $(1, 1)$ survives, so $\operatorname{range}S = \operatorname{Span}\{(1, 1)\}$ and $\dim\operatorname{range}S = 1$.
+
+For $T$, Day 23 found $\dim\ker T = 1$, and Problem 2 found $\dim\operatorname{range}T = 2$. The splits differ, $2 + 1$ for $S$ and $1 + 2$ for $T$, but both add up to $3 = \dim\mathbb P_2$.
+</Solution>
+</Problem>
 
 <Definition term="Rank–nullity for a linear map">
 If $V$ is finite-dimensional and $T : V \to W$ is linear, then
@@ -66,7 +184,7 @@ Here is why the count works. The proof aims to build a basis of the range with e
 
 <Figure src="split" wide alt="Two 3D views joined by an arrow labelled T. Left: a pink line labelled ker T crosses a blue floor grid on x3 = 0; a yellow arrow x is drawn as a blue floor part plus a pink piece along the kernel. Right: the floor grid has tilted up onto the teal range plane, the pink line has shrunk to the glowing origin, and x has landed at T(x) = (1, 1, 2)." />
 
-For Day 18's matrix, the kernel is the line through $\pink{(1, -1, 1)}$ and the floor $x_3 = 0$ plays the part of the $\mathbf v$'s. The worked split from the video shows how one input divides between them:
+For Day 18's matrix, the kernel is the line through $\pink{(1, -1, 1)}$ and the floor $x_3 = 0$ plays the part of the $\mathbf v$'s. Here is how one input divides between them:
 
 $$
 \begin{aligned}
@@ -80,29 +198,91 @@ In the widget, the kernel is the dashed pink line and the blue line is a complem
 
 <ComplementLanding matrix={[[2, -2], [1, -1]]} kernel={[1, 1]} complement={[1, 0]} target={[-4, -2]} start={[1, 2]} prompt="Find the one input $\mathbf x$ on the blue line that $T$ sends to the ringed point $\mathbf b = (-4, -2)$." success="$\mathbf x = (-2, 0)$ is the only blue input that reaches $\mathbf b$. Every other input that lands there, along the dashed yellow line, is this one plus a kernel vector." />
 
+The count also works as a budget. A map from $\mathbb R^3$ has three input dimensions to spend, and every one goes either to the kernel or to the range.
+
+<ThirdColumnBudget first={[1, 2]} second={[-2, -4]} start={[2, 0]} />
+
+The count settles questions without any row reduction.
+
+<Problem>
+Let $D : \mathbb P_3 \to \mathbb P_2$ be $D(\mathbf p) = \mathbf p'$. Use the count to find $\dim\operatorname{range}D$, and decide whether $D$ is onto.
+
+<VectorAnswer answer={[3]} labels={["dim range D"]} prefix="\dim\operatorname{range}D =" />
+
+<Solution>
+Day 23 found $\ker D = \operatorname{Span}\{1\}$, so $\dim\ker D = 1$. The domain $\mathbb P_3$ has dimension 4, so the count gives $\dim\operatorname{range}D = 4 - 1 = 3$.
+
+The range is a subspace of $\mathbb P_2$ with dimension $3 = \dim\mathbb P_2$, and the only such subspace is $\mathbb P_2$ itself. So $D$ is onto. Every quadratic is the derivative of some cubic, and we never had to find the cubic.
+</Solution>
+</Problem>
+
 <Pair>
 <Figure src="budget" alt="Three rows of cells under the headings dim V and dim W. T from P2 to R2: one pink and two teal cells fill both codomain cells. D from P3 to P2: one pink and three teal cells fill all three codomain cells. T from R3 to R4: three teal cells fill three of four codomain cells, and the fourth has an orange cross." />
 
-The count settles questions without any row reduction. The derivative $D : \mathbb P_3 \to \mathbb P_2$ kills only the constants, so its range has dimension $4 - 1 = 3 = \dim\mathbb P_2$, and $D$ is onto. No linear map from $\mathbb R^3$ to $\mathbb R^4$ can be onto, because its range has dimension at most 3.
+The same budget rules maps out. No linear map from $\mathbb R^3$ to $\mathbb R^4$ can be onto, because its range has dimension at most 3. The same formula can be onto or not depending on the codomain: $D$ maps $\mathbb P_3$ onto $\mathbb P_2$, but not onto $\mathbb P_3$.
 </Pair>
 
-When $V$ and $W$ have the same finite dimension $n$, the count ties yesterday's lesson to today's. $T$ is one-to-one exactly when $\dim\ker T = 0$, which happens exactly when $\dim\operatorname{range}T = n$, which means $T$ is onto. So for a square matrix, one-to-one and onto are the same test. Next, Day 25 measures how a square matrix scales area, and a determinant of zero turns out to mean the range has collapsed to a smaller subspace.
+<Choice
+  question="A linear map $T : \mathbb P_2 \to \mathbb P_2$ has $\ker T = \{\mathbf 0\}$. Is $T$ onto?"
+  options={["Yes", "Not necessarily"]}
+  answer={0}
+>
+The count gives $\dim\operatorname{range}T = 3 - 0 = 3 = \dim\mathbb P_2$, so the range is all of $\mathbb P_2$. When $V$ and $W$ have the same finite dimension, one-to-one and onto are the same test. For a square matrix that is Day 19's statement that a pivot in every column and a pivot in every row go together.
+</Choice>
+
+Next, Day 25 measures how a square matrix scales area, and a determinant of zero turns out to mean the range has collapsed to a smaller subspace.
 
 ## Practice
+
+### Warm-up
+
+<Check>
+With Day 18's matrix $A$ from Problem 1, find the input with $x_3 = 0$ that reaches $\mathbf b = (3, 1, 4)$. (Modeled on Lay §4.2 #25(f).)
+
+<VectorAnswer answer={[3, 1, 0]} labels={["x₁", "x₂", "x₃"]} />
+
+<Answer>
+With $x_3 = 0$ the output is $A\mathbf x = (x_1,\ x_2,\ x_1 + x_2)$. Matching $(3, 1, 4)$ gives $x_1 = 3$ and $x_2 = 1$, and the third entry checks out, since $3 + 1 = 4$. So $\mathbf b$ is in the range, as it must be, because it lies on the plane $y_3 = y_1 + y_2$.
+</Answer>
+</Check>
+
+<Check>
+<Choice
+  question="Which describes $\operatorname{Col}A$ for an $m \times n$ matrix $A$?"
+  options={["The set of all solutions $\\mathbf x$ of $A\\mathbf x = \\mathbf b$", "The set of all $\\mathbf b$ for which $A\\mathbf x = \\mathbf b$ has a solution", "A subspace of $\\mathbb R^n$"]}
+  answer={1}
+>
+The column space collects outputs, so it is the set of reachable right sides $\mathbf b$. Those have $m$ entries, so $\operatorname{Col}A$ is a subspace of $\mathbb R^m$. Solutions $\mathbf x$ live in $\mathbb R^n$. (Modeled on Lay §4.2 #26(b)–(c).)
+</Choice>
+</Check>
+
+<Check>
+A linear map $T : \mathbb R^6 \to \mathbb R^9$ has $\dim\ker T = 2$. What is $\dim\operatorname{range}T$? (Modeled on Lay §4.6 #7.)
+
+<VectorAnswer answer={[4]} labels={["dim range T"]} />
+
+<Answer>
+The count uses the domain: $\dim\operatorname{range}T = 6 - 2 = 4$. The codomain's dimension 9 plays no part, except that it tells you $T$ is not onto.
+</Answer>
+</Check>
+
+### Core
 
 <Check>
 Let $T(\mathbf x) = A\mathbf x$ with $A = \begin{bmatrix} 1 & 2 & 0 & 1 \\ 0 & 1 & 1 & 1 \\ 1 & 3 & 1 & 2 \end{bmatrix}$. Find $\dim\ker T$ and $\dim\operatorname{range}T$. Is $(1, 2, 4)$ in the range? (Modeled on Lay §4.2 #39.)
 
 <VectorAnswer answer={[2, 2]} labels={["dim ker T", "dim range T"]} />
 
+<Hint>
+Row reduce and count pivots. The number of pivots is the dimension of the range.
+</Hint>
+
 <Answer>
 $$
-\begin{aligned}
-A &\sim \begin{bmatrix} 1 & 2 & 0 & 1 \\ 0 & 1 & 1 & 1 \\ 0 & 1 & 1 & 1 \end{bmatrix} \sim \begin{bmatrix} 1 & 0 & -2 & -1 \\ 0 & 1 & 1 & 1 \\ 0 & 0 & 0 & 0 \end{bmatrix}
-\end{aligned}
+A \sim \begin{bmatrix} 1 & 2 & 0 & 1 \\ 0 & 1 & 1 & 1 \\ 0 & 1 & 1 & 1 \end{bmatrix} \sim \begin{bmatrix} 1 & 0 & -2 & -1 \\ 0 & 1 & 1 & 1 \\ 0 & 0 & 0 & 0 \end{bmatrix}
 $$
 
-There are two pivots, so $\dim\operatorname{range}T = 2$, and $\dim\ker T = 4 - 2 = 2$. The range is spanned by the pivot columns $(1, 0, 1)$ and $(2, 1, 3)$ of the original $A$, which is the plane $x_3 = x_1 + x_2$. Since $1 + 2 \neq 4$, the vector $(1, 2, 4)$ is not in the range, and $T$ is not onto $\mathbb R^3$.
+There are two pivots, so $\dim\operatorname{range}T = 2$, and $\dim\ker T = 4 - 2 = 2$. The range is spanned by the pivot columns $(1, 0, 1)$ and $(2, 1, 3)$ of the original $A$, which is the plane $y_3 = y_1 + y_2$. Since $1 + 2 \neq 4$, the vector $(1, 2, 4)$ is not in the range, and $T$ is not onto $\mathbb R^3$.
 </Answer>
 </Check>
 
@@ -111,11 +291,13 @@ Let $T : M_{2\times2} \to M_{2\times2}$ be $T(A) = A - A^T$. Find $\dim\ker T$ a
 
 <VectorAnswer answer={[3, 1]} labels={["dim ker T", "dim range T"]} />
 
+<Hint>
+Compute $T$ of a general $\begin{bmatrix} a & b \\ c & d \end{bmatrix}$ and notice that every output is a multiple of one matrix.
+</Hint>
+
 <Answer>
 $$
-\begin{aligned}
-T\begin{bmatrix} a & b \\ c & d \end{bmatrix} &= \begin{bmatrix} 0 & b - c \\ c - b & 0 \end{bmatrix} = (b - c)\begin{bmatrix} 0 & 1 \\ -1 & 0 \end{bmatrix}
-\end{aligned}
+T\begin{bmatrix} a & b \\ c & d \end{bmatrix} = \begin{bmatrix} 0 & b - c \\ c - b & 0 \end{bmatrix} = (b - c)\begin{bmatrix} 0 & 1 \\ -1 & 0 \end{bmatrix}
 $$
 
 Every output is a multiple of one matrix, so $\dim\operatorname{range}T = 1$. The kernel is every matrix with $b = c$, the symmetric matrices, which have three free entries $a$, $b$ and $d$. The count checks out, since $3 + 1 = 4 = \dim M_{2\times2}$.
@@ -127,7 +309,87 @@ A linear map $T : \mathbb R^7 \to \mathbb R^4$ is onto. What is $\dim\ker T$? (M
 
 <VectorAnswer answer={[3]} labels={["dim ker T"]} />
 
+<Hint>
+Onto tells you the dimension of the range.
+</Hint>
+
 <Answer>
 Onto means $\operatorname{range}T = \mathbb R^4$, so $\dim\operatorname{range}T = 4$. Rank–nullity gives $\dim\ker T = 7 - 4 = 3$. Subtract from the dimension of the domain, $\mathbb R^7$, not the codomain.
+</Answer>
+</Check>
+
+<Check>
+Let $T : M_{2\times2} \to M_{2\times2}$ be $T(A) = A + A^T$. Find the symmetric matrix $A$ with $T(A) = \begin{bmatrix} 2 & 4 \\ 4 & -6 \end{bmatrix}$ and enter it row by row. (Modeled on Lay §4.2 #33(b).)
+
+<VectorAnswer answer={[1, 2, 2, -3]} columns={2} />
+
+<Hint>
+The target $B$ is symmetric, so $B^T = B$. Try $A = cB$ for a well-chosen number $c$.
+</Hint>
+
+<Answer>
+Try $A = \tfrac12 B = \begin{bmatrix} 1 & 2 \\ 2 & -3 \end{bmatrix}$. Then $T(A) = \tfrac12 B + \tfrac12 B^T = \tfrac12 B + \tfrac12 B = B$. Every output $A + A^T$ is symmetric, and this trick reaches every symmetric $B$, so the range of $T$ is exactly the symmetric matrices. Nonsymmetric answers exist too, such as $\begin{bmatrix} 1 & 3 \\ 1 & -3 \end{bmatrix}$, because you can add any kernel vector.
+</Answer>
+</Check>
+
+<Check>
+Let $W$ be the set of all vectors $(a - 2b,\ 3b,\ a + b)$. Find $A$ with $W = \operatorname{Col}A$, enter it row by row, and give $\dim W$. (Modeled on Lay §4.2, Example 4.)
+
+<VectorAnswer answer={[1, -2, 0, 3, 1, 1]} columns={2} />
+
+<Hint>
+Split the vector into an $a$ part and a $b$ part, as in Problem 3.
+</Hint>
+
+<Answer>
+$$
+\begin{bmatrix} a - 2b \\ 3b \\ a + b \end{bmatrix} = a\begin{bmatrix} 1 \\ 0 \\ 1 \end{bmatrix} + b\begin{bmatrix} -2 \\ 3 \\ 1 \end{bmatrix}, \qquad A = \begin{bmatrix} 1 & -2 \\ 0 & 3 \\ 1 & 1 \end{bmatrix}
+$$
+
+The two columns are not multiples of each other, so they are independent and $\dim W = 2$.
+</Answer>
+</Check>
+
+### Challenge
+
+<Check>
+A homogeneous system of ten equations in seven unknowns has three solutions that are linearly independent, and every solution is a combination of those three. How many equations would be enough to describe the same solution set? (Modeled on Lay §4.6 #23.)
+
+<VectorAnswer answer={[4]} labels={["equations"]} />
+
+<Hint>
+Think of the coefficient matrix as a map $T : \mathbb R^7 \to \mathbb R^{10}$. What is $\dim\ker T$, and what does rank–nullity say about the rank?
+</Hint>
+
+<Answer>
+The solution set is $\ker T$, and it has dimension 3. Rank–nullity gives $\operatorname{rank} = 7 - 3 = 4$, so only 4 of the 10 rows are independent. The other 6 rows are combinations of those 4 and add no new condition, so a system of 4 independent equations has the same 3-dimensional kernel.
+</Answer>
+</Check>
+
+<Check>
+Let $T : \mathbb P_2 \to \mathbb P_2$ be $T(\mathbf p) = \mathbf p + \mathbf p'$. Explain why $T$ is onto without solving any equation, then find the $\mathbf p$ with $T(\mathbf p) = t^2$, as $(a_0, a_1, a_2)$.
+
+<VectorAnswer answer={[2, -2, 1]} labels={["a₀", "a₁", "a₂"]} />
+
+<Hint>
+Find $\ker T$ first. If $\mathbf p + \mathbf p' = 0$, compare the $t^2$ coefficients on both sides, then the $t$ coefficients.
+</Hint>
+
+<Answer>
+Write $\mathbf p = a_0 + a_1 t + a_2 t^2$. Then $T(\mathbf p) = (a_0 + a_1) + (a_1 + 2a_2)t + a_2 t^2$. If this is zero, the $t^2$ coefficient gives $a_2 = 0$, then the $t$ coefficient gives $a_1 = 0$, then the constant gives $a_0 = 0$. So $\ker T = \{\mathbf 0\}$, the range has dimension $3 - 0 = 3$, and $T$ is onto $\mathbb P_2$.
+
+For $T(\mathbf p) = t^2$, match coefficients from the top: $a_2 = 1$, then $a_1 + 2 = 0$ gives $a_1 = -2$, then $a_0 - 2 = 0$ gives $a_0 = 2$. Check: $(2 - 2t + t^2) + (-2 + 2t) = t^2$.
+</Answer>
+</Check>
+
+<Check>
+Let $T : V \to W$ be linear and let $U$ be a subspace of $V$. Show that $T(U) = \{T(\mathbf u) : \mathbf u \in U\}$ is a subspace of $W$. (Modeled on Lay §4.2 #35.)
+
+<Hint>
+Typical elements of $T(U)$ look like $T(\mathbf u_1)$ and $T(\mathbf u_2)$ with $\mathbf u_1, \mathbf u_2$ in $U$. Use that $U$ is itself a subspace.
+</Hint>
+
+<Answer>
+$\mathbf 0 = T(\mathbf 0)$, and $\mathbf 0$ is in $U$, so $\mathbf 0$ is in $T(U)$. For sums, $T(\mathbf u_1) + T(\mathbf u_2) = T(\mathbf u_1 + \mathbf u_2)$, and $\mathbf u_1 + \mathbf u_2$ is in $U$ because $U$ is closed under addition. For multiples, $c\,T(\mathbf u_1) = T(c\,\mathbf u_1)$, and $c\,\mathbf u_1$ is in $U$. So $T(U)$ passes all three checks. The range is the case $U = V$.
 </Answer>
 </Check>
