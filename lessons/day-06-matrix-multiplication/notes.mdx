@@ -1,18 +1,75 @@
-Yesterday each matrix moved the whole plane once. Today asks what happens when you do two moves in a row, and whether the result is still one matrix. The answer defines matrix multiplication, so the rule for multiplying matrices comes straight from the geometry. Here are the two moves: first the shear $S = \begin{bmatrix} \green{1} & \red{1} \\ \green{0} & \red{1} \end{bmatrix}$, then the quarter turn $R = \begin{bmatrix} \green{0} & \red{-1} \\ \green{1} & \red{0} \end{bmatrix}$. A vector $\yellow{\mathbf x}$ goes to $S\yellow{\mathbf x}$, and then to $R(S\yellow{\mathbf x})$.
+Yesterday each matrix moved the whole plane once. Today asks what happens when you do two moves in a row, and whether the result is still one matrix. The answer defines matrix multiplication, so the rule for multiplying matrices comes straight from the geometry instead of from a memorized recipe. Day 7 needs this product to say what it means to undo a matrix.
 
-From here on, $\hat\imath$ and $\hat\jmath$ mean the same green and red basis arrows that Day 5 called $\mathbf e_1$ and $\mathbf e_2$.
-
-<CompositionExplorer first={[[1, 1], [0, 1]]} second={[[0, -1], [1, 0]]} start={[1, 1]} target={[-1, 3]} />
+Each section below opens with a problem. Try it before you open the walkthrough, even if you only get partway. From here on, $\hat\imath$ and $\hat\jmath$ mean the same green and red basis arrows that Day 5 called $\mathbf e_1$ and $\mathbf e_2$.
 
 ## Composition
+
+<Problem>
+The shear $S = \begin{bmatrix} \green{1} & \red{1} \\ \green{0} & \red{1} \end{bmatrix}$ acts on the plane first, and then the quarter turn $R = \begin{bmatrix} \green{0} & \red{-1} \\ \green{1} & \red{0} \end{bmatrix}$ acts on the result. Where does $\yellow{\mathbf x} = \begin{bmatrix} 1 \\ 1 \end{bmatrix}$ end up?
+
+<VectorAnswer answer={[-1, 2]} />
+
+<Solution>
+We know how to apply one matrix at a time, so we do exactly that, starting with the move that happens first.
+
+By Day 4's column picture, $S\yellow{\mathbf x}$ is $1$ times the first column of $S$ plus $1$ times the second column:
+
+$$
+S\yellow{\mathbf x} = 1\begin{bmatrix} 1 \\ 0 \end{bmatrix} + 1\begin{bmatrix} 1 \\ 1 \end{bmatrix} = \begin{bmatrix} 2 \\ 1 \end{bmatrix}
+$$
+
+Now the quarter turn acts on $(2, 1)$, so we use the entries $2$ and $1$ as weights on the columns of $R$:
+
+$$
+R\begin{bmatrix} 2 \\ 1 \end{bmatrix} = 2\begin{bmatrix} 0 \\ 1 \end{bmatrix} + 1\begin{bmatrix} -1 \\ 0 \end{bmatrix} = \begin{bmatrix} -1 \\ 2 \end{bmatrix}
+$$
+
+The point ends at $(-1, 2)$. We wrote the whole trip as $R(S\yellow{\mathbf x})$, with $S$ closest to $\yellow{\mathbf x}$ because it acts first.
+</Solution>
+</Problem>
+
+Following one point works, but a second point would mean doing both multiplications again. Day 5 showed that a whole linear move is known once you know where $\hat\imath$ and $\hat\jmath$ land, so the next problem follows just those two arrows.
+
+<Problem>
+Find a single matrix $M$ that does "shear with $S$, then turn with $R$" in one step. Check it on $\yellow{\mathbf x} = (1, 1)$.
+
+<Solution>
+The columns of $M$ must be the places where $\green{\hat\imath}$ and $\red{\hat\jmath}$ end up after both moves, so we follow each arrow through $S$ and then $R$.
+
+<Steps>
+<Step>
+The shear sends $\green{\hat\imath}$ to the first column of $S$, which is $(1, 0)$. The turn then sends $(1, 0)$ to the first column of $R$, which is $(0, 1)$. So the first column of $M$ is $\green{(0, 1)}$.
+</Step>
+<Step>
+The shear sends $\red{\hat\jmath}$ to the second column of $S$, which is $(1, 1)$. The turn sends $(1, 1)$ to $1\begin{bmatrix} 0 \\ 1 \end{bmatrix} + 1\begin{bmatrix} -1 \\ 0 \end{bmatrix} = \begin{bmatrix} -1 \\ 1 \end{bmatrix}$. So the second column of $M$ is $\red{(-1, 1)}$.
+</Step>
+<Step>
+Put the two columns side by side: $M = \begin{bmatrix} \green{0} & \red{-1} \\ \green{1} & \red{1} \end{bmatrix}$.
+</Step>
+<Step>
+Check on $(1, 1)$: $M\begin{bmatrix} 1 \\ 1 \end{bmatrix} = \begin{bmatrix} 0 \\ 1 \end{bmatrix} + \begin{bmatrix} -1 \\ 1 \end{bmatrix} = \begin{bmatrix} -1 \\ 2 \end{bmatrix}$. That matches the answer to Problem 1, so the single matrix really does both moves.
+</Step>
+</Steps>
+
+Each column of $M$ came from sending a column of $S$ through $R$. That pattern is the whole rule for multiplying matrices.
+</Solution>
+</Problem>
 
 <Pair>
 <Figure src="composition" alt="The vector x = (1, 1) hops through the shear S to (2, 1) and then through the quarter turn R to (−1, 2). A single teal arc labelled RS jumps straight from (1, 1) to (−1, 2). Beside the grid, RS is the matrix with columns (0, 1) and (−1, 1)." />
 
-Both hops together are one linear transformation, so they have one matrix. Its columns record where $\green{\hat\imath}$ and $\red{\hat\jmath}$ end up after both steps, and that matrix is called the product $RS$.
+<Concept title="Two moves in a row are one matrix">
+The single matrix for "do $B$, then do $A$" is called the **product** $AB$. For the shear and the turn, $RS = \begin{bmatrix} 0 & -1 \\ 1 & 1 \end{bmatrix}$, and it satisfies
+
+$$
+A(B\mathbf x) = (AB)\mathbf x \quad\text{for every } \mathbf x.
+$$
+
+Read a product from right to left. The matrix next to $\mathbf x$ touches it first, so in $RS$ the shear happens first.
+</Concept>
 </Pair>
 
-The reason is the column picture from Day 4. If $B$ has columns $\mathbf b_1, \dots, \mathbf b_p$, then
+The reason this works for every $\mathbf x$ is Day 4's column picture. Write $B = \begin{bmatrix} \mathbf b_1 & \cdots & \mathbf b_p \end{bmatrix}$. Then
 
 $$
 \begin{aligned}
@@ -22,11 +79,43 @@ A(B\mathbf x) &= A(x_1\mathbf b_1 + \cdots + x_p\mathbf b_p) \\
 \end{aligned}
 $$
 
-The second line uses the linearity of $A$. So $A(B\mathbf x) = (AB)\mathbf x$ for every $\mathbf x$. Read a product from right to left, because the matrix next to $\mathbf x$ touches it first. In $RS$ the shear happens first.
+The second line uses the linearity of $A$ from Day 5. Because a product is just "one move after another", grouping never matters: $A(BC) = (AB)C$, since both sides mean "do $C$, then $B$, then $A$". Doing the same move $k$ times is written $A^k$, and $A^0 = I$. Powers come back with eigenvalues on Days 28 to 33.
+
+Drag $\yellow{\mathbf x}$ below. The dashed arrows show the two hops, and the teal arrow is the single jump that $RS$ makes.
+
+<CompositionExplorer first={[[1, 1], [0, 1]]} second={[[0, -1], [1, 0]]} start={[1, 1]} target={[-1, 3]} />
+
+<Warning>
+English lists the moves in the order they happen ("shear, then turn"), but the product lists them in the opposite order, $RS$. Before you write a product, ask which matrix touches $\mathbf x$ first and put that one on the right.
+</Warning>
 
 ## The column rule
 
-The goal now is to compute the matrix of a combined move with arithmetic alone, without drawing any grids.
+Problem 2 found the product by sending each column of $S$ through $R$. The next problem runs that recipe on two matrices with no picture attached, so you can see it is pure arithmetic.
+
+<Problem>
+Let $A = \begin{bmatrix} \green{2} & \red{-1} \\ \green{1} & \red{1} \end{bmatrix}$ and $B = \begin{bmatrix} \yellow{1} & \blue{1} \\ \yellow{1} & \blue{-1} \end{bmatrix}$. Compute $AB$, entering it row by row.
+
+<VectorAnswer answer={[1, 3, 2, 0]} columns={2} />
+
+<Solution>
+The columns of $AB$ are $A$ applied to the columns of $B$, so we compute two matrix–vector products.
+
+The first column of $B$ is $\yellow{(1, 1)}$. Its entries are the weights on the columns of $A$:
+
+$$
+A\yellow{\mathbf b_1} = 1\begin{bmatrix} 2 \\ 1 \end{bmatrix} + 1\begin{bmatrix} -1 \\ 1 \end{bmatrix} = \begin{bmatrix} 1 \\ 2 \end{bmatrix}
+$$
+
+The second column of $B$ is $\blue{(1, -1)}$:
+
+$$
+A\blue{\mathbf b_2} = 1\begin{bmatrix} 2 \\ 1 \end{bmatrix} + (-1)\begin{bmatrix} -1 \\ 1 \end{bmatrix} = \begin{bmatrix} 3 \\ 0 \end{bmatrix}
+$$
+
+Stacking the two results as columns gives $AB = \begin{bmatrix} 1 & 3 \\ 2 & 0 \end{bmatrix}$. Each column of the answer is a combination of the columns of $A$, and the matching column of $B$ supplies the weights.
+</Solution>
+</Problem>
 
 <Definition term="Matrix product">
 If $A$ is $m \times n$ and $B$ is $n \times p$ with columns $\mathbf b_1, \dots, \mathbf b_p$, then the **product** $AB$ is the $m \times p$ matrix
@@ -35,67 +124,280 @@ $$
 AB = A\begin{bmatrix} \mathbf b_1 & \cdots & \mathbf b_p \end{bmatrix} = \begin{bmatrix} A\mathbf b_1 & \cdots & A\mathbf b_p \end{bmatrix}.
 $$
 
-Each column of $AB$ is a combination of the columns of $A$, and the weights come from the matching column of $B$. The product is defined only when $A$ has as many columns as $B$ has rows.
+Each column of $AB$ is a combination of the columns of $A$, with weights from the matching column of $B$.
 </Definition>
+
+The picture below carries the grid through $A$. A column of $B$ says how many green steps and how many red steps to take on that carried grid, so you can place each column of $AB$ by counting.
 
 <ProductColumns a={[[2, -1], [1, 1]]} b={[[1, 1], [1, -1]]} />
 
-For the shear and the quarter turn, $\mathbf s_1 = (1, 0)$ and $\mathbf s_2 = (1, 1)$:
+The column rule also runs backward. If you know $A$ and a column of $AB$, you can recover the matching column of $B$ by asking which weights on the columns of $A$ produce it.
+
+<Problem>
+Let $A = \begin{bmatrix} \green{1} & \red{2} \\ \green{1} & \red{-1} \end{bmatrix}$. The first column of $AB$ is $\begin{bmatrix} 5 \\ -1 \end{bmatrix}$. Find the first column $\mathbf b_1$ of $B$.
+
+<VectorAnswer answer={[1, 2]} />
+
+<Solution>
+The first column of $AB$ is $A\mathbf b_1$. Call the entries of $\mathbf b_1$ $p$ and $q$. Then we need
 
 $$
-\begin{aligned}
-R\,\green{\mathbf s_1} &= \begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}\green{\begin{bmatrix} 1 \\ 0 \end{bmatrix}} = \green{\begin{bmatrix} 0 \\ 1 \end{bmatrix}}, \qquad
-R\,\red{\mathbf s_2} = \begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}\red{\begin{bmatrix} 1 \\ 1 \end{bmatrix}} = \red{\begin{bmatrix} -1 \\ 1 \end{bmatrix}} \\
-RS &= \begin{bmatrix} R\,\green{\mathbf s_1} & R\,\red{\mathbf s_2} \end{bmatrix} = \begin{bmatrix} \green{0} & \red{-1} \\ \green{1} & \red{1} \end{bmatrix}
-\end{aligned}
+p\begin{bmatrix} 1 \\ 1 \end{bmatrix} + q\begin{bmatrix} 2 \\ -1 \end{bmatrix} = \begin{bmatrix} 5 \\ -1 \end{bmatrix}.
 $$
+
+Matching entries gives $p + 2q = 5$ and $p - q = -1$. Subtracting the second equation from the first removes $p$ and leaves $3q = 6$, so $q = 2$. Then $p = -1 + q = 1$.
+
+So $\mathbf b_1 = (1, 2)$. Check: $1(1, 1) + 2(2, -1) = (5, -1)$.
+</Solution>
+</Problem>
+
+<ColumnWeights a={[[1, 2], [1, -1]]} target={[5, -1]} />
 
 ## The row–column rule
 
-By hand it is often quicker to find one entry of $AB$ at a time, and this rule does exactly that.
+The column rule builds a whole column at a time. Often you need only one entry, and there is a faster way to get it.
+
+<Problem>
+Let $A = \begin{bmatrix} 1 & 2 \\ -3 & 4 \end{bmatrix}$ and $B = \begin{bmatrix} 2 & 0 & -1 \\ 5 & 1 & 3 \end{bmatrix}$. Find only the entry of $AB$ in row 2, column 3. Which numbers from $A$ and $B$ did you actually use?
+
+<VectorAnswer answer={[15]} labels={["entry"]} />
+
+<Solution>
+The entry in row 2, column 3 is the second entry of column 3, and column 3 of $AB$ is $A\mathbf b_3$ with $\mathbf b_3 = (-1, 3)$:
+
+$$
+A\mathbf b_3 = -1\begin{bmatrix} 1 \\ -3 \end{bmatrix} + 3\begin{bmatrix} 2 \\ 4 \end{bmatrix} = \begin{bmatrix} -1 + 6 \\ 3 + 12 \end{bmatrix} = \begin{bmatrix} 5 \\ 15 \end{bmatrix}
+$$
+
+The entry we want is $15$. Now look at how the $15$ was made: $(-3)(-1) + (4)(3)$. The numbers $-3$ and $4$ are row 2 of $A$, and $-1$ and $3$ are column 3 of $B$. Nothing else was needed.
+</Solution>
+</Problem>
 
 <Figure src="row-column" alt="A 2 by 2 matrix with rows (1, 2) and (−3, 4) times a 2 by 3 matrix with rows (2, 0, −1) and (5, 1, 3) equals the matrix with rows (12, 2, 5) and (14, 4, 15). Row 2 of the first factor, column 3 of the second and the entry 15 are boxed in orange, with the sizes 2 × 2, 2 × 3 and 2 × 3 written underneath and the sum (−3)(−1) + 4 · 3 = 15 below." wide />
 
-Entry $i$ of $A\mathbf b_j$ uses only row $i$ of $A$, by Day 4's row rule. That gives each entry of the product on its own:
+<Concept title="Row times column gives one entry">
+To get the entry in row $i$ and column $j$ of $AB$, walk along row $i$ of $A$ and down column $j$ of $B$ together, multiply matching entries, and add:
 
 $$
 (AB)_{ij} = a_{i1}b_{1j} + a_{i2}b_{2j} + \cdots + a_{in}b_{nj}.
 $$
 
-Write the sizes under the factors to check a product. The inner numbers must match, and the outer numbers give the size of the answer. In the figure, $2 \times \underline{2}$ times $\underline{2} \times 3$ is $2 \times 3$. The other order, $BA$, is $2 \times \underline{3}$ times $\underline{2} \times 2$, which is not defined. A whole row works the same way, so $\text{row}_i(AB) = \text{row}_i(A)\,B$. Day 8 uses this row version to show that every row operation from Day 3 is a multiplication by a matrix.
+For this to work, row $i$ of $A$ and column $j$ of $B$ must have the same length. So $A$ needs as many columns as $B$ has rows.
+</Concept>
+
+That length condition gives a quick size check. Write the sizes under the factors. In the figure, $2 \times \underline{2}$ times $\underline{2} \times 3$ has matching inner numbers, and the outer numbers say the answer is $2 \times 3$. The other order, $BA$, is $2 \times \underline{3}$ times $\underline{2} \times 2$, and the inner numbers $3$ and $2$ differ, so $BA$ is not defined.
+
+<Choice
+  question="$A$ is $3 \times 5$ and $B$ is $5 \times 2$. Which statement is true?"
+  options={["$AB$ is $3 \\times 2$ and $BA$ is $2 \\times 3$", "$AB$ is $3 \\times 2$ and $BA$ is not defined", "$AB$ is $5 \\times 5$ and $BA$ is not defined", "Neither product is defined"]}
+  answer={1}
+>
+For $AB$, the inner numbers are $5$ and $5$, which match, and the outer numbers give $3 \times 2$. For $BA$, the inner numbers are $2$ and $3$, which do not match, so $B$'s rows of length $2$ cannot pair with $A$'s columns of length $3$.
+</Choice>
+
+The row–column rule also works for a whole row at once. Row $i$ of $AB$ uses only row $i$ of $A$, so $\text{row}_i(AB) = \text{row}_i(A)\,B$. Here is row 2 of the product above, computed that way:
+
+$$
+\begin{aligned}
+\begin{bmatrix} -3 & 4 \end{bmatrix}\begin{bmatrix} 2 & 0 & -1 \\ 5 & 1 & 3 \end{bmatrix} &= -3\begin{bmatrix} 2 & 0 & -1 \end{bmatrix} + 4\begin{bmatrix} 5 & 1 & 3 \end{bmatrix} \\
+&= \begin{bmatrix} 14 & 4 & 15 \end{bmatrix}
+\end{aligned}
+$$
+
+The row is a combination of the rows of $B$, with weights from row $i$ of $A$. Day 8 uses this row version to show that every row operation from Day 3 is a multiplication by a matrix.
 
 ## Order matters
 
+<Problem>
+Now turn first and shear second. Find the matrix for this order and enter it row by row. Then find where $(1, 1)$ lands, and compare with $RS$ from Problem 2.
+
+<VectorAnswer answer={[1, -1, 1, 0]} columns={2} />
+
+<Solution>
+The turn acts first, so the product is $SR$ with $R$ on the right. Its columns are $S$ applied to the columns of $R$.
+
+The first column of $R$ is $(0, 1)$, and $S(0, 1) = 0\begin{bmatrix} 1 \\ 0 \end{bmatrix} + 1\begin{bmatrix} 1 \\ 1 \end{bmatrix} = \begin{bmatrix} 1 \\ 1 \end{bmatrix}$.
+
+The second column of $R$ is $(-1, 0)$, and $S(-1, 0) = -1\begin{bmatrix} 1 \\ 0 \end{bmatrix} + 0\begin{bmatrix} 1 \\ 1 \end{bmatrix} = \begin{bmatrix} -1 \\ 0 \end{bmatrix}$.
+
+So $SR = \begin{bmatrix} 1 & -1 \\ 1 & 0 \end{bmatrix}$, and $SR\begin{bmatrix} 1 \\ 1 \end{bmatrix} = \begin{bmatrix} 1 \\ 1 \end{bmatrix} + \begin{bmatrix} -1 \\ 0 \end{bmatrix} = \begin{bmatrix} 0 \\ 1 \end{bmatrix}$.
+
+In the other order, $RS = \begin{bmatrix} 0 & -1 \\ 1 & 1 \end{bmatrix}$ sent $(1, 1)$ to $(-1, 2)$. The same two moves in a different order put the same point in a different place.
+</Solution>
+</Problem>
+
 <Figure src="order-matters" alt="Two grids side by side. On the left, shear then rotate: the yellow tip of x ends at (−1, 2), and RS has columns (0, 1) and (−1, 1). On the right, rotate then shear: the tip ends at (0, 1), and SR has columns (1, 1) and (−1, 0)." wide />
 
-Rotating first and shearing second gives $SR = \begin{bmatrix} \green{1} & \red{-1} \\ \green{1} & \red{0} \end{bmatrix}$, which is not $RS$. The same point $(1, 1)$ lands on $(-1, 2)$ in one order and on $(0, 1)$ in the other. Most pairs of matrices behave like this, so $AB \neq BA$ in general. When $AB = BA$ does hold, the matrices **commute**. Keeping track of order matters again on Day 7, where undoing $RS$ means undoing $R$ first.
+<Concept title="Matrices usually do not commute">
+For most pairs of matrices, $AB \neq BA$. When $AB = BA$ does hold, we say that $A$ and $B$ **commute**. The identity $I$ commutes with every square matrix, because $IA = A = AI$.
+</Concept>
+
+Some pairs do commute. Slide $k$ below until both orders move the unit square to the same place.
 
 <CommuteHunt a={[[2, 1], [0, 1]]} b={[[1, "k"], [0, 3]]} />
 
-Two more habits from ordinary numbers fail for matrices. $AB = AC$ does not force $B = C$, and $AB = 0$ does not force $A = 0$ or $B = 0$. For example, $\begin{bmatrix} 1 & 2 \\ 2 & 4 \end{bmatrix}\begin{bmatrix} 2 & 4 \\ -1 & -2 \end{bmatrix} = \begin{bmatrix} 0 & 0 \\ 0 & 0 \end{bmatrix}$. Each column of the second factor weights the columns $(1, 2)$ and $(2, 4)$ so that they cancel.
+<Warning>
+Algebra habits that rely on $ab = ba$ break for matrices. For example, $(A + B)^2 = (A + B)(A + B) = A^2 + AB + BA + B^2$. You can combine $AB + BA$ into $2AB$ only when $A$ and $B$ commute.
+</Warning>
+
+## Zero products
+
+Ordinary numbers have a rule that if $ab = 0$, then $a = 0$ or $b = 0$. The next problem tests whether that rule survives for matrices.
+
+<Problem>
+Let $M = \begin{bmatrix} 1 & 2 \\ 2 & 4 \end{bmatrix}$. Find a matrix $B$ whose columns are both nonzero and different from each other, with $MB = \begin{bmatrix} 0 & 0 \\ 0 & 0 \end{bmatrix}$.
+
+<Solution>
+By the column rule, $MB$ is zero exactly when $M$ sends each column of $B$ to $\mathbf 0$. So we look for nonzero vectors $(p, q)$ with $M(p, q) = \mathbf 0$.
+
+$$
+p\begin{bmatrix} 1 \\ 2 \end{bmatrix} + q\begin{bmatrix} 2 \\ 4 \end{bmatrix} = \begin{bmatrix} p + 2q \\ 2p + 4q \end{bmatrix}
+$$
+
+Both entries are zero when $p + 2q = 0$, because the second entry is twice the first. Taking $q = 1$ gives $p = -2$, and taking $q = -2$ gives $p = 4$. So one answer is
+
+$$
+\begin{aligned}
+B &= \begin{bmatrix} -2 & 4 \\ 1 & -2 \end{bmatrix} \\
+MB &= \begin{bmatrix} -2 + 2 & 4 - 4 \\ -4 + 4 & 8 - 8 \end{bmatrix} = \begin{bmatrix} 0 & 0 \\ 0 & 0 \end{bmatrix}
+\end{aligned}
+$$
+
+This worked because the columns of $M$ lie on one line, so a combination of them can cancel to zero.
+</Solution>
+</Problem>
+
+<ZeroProductHunt matrix={[[1, 2], [2, 4]]} />
+
+<Concept title="Cancelling is not allowed">
+Two more rules from ordinary numbers fail for matrices.
+
+- $AB = 0$ does not force $A = 0$ or $B = 0$. Problem 7 is an example.
+- $AB = AC$ does not force $B = C$. In Problem 7, $MB = M\cdot 0$ even though $B \neq 0$.
+
+Both failures happen when $A$ flattens the plane onto a line, so two different inputs can land on the same output. Day 7 names these matrices **singular** and shows that cancelling is safe for every other square matrix.
+</Concept>
+
+## Matrix sums
+
+Adding and scaling matrices works the way it did for vectors on Day 1, one entry at a time.
+
+<Problem>
+Let $A = \begin{bmatrix} 1 & -2 & 3 \\ 0 & 4 & -1 \end{bmatrix}$ and $B = \begin{bmatrix} 2 & 1 & 0 \\ -3 & 2 & 5 \end{bmatrix}$. Compute $3A - B$, entering it row by row.
+
+<VectorAnswer answer={[1, -7, 9, 3, 10, -8]} columns={3} />
+
+<Solution>
+Scale first, then subtract entry by entry. Tripling $A$ gives $\begin{bmatrix} 3 & -6 & 9 \\ 0 & 12 & -3 \end{bmatrix}$. Subtracting $B$ in each position:
+
+$$
+\begin{bmatrix} 3 - 2 & -6 - 1 & 9 - 0 \\ 0 - (-3) & 12 - 2 & -3 - 5 \end{bmatrix} = \begin{bmatrix} 1 & -7 & 9 \\ 3 & 10 & -8 \end{bmatrix}
+$$
+</Solution>
+</Problem>
+
+<Concept title="Sums go entry by entry">
+The **sum** $A + B$ adds matching entries, and the **scalar multiple** $rA$ multiplies every entry by $r$. A sum is defined only when $A$ and $B$ have the same size, because every entry needs a partner. Sums and products mix the way numbers do, as long as you keep the order of each product: $A(B + C) = AB + AC$ and $(B + C)A = BA + CA$.
+</Concept>
 
 ## The transpose
 
-The **transpose** $A^T$ of an $m \times n$ matrix $A$ is the $n \times m$ matrix whose columns are the rows of $A$.
+<Problem>
+Take $A = \begin{bmatrix} 1 & 2 \\ -3 & 4 \end{bmatrix}$ and $B = \begin{bmatrix} 2 & 0 & -1 \\ 5 & 1 & 3 \end{bmatrix}$ from Problem 5, where $AB = \begin{bmatrix} 12 & 2 & 5 \\ 14 & 4 & 15 \end{bmatrix}$. Flip each matrix so its rows become its columns. Then multiply the flipped $B$ by the flipped $A$ and compare with the flipped $AB$.
+
+<Solution>
+Flipping $A$ turns its rows $(1, 2)$ and $(-3, 4)$ into columns, and flipping $B$ does the same with its two rows of length 3:
 
 $$
-B = \begin{bmatrix} 2 & 0 & -1 \\ 5 & 1 & 3 \end{bmatrix}, \qquad B^T = \begin{bmatrix} 2 & 5 \\ 0 & 1 \\ -1 & 3 \end{bmatrix}
+A^T = \begin{bmatrix} 1 & -3 \\ 2 & 4 \end{bmatrix}, \qquad B^T = \begin{bmatrix} 2 & 5 \\ 0 & 1 \\ -1 & 3 \end{bmatrix}
 $$
 
-Later lessons use the transpose often. On Day 16 it lets you study the rows of $A$ as the columns of $A^T$, and from Day 34 on it carries symmetric matrices, dot products and least squares.
+$B^T$ is $3 \times \underline{2}$ and $A^T$ is $\underline{2} \times 2$, so $B^TA^T$ is defined and is $3 \times 2$. Row by row with the row–column rule:
 
-<Definition term="Transpose of a product">
-Whenever $AB$ is defined, $(AB)^T = B^TA^T$.
+<Steps>
+<Step>
+Row 1 of $B^T$ is $(2, 5)$. Pairing it with the columns of $A^T$ gives $2(1) + 5(2) = 12$ and $2(-3) + 5(4) = 14$.
+</Step>
+<Step>
+Row 2 of $B^T$ is $(0, 1)$. It gives $0(1) + 1(2) = 2$ and $0(-3) + 1(4) = 4$.
+</Step>
+<Step>
+Row 3 of $B^T$ is $(-1, 3)$. It gives $-1(1) + 3(2) = 5$ and $-1(-3) + 3(4) = 15$.
+</Step>
+</Steps>
+
+So $B^TA^T = \begin{bmatrix} 12 & 14 \\ 2 & 4 \\ 5 & 15 \end{bmatrix}$, which is exactly $AB$ flipped. The other order, $A^TB^T$, is $2 \times 2$ times $3 \times 2$, which is not even defined.
+</Solution>
+</Problem>
+
+<Definition term="Transpose">
+The **transpose** $A^T$ of an $m \times n$ matrix $A$ is the $n \times m$ matrix whose columns are the rows of $A$. Whenever $AB$ is defined,
+
+$$
+(AB)^T = B^TA^T.
+$$
 </Definition>
 
-Entry $(i, j)$ of $(AB)^T$ is entry $(j, i)$ of $AB$, which is row $j$ of $A$ times column $i$ of $B$. That is the same as row $i$ of $B^T$ times column $j$ of $A^T$. The sizes confirm the order: if $A$ is $2 \times 2$ and $B$ is $2 \times 3$, then $B^TA^T$ is $3 \times 2$ times $2 \times 2$, which is defined, while $A^TB^T$ is not.
+The order reverses for a reason you can see in Problem 9. Entry $(i, j)$ of $(AB)^T$ is entry $(j, i)$ of $AB$, which is row $j$ of $A$ paired with column $i$ of $B$. Row $i$ of $B^T$ is column $i$ of $B$, and column $j$ of $A^T$ is row $j$ of $A$, so $B^TA^T$ pairs the same two lists. On Day 16 the transpose lets you study the rows of $A$ as the columns of $A^T$, and from Day 34 on it carries symmetric matrices, dot products and least squares.
+
+<Choice
+  question="$A$ is $2 \times 3$ and $B$ is $3 \times 4$. Which product is defined?"
+  options={["$A^TB^T$", "$B^TA^T$", "Both", "Neither"]}
+  answer={1}
+>
+$B^T$ is $4 \times 3$ and $A^T$ is $3 \times 2$, so $B^TA^T$ has matching inner numbers and is $4 \times 2$, the same size as $(AB)^T$. $A^TB^T$ is $3 \times 2$ times $4 \times 3$, and $2 \neq 4$.
+</Choice>
 
 ## Practice
+
+### Warm-up
+
+<Check>
+$A$ is $4 \times 6$ and $AB$ is $4 \times 2$. What size is $B$? (Modeled on Lay §2.1 #7.)
+
+<VectorAnswer answer={[6, 2]} labels={["rows", "columns"]} />
+
+<Answer>
+For $AB$ to be defined, $B$ needs as many rows as $A$ has columns, which is $6$. The product has as many columns as $B$, and the product has $2$ columns. So $B$ is $6 \times 2$.
+</Answer>
+</Check>
+
+<Check>
+Compute $2\begin{bmatrix} 3 & -1 \\ 0 & 2 \end{bmatrix} - \begin{bmatrix} 1 & 4 \\ -2 & 5 \end{bmatrix}$, entering it row by row.
+
+<VectorAnswer answer={[5, -6, 2, -1]} columns={2} />
+
+<Answer>
+$$
+\begin{bmatrix} 6 & -2 \\ 0 & 4 \end{bmatrix} - \begin{bmatrix} 1 & 4 \\ -2 & 5 \end{bmatrix} = \begin{bmatrix} 5 & -6 \\ 2 & -1 \end{bmatrix}
+$$
+</Answer>
+</Check>
+
+<Check>
+Write the transpose of $\begin{bmatrix} 1 & -4 & 0 \\ 2 & 3 & -5 \end{bmatrix}$, row by row.
+
+<VectorAnswer answer={[1, 2, -4, 3, 0, -5]} columns={2} />
+
+<Answer>
+The two rows become the two columns, so the transpose is $3 \times 2$:
+
+$$
+\begin{bmatrix} 1 & 2 \\ -4 & 3 \\ 0 & -5 \end{bmatrix}
+$$
+</Answer>
+</Check>
+
+### Core
 
 <Check>
 Let $A = \begin{bmatrix} 2 & -1 \\ 1 & 3 \end{bmatrix}$ and $B = \begin{bmatrix} 1 & 0 & 2 \\ 4 & -1 & 1 \end{bmatrix}$. Find the third column of $AB$. (Modeled on Lay §2.1 #5.)
 
 <VectorAnswer answer={[3, 5]} />
+
+<Hint>
+The third column of $AB$ is $A$ times the third column of $B$. Use its entries as weights on the columns of $A$.
+</Hint>
 
 <Answer>
 The third column of $AB$ is $A\mathbf b_3$, a combination of the columns of $A$ with weights $2$ and $1$:
@@ -109,9 +411,34 @@ The whole product is $AB = \begin{bmatrix} -2 & 1 & 3 \\ 13 & -3 & 5 \end{bmatri
 </Check>
 
 <Check>
-Let $R = \begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}$ be the quarter turn and $S = \begin{bmatrix} 1 & 0 \\ 2 & 1 \end{bmatrix}$ a vertical shear. Rotate first, then shear. Where does $\hat\jmath$ land? (Modeled on Lay §2.1 Example 7.)
+Let $A = \begin{bmatrix} 3 & -2 & 1 \\ 0 & 4 & -1 \end{bmatrix}$ and $B = \begin{bmatrix} 2 & 1 \\ 5 & -3 \\ -1 & 6 \end{bmatrix}$. Use the row–column rule to find $(AB)_{12}$ and $(AB)_{21}$. (Modeled on Lay §2.1, Example 5.)
+
+<VectorAnswer answer={[15, 21]} labels={["(AB)₁₂", "(AB)₂₁"]} />
+
+<Hint>
+$(AB)_{12}$ pairs row 1 of $A$ with column 2 of $B$. $(AB)_{21}$ pairs row 2 of $A$ with column 1 of $B$.
+</Hint>
+
+<Answer>
+$$
+\begin{aligned}
+(AB)_{12} &= 3(1) + (-2)(-3) + 1(6) = 3 + 6 + 6 = 15 \\
+(AB)_{21} &= 0(2) + 4(5) + (-1)(-1) = 0 + 20 + 1 = 21
+\end{aligned}
+$$
+
+The full product is $\begin{bmatrix} -5 & 15 \\ 21 & -18 \end{bmatrix}$.
+</Answer>
+</Check>
+
+<Check>
+Let $R = \begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}$ be the quarter turn and $S = \begin{bmatrix} 1 & 0 \\ 2 & 1 \end{bmatrix}$ a vertical shear. Rotate first, then shear. Where does $\hat\jmath$ land? (Modeled on Lay §2.1, Example 7.)
 
 <VectorAnswer answer={[-1, -2]} />
+
+<Hint>
+Decide which product this is by asking which matrix touches the vector first. Then follow $\hat\jmath$ through one matrix at a time.
+</Hint>
 
 <Answer>
 Rotating first and shearing second is the product $SR$, because the matrix next to $\mathbf x$ acts first. Follow $\hat\jmath$ through both steps:
@@ -119,7 +446,7 @@ Rotating first and shearing second is the product $SR$, because the matrix next 
 $$
 \begin{aligned}
 R\hat\jmath &= \begin{bmatrix} -1 \\ 0 \end{bmatrix}, \\
-S(R\hat\jmath) &= \begin{bmatrix} 1 & 0 \\ 2 & 1 \end{bmatrix}\begin{bmatrix} -1 \\ 0 \end{bmatrix} = \begin{bmatrix} -1 \\ -2 \end{bmatrix}.
+S(R\hat\jmath) &= -1\begin{bmatrix} 1 \\ 2 \end{bmatrix} + 0\begin{bmatrix} 0 \\ 1 \end{bmatrix} = \begin{bmatrix} -1 \\ -2 \end{bmatrix}.
 \end{aligned}
 $$
 
@@ -128,9 +455,57 @@ So $SR = \begin{bmatrix} 0 & -1 \\ 1 & -2 \end{bmatrix}$. The other order gives 
 </Check>
 
 <Check>
+Let $A = \begin{bmatrix} 1 & 3 \\ -2 & 1 \end{bmatrix}$ and $B = \begin{bmatrix} 2 & k \\ -4 & 2 \end{bmatrix}$. Find the value of $k$ that makes $AB = BA$. (Modeled on Lay §2.1 #9.)
+
+<VectorAnswer answer={[6]} labels={["k"]} prefix="k =" />
+
+<Hint>
+Compute both products with $k$ left as a letter, then set matching entries equal.
+</Hint>
+
+<Answer>
+$$
+\begin{aligned}
+AB &= \begin{bmatrix} 2 - 12 & k + 6 \\ -4 - 4 & -2k + 2 \end{bmatrix} = \begin{bmatrix} -10 & k + 6 \\ -8 & 2 - 2k \end{bmatrix} \\
+BA &= \begin{bmatrix} 2 - 2k & 6 + k \\ -4 - 4 & -12 + 2 \end{bmatrix} = \begin{bmatrix} 2 - 2k & k + 6 \\ -8 & -10 \end{bmatrix}
+\end{aligned}
+$$
+
+The top-right and bottom-left entries already agree. The top-left entries need $-10 = 2 - 2k$, so $k = 6$, and the bottom-right entries give the same equation.
+</Answer>
+</Check>
+
+<Check>
+Let $A = \begin{bmatrix} 1 & 0 & 2 \\ -2 & 3 & 1 \\ 4 & -1 & 0 \end{bmatrix}$ and $B = \begin{bmatrix} 3 & -1 \\ 2 & 5 \\ -1 & 2 \end{bmatrix}$. Find the second row of $AB$ without computing the other rows. (Modeled on Lay §2.1, Example 6.)
+
+<VectorAnswer answer={[-1, 19]} labels={["entry 1", "entry 2"]} />
+
+<Hint>
+$\text{row}_2(AB) = \text{row}_2(A)\,B$. Use the entries of row 2 of $A$ as weights on the rows of $B$.
+</Hint>
+
+<Answer>
+Row 2 of $A$ is $(-2, 3, 1)$, so
+
+$$
+\begin{aligned}
+\text{row}_2(AB) &= -2\begin{bmatrix} 3 & -1 \end{bmatrix} + 3\begin{bmatrix} 2 & 5 \end{bmatrix} + 1\begin{bmatrix} -1 & 2 \end{bmatrix} \\
+&= \begin{bmatrix} -6 + 6 - 1 & 2 + 15 + 2 \end{bmatrix} = \begin{bmatrix} -1 & 19 \end{bmatrix}.
+\end{aligned}
+$$
+</Answer>
+</Check>
+
+### Challenge
+
+<Check>
 Let $A = \begin{bmatrix} 3 & -1 & 2 \\ 0 & 4 & 1 \end{bmatrix}$ and $B = \begin{bmatrix} 1 & 2 \\ -2 & 0 \\ 5 & -3 \end{bmatrix}$. Find the first row of $B^TA^T$ without multiplying $B^T$ by $A^T$. (Modeled on Lay §2.1 #33.)
 
-<VectorAnswer answer={[15, -3]} />
+<VectorAnswer answer={[15, -3]} labels={["entry 1", "entry 2"]} />
+
+<Hint>
+$B^TA^T$ is the transpose of a product you can compute directly. Which part of $AB$ becomes the first row after flipping?
+</Hint>
 
 <Answer>
 $B^TA^T = (AB)^T$, so its first row is the first column of $AB$. By the row–column rule,
@@ -143,6 +518,43 @@ $$
 $$
 
 The first row of $B^TA^T$ is $\begin{bmatrix} 15 & -3 \end{bmatrix}$.
+</Answer>
+</Check>
+
+<Check>
+Let $A = \begin{bmatrix} 1 & 3 \\ 2 & 5 \end{bmatrix}$. The first column of $AB$ is $\begin{bmatrix} 4 \\ 7 \end{bmatrix}$. Find the first column of $B$. (Modeled on Lay §2.1 #17.)
+
+<VectorAnswer answer={[1, 1]} />
+
+<Hint>
+The first column of $AB$ is $A\mathbf b_1$. Write $\mathbf b_1 = (p, q)$ and match entries to get two equations.
+</Hint>
+
+<Answer>
+We need $p\begin{bmatrix} 1 \\ 2 \end{bmatrix} + q\begin{bmatrix} 3 \\ 5 \end{bmatrix} = \begin{bmatrix} 4 \\ 7 \end{bmatrix}$, which means $p + 3q = 4$ and $2p + 5q = 7$. Doubling the first equation gives $2p + 6q = 8$. Subtracting the second equation leaves $q = 1$, and then $p = 4 - 3 = 1$. So $\mathbf b_1 = (1, 1)$.
+
+Check: $1(1, 2) + 1(3, 5) = (4, 7)$.
+</Answer>
+</Check>
+
+<Check>
+Let $A = \begin{bmatrix} 1 & -2 \\ -2 & 4 \end{bmatrix}$, $B = \begin{bmatrix} 3 & 1 \\ 1 & 2 \end{bmatrix}$ and $C = \begin{bmatrix} 1 & 5 \\ 0 & 4 \end{bmatrix}$. Compute $AB$ and $AC$, entering $AB$ row by row. Why can the two products agree when $B \neq C$? (Modeled on Lay §2.1 #10.)
+
+<VectorAnswer answer={[1, -3, -2, 6]} columns={2} />
+
+<Hint>
+Look at $B - C$. What does $A$ do to each of its columns?
+</Hint>
+
+<Answer>
+$$
+\begin{aligned}
+AB &= \begin{bmatrix} 3 - 2 & 1 - 4 \\ -6 + 4 & -2 + 8 \end{bmatrix} = \begin{bmatrix} 1 & -3 \\ -2 & 6 \end{bmatrix} \\
+AC &= \begin{bmatrix} 1 - 0 & 5 - 8 \\ -2 + 0 & -10 + 16 \end{bmatrix} = \begin{bmatrix} 1 & -3 \\ -2 & 6 \end{bmatrix}
+\end{aligned}
+$$
+
+The difference is $B - C = \begin{bmatrix} 2 & -4 \\ 1 & -2 \end{bmatrix}$, and both of its columns are multiples of $(2, 1)$. Since $A(2, 1) = 2(1, -2) + 1(-2, 4) = (0, 0)$, we get $A(B - C) = 0$, which means $AB = AC$. The columns of $A$ lie on one line, so $A$ cannot tell $B$ and $C$ apart, and you cannot cancel $A$.
 </Answer>
 </Check>
 

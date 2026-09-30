@@ -13,7 +13,7 @@ import { PreimageHunt, ShapeMatch } from "@/components/interactive/transformatio
 import { ClosureHunt, PolynomialCombiner } from "@/components/interactive/vector-spaces";
 import { CostCompare, LUBuilder, SubstitutionSolver } from "@/components/interactive/lu";
 import { AdditionExplorer, CombinationTarget, DifferenceExplorer, GridWeights, ScaleExplorer, VectorExplorer } from "@/components/interactive/vectors";
-import { CommuteHunt, CompositionExplorer, ProductColumns } from "@/components/interactive/product";
+import { ColumnWeights, CommuteHunt, CompositionExplorer, ProductColumns, ZeroProductHunt } from "@/components/interactive/product";
 import { ElementaryMoves, InverseBuilder } from "@/components/interactive/elementary";
 import { InverseColumnsHunt, SingularHunt, UndoOrder } from "@/components/interactive/inverse";
 import { CoordinateFinder, PolynomialCoordinates } from "@/components/interactive/coordinates";
@@ -112,6 +112,8 @@ export function Notes({ lesson }: { lesson: Lesson }) {
     CompositionExplorer,
     ProductColumns,
     CommuteHunt,
+    ColumnWeights,
+    ZeroProductHunt,
     PolynomialCombiner,
     ClosureHunt,
     LUBuilder,
