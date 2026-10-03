@@ -6,7 +6,8 @@ learner. Each lesson is a short 3Blue1Brown-style video and a very short page of
 ## How release works
 
 Lessons are built ahead of time and unlock one a day. Day N's `meta.json` has
-`published_on` = 2026-09-27 + (N − 1) days, so Day 1 is 2026-09-27 and Day 40 is 2026-11-05. The site build
+`published_on` = 2026-09-27 + (N − 1) days for Days 1–7. The course paused from 2026-10-04 to 2026-10-17, so
+Days 8–40 use 2026-10-11 + (N − 1) days: Day 8 is 2026-10-18 and Day 40 is 2026-11-19. The site build
 (`site/scripts/sync-media.mjs`) only includes lessons whose `published_on` date has arrived in America/Los_Angeles.
 The deploy workflow rebuilds just after midnight Pacific every day, so each lesson unlocks on its date with no
 push needed. Committing a finished lesson early is safe because it stays hidden until its date.
@@ -22,8 +23,8 @@ Each morning a job on the owner's Mac (`scripts/draft_text.py`) opens a Messages
 The daily routine is a release check, and all 40 lessons are already built, so it never builds or re-renders
 a lesson and needs no setup. When you are started by it:
 
-1. Find today's lesson, the one whose `meta.json` `published_on` is today in America/Los_Angeles. Outside
-   2026-09-27 to 2026-11-05 there is nothing to release, so say so and stop.
+1. Find today's lesson, the one whose `meta.json` `published_on` is today in America/Los_Angeles. If no lesson
+   has today's date (a paused day, or outside the course), there is nothing to release, so say so and stop.
 2. With `curl`, check that `https://appiest.github.io/teach-linalg/day/N/` returns 200 for today and every
    earlier day, that today's video URL returns 200, and that day N + 1 still returns 404.
 3. If something is wrong, fix the cause with the smallest change, confirm with `cd site && npm ci && npm run build`,
@@ -181,8 +182,7 @@ the same way.
 ```
 
 This writes `lesson.mp4`, `poster.jpg`, `figures/*.png` and fills `duration_seconds` into `meta.json`. Create
-`meta.json` first as `{"day": N, "published_on": "YYYY-MM-DD"}`, where the date is 2026-09-27 + (N − 1) days
-(see "How release works").
+`meta.json` first as `{"day": N, "published_on": "YYYY-MM-DD"}`, with the date from "How release works".
 Keep the video under 12 MB.
 
 ## 7. Notes
