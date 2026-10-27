@@ -7,8 +7,8 @@ learner. Each lesson is a short 3Blue1Brown-style video and a very short page of
 
 Lessons are built ahead of time and unlock one a day. Day N's `meta.json` has
 `published_on` = 2026-09-27 + (N − 1) days for Days 1–7. The course paused from 2026-10-04 to 2026-10-17, so
-Days 8–12 use 2026-10-11 + (N − 1) days, so Day 8 is 2026-10-18. It paused again from 2026-10-23 to 2026-10-28,
-so Days 13–40 use 2026-10-29 + (N − 13) days: Day 13 is 2026-10-29 and Day 40 is 2026-11-25. The site build
+Days 8–11 use 2026-10-11 + (N − 1) days, so Day 8 is 2026-10-18. It paused again from 2026-10-22 to 2026-10-28,
+so Days 12–40 use 2026-10-29 + (N − 12) days: Day 12 is 2026-10-29 and Day 40 is 2026-11-26. The site build
 (`site/scripts/sync-media.mjs`) only includes lessons whose `published_on` date has arrived in America/Los_Angeles.
 The deploy workflow rebuilds just after midnight Pacific every day, so each lesson unlocks on its date with no
 push needed. Committing a finished lesson early is safe because it stays hidden until its date.
